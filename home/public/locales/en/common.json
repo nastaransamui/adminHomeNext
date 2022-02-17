@@ -1,0 +1,19 @@
+{
+  "title": "Welcome Back",
+  "subtitle": "Please login to continue",
+  "login": "Login",
+  "login_email": "Login with email",
+  "email": "Email",
+  "login_required": "This field is required",
+  "password_regex": "Password should be at least 8 characters long and should contain one number,one character and one special character",
+  "login_valid": "Email is not valid",
+  "login_password": "Password",
+  "login_remember": "Remember",
+  "login_forget": "Forgot Password",
+  "continue": "Continue",
+  "credentialsError": "Username or Password is Wrong",
+  "light": "Light",
+  "dark": "Dark",
+  "English": "English",
+  "Farsi": "Farsi"
+}

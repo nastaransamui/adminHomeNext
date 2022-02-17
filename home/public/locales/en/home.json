@@ -1,0 +1,60 @@
+{
+  "header": {
+    "title": "This is Header Title",
+    "signOut": "Sign Out",
+    "language": "Language",
+    "header_login": "login",
+    "header_contact": "contact",
+    "header_register": "register",
+    "header_theme": "Color Combination",
+    "profile": "Profile",
+    "header_dark": "Dark",
+    "header_light": "Light",
+    "header_language": "Language",
+    "pageNav_top": "To Top",
+    "header_logout": "Logout"
+  },
+  "promotion": {
+    "promo_btn1": "Buy Now",
+    "promo_btn2": "Add to Cart"
+  },
+  "featured": {
+    "titlePrimary": "Featured",
+    "titleSecondary": "Product",
+    "thumbCaption": "New"
+  },
+  "trending": {
+    "title": "Popular products",
+    "desc": "Choose from many options of popular products at a breakthrough price.",
+    "explore": "Explore"
+  },
+  "categories": {
+    "title": "Explore Categories",
+    "desc": "Choose from 10 categories with new additions published every month.",
+    "allCategories": "All Categories"
+  },
+  "about": {
+    "title": "About us",
+    "desc": "Our mission is to diversify the tech industry through accessible education and apprenticeship, unlocking the door to opportunity and empowering people to achieve their dreams.",
+    "join": "Join Now"
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "desc": "They Are Doing Great Things With Us"
+  },
+  "blog": {
+    "title": "What's Update?",
+    "desc": "Up-to-the-minute news, breaking news, video, audio and feature stories",
+    "more": "More"
+  },
+  "footer": {
+    "footer_waiting": "What are you waiting for?",
+    "getstarted": "get Started"
+  },
+  "themeUser": {
+    "theme": "Theme",
+    "profile": "Profile",
+    "combination": "Color Combination",
+    "adminPanel": "Go to Admin Panel"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Contact us",
+  "contact_title2": "Say Hello to Us",
+  "contact_subtitle": "Do you have any questions? Are you ready to reduce cost and create new revenue? Or you simply want to say hi? Drop us a message.",
+  "form_require": "This field is required",
+  "form_email_require": "Email is not valid",
+  "form_name": "What is your name?",
+  "form_email": "What is your email?",
+  "form_phone": "What is your phone number?",
+  "form_company": "What is your company?",
+  "form_message": "Write your message here",
+  "form_terms": "I have read and accept the Terms of",
+  "form_privacy": "Service & Privacy Policy *",
+  "form_send": "Send Message",
+  "messageSucces": "This message sent successfully!"
+}
