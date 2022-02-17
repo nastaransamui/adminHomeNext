@@ -1,0 +1,35 @@
+{
+  "title": "Dashboard",
+  "Profile": "Profile",
+  "Settings": "Settings",
+  "Log out": "Log out",
+  "notification": "Notifications",
+  "MyProfile": "My Profile",
+  "EditProfile": "Edit Profile",
+  "SettingsProfile": "Settings Profile",
+  "Breadcrumb": {
+    "countDownMain": "You will be logout at :",
+    "days": "day(s)",
+    "hours": "hour(s)",
+    "minutes": "minute(s)",
+    "seconds": "second(s)"
+  },
+  "sidebar": {
+    "Home": "Home"
+  },
+  "header": {
+    "title": "This is Header Title",
+    "signOut": "Sign Out",
+    "language": "Language",
+    "header_login": "login",
+    "header_contact": "contact",
+    "header_register": "register",
+    "header_theme": "Color Combination",
+    "profile": "Profile",
+    "header_dark": "Dark",
+    "header_light": "Light",
+    "header_language": "Language",
+    "pageNav_top": "To Top",
+    "header_logout": "Logout"
+  }
+}

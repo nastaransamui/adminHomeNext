@@ -1,0 +1,34 @@
+{
+  "title": "داشبورد",
+  "Profile": "مشخصات",
+  "Settings": "تنظیمات",
+  "Log out": "خروج",
+  "notification": "اطلاعیه ها",
+  "MyProfile": "پروفایل من",
+  "EditProfile": "ویرایش پروفایل",
+  "SettingsProfile": "تنظیمات پروفایل",
+  "Breadcrumb": {
+    "countDownMain": "شما از سیستم خارج خواهید شد",
+    "days": "روز(های)",
+    "hours": "ساعت(ها)",
+    "minutes": "دقیقه(ها)",
+    "seconds": "ثانیه (ها)"
+  },
+  "sidebar": {
+    "Home": "خانه"
+  },
+  "header": {
+    "title": "این صفحه اصلی است",
+    "signOut": "خروج از سیستم",
+    "language": "زبان",
+    "header_login": "ورود",
+    "header_contact": "تماس",
+    "header_register": "ثبت نام",
+    "header_theme": "حالت تم",
+    "header_dark": "تیره",
+    "header_light": "روشن",
+    "header_language": "زبان",
+    "pageNav_top": "به بالا",
+    "header_logout": "خروج"
+  }
+}
