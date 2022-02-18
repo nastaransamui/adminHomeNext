@@ -106,7 +106,7 @@ export default function ThemeUser(props) {
 
   const profile = jwt.verify(
     accessToken,
-    process.env.SECRET_KEY,
+    process.env.NEXT_PUBLIC_SECRET_KEY,
     (err, user) => {
       if (!err) {
         return user;
