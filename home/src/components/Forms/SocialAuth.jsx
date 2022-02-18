@@ -9,7 +9,7 @@ export default function SocialAuth() {
   const handleSocial = async (network) => {
     const currentUrl = window.location.href;
     const encodedParam = encodeURI(`?redirectUrl=${currentUrl}`);
-    window.location.href = `https://127.0.0.1:8080/api/auth/${network}${encodedParam}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_AUTH}${network}${encodedParam}`;
   };
 
   return (
