@@ -3,10 +3,11 @@ import { wrapper } from '../src/redux/store';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import HeadComponent from '../src/components/head';
-import { appWithTranslation } from 'next-i18next';
-import { getCookies } from 'cookies-next';
-
-import { useDispatch } from 'react-redux';
+import Mainlayout from '../src/pages/MainLayout';
+import { getCookies, checkCookies } from 'cookies-next';
+import Error from '../src/components/Error/Error';
+import brand from '../public/text/brand';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Custom404(props) {
   const { t, ready } = useTranslation('404');
@@ -34,15 +35,14 @@ function Custom404(props) {
   return (
     <Fragment>
       <HeadComponent title={ready && t('title')} />
-      {/* <Mainlayout {...props}>
+      <Mainlayout {...props}>
         <Error
           errorCode={errorCode}
           text={ready && t('title')}
           t={t}
           {...props}
         />
-      </Mainlayout> */}
-      Error Page
+      </Mainlayout>
     </Fragment>
   );
 }

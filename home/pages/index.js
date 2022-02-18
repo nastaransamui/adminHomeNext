@@ -3,8 +3,9 @@ import { checkCookies, getCookies } from 'cookies-next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { wrapper } from '../src/redux/store';
 import HeadComponent from '../src/components/head';
+import Mainlayout from '../src/pages/MainLayout';
 import brand from '../public/text/brand';
-
+import Homepage from '../src/pages/home/HomePage';
 import Link from 'next/link';
 
 function Home(props) {
@@ -13,10 +14,9 @@ function Home(props) {
   return (
     <Fragment>
       <HeadComponent title={brand[`name_${locale}`]} />
-      <div>
-        this is Home <br />
-        <Link href='/admin'>Go to Admin Page</Link>
-      </div>
+      <Mainlayout {...props}>
+        <Homepage {...props} />
+      </Mainlayout>
     </Fragment>
   );
 }
