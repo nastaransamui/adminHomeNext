@@ -4,6 +4,7 @@ import { wrapper } from '../src/redux/store';
 import { withTranslation, useTranslation } from 'react-i18next';
 import { checkCookies, getCookies } from 'cookies-next';
 import { Fragment } from 'react';
+import Cookies from 'cookies';
 
 function Admin(props) {
   const { t, ready, i18n } = useTranslation('common');
@@ -20,6 +21,8 @@ export default withTranslation(['common'])(Admin);
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     // Request come from Home page
+    const cookies = new Cookies(ctx.req, ctx.res);
+
     if (ctx.req.rawHeaders.includes('x-forwarded-host')) {
       if (
         checkCookies('adminAccessToken', ctx) &&

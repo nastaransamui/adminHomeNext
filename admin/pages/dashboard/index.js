@@ -4,7 +4,7 @@ import { withTranslation, useTranslation } from 'react-i18next';
 import { Fragment } from 'react';
 import HeadComponent from '../../src/components/head';
 import Dashboard from '../../src/pages/dashboard/Dashboard';
-
+import Cookies from 'cookies';
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
 
@@ -21,6 +21,8 @@ export default withTranslation(['dashboard'])(index);
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     // Request come from Home page
+    const cookies = new Cookies(ctx.req, ctx.res);
+
     if (ctx.req.rawHeaders.includes('x-forwarded-host')) {
       if (
         checkCookies('adminAccessToken', ctx) &&
