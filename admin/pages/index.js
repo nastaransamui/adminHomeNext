@@ -22,66 +22,92 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     // Request come from Home page
     const cookies = new Cookies(ctx.req, ctx.res);
-
-    if (ctx.req.rawHeaders.includes('x-forwarded-host')) {
-      if (
-        checkCookies('adminAccessToken', ctx) &&
-        checkCookies('accessToken', ctx) &&
-        checkCookies('accessToken', ctx) ===
-          checkCookies('adminAccessToken', ctx)
-      ) {
-        return {
-          props: {
-            adminAccessToken: getCookies(ctx).adminAccessToken,
-            ...(await store.dispatch({
-              type: 'ADMIN_ACCESS_TOKEN',
-              payload: getCookies(ctx).adminAccessToken,
-            })),
-          },
-          redirect: {
-            permanent: false,
-            source: '/',
-            destination: '/dashboard',
-          },
-        };
-      } else {
-        return {
-          props: {
-            adminAccessToken: null,
-            ...(await store.dispatch({
-              type: 'ADMIN_ACCESS_TOKEN',
-              payload: null,
-            })),
-          },
-        };
-      }
+    if (checkCookies('adminAccessToken', ctx)) {
+      return {
+        props: {
+          adminAccessToken: getCookies(ctx).adminAccessToken,
+          ...(await store.dispatch({
+            type: 'ADMIN_ACCESS_TOKEN',
+            payload: getCookies(ctx).adminAccessToken,
+          })),
+        },
+        redirect: {
+          permanent: false,
+          source: '/',
+          destination: '/dashboard',
+        },
+      };
     } else {
-      if (checkCookies('adminAccessToken', ctx)) {
-        return {
-          props: {
-            adminAccessToken: getCookies(ctx).adminAccessToken,
-            ...(await store.dispatch({
-              type: 'ADMIN_ACCESS_TOKEN',
-              payload: getCookies(ctx).adminAccessToken,
-            })),
-          },
-          redirect: {
-            permanent: false,
-            source: '/',
-            destination: '/dashboard',
-          },
-        };
-      } else {
-        return {
-          props: {
-            adminAccessToken: null,
-            ...(await store.dispatch({
-              type: 'ADMIN_ACCESS_TOKEN',
-              payload: null,
-            })),
-          },
-        };
-      }
+      return {
+        props: {
+          adminAccessToken: null,
+          ...(await store.dispatch({
+            type: 'ADMIN_ACCESS_TOKEN',
+            payload: null,
+          })),
+        },
+      };
     }
+
+    // if (ctx.req.rawHeaders.includes('x-forwarded-host')) {
+    //   if (
+    //     checkCookies('adminAccessToken', ctx) &&
+    //     checkCookies('accessToken', ctx) &&
+    //     checkCookies('accessToken', ctx) ===
+    //       checkCookies('adminAccessToken', ctx)
+    //   ) {
+    //     return {
+    //       props: {
+    //         adminAccessToken: getCookies(ctx).adminAccessToken,
+    //         ...(await store.dispatch({
+    //           type: 'ADMIN_ACCESS_TOKEN',
+    //           payload: getCookies(ctx).adminAccessToken,
+    //         })),
+    //       },
+    //       redirect: {
+    //         permanent: false,
+    //         source: '/',
+    //         destination: '/dashboard',
+    //       },
+    //     };
+    //   } else {
+    //     return {
+    //       props: {
+    //         adminAccessToken: null,
+    //         ...(await store.dispatch({
+    //           type: 'ADMIN_ACCESS_TOKEN',
+    //           payload: null,
+    //         })),
+    //       },
+    //     };
+    //   }
+    // } else {
+    //   if (checkCookies('adminAccessToken', ctx)) {
+    //     return {
+    //       props: {
+    //         adminAccessToken: getCookies(ctx).adminAccessToken,
+    //         ...(await store.dispatch({
+    //           type: 'ADMIN_ACCESS_TOKEN',
+    //           payload: getCookies(ctx).adminAccessToken,
+    //         })),
+    //       },
+    //       redirect: {
+    //         permanent: false,
+    //         source: '/',
+    //         destination: '/dashboard',
+    //       },
+    //     };
+    //   } else {
+    //     return {
+    //       props: {
+    //         adminAccessToken: null,
+    //         ...(await store.dispatch({
+    //           type: 'ADMIN_ACCESS_TOKEN',
+    //           payload: null,
+    //         })),
+    //       },
+    //     };
+    //   }
+    // }
   }
 );
