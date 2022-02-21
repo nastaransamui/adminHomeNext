@@ -75,7 +75,7 @@ export default function Login(props) {
     };
     dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_HOME_URL}/api/auth/login`,
+      `${process.env.NEXT_PUBLIC_HOME_VERCEL}/api/auth/login`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +100,8 @@ export default function Login(props) {
         if (profile.isAdmin) {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           dispatch({ type: 'ADMIN_ACCESS_TOKEN', payload: accessToken });
-          setCookies('adminAccessToken', accessToken);
+          // setCookies('adminAccessToken', accessToken);
+          localStorage.setItem('adminAccessToken', accessToken)
           router.push('/dashboard');
         } else {
           Alert.error('', {
