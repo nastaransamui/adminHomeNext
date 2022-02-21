@@ -21,7 +21,6 @@ function index(props) {
     };
   }, [router]);
 
-  const { router } = props;
   useEffect(() => {
     let isMount = true;
     if (isMount && typeof window !== 'undefined') {
