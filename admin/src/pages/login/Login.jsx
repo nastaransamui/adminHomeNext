@@ -100,8 +100,7 @@ export default function Login(props) {
         if (profile.isAdmin) {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           dispatch({ type: 'ADMIN_ACCESS_TOKEN', payload: accessToken });
-          // setCookies('adminAccessToken', accessToken);
-          localStorage.setItem('adminAccessToken', accessToken)
+          setCookies('adminAccessToken', accessToken);
           router.push('/dashboard');
         } else {
           Alert.error('', {
