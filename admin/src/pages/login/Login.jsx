@@ -159,9 +159,9 @@ export default function Login(props) {
         title={t('login_title')}
         subtitle={t('login_subtitle')}
         {...props}>
-        <div>
+        <div >
           <div className={classes.head}>
-            <Title align={isMobile ? 'center' : 'left'}>{t('login')}</Title>
+            <Title align={isMobile ? 'center' : 'center'}>{t('login')}</Title>
           </div>
           <LanguagePack {...props} />
           <div className={classes.separator}>

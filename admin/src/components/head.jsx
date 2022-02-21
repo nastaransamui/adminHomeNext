@@ -16,20 +16,6 @@ export default function HeadComponent({ title }) {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <meta charSet='utf-8' />
         <meta name='description' content={brand[`name_${router.locale}`]} />
-        <link rel='preconnect' href='https://fonts.googleapis.com' />
-        <link
-          rel='preconnect'
-          href='https://fonts.gstatic.com'
-          crossOrigin='true'
-        />
-        <link
-          rel='stylesheet'
-          href='https://fonts.googleapis.com/icon?family=Material+Icons'
-        />
-        <link
-          href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
-          rel='stylesheet'
-        />
         <link rel='shortcut icon' href='/admin/favicons/favicon.ico' />
         <link
           rel='apple-touch-icon'
@@ -101,14 +87,6 @@ export default function HeadComponent({ title }) {
           href='/admin/favicons/favicon-16x16.png'
         />
         <link rel='manifest' href='/admin/favicons/manifest.json' />
-        <link
-          rel='stylesheet'
-          href='https://fonts.googleapis.com/icon?family=Material+Icons'
-        />
-        <link
-          href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
-          rel='stylesheet'
-        />
         <meta name='msapplication-TileColor' content='#ffffff' />
         <meta
           name='msapplication-TileImage'

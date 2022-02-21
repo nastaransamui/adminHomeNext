@@ -35,6 +35,28 @@ class MyDocument extends Document {
             href='https://fonts.googleapis.com/icon?family=Material+Icons'
             rel='stylesheet'
           />
+          <link rel='preconnect' href='https://fonts.googleapis.com' />
+          <link
+            rel='preconnect'
+            href='https://fonts.gstatic.com'
+            crossOrigin='true'
+          />
+          <link
+            rel='stylesheet'
+            href='https://fonts.googleapis.com/icon?family=Material+Icons'
+          />
+          <link
+            href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
+            rel='stylesheet'
+          />
+          <link
+            rel='stylesheet'
+            href='https://fonts.googleapis.com/icon?family=Material+Icons'
+          />
+          <link
+            href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
+            rel='stylesheet'
+          />
         </Head>
         <body>
           <div

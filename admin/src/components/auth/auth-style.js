@@ -11,7 +11,6 @@ const authStyles = makeStyles((theme) => {
       minHeight: '100%',
       position: 'relative',
       minHeight: '100%',
-      position: 'relative',
       width: '100%',
       alignItems: 'center',
       padding: theme.spacing(10, 5),
@@ -280,7 +279,6 @@ const authStyles = makeStyles((theme) => {
       },
       [theme.breakpoints.up('lg')]: {
         padding: theme.spacing(8),
-        marginTop: theme.spacing(-10),
       },
     },
     separator: {
@@ -315,6 +313,7 @@ const authStyles = makeStyles((theme) => {
       marginTop: 30,
       [theme.breakpoints.down('md')]: {
         justifyContent: 'center',
+        flexDirection: 'column',
       },
       [theme.breakpoints.down('xs')]: {
         justifyContent: 'center',
