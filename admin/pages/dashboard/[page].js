@@ -5,9 +5,10 @@ import { Fragment, useEffect } from 'react';
 import HeadComponent from '../../src/components/head';
 import Dashboard from '../../src/pages/dashboard/Dashboard';
 import Cookies from 'cookies';
+import { useRouter } from 'next/router';
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
-  const { router } = props;
+  const router = useRouter();
   // Rplace next router with current react router
   useEffect(() => {
     let isMount = true;

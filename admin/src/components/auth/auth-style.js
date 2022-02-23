@@ -24,6 +24,9 @@ const authStyles = makeStyles((theme) => {
         color: theme.palette.common.white,
       },
       '& a': {
+        [theme.breakpoints.up('sm')]: {
+          position: 'absolute',
+        },
         color:
           theme.palette.type === 'dark'
             ? theme.palette.secondary.light

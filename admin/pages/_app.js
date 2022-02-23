@@ -1,6 +1,7 @@
 import { PropTypes } from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import routes from '../routes';
 
 // Translation
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -38,7 +39,7 @@ import appTheme from '../theme/appTheme';
 //next
 import Head from 'next/head';
 import Router from 'next/router';
-
+import { PageTransition } from 'next-page-transitions';
 i18next
   .use(detector)
   .use(initReactI18next)
@@ -174,30 +175,32 @@ function MyApp(props) {
       <Head>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
-      <I18nextProvider i18n={i18next}>
-        <ThemeProvider theme={adminTheme}>
-          <CssBaseline />
-          <LoadingBar
-            height={5}
-            color={adminTheme.palette.primary.light}
-            progress={adminLoadingBar}
-            className='top-loading-bar'
-          />
-          <div suppressHydrationWarning>
-            {typeof window === 'undefined' ? null : (
-              <StylesProvider jss={jss}>
-                <Component
-                  router={router}
-                  {...pageProps}
-                  key={router.route}
-                  t={t}
-                  i18n={i18n}
-                />
-              </StylesProvider>
-            )}
-          </div>
-        </ThemeProvider>
-      </I18nextProvider>
+      <PageTransition timeout={300} classNames='page-fade-transition'>
+        <I18nextProvider i18n={i18next}>
+          <ThemeProvider theme={adminTheme}>
+            <CssBaseline />
+            <LoadingBar
+              height={5}
+              color={adminTheme.palette.primary.light}
+              progress={adminLoadingBar}
+              className='top-loading-bar'
+            />
+            <div suppressHydrationWarning>
+              {typeof window === 'undefined' ? null : (
+                <StylesProvider jss={jss}>
+                  <Component
+                    router={router}
+                    {...pageProps}
+                    key={router.route}
+                    t={t}
+                    i18n={i18n}
+                  />
+                </StylesProvider>
+              )}
+            </div>
+          </ThemeProvider>
+        </I18nextProvider>
+      </PageTransition>
     </Fragment>
   );
 }
