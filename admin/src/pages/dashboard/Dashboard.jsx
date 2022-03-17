@@ -1,25 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProDashboard from '../../components/ProDashboard/ProDashboard';
-import { useSelector } from 'react-redux';
-import { Button } from '@mui/material';
-import { removeCookies } from 'cookies-next';
 import routes from '../../../routes';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 export default function Dashboard(props) {
   const [propsMiniActive, setPropsMiniActive] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bgColor, setBgColor] = useState('black');
-  const router = useRouter()
+  const router = useRouter();
   const sidebarMinimizeFunc = () => {
     setPropsMiniActive(!propsMiniActive);
+    localStorage.setItem('miniActive', !propsMiniActive)
   };
-  const dispatch = useDispatch();
+
   const [color, setColor] = useState('white');
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount && typeof window !== 'undefined') {
+      setPropsMiniActive(
+        JSON.parse(localStorage.getItem('miniActive')) == null
+          ? false
+          : JSON.parse(localStorage.getItem('miniActive'))
+      );
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [propsMiniActive]);
   return (
     <>
       <Router>

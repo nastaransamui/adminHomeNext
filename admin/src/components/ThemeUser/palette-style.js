@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flexDirection: 'column',
       right: 10,
-      top: '57%',
+      top: '90%',
       zIndex: 9999,
       borderRadius: 8,
       boxShadow: theme.shadows[4],

@@ -302,3 +302,147 @@ export const roseBoxShadow = {
     hexToRgb(roseColor[0]) +
     ',.4)',
 };
+
+export const darkBoxShadow = {
+  boxShadow:
+    '0 4px 20px 0 rgba(' +
+    hexToRgb(blackColor) +
+    ',.14), 0 7px 10px -5px rgba(' +
+    hexToRgb(grayColor[19]) +
+    ',.4)',
+};
+
+export const warningCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + warningColor[1] + ', ' + warningColor[2] + ')',
+  ...warningBoxShadow,
+};
+export const successCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + successColor[1] + ', ' + successColor[2] + ')',
+  ...successBoxShadow,
+};
+export const dangerCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + dangerColor[1] + ', ' + dangerColor[2] + ')',
+  ...dangerBoxShadow,
+};
+export const infoCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + infoColor[1] + ', ' + infoColor[2] + ')',
+  ...infoBoxShadow,
+};
+export const primaryCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + primaryColor[1] + ', ' + primaryColor[2] + ')',
+  ...primaryBoxShadow,
+};
+export const roseCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + roseColor[1] + ', ' + roseColor[2] + ')',
+  ...roseBoxShadow,
+};
+
+export const darkCardHeader = {
+  background:
+    'linear-gradient(60deg, ' + grayColor[20] + ', ' + grayColor[19] + ')',
+  ...darkBoxShadow,
+};
+export const title = {
+  color: infoColor[2],
+  textDecoration: 'none',
+  fontWeight: '300',
+  marginTop: '30px',
+  marginBottom: '25px',
+  minHeight: '32px',
+  fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  '& small': {
+    color: warningColor[1],
+    fontSize: '65%',
+    fontWeight: '400',
+    lineHeight: '1',
+  },
+};
+
+export const cardTitle = {
+  ...title,
+  marginTop: '0',
+  marginBottom: '3px',
+  minHeight: 'auto',
+  '& a': {
+    ...title,
+    marginTop: '.625rem',
+    marginBottom: '0.75rem',
+    minHeight: 'auto',
+  },
+};
+
+export const tooltip = {
+  padding: '10px 15px',
+  minWidth: '130px',
+  color: whiteColor,
+  lineHeight: '1.7em',
+  background: 'rgba(' + hexToRgb(grayColor[6]) + ',0.9)',
+  border: 'none',
+  borderRadius: '3px',
+  opacity: '1!important',
+  boxShadow:
+    '0 8px 10px 1px rgba(' +
+    hexToRgb(blackColor) +
+    ', 0.14), 0 3px 14px 2px rgba(' +
+    hexToRgb(blackColor) +
+    ', 0.12), 0 5px 5px -3px rgba(' +
+    hexToRgb(blackColor) +
+    ', 0.2)',
+  maxWidth: '200px',
+  textAlign: 'center',
+  fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif',
+  fontSize: '12px',
+  fontStyle: 'normal',
+  fontWeight: '400',
+  textShadow: 'none',
+  textTransform: 'none',
+  letterSpacing: 'normal',
+  wordBreak: 'normal',
+  wordSpacing: 'normal',
+  wordWrap: 'normal',
+  whiteSpace: 'normal',
+  lineBreak: 'auto',
+};
+
+export const containerFluid = {
+  paddingRight: '15px',
+  paddingLeft: '15px',
+  marginRight: 'auto',
+  marginLeft: 'auto',
+  '&:before,&:after': {
+    display: 'table',
+    content: '" "',
+  },
+  '&:after': {
+    clear: 'both',
+  },
+};
+
+export const container = {
+  paddingRight: '15px',
+  paddingLeft: '15px',
+  marginRight: 'auto',
+  marginLeft: 'auto',
+  '@media (min-width: 768px)': {
+    width: '750px',
+  },
+  '@media (min-width: 992px)': {
+    width: '970px',
+  },
+  '@media (min-width: 1200px)': {
+    width: '1170px',
+  },
+  '&:before,&:after': {
+    display: 'table',
+    content: '" "',
+  },
+  '&:after': {
+    clear: 'both',
+  },
+};

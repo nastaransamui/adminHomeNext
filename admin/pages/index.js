@@ -30,6 +30,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_ACCESS_TOKEN',
             payload: getCookies(ctx).adminAccessToken,
           })),
+          ...(await store.dispatch({
+            type: 'ADMIN_THEMETYPE',
+            payload: checkCookies('adminThemeType', ctx)
+              ? getCookies(ctx).adminThemeType
+              : 'light',
+          })),
         },
         redirect: {
           permanent: false,
@@ -44,6 +50,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
           ...(await store.dispatch({
             type: 'ADMIN_ACCESS_TOKEN',
             payload: null,
+          })),
+          ...(await store.dispatch({
+            type: 'ADMIN_THEMETYPE',
+            payload: checkCookies('adminThemeType', ctx)
+              ? getCookies(ctx).adminThemeType
+              : 'light',
           })),
         },
       };

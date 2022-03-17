@@ -9,6 +9,8 @@ import common_en from '../public/locales/en/common.json';
 import common_fa from '../public/locales/fa/common.json';
 import dashboard_en from '../public/locales/en/dashboard.json';
 import dashboard_fa from '../public/locales/fa/dashboard.json';
+import footer_en from '../public/locales/en/footer.json';
+import footer_fa from '../public/locales/fa/footer.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import i18next from 'i18next';
@@ -22,6 +24,7 @@ import { useSelector, useDispatch } from 'react-redux';
 //Styles
 import '../styles/globals.css';
 import '../styles/top-loading-bar.css';
+import '../styles/nextjs-material-dashboard-pro.css';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
 import 'animate.css';
@@ -46,12 +49,7 @@ i18next
   .init({
     interpolation: { scapeValue: false },
     returnObjects: true,
-    lng:
-      typeof window !== 'undefined'
-        ? navigator.cookieEnabled
-          ? localStorage.getItem('lang')
-          : navigator?.language
-        : 'en-US',
+    lng: typeof window !== 'undefined' ? localStorage.getItem('lang') : 'en-US',
     fallbackLng: 'en-US',
     keySeparator: false,
     defaultNS: 'common',
@@ -60,11 +58,13 @@ i18next
         common: common_en,
         dashboard: dashboard_en,
         404: error_en,
+        footer: footer_en,
       },
       fa: {
         common: common_fa,
         dashboard: dashboard_fa,
         404: error_fa,
+        footer: footer_fa,
       },
     },
   });

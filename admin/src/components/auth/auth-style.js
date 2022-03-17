@@ -85,6 +85,9 @@ const authStyles = makeStyles((theme) => {
     },
     buttonLink: {
       color: theme.palette.secondary.main,
+      [theme.breakpoints.down('sm')]: {
+        fontSize: 10,
+      },
     },
     formHelper: {
       display: 'flex',

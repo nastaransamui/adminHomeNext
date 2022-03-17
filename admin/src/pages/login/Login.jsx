@@ -60,7 +60,12 @@ export default function Login(props) {
   const [check, setCheck] = useState(false);
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+    if(name == 'email'){
+      setValues({ ...values, [name]: event.target.value.toLowerCase().trim() });
+    }else{
+      setValues({ ...values, [name]: event.target.value });
+    } 
+    
   };
 
   const handleCheck = (event) => {

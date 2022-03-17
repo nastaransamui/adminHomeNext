@@ -58,7 +58,7 @@ const navbarStyle = makeStyles((theme) => {
       padding: `0 0 0 ${drawerMiniWidth}px !important`,
     },
     appBar: {
-      backgroundColor: 'transparent !important',
+      backgroundColor: theme.palette.background.default,
       width: '100%',
       paddingTop: '10px',
       zIndex: '1029',
@@ -91,6 +91,11 @@ const navbarStyle = makeStyles((theme) => {
       '&:hover,&:focus': {
         background: 'transparent',
       },
+    },
+    justIcon: {
+      background:
+        theme.palette.mode == 'dark' ? theme.palette.divider : 'white',
+      boxShadow: theme.shadows[4],
     },
   };
 });

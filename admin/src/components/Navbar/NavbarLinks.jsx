@@ -14,7 +14,7 @@ import {
   ListItemSecondaryAction,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { removeCookies } from 'cookies-next';
+import { removeCookies, setCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -72,7 +72,7 @@ export default function NavbarLinks(props) {
     setOpenSettings(null);
   };
   const { i18n, t } = props;
-  const rtlActive = i18n.languaguage == 'fa';
+  const rtlActive = i18n.language == 'fa';
   const dispatch = useDispatch();
   const theme = useTheme();
   const handleChangeMode = (e) => {
@@ -84,6 +84,7 @@ export default function NavbarLinks(props) {
       type: 'ADMIN_THEMETYPE',
       payload: theme.palette.type == 'light' ? 'dark' : 'light',
     });
+    setCookies('adminThemeType', theme.palette.type == 'light' ? 'dark' : 'light')
   };
   const handleChangeLang = (lang) => {
     localStorage.setItem('i18nextLng', lang);
@@ -152,7 +153,7 @@ export default function NavbarLinks(props) {
           anchorEl={openNotification}
           transition
           disablePortal
-          placement='bottom'
+          placement='bottom-end'
           className={classNames({
             [classes.popperClose]: !openNotification,
             [classes.popperResponsive]: true,
@@ -171,7 +172,7 @@ export default function NavbarLinks(props) {
                         onClick={handleCloseNotification}
                         className={dropdownItem}>
                         {rtlActive
-                          ? 'إجلاء أوزار الأسيوي حين بل, كما'
+                          ? 'مایک جان به ایمیل شما پاسخ داد'
                           : 'Mike John responded to your email'}
                       </MenuItem>
                     </MenuList>
@@ -209,7 +210,7 @@ export default function NavbarLinks(props) {
           anchorEl={openProfile}
           transition
           disablePortal
-          placement='bottom'
+          placement='bottom-end'
           className={classNames({
             [classes.popperClose]: !openProfile,
             [classes.popperResponsive]: true,
@@ -220,7 +221,7 @@ export default function NavbarLinks(props) {
               <Grow
                 {...TransitionProps}
                 id='profile-menu-list'
-                style={{ transformOrigin: '0 0 0' }}>
+                style={{ transformOrigin: '0 0 0', marginLeft:theme.spacing(-11), marginRight: theme.spacing(-11) }}>
                 <Paper className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleCloseProfile}>
                     <MenuList role='menu'>
@@ -252,7 +253,6 @@ export default function NavbarLinks(props) {
         </Popper>
       </div>
       <div className={managerClasses}>
-        {/* <Settings t={t} i18n={i18n} /> */}
         <IconButton
           aria-owns={openSettings ? 'settings-menu-list' : null}
           aria-haspopup='true'
@@ -290,7 +290,7 @@ export default function NavbarLinks(props) {
               <Grow
                 {...TransitionProps}
                 id='settings-menu-list'
-                style={{ transformOrigin: '0 0 0' }}>
+                style={{ transformOrigin: '0 0 0', marginLeft:theme.spacing(-10), marginRight: theme.spacing(-9) }}>
                 <Paper className={classes.dropdown} >
                   <ClickAwayListener onClickAway={handleCloseSetting}>
                     <List

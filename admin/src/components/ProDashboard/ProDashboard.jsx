@@ -4,6 +4,7 @@ import SidebarMain from '../SideBar/SidebarMain';
 import dashboardStyle from './dashboar-style';
 import cx from 'classnames';
 import ReactRouter from '../../pages/dashboard/ReactRouter';
+import Footer from '../Footer/Footer';
 
 export default function ProDashboard(props) {
   const {
@@ -47,10 +48,16 @@ export default function ProDashboard(props) {
           display: 'flex',
           width: '100%',
           marginTop: 100,
+          minHeight: "70vh"
         }}
         className={mainPageMinimize}>
         <ReactRouter {...props}/>
       </span>
+
+      <span className={mainPageMinimize} style={{
+          display: 'flex',
+          width: '100%',
+        }}><Footer /></span>
     </>
   );
 }

@@ -36,7 +36,7 @@ const linkStyle = makeStyles((theme) => {
       boxShadow: 'none',
     },
     itemText: {
-      color: 'inherit',
+      color: whiteColor,
       ...defaultFont,
       margin: '0',
       lineHeight: '30px',
@@ -95,7 +95,7 @@ const linkStyle = makeStyles((theme) => {
       },
     },
     itemIcon: {
-      color: 'inherit',
+      color: whiteColor,
       width: '30px',
       height: '24px',
       float: 'left',
@@ -130,7 +130,7 @@ const linkStyle = makeStyles((theme) => {
       right: 'auto',
     },
     collapseItemMini: {
-      color: 'inherit',
+      color: whiteColor,
       ...defaultFont,
       textTransform: 'uppercase',
       width: '30px',
@@ -207,25 +207,6 @@ const linkStyle = makeStyles((theme) => {
         color: whiteColor,
       },
     },
-    collapseItemMini: {
-      color: 'inherit',
-      ...defaultFont,
-      textTransform: 'uppercase',
-      width: '30px',
-      marginRight: '15px',
-      textAlign: 'center',
-      letterSpacing: '1px',
-      position: 'relative',
-      float: 'left',
-      display: 'inherit',
-      transition: 'transform 300ms ease 0s, opacity 300ms ease 0s',
-      fontSize: '14px',
-    },
-    collapseItemMiniRTL: {
-      float: 'right',
-      marginLeft: '30px',
-      marginRight: '1px',
-    },
     itemLink: {
       paddingLeft: '10px',
       paddingRight: '10px',
@@ -246,38 +227,6 @@ const linkStyle = makeStyles((theme) => {
       '&,&:hover,&:focus': {
         color: 'inherit',
       },
-    },
-    itemText: {
-      color: 'inherit',
-      ...defaultFont,
-      margin: '0',
-      lineHeight: '30px',
-      fontSize: '14px',
-      transform: 'translate3d(0px, 0, 0)',
-      opacity: '1',
-      transition: 'transform 300ms ease 0s, opacity 300ms ease 0s',
-      position: 'relative',
-      display: 'block',
-      height: 'auto',
-      whiteSpace: 'nowrap',
-      padding: '0 16px !important',
-    },
-    itemTextMini: {
-      [theme.breakpoints.up('md')]: {
-        transform: 'translate3d(-25px, 0, 0)',
-      },
-      opacity: '0',
-      [theme.breakpoints.down('sm')]: {
-        opacity: 1,
-      },
-    },
-    itemTextRTL: {
-      marginRight: '45px',
-      textAlign: 'right',
-    },
-    itemTextRTL: {
-      marginRight: '45px',
-      textAlign: 'right',
     },
     white: {
       '&,&:hover,&:focus': {

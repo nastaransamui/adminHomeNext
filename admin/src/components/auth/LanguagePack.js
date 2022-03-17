@@ -23,7 +23,7 @@ function LanguagePack(props) {
   const dispatch = useDispatch();
   const { adminThemeName, adminThemeType } = useSelector((state) => state);
   const [values, setValues] = useState({
-    lang: i18n.language,
+    lang: i18n.language == 'en' ? 'en-US' : i18n.language,
     paletteName: adminThemeName,
     mode: adminThemeType,
   });
@@ -32,7 +32,7 @@ function LanguagePack(props) {
     if (isMount) {
       setValues((oldValues) => ({
         ...oldValues,
-        lang: i18n.language,
+        lang: i18n.language == 'en' ? 'en-US' : i18n.language,
         paletteName: adminThemeName,
         mode: adminThemeType,
       }));
@@ -74,7 +74,7 @@ function LanguagePack(props) {
               />{' '}
               &nbsp;
               <span className={classes.menuItemText}>
-                {item[`title_${i18n.language}`]}
+                {item[`title_${values.lang}`]}
               </span>
             </MenuItem>
           );

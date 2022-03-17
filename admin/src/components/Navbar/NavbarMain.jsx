@@ -68,16 +68,16 @@ export default function NavbarMain(props) {
 
   return (
     <div className={mainPanelClasses} ref={mainPanel}>
-      <AppBar className={classes.appBar}>
+      <AppBar className={classes.appBar} color="default">
         <Toolbar>
           <Hidden smDown implementation='css'>
             <div className={sidebarMinimize}>
               {propsMiniActive ? (
-                <IconButton onClick={sidebarMinimizeFunc}>
+                <IconButton onClick={sidebarMinimizeFunc} className={classes.justIcon}>
                   <ViewList className={classes.sidebarMiniIcon} />
                 </IconButton>
               ) : (
-                <IconButton onClick={sidebarMinimizeFunc}>
+                <IconButton onClick={sidebarMinimizeFunc} className={classes.justIcon}>
                   <MoreVert className={classes.sidebarMiniIcon} />
                 </IconButton>
               )}
