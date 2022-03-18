@@ -8,6 +8,7 @@ import brand from '../../../public/text/brand';
 import PropTypes from 'prop-types';
 import NavbarLinks from './NavbarLinks';
 
+
 export default function NavbarMain(props) {
   const { propsMiniActive, color, location, i18n, routes, handleDrawerToggle, sidebarMinimizeFunc } =
     props;

@@ -14,7 +14,7 @@ import {
   ListItemSecondaryAction,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { removeCookies, setCookies } from 'cookies-next';
+import { removeCookies, setCookies, getCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -226,7 +226,13 @@ export default function NavbarLinks(props) {
                   <ClickAwayListener onClickAway={handleCloseProfile}>
                     <MenuList role='menu'>
                       <MenuItem
-                        onClick={handleCloseProfile}
+                        onClick={()=>{
+                          handleCloseProfile();
+                          history.push({
+                            pathname: '/admin/dashboard/user-page',
+                            search: '?_id=hashem'
+                          });
+                        }}
                         className={dropdownItem}>
                         {t('Profile')}
                       </MenuItem>

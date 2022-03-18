@@ -23,7 +23,8 @@ const cardIconStyle = makeStyles((theme) => {
           float: 'left',
         },
     },
-    warningCardHeader,
+    //Sample to use theme instead of colors
+    warningCardHeader: warningCardHeader(theme.palette.warning),
     successCardHeader,
     dangerCardHeader,
     infoCardHeader,

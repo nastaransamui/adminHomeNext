@@ -12,22 +12,24 @@ var dashRoutes = [
     layout: '/admin',
   },
   {
-    collapse: true,
-    'name_en-US': 'Pages',
-    name_fa: 'صفحات',
+    path: '/dashboard/user-page',
+    collapse: false,
+    'name_en-US': 'Users',
+    name_fa: 'کاربران',
     icon: ImageIcon,
     state: 'pageCollapse',
-    views: [
-      {
-        path: '/dashboard/pricing-page',
-        'name_en-US': 'Pricing Page',
-        name_fa: 'صفحه قیمت',
-        'mini_en-US': 'PP',
-        mini_fa: 'صق',
+    layout: '/admin',
+    // views: [
+    //   {
+    //     path: '/dashboard/pricing-page',
+    //     'name_en-US': 'Pricing Page',
+    //     name_fa: 'صفحه قیمت',
+    //     'mini_en-US': 'PP',
+    //     mini_fa: 'صق',
 
-        layout: '/admin',
-      },
-    ],
+    //     layout: '/admin',
+    //   },
+    // ],
   },
   {
     collapse: true,

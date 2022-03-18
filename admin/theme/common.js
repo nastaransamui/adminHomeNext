@@ -277,13 +277,15 @@ export const successBoxShadow = {
     ',.4)',
 };
 
-export const warningBoxShadow = {
-  boxShadow:
-    '0 4px 20px 0 rgba(' +
-    hexToRgb(blackColor) +
-    ',.14), 0 7px 10px -5px rgba(' +
-    hexToRgb(warningColor[0]) +
-    ',.4)',
+export const warningBoxShadow = (warning) => {
+  return {
+    boxShadow:
+      '0 4px 20px 0 rgba(' +
+      hexToRgb(blackColor) +
+      ',.14), 0 7px 10px -5px rgba(' +
+      hexToRgb(warning.light) +
+      ',.4)',
+  };
 };
 
 export const dangerBoxShadow = {
@@ -312,10 +314,12 @@ export const darkBoxShadow = {
     ',.4)',
 };
 
-export const warningCardHeader = {
-  background:
-    'linear-gradient(60deg, ' + warningColor[1] + ', ' + warningColor[2] + ')',
-  ...warningBoxShadow,
+export const warningCardHeader = (warning) => {
+  return {
+    background:
+      'linear-gradient(60deg, ' + warning.main + ', ' + warning.dark + ')',
+    warningBoxShadow: warningBoxShadow(warning),
+  };
 };
 export const successCardHeader = {
   background:

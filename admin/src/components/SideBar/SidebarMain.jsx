@@ -73,11 +73,13 @@ const SidebarMain = (props) => {
             user={
               <SidebarUser
                 rtlActive={rtlActive}
+                routes={routes}
                 openAvatar={state.openAvatar}
                 openCollapse={openCollapse}
                 stateMiniActive={state.stateMiniActive}
                 propsMiniActive={propsMiniActive}
                 bgColor={bgColor}
+                router={router}
                 t={t}
               />
             }

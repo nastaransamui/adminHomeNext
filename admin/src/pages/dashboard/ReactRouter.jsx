@@ -1,19 +1,21 @@
-import { useEffect } from 'react';
-import {
-  Switch,
-  Route,
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
+import { useEffect,useMemo } from 'react';
+import { Switch, Route, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import NotFound from './NotFound';
 import MainDashboard from '../../components/mainDashboard/MainDashboard';
 import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
-
+import Users from '../user-page/Users';
 
 export function NotFoundPage() {
   return null;
 }
+
+export function useQuery() {
+  const { search } = useLocation();
+
+  return useMemo(() => new URLSearchParams(search), [search]);
+}
+
 export function CustomSwitch(props) {
   const { children } = props;
   const history = useHistory();
@@ -30,15 +32,22 @@ export function CustomSwitch(props) {
       reactPath.push(paths);
     }
   }
-  // get current route with out id from next router
-  let currentPath = `${router.basePath}${router.route}`;
-  const location = useLocation();
-  //If current route is not valid push to notfoundpage
-  let showErrorPage = !reactPath.includes(location.pathname);
 
+  const location = useLocation();
+  let query = useQuery();
+  // check if current path has query or not and compare with react Route
+  let {pathname, search} = location;
+
+  let fullPath = query.toString().length == 0 ? pathname : pathname
+  // //Mix pathname with search param and remove the '=' and '?' sign
+  // pathname.concat('/', search.replace('?', '')).substring(0, pathname.concat('/', search.replace('?', '')).indexOf('='))
+
+  // console.log(pathname)
+  // console.log(pathname.concat('/', search.replace('?', '')).substring(0, pathname.concat('/', search.replace('?', '')).indexOf('=')))
+  let showErrorPage = !reactPath.includes(fullPath);
   useEffect(() => {
-    if (showErrorPage) history.push('/notfoundpage');
-  }, [router, location]);
+    if (showErrorPage) history.push('/admin/dashboard/notfoundpage');
+  }, [router,  location,query, showErrorPage, search]);
   return (
     <Switch>
       {children}
@@ -55,6 +64,10 @@ export default function ReactRouter(props) {
           <MainDashboard {...props} />
           <ThemeUser {...props} />
         </Route>
+        <Route exact path='/admin/dashboard/user-page'>
+          <Users {...props} />
+          <ThemeUser {...props} />
+        </Route>
         <Route exact path='/admin/dashboard/pricing-page'>
           The Price test page
           <ThemeUser {...props} />
@@ -67,7 +80,7 @@ export default function ReactRouter(props) {
           buttons multi
           <ThemeUser {...props} />
         </Route>
-        <Route path='/notfoundpage'>
+        <Route path='/admin/dashboard/notfoundpage'>
           <NotFound {...props} />
           <ThemeUser {...props} />
         </Route>

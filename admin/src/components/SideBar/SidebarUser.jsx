@@ -2,7 +2,7 @@ import { Collapse, List, ListItem, ListItemText } from '@mui/material';
 import userStyles from './user-style';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-
+import { Link, useHistory } from 'react-router-dom';
 export default function SidebarUser({
   openCollapse,
   rtlActive,
@@ -10,9 +10,12 @@ export default function SidebarUser({
   bgColor,
   propsMiniActive,
   stateMiniActive,
+  routes,
+  router,
   t,
 }) {
   const classes = userStyles();
+  const history = useHistory();
   const userWrapperClass =
     classes.user +
     ' ' +
@@ -74,7 +77,10 @@ export default function SidebarUser({
           <a
             href={'#'}
             className={classes.itemLink + ' ' + classes.userCollapseButton}
-            onClick={() => openCollapse('openAvatar')}>
+            onClick={(e) => {
+              e.preventDefault();
+              openCollapse('openAvatar')
+            }}>
             <ListItemText
               primary={rtlActive ? 'تانيا أندرو' : 'Tania Andrew'}
               secondary={
@@ -94,9 +100,15 @@ export default function SidebarUser({
           </a>
           <Collapse in={openAvatar} unmountOnExit>
             <List className={classes.list + ' ' + classes.collapseList}>
-              <ListItem className={classes.collapseItem}>
+              <ListItem className={classes.collapseItem} onClick={(e)=>{
+                e.preventDefault();
+                history.push({
+                  pathname: '/admin/dashboard/user-page',
+                  search: '?_id=hashem'
+                });
+              }}>
                 <a
-                  href='#'
+                  href='/admin/dashboard/user-page'
                   className={
                     classes.itemLink + ' ' + classes.userCollapseLinks
                   }>

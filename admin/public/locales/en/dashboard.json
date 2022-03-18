@@ -7,13 +7,6 @@
   "MyProfile": "My Profile",
   "EditProfile": "Edit Profile",
   "SettingsProfile": "Settings Profile",
-  "Breadcrumb": {
-    "countDownMain": "You will be logout at :",
-    "days": "day(s)",
-    "hours": "hour(s)",
-    "minutes": "minute(s)",
-    "seconds": "second(s)"
-  },
   "sidebar": {
     "Home": "Home"
   },
@@ -32,24 +25,8 @@
     "pageNav_top": "To Top",
     "header_logout": "Logout"
   },
-  "cards": {
-    "title_0": "Get more space",
-    "footer_0": "Used Space",
-    "title_1": "Revenue",
-    "footer_1": "Last 24 Hours",
-    "title_2": "Fixed Issues",
-    "footer_2": "Tracked from Github",
-    "title_3": "Followers",
-    "footer_3": "Just Updated"
-  },
   "map": {
-    "title": "Global Sales by Top Locations",
-    "country_0": "USA",
-    "country_1": "Germany",
-    "country_2": "Australia",
-    "country_3": "United Kingdom",
-    "country_4": "Romania",
-    "country_5": "Brasil"
+    "title": "Global Sales by Top Locations"
   },
   "charts": {
     "buttonHover1": "Refresh",
@@ -68,18 +45,6 @@
     "title": "Manage Listings",
     "tooltip_0": "View",
     "tooltip_1": "Edit",
-    "tooltip_2": "Remove",
-    "card_0_title": "Cozy 5 Stars Apartment",
-    "card_0_content": "The place is close to Barceloneta Beach and bus stop just 2 min by walk and near to 'Naviglio' where you can enjoy the main night life in Barcelona.",
-    "card_0_price": "night",
-    "card_0_location": "Barcelona, Spain",
-    "card_1_title": "Office Studio",
-    "card_1_content": "The place is close to Metro Station and bus stop just 2 min by walk and near to 'Naviglio' where you can enjoy the night life in London, UK.",
-    "card_1_price": "night",
-    "card_1_location": "London, UK",
-    "card_2_title": "Beautiful Castle",
-    "card_2_content": "The place is close to Metro Station and bus stop just 2 min by walk and near to 'Naviglio' where you can enjoy the night life in Milan, Italy.",
-    "card_2_price": "night",
-    "card_2_location": "Milan, Italy"
+    "tooltip_2": "Remove"
   }
 }
