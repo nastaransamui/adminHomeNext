@@ -49,6 +49,25 @@ const forthStyle = makeStyles((theme) => {
       paddingBottom: '7px',
       margin: '0',
     },
+    stats: {
+      color: theme.palette.text.color,
+      fontSize: '12px',
+      lineHeight: '22px',
+      display: 'inline-flex',
+      '& svg': {
+        position: 'relative',
+        top: '4px',
+        width: '16px',
+        height: '16px',
+        marginRight: '3px',
+      },
+      '& .fab,& .fas,& .far,& .fal,& .material-icons': {
+        position: 'relative',
+        top: '4px',
+        fontSize: '16px',
+        marginRight: '3px',
+      },
+    },
   };
 });
 

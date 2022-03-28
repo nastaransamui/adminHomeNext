@@ -2,11 +2,12 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
   overflow-x: clip;
 }
 
-textarea:focus, input:focus{
+textarea:focus,
+input:focus {
   outline: none;
 }
 
@@ -18,7 +19,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 a {
@@ -36,9 +37,9 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
-  background-color:#121212;
+  background-color: #121212;
 }
 
 ::-webkit-scrollbar {
@@ -48,7 +49,7 @@ a {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #424242;
 }
 
@@ -59,37 +60,48 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
 .body-page-transition {
-  overflow: hidden; }
-  .body-page-transition #page-transition {
-    position: fixed;
-    z-index: 9999;
-    width: 100%;
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center; }
-  .body-page-transition #page-transition > div:after {
-    content: "";
-    background-image: url("/admin/images/bg7.jpg");
-    background-size: cover;
-    position: fixed;
-    z-index: 9998;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0; }
-  .body-page-transition #page-transition > div:before {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    content: '';
-    display: block;
-    z-index: 9999;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.5); }
+  overflow: hidden;
+}
+.body-page-transition #page-transition {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.body-page-transition #page-transition > div:after {
+  content: '';
+  background-image: url('/admin/images/bg7.jpg');
+  background-size: cover;
+  position: fixed;
+  z-index: 9998;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.body-page-transition #page-transition > div:before {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: '';
+  display: block;
+  z-index: 9999;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+}
+/* remove color from input on auto fill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
+}

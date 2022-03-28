@@ -3,19 +3,32 @@ import userStyles from './user-style';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
-export default function SidebarUser({
-  openCollapse,
-  rtlActive,
-  openAvatar,
-  bgColor,
-  propsMiniActive,
-  stateMiniActive,
-  routes,
-  router,
-  t,
-}) {
+import jwt from 'jsonwebtoken';
+export default function SidebarUser(props) {
+  const {
+    openCollapse,
+    rtlActive,
+    openAvatar,
+    bgColor,
+    propsMiniActive,
+    stateMiniActive,
+    adminAccessToken,
+    t,
+  } = props;
   const classes = userStyles();
   const history = useHistory();
+
+  const profile = jwt.verify(
+    adminAccessToken,
+    process.env.NEXT_PUBLIC_SECRET_KEY,
+    (err, user) => {
+      if (!err) {
+        return user;
+      }
+    }
+  );
+
+  
   const userWrapperClass =
     classes.user +
     ' ' +
@@ -67,7 +80,7 @@ export default function SidebarUser({
     <div className={userWrapperClass}>
       <div className={photo}>
         <img
-          src='/admin/images/faces/avatar.jpg'
+          src={profile.profileImage}
           className={classes.avatarImg}
           alt='...'
         />
@@ -79,10 +92,10 @@ export default function SidebarUser({
             className={classes.itemLink + ' ' + classes.userCollapseButton}
             onClick={(e) => {
               e.preventDefault();
-              openCollapse('openAvatar')
+              openCollapse('openAvatar');
             }}>
             <ListItemText
-              primary={rtlActive ? 'تانيا أندرو' : 'Tania Andrew'}
+              primary={`${profile.userName}`}
               secondary={
                 <b
                   className={
@@ -100,13 +113,16 @@ export default function SidebarUser({
           </a>
           <Collapse in={openAvatar} unmountOnExit>
             <List className={classes.list + ' ' + classes.collapseList}>
-              <ListItem className={classes.collapseItem} onClick={(e)=>{
-                e.preventDefault();
-                history.push({
-                  pathname: '/admin/dashboard/user-page',
-                  search: '?_id=hashem'
-                });
-              }}>
+              <ListItem
+                className={classes.collapseItem}
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: '/admin/dashboard/user-page',
+                    search: `?_id=${profile.id}`,
+                    profile: profile
+                  });
+                }}>
                 <a
                   href='/admin/dashboard/user-page'
                   className={
@@ -122,7 +138,7 @@ export default function SidebarUser({
                   />
                 </a>
               </ListItem>
-              <ListItem className={classes.collapseItem}>
+              {/* <ListItem className={classes.collapseItem}>
                 <a
                   href='#'
                   className={
@@ -153,7 +169,7 @@ export default function SidebarUser({
                     className={collapseItemText}
                   />
                 </a>
-              </ListItem>
+              </ListItem> */}
             </List>
           </Collapse>
         </ListItem>

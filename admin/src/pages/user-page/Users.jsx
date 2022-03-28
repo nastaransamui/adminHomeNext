@@ -21,7 +21,21 @@ export default function UserProfile(props) {
         <User _id={query.get('_id')} {...props} />
       ) : (
         //Load all Users
-        <div>All Users</div>
+        <div>All Users 
+          <button onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: '/admin/dashboard/user-page/user',
+                  });
+                }}>New user</button>
+          <button onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: '/admin/dashboard/user-page',
+                    search: `?_id=someuser`,
+                  });
+                }}>Edit user</button>
+        </div>
       )}
     </Fragment>
   );

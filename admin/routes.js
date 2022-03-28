@@ -13,23 +13,32 @@ var dashRoutes = [
   },
   {
     path: '/dashboard/user-page',
-    collapse: false,
+    collapse: true,
     'name_en-US': 'Users',
     name_fa: 'کاربران',
     icon: ImageIcon,
     state: 'pageCollapse',
     layout: '/admin',
-    // views: [
-    //   {
-    //     path: '/dashboard/pricing-page',
-    //     'name_en-US': 'Pricing Page',
-    //     name_fa: 'صفحه قیمت',
-    //     'mini_en-US': 'PP',
-    //     mini_fa: 'صق',
+    views: [
+      {
+        path: '/dashboard/user-page',
+        'name_en-US': 'Users List',
+        name_fa: 'لیست کاربران',
+        'mini_en-US': 'UL',
+        mini_fa: 'ل ک',
 
-    //     layout: '/admin',
-    //   },
-    // ],
+        layout: '/admin',
+      },
+      {
+        path: '/dashboard/user-page/user',
+        'name_en-US': 'Create user',
+        name_fa: 'ایجاد کاربر ',
+        'mini_en-US': 'CU',
+        mini_fa: 'ا ک',
+
+        layout: '/admin',
+      },
+    ],
   },
   {
     collapse: true,

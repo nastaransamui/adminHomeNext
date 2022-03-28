@@ -80,7 +80,8 @@ export default function Login(props) {
     };
     dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_HOME_VERCEL}/api/auth/login`,
+      //Todo update to vercel url
+      `${process.env.NEXT_PUBLIC_ADMIN_URL}/api/auth/login`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,7 +113,7 @@ export default function Login(props) {
             customFields: {
               message: t(`notAdmin`),
               styles: {
-                backgroundColor: theme.palette.secondary.dark,
+                backgroundColor: theme.palette.error.dark,
               },
             },
             onClose: function () {
@@ -128,7 +129,7 @@ export default function Login(props) {
           customFields: {
             message: t(`${user.user.message}`),
             styles: {
-              backgroundColor: theme.palette.secondary.dark,
+              backgroundColor: theme.palette.error.dark,
             },
           },
           onClose: function () {
@@ -144,7 +145,7 @@ export default function Login(props) {
         customFields: {
           message: t('serverError'),
           styles: {
-            backgroundColor: theme.palette.secondary.dark,
+            backgroundColor: theme.palette.error.dark,
           },
         },
         onClose: function () {

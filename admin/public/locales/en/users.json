@@ -1,0 +1,23 @@
+{
+  "editProfile": "Edit Profile",
+  "completeProfile": "Complete your profile",
+  "isAdmin": "Admin access",
+  "isNotAdmin": "Not admin access",
+  "userName": "Email",
+  "required": "This field is required",
+  "userNameRequire": "Email is not valid",
+  "password": "Password",
+  "isRegex": "Password should be at least 8 characters long and should contain one number,one character and one special character",
+  "submitProfile": "Update Profile",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "city": "City",
+  "country": "Country",
+  "position": "Position",
+  "aboutMe": "About Me",
+  "follow": "Follow",
+  "uploadImage": "Upload profile picture",
+  "changeImage": "Change profile picture",
+  "userCreateSuccess": " was created successfully.",
+  "11000": "Email provided is duplicate"
+}

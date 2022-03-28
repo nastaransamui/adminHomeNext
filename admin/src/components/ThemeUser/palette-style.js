@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => {
       flexDirection: 'column',
       right: 10,
       top: '90%',
-      zIndex: 9999,
+      zIndex: 999,
       borderRadius: 8,
       boxShadow: theme.shadows[4],
       padding: theme.spacing(0.5),

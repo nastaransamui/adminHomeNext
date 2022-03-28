@@ -11,6 +11,7 @@ export default function BrandLogo({
   i18n
 }) {
   const classes = brandStyles();
+  
   const logoClasses =
     classes.logo +
     ' ' +

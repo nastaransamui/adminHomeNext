@@ -5,6 +5,7 @@ import MainDashboard from '../../components/mainDashboard/MainDashboard';
 import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
 import Users from '../user-page/Users';
+import User from '../../components/Users/User';
 
 export function NotFoundPage() {
   return null;
@@ -66,6 +67,10 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/user-page'>
           <Users {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/user-page/user'>
+          <User {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/pricing-page'>

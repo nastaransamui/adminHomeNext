@@ -150,9 +150,9 @@ const appTheme = (color, mode, dir) => {
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 36,
-            fontWeight: 600,
-            padding: '8px 24px',
+            // borderRadius: 36,
+            // fontWeight: 600,
+            // padding: '8px 24px',
           },
         },
       },

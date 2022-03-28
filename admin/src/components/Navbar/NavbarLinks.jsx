@@ -18,7 +18,7 @@ import { removeCookies, setCookies, getCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import navbarLinksStyle from './navbar-links-style';
 import PersonIcon from '@mui/icons-material/Person';
@@ -30,12 +30,24 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import classNames from 'classnames';
 import { langName } from '../../../public/text/langNames';
+import jwt from 'jsonwebtoken';
+import Alert from 'react-s-alert';
 
 export default function NavbarLinks(props) {
   const classes = navbarLinksStyle();
   const history = useHistory();
   const router = useRouter();
   const [openNotification, setOpenNotification] = useState(false);
+  const { adminAccessToken } = useSelector((state) => state);
+  const profile = jwt.verify(
+    adminAccessToken,
+    process.env.NEXT_PUBLIC_SECRET_KEY,
+    (err, user) => {
+      if (!err) {
+        return user;
+      }
+    }
+  );
   const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
@@ -84,7 +96,10 @@ export default function NavbarLinks(props) {
       type: 'ADMIN_THEMETYPE',
       payload: theme.palette.type == 'light' ? 'dark' : 'light',
     });
-    setCookies('adminThemeType', theme.palette.type == 'light' ? 'dark' : 'light')
+    setCookies(
+      'adminThemeType',
+      theme.palette.type == 'light' ? 'dark' : 'light'
+    );
   };
   const handleChangeLang = (lang) => {
     localStorage.setItem('i18nextLng', lang);
@@ -102,6 +117,43 @@ export default function NavbarLinks(props) {
   const managerClasses = classNames({
     [classes.managerClasses]: true,
   });
+
+  const logOut = async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_ADMIN_URL}/api/auth/logout`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _id: profile.id }),
+      }
+    );
+    const { status,statusText } = res;
+    if (status == 200) {
+      handleCloseProfile();
+      removeCookies('adminAccessToken');
+      dispatch({
+        type: 'ADMIN_ACCESS_TOKEN',
+        payload: null,
+      });
+      router.push('/');
+    }else{
+      Alert.error('', {
+        customFields: {
+          message: statusText,
+          styles: {
+            backgroundColor: theme.palette.error.dark,
+            zIndex: 99999
+          },
+        },
+        onClose: function () {
+          console.log(res.status)
+        },
+        timeout: 'none',
+        position: 'bottom',
+        effect: 'bouncyflip',
+      });
+    }
+  };
 
   return (
     <div className={wrapper}>
@@ -201,7 +253,7 @@ export default function NavbarLinks(props) {
           />
           <Hidden smUp implementation='css'>
             <span onClick={handleClickProfile} className={classes.linkText}>
-              {t('Profile')}
+              {t('MyProfile')}
             </span>
           </Hidden>
         </IconButton>
@@ -221,16 +273,21 @@ export default function NavbarLinks(props) {
               <Grow
                 {...TransitionProps}
                 id='profile-menu-list'
-                style={{ transformOrigin: '0 0 0', marginLeft:theme.spacing(-11), marginRight: theme.spacing(-11) }}>
+                style={{
+                  transformOrigin: '0 0 0',
+                  marginLeft: theme.spacing(-11),
+                  marginRight: theme.spacing(-11),
+                }}>
                 <Paper className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleCloseProfile}>
                     <MenuList role='menu'>
                       <MenuItem
-                        onClick={()=>{
+                        onClick={() => {
                           handleCloseProfile();
                           history.push({
                             pathname: '/admin/dashboard/user-page',
-                            search: '?_id=hashem'
+                            search: `?_id=${profile.id}`,
+                            profile: profile,
                           });
                         }}
                         className={dropdownItem}>
@@ -239,13 +296,7 @@ export default function NavbarLinks(props) {
                       <Divider light />
                       <MenuItem
                         onClick={() => {
-                          handleCloseProfile();
-                          removeCookies('adminAccessToken');
-                          dispatch({
-                            type: 'ADMIN_ACCESS_TOKEN',
-                            payload: null,
-                          });
-                          router.push('/');
+                          logOut();
                         }}
                         className={dropdownItem}>
                         {t('Log out')}
@@ -276,7 +327,7 @@ export default function NavbarLinks(props) {
           />
           <Hidden smUp implementation='css'>
             <span onClick={handleClickSettings} className={classes.linkText}>
-            {t('header').header_language}
+              {t('header').header_language}
             </span>
           </Hidden>
         </IconButton>
@@ -296,8 +347,12 @@ export default function NavbarLinks(props) {
               <Grow
                 {...TransitionProps}
                 id='settings-menu-list'
-                style={{ transformOrigin: '0 0 0', marginLeft:theme.spacing(-10), marginRight: theme.spacing(-9) }}>
-                <Paper className={classes.dropdown} >
+                style={{
+                  transformOrigin: '0 0 0',
+                  marginLeft: theme.spacing(-10),
+                  marginRight: theme.spacing(-9),
+                }}>
+                <Paper className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleCloseSetting}>
                     <List
                       component='nav'
@@ -310,11 +365,11 @@ export default function NavbarLinks(props) {
                             role={undefined}
                             dense
                             button
-                            className={dropdownItem + ' ' + classes.languagePack}
+                            className={
+                              dropdownItem + ' ' + classes.languagePack
+                            }
                             onClick={() => handleChangeLang(item)}
-                            style={{
-                              
-                            }}>
+                            style={{}}>
                             <img
                               src={`/admin/images/langs/${item.Flag}`}
                               alt={item.Lang}

@@ -8,6 +8,7 @@ import SidebarUser from './SidebarUser';
 import SidebarLinks from './SidebarLinks';
 import NavbarLinks from '../Navbar/NavbarLinks';
 
+
 const SidebarMain = (props) => {
   const mainPanel = createRef();
   const {
@@ -21,8 +22,10 @@ const SidebarMain = (props) => {
     color,
     routes,
     router,
+    adminAccessToken
   } = props;
   const classes = mainStyles();
+
 
   const [state, setState] = useState({
     stateMiniActive: true,
@@ -72,15 +75,10 @@ const SidebarMain = (props) => {
             className={sidebarWrapper}
             user={
               <SidebarUser
-                rtlActive={rtlActive}
-                routes={routes}
-                openAvatar={state.openAvatar}
-                openCollapse={openCollapse}
-                stateMiniActive={state.stateMiniActive}
-                propsMiniActive={propsMiniActive}
-                bgColor={bgColor}
-                router={router}
-                t={t}
+               {...props}
+               openAvatar={state.openAvatar}
+               openCollapse={openCollapse}
+               stateMiniActive={state.stateMiniActive}
               />
             }
             links={
@@ -133,13 +131,10 @@ const SidebarMain = (props) => {
             className={sidebarWrapper}
             user={
               <SidebarUser
-                rtlActive={rtlActive}
-                openAvatar={state.openAvatar}
-                openCollapse={openCollapse}
-                stateMiniActive={state.stateMiniActive}
-                propsMiniActive={propsMiniActive}
-                bgColor={bgColor}
-                t={t}
+              {...props}
+              openAvatar={state.openAvatar}
+              openCollapse={openCollapse}
+              stateMiniActive={state.stateMiniActive}
               />
             }
             links={
