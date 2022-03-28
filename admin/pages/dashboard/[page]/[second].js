@@ -1,15 +1,15 @@
 import { Fragment, useEffect } from 'react';
 import { checkCookies, getCookies } from 'cookies-next';
-import { wrapper } from '../../src/redux/store';
+import { wrapper } from '../../../src/redux/store';
 import { withTranslation, useTranslation } from 'react-i18next';
 
-import HeadComponent from '../../src/components/head';
-import Dashboard from '../../src/pages/dashboard/Dashboard';
+import HeadComponent from '../../../src/components/head';
+import Dashboard from '../../../src/pages/dashboard/Dashboard';
 import Cookies from 'cookies';
 import { useRouter } from 'next/router';
-import dbConnect from '../../helpers/dbConnect';
+import dbConnect from '../../../helpers/dbConnect';
 import Alert from 'react-s-alert';
-import CustomAlert from '../../src/components/Alert/CustomAlert';
+import CustomAlert from '../../../src/components/Alert/CustomAlert';
 import { useTheme } from '@mui/material';
 
 function index(props) {
