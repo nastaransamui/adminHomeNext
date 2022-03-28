@@ -6,39 +6,39 @@ import { withTranslation, useTranslation } from 'react-i18next';
 import { checkCookies, getCookies } from 'cookies-next';
 import { Fragment } from 'react';
 import Cookies from 'cookies';
-import dbConnect from '../helpers/dbConnect';
+// import dbConnect from '../helpers/dbConnect';
 import Alert from 'react-s-alert';
 import CustomAlert from '../src/components/Alert/CustomAlert';
-import { useTheme } from '@mui/material';
+// import { useTheme } from '@mui/material';
 
 function Admin(props) {
   const { t, ready, i18n } = useTranslation('common');
-  const { dbConectSuccess, dbConectError } = props;
-  const theme = useTheme();
+  // const { dbConectSuccess, dbConectError } = props;
+  // const theme = useTheme();
 
-  useEffect(() => {
-    let isMount = true;
-    if (isMount && !dbConectSuccess) {
-      Alert.error('', {
-        customFields: {
-          message: `${dbConectError}`,
-          styles: {
-            backgroundColor: theme.palette.secondary.dark,
-            zIndex: 9999,
-          },
-        },
-        onClose: function () {
-          document.body.innerHTML = '';
-        },
-        timeout: 'none',
-        position: 'bottom',
-        effect: 'bouncyflip',
-      });
-    }
-    return () => {
-      isMount = false;
-    };
-  }, [dbConectSuccess, dbConectError]);
+  // useEffect(() => {
+  //   let isMount = true;
+  //   if (isMount && !dbConectSuccess) {
+  //     Alert.error('', {
+  //       customFields: {
+  //         message: `${dbConectError}`,
+  //         styles: {
+  //           backgroundColor: theme.palette.secondary.dark,
+  //           zIndex: 9999,
+  //         },
+  //       },
+  //       onClose: function () {
+  //         document.body.innerHTML = '';
+  //       },
+  //       timeout: 'none',
+  //       position: 'bottom',
+  //       effect: 'bouncyflip',
+  //     });
+  //   }
+  //   return () => {
+  //     isMount = false;
+  //   };
+  // }, [dbConectSuccess, dbConectError]);
 
   return (
     <Fragment>
@@ -53,13 +53,13 @@ export default withTranslation(['common'])(Admin);
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
-    const res = await dbConnect();
+    // const res = await dbConnect();
     const cookies = new Cookies(ctx.req, ctx.res);
     if (checkCookies('adminAccessToken', ctx)) {
       return {
         props: {
-          dbConectSuccess: res.success == undefined ? true : false,
-          dbConectError: res.error == undefined ? null : res.error,
+          // dbConectSuccess: res.success == undefined ? true : false,
+          // dbConectError: res.error == undefined ? null : res.error,
           adminAccessToken: getCookies(ctx).adminAccessToken,
           ...(await store.dispatch({
             type: 'ADMIN_ACCESS_TOKEN',
@@ -81,8 +81,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
     } else {
       return {
         props: {
-          dbConectSuccess: res.success == undefined ? true : false,
-          dbConectError: res.error == undefined ? null : res.error,
+          // dbConectSuccess: res.success == undefined ? true : false,
+          // dbConectError: res.error == undefined ? null : res.error,
           adminAccessToken: null,
           ...(await store.dispatch({
             type: 'ADMIN_ACCESS_TOKEN',

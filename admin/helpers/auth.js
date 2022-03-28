@@ -63,6 +63,7 @@ export async function hashPassword(req, res, next) {
 }
 
 export async function createUserIsEmpty(req, res, next) {
+  await dbConnect();
   let collectionIsEmpty = await Users.find();
   if (collectionIsEmpty.length == 0) {
     const userName = process.env.NEXT_PUBLIC_USERNAME;

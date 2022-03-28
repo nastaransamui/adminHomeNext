@@ -3,6 +3,7 @@ import { authenticate, localStrategy } from '../../../middleware/passport';
 import passport from 'passport';
 import cors from 'cors';
 import { unpdateAccessToken, createUserIsEmpty } from '../../../helpers/auth';
+import dbConnect from '../../../helpers/dbConnect';
 
 passport.use(localStrategy);
 const apiRoute = nextConnect({
@@ -17,6 +18,7 @@ apiRoute
   .use(cors())
   .use(passport.initialize())
   .post(createUserIsEmpty, async (req, res) => {
+    await dbConnect();
     const { strategy } = req.body;
     try {
       const user = await authenticate(strategy, req, res);

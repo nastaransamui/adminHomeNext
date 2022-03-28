@@ -2,7 +2,7 @@ import LocalStrategy from 'passport-local';
 import passport from 'passport';
 import { findUser, validatePassword } from '../helpers/auth';
 
-export const authenticate = (method, req, res) =>
+export const authenticate = async (method, req, res) =>
   new Promise((resolve, reject) => {
     passport.authenticate(method, { session: false }, (error, user) => {
       if (error) {
