@@ -11,6 +11,8 @@ import dashboard_en from '../public/locales/en/dashboard.json';
 import dashboard_fa from '../public/locales/fa/dashboard.json';
 import footer_en from '../public/locales/en/footer.json';
 import footer_fa from '../public/locales/fa/footer.json';
+import users_en from '../public/locales/en/users.json';
+import users_fa from '../public/locales/fa/users.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import i18next from 'i18next';
@@ -42,14 +44,21 @@ import appTheme from '../theme/appTheme';
 //next
 import Head from 'next/head';
 import Router from 'next/router';
-import { PageTransition } from 'next-page-transitions';
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from '../src/createEmotionCache';
+
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 i18next
   .use(detector)
   .use(initReactI18next)
   .init({
     interpolation: { scapeValue: false },
     returnObjects: true,
-    lng: typeof window !== 'undefined' ? localStorage.getItem('lang') : 'en-US',
+    lng:
+      typeof window !== 'undefined'
+        ? localStorage.getItem('lang') || 'en-US'
+        : 'en-US',
     fallbackLng: 'en-US',
     keySeparator: false,
     defaultNS: 'common',
@@ -59,12 +68,14 @@ i18next
         dashboard: dashboard_en,
         404: error_en,
         footer: footer_en,
+        users: users_en,
       },
       fa: {
         common: common_fa,
         dashboard: dashboard_fa,
         404: error_fa,
         footer: footer_fa,
+        users: users_fa,
       },
     },
   });
@@ -73,6 +84,7 @@ function MyApp(props) {
   const {
     Component,
     router,
+    emotionCache = clientSideEmotionCache,
     pageProps: { session, ...pageProps },
   } = props;
   const { t, i18n } = useTranslation('common');
@@ -171,13 +183,13 @@ function MyApp(props) {
   const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
   return (
-    <Fragment>
+    <CacheProvider value={emotionCache}>
       <Head>
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
-      <PageTransition timeout={300} classNames='page-fade-transition'>
-        <I18nextProvider i18n={i18next}>
-          <ThemeProvider theme={adminTheme}>
+      <ThemeProvider theme={adminTheme}>
+        <StylesProvider jss={jss}>
+          <I18nextProvider i18n={i18next}>
             <CssBaseline />
             <LoadingBar
               height={5}
@@ -187,21 +199,19 @@ function MyApp(props) {
             />
             <div suppressHydrationWarning>
               {typeof window === 'undefined' ? null : (
-                <StylesProvider jss={jss}>
-                  <Component
-                    router={router}
-                    {...pageProps}
-                    key={router.route}
-                    t={t}
-                    i18n={i18n}
-                  />
-                </StylesProvider>
+                <Component
+                  router={router}
+                  {...pageProps}
+                  key={router.route}
+                  t={t}
+                  i18n={i18n}
+                />
               )}
             </div>
-          </ThemeProvider>
-        </I18nextProvider>
-      </PageTransition>
-    </Fragment>
+          </I18nextProvider>
+        </StylesProvider>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 
