@@ -3,11 +3,11 @@ import aws from 'aws-sdk';
 import { createNewUser } from './users';
 
 aws.config.update({
-  region: process.env.AWS_REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET,
+  region: process.env.S3_AWS_REGION,
+  accessKeyId: process.env.S3_AWS_ACCESS_KEY,
+  secretAccessKey: process.env.S3_AWS_SECRET,
 });
-const s3Bucket = process.env.AWS_BUCKET;
+const s3Bucket = process.env.S3_AWS_BUCKET;
 const s3 = new aws.S3(); // Create a new instance of S3
 
 export const awsUploadSingleFile = async (userData, images, res) => {
