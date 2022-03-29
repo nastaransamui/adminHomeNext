@@ -80,6 +80,7 @@ i18next
     },
   });
 
+const isVercel = process.env.NEXT_PUBLIC_SERVER_TYPE == 'vercel';
 function MyApp(props) {
   const {
     Component,
@@ -205,6 +206,7 @@ function MyApp(props) {
                   key={router.route}
                   t={t}
                   i18n={i18n}
+                  isVercel={isVercel}
                 />
               )}
             </div>
