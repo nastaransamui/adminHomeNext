@@ -1,6 +1,9 @@
 import fs from 'fs';
 import aws from 'aws-sdk';
 import { createNewUser } from './users';
+const path = require('path');
+const fse = require('fs-extra');
+import { v4 as uuidv4 } from 'uuid';
 
 aws.config.update({
   region: process.env.S3_AWS_REGION,
@@ -43,7 +46,6 @@ export const awsUploadSingleFile = async (userData, images, res) => {
 export const awsDeleteSingleFile = async (imageData, res) => {
   s3.deleteObject({ Bucket: s3Bucket, Key: imageData.Key }, (error) => {
     if (error) {
-      console.log('s3 Delete image error');
       res.status(403).json({
         success: false,
         Error: error,
@@ -51,4 +53,35 @@ export const awsDeleteSingleFile = async (imageData, res) => {
       });
     }
   });
+};
+
+export const deleteSingleFile = async (profileImageKey) => {
+  fs.unlink(profileImageKey, (error) => {
+    if (error) console.log(error);
+  });
+};
+
+export const uploadSingleFile = async (userData, images, res) => {
+  const profileImageFolder = `${process.cwd()}/public/profileImage`;
+  const uniqueName = uuidv4();
+  const url = process.env.NEXT_PUBLIC_ADMIN_URL;
+  const fileExtention = path.extname(images.fileName);
+  const imageKey = `${profileImageFolder}/${uniqueName}${fileExtention}`;
+  const imageUrl = `${url}/profileImage/${uniqueName}${fileExtention}`;
+  // check if profileImage directory exists
+  if (!fs.existsSync(profileImageFolder)) {
+    fs.mkdirSync(profileImageFolder);
+  }
+  //Move file from /tmp to profileImage
+  fse
+    .move(images.path, imageKey)
+    .then(async () => {
+      userData.profileImage = imageUrl;
+      userData.profileImageKey = imageKey;
+      await createNewUser(userData, res, undefined);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(401).json({ success: false, Error: err });
+    });
 };

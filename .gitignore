@@ -3,6 +3,7 @@
 # dependencies
 home/node_modules/
 admin/node_modules/
+admin/public/profileImage
 home/.env.local
 admin/.env.local
 /.pnp

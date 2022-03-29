@@ -1,5 +1,10 @@
 import Users from '../models/Users';
-import { awsUploadSingleFile, awsDeleteSingleFile } from './aws';
+import {
+  awsUploadSingleFile,
+  awsDeleteSingleFile,
+  uploadSingleFile,
+  deleteSingleFile,
+} from './aws';
 import dbConnect from './dbConnect';
 
 const isVercel = process.env.NEXT_PUBLIC_SERVER_TYPE == 'vercel';
@@ -8,7 +13,7 @@ export const createNewUserWithImage = async (userData, images, res) => {
   if (isVercel) {
     await awsUploadSingleFile(userData, images, res);
   } else {
-    //Todo save user image in path if server is not Vercel
+    uploadSingleFile(userData, images, res);
   }
 };
 
@@ -32,7 +37,12 @@ export const createNewUser = async (userData, res, imageData) => {
               ErrorCode: err?.code,
             });
           } else {
-            //Todo delete from path if error
+            await deleteSingleFile(userData.profileImageKey);
+            res.status(403).json({
+              success: false,
+              Error: err.toString(),
+              ErrorCode: err?.code,
+            });
           }
         } else {
           res.status(403).json({
