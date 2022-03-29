@@ -18,18 +18,23 @@ apiRoute
   .use(cors())
   .use(passport.initialize())
   .post(createUserIsEmpty, async (req, res) => {
-    await dbConnect();
-    const { strategy } = req.body;
-    try {
-      const user = await authenticate(strategy, req, res);
-      if (!user.message) {
-        const accessToken = await unpdateAccessToken(user);
-        res.status(200).send({ success: true, accessToken: accessToken });
-      } else {
-        res.send({ success: false, user });
+    const dbConnected = await dbConnect();
+    const { success } = dbConnected;
+    if (!success) {
+      res.status(500).json({ success: false, Error: dbConnected.error });
+    } else {
+      const { strategy } = req.body;
+      try {
+        const user = await authenticate(strategy, req, res);
+        if (!user.message) {
+          const accessToken = await unpdateAccessToken(user);
+          res.status(200).send({ success: true, accessToken: accessToken });
+        } else {
+          res.send({ success: false, user });
+        }
+      } catch (error) {
+        res.status(401).send(error.message);
       }
-    } catch (error) {
-      res.status(401).send(error.message);
     }
   });
 

@@ -11,16 +11,21 @@ const apiRoute = nextConnect({
 });
 
 apiRoute.post(async (req, res, next) => {
-  await dbConnect();
-  const _id = req.body._id;
-  try {
-    Users.findOne({ _id: _id }).then(async (oldUser) => {
-      oldUser.accessToken = '';
-      await oldUser.save();
-      res.status(200).json({ success: true, user: null });
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, Error: error.toString() });
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
+  } else {
+    const _id = req.body._id;
+    try {
+      Users.findOne({ _id: _id }).then(async (oldUser) => {
+        oldUser.accessToken = '';
+        await oldUser.save();
+        res.status(200).json({ success: true, user: null });
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, Error: error.toString() });
+    }
   }
 });
 

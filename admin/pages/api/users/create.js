@@ -17,18 +17,23 @@ const apiRoute = nextConnect({
 apiRoute.use(middleware);
 
 apiRoute.post(verifyToken, hashPassword, async (req, res, next) => {
-  await dbConnect();
-  try {
-    const isImageProvide = Object.keys(req.files).length !== 0;
-    if (isImageProvide) {
-      // User Upload Image
-      await createNewUserWithImage(req.body, req.files, res);
-    } else {
-      // User not upload image
-      await createNewUser(req.body, res, undefined);
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
+  } else {
+    try {
+      const isImageProvide = Object.keys(req.files).length !== 0;
+      if (isImageProvide) {
+        // User Upload Image
+        await createNewUserWithImage(req.body, req.files, res);
+      } else {
+        // User not upload image
+        await createNewUser(req.body, res, undefined);
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, Error: error.toString() });
     }
-  } catch (error) {
-    res.status(500).json({ success: false, Error: error.toString() });
   }
 });
 

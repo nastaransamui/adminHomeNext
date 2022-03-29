@@ -4,9 +4,14 @@ import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
 
 export async function findUser({ username }) {
-  await dbConnect();
-  let user = await Users.findOne({ userName: username });
-  return user;
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
+  } else {
+    let user = await Users.findOne({ userName: username });
+    return user;
+  }
 }
 
 export async function unpdateAccessToken(user) {
@@ -63,30 +68,35 @@ export async function hashPassword(req, res, next) {
 }
 
 export async function createUserIsEmpty(req, res, next) {
-  await dbConnect();
-  let collectionIsEmpty = await Users.find();
-  if (collectionIsEmpty.length == 0) {
-    const userName = process.env.NEXT_PUBLIC_USERNAME;
-    const cryptoPassword = CryptoJS.AES.encrypt(
-      process.env.NEXT_PUBLIC_PASSWORD,
-      process.env.NEXT_PUBLIC_SECRET_KEY
-    ).toString();
-    await Users.create({
-      userName: userName,
-      password: cryptoPassword,
-      isAdmin: true,
-      firstName: '',
-      lastName: '',
-      city: '',
-      country: '',
-      position: '',
-      aboutMe: '',
-      twitter: [],
-      facebook: [],
-      google: [],
-    });
-    next();
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
-    next();
+    let collectionIsEmpty = await Users.find();
+    if (collectionIsEmpty.length == 0) {
+      const userName = process.env.NEXT_PUBLIC_USERNAME;
+      const cryptoPassword = CryptoJS.AES.encrypt(
+        process.env.NEXT_PUBLIC_PASSWORD,
+        process.env.NEXT_PUBLIC_SECRET_KEY
+      ).toString();
+      await Users.create({
+        userName: userName,
+        password: cryptoPassword,
+        isAdmin: true,
+        firstName: '',
+        lastName: '',
+        city: '',
+        country: '',
+        position: '',
+        aboutMe: '',
+        twitter: [],
+        facebook: [],
+        google: [],
+      });
+      next();
+    } else {
+      next();
+    }
   }
 }

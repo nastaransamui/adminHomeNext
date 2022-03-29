@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 import HeadComponent from '../src/components/head';
 import Login from '../src/pages/login/Login';
@@ -9,16 +10,16 @@ import Cookies from 'cookies';
 // import dbConnect from '../helpers/dbConnect';
 import Alert from 'react-s-alert';
 import CustomAlert from '../src/components/Alert/CustomAlert';
-// import { useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 function Admin(props) {
   const { t, ready, i18n } = useTranslation('common');
-  // const { dbConectSuccess, dbConectError } = props;
+  // const { dbConectSuccess, dbConectError, isVercel } = props;
   // const theme = useTheme();
-
+  // console.log(props);
   // useEffect(() => {
   //   let isMount = true;
-  //   if (isMount && !dbConectSuccess) {
+  //   if (isMount && !dbConectSuccess && !isVercel) {
   //     Alert.error('', {
   //       customFields: {
   //         message: `${dbConectError}`,
@@ -38,11 +39,10 @@ function Admin(props) {
   //   return () => {
   //     isMount = false;
   //   };
-  // }, [dbConectSuccess, dbConectError]);
+  // }, [dbConectSuccess, dbConectError, isVercel]);
 
   return (
     <Fragment>
-      <Alert contentTemplate={CustomAlert} />
       <HeadComponent title={ready && t('title_login')} />
       <Login t={t} i18n={i18n} {...props} />
     </Fragment>
@@ -53,13 +53,16 @@ export default withTranslation(['common'])(Admin);
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
-    // const res = await dbConnect();
+    const isVercel = process.env.SERVER_TYPE == 'vercel';
+    // const res = isVercel ? null : await dbConnect();
+    // const { success } = res;
+    // console.log(success);
     const cookies = new Cookies(ctx.req, ctx.res);
     if (checkCookies('adminAccessToken', ctx)) {
       return {
         props: {
-          // dbConectSuccess: res.success == undefined ? true : false,
-          // dbConectError: res.error == undefined ? null : res.error,
+          // dbConectSuccess: success,
+          // dbConectError: res?.error == undefined ? null : res?.error,
           adminAccessToken: getCookies(ctx).adminAccessToken,
           ...(await store.dispatch({
             type: 'ADMIN_ACCESS_TOKEN',
@@ -81,8 +84,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
     } else {
       return {
         props: {
-          // dbConectSuccess: res.success == undefined ? true : false,
-          // dbConectError: res.error == undefined ? null : res.error,
+          // dbConectSuccess: success,
+          // dbConectError: res?.error == undefined ? null : res?.error,
           adminAccessToken: null,
           ...(await store.dispatch({
             type: 'ADMIN_ACCESS_TOKEN',
