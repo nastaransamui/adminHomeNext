@@ -36,6 +36,7 @@ export const handleThemeName = (pallet, dispatch) => {
 export const handleLanguage = (lang, i18n) => {
   localStorage.setItem('i18nextLng', lang);
   i18n.changeLanguage(lang);
+  setCookies('i18nextLng', lang);
 };
 
 export const handleMode = (modeType, dispatch) => {

@@ -47,6 +47,8 @@ import Router from 'next/router';
 import { CacheProvider } from '@emotion/react';
 import createEmotionCache from '../src/createEmotionCache';
 
+import { checkCookies, getCookies } from 'cookies-next';
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 i18next
@@ -55,10 +57,7 @@ i18next
   .init({
     interpolation: { scapeValue: false },
     returnObjects: true,
-    lng:
-      typeof window !== 'undefined'
-        ? localStorage.getItem('lang') || 'en-US'
-        : 'en-US',
+    lng: checkCookies('i18nextLng') ? getCookies().i18nextLng : 'en-US',
     fallbackLng: 'en-US',
     keySeparator: false,
     defaultNS: 'common',
