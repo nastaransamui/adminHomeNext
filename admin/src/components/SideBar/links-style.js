@@ -60,12 +60,8 @@ const linkStyle = makeStyles((theme) => {
       },
     },
     itemTextRTL: {
-      marginRight: '45px',
-      textAlign: 'right',
-    },
-    itemTextRTL: {
-      marginRight: '45px',
-      textAlign: 'right',
+      // marginRight: '45px',
+      // textAlign: 'right',
     },
     collapseItemText: {
       color: whiteColor,
@@ -81,6 +77,9 @@ const linkStyle = makeStyles((theme) => {
     },
     collapseItemTextRTL: {
       textAlign: 'right',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
     },
     collapseItemTextMiniRTL: {
       transform: 'translate3d(25px, 0, 0) !important',

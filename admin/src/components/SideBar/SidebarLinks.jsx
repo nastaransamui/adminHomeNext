@@ -1,9 +1,16 @@
-import { Collapse, Icon, List, ListItemText, ListItem } from '@mui/material';
+import {
+  Collapse,
+  Icon,
+  List,
+  ListItemText,
+  ListItem,
+  useMediaQuery,
+} from '@mui/material';
 import React from 'react';
 import cx from 'classnames';
 import linkStyle from './links-style';
 import { Link, useLocation } from 'react-router-dom';
-
+import { useTheme } from '@mui/styles';
 import PropTypes from 'prop-types';
 
 export default function SidebarLinks(props) {
@@ -17,9 +24,12 @@ export default function SidebarLinks(props) {
     router,
     color,
     rtlActive,
+    handleDrawerToggle
   } = props;
   const classes = linkStyle();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
     return location.pathname == router.basePath + routeName;
@@ -52,7 +62,6 @@ export default function SidebarLinks(props) {
     }
     return false;
   };
-
 
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
@@ -115,6 +124,7 @@ export default function SidebarLinks(props) {
             <a
               href='#'
               className={navLinkClasses}
+              style={{textAlign:rtlActive ? 'right' : 'left'}}
               onClick={(e) => {
                 e.preventDefault();
                 setState((oldState) => ({ ...oldState, ...st }));
@@ -123,17 +133,18 @@ export default function SidebarLinks(props) {
                 typeof prop.icon === 'string' ? (
                   <Icon className={itemIcon}>{prop.icon}</Icon>
                 ) : (
-                  <prop.icon className={itemIcon} />
+                  <prop.icon className={itemIcon}  />
                 )
               ) : (
                 <span className={collapseItemMini}>
-                  {prop[`mini_${i18n.language}`]}
+                  {isMobile ? '\xa0' :  prop[`mini_${i18n.language}`]}
                 </span>
               )}
               <ListItemText
                 primary={prop[`name_${i18n.language}`]}
                 secondary={
                   <b
+                  style={{marginRight: rtlActive ? -10 : 0}}
                     className={
                       caret +
                       ' ' +
@@ -147,12 +158,12 @@ export default function SidebarLinks(props) {
                   { [collapseItemText]: prop.icon === undefined }
                 )}
               />
-              </a>
-              <Collapse in={state[prop.state]} unmountOnExit>
-                <List className={classes.list + ' ' + classes.collapseList}>
-                  {createLinks(prop.views)}
-                </List>
-              </Collapse>
+            </a>
+            <Collapse in={state[prop.state]} unmountOnExit>
+              <List className={classes.list + ' ' + classes.collapseList}>
+                {createLinks(prop.views)}
+              </List>
+            </Collapse>
           </ListItem>
         );
       }
@@ -210,6 +221,7 @@ export default function SidebarLinks(props) {
           <Link
             to={prop.layout + prop.path}
             onClick={() => {
+              isMobile && handleDrawerToggle();
               router.asPath = prop.layout + prop.path;
             }}>
             <span
@@ -225,12 +237,13 @@ export default function SidebarLinks(props) {
                 )
               ) : (
                 <span className={collapseItemMini}>
-                  {prop[`mini_${i18n.language}`]}
+                  {isMobile ? '\xa0' :  prop[`mini_${i18n.language}`]}
                 </span>
               )}
               <ListItemText
                 primary={prop[`name_${i18n.language}`]}
                 disableTypography={true}
+                style={{ textAlign: rtlActive ? 'right' : 'left'}}
                 className={cx(
                   { [itemText]: prop.icon !== undefined },
                   { [collapseItemText]: prop.icon === undefined }

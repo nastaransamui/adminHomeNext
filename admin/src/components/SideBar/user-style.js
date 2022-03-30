@@ -127,7 +127,7 @@ const userStyles = makeStyles((theme) => {
       fontSize: '14px',
     },
     collapseItemTextRTL: {
-      textAlign: 'right',
+      textAlign: '/* @noflip */ right',
     },
     collapseItemTextMiniRTL: {
       transform: 'translate3d(25px, 0, 0) !important',

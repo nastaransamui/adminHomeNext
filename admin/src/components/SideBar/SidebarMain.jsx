@@ -8,7 +8,6 @@ import SidebarUser from './SidebarUser';
 import SidebarLinks from './SidebarLinks';
 import NavbarLinks from '../Navbar/NavbarLinks';
 
-
 const SidebarMain = (props) => {
   const mainPanel = createRef();
   const {
@@ -22,10 +21,9 @@ const SidebarMain = (props) => {
     color,
     routes,
     router,
-    adminAccessToken
+    adminAccessToken,
   } = props;
   const classes = mainStyles();
-
 
   const [state, setState] = useState({
     stateMiniActive: true,
@@ -75,10 +73,11 @@ const SidebarMain = (props) => {
             className={sidebarWrapper}
             user={
               <SidebarUser
-               {...props}
-               openAvatar={state.openAvatar}
-               openCollapse={openCollapse}
-               stateMiniActive={state.stateMiniActive}
+                {...props}
+                openAvatar={state.openAvatar}
+                openCollapse={openCollapse}
+                stateMiniActive={state.stateMiniActive}
+                handleDrawerToggle={handleDrawerToggle}
               />
             }
             links={
@@ -92,9 +91,12 @@ const SidebarMain = (props) => {
                 router={router}
                 color={color}
                 rtlActive={rtlActive}
+                handleDrawerToggle={handleDrawerToggle}
               />
             }
-            headerLinks={<NavbarLinks {...props} />}
+            headerLinks={
+              <NavbarLinks {...props} handleDrawerToggle={handleDrawerToggle} />
+            }
           />
           <div
             className={classes.background}
@@ -131,10 +133,10 @@ const SidebarMain = (props) => {
             className={sidebarWrapper}
             user={
               <SidebarUser
-              {...props}
-              openAvatar={state.openAvatar}
-              openCollapse={openCollapse}
-              stateMiniActive={state.stateMiniActive}
+                {...props}
+                openAvatar={state.openAvatar}
+                openCollapse={openCollapse}
+                stateMiniActive={state.stateMiniActive}
               />
             }
             links={

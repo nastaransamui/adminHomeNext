@@ -37,9 +37,11 @@ const navbarLinksStyle = makeStyles((theme) => {
       minHeight: 'unset',
     },
     primaryHover: {
-      '&:hover': {
-        backgroundColor: theme.palette.secondary.main,
-        ...primaryBoxShadow,
+      [theme.breakpoints.up('sm')]: {
+        '&:hover': {
+          backgroundColor: theme.palette.secondary.main,
+          ...primaryBoxShadow,
+        },
       },
     },
     darkHover: {
@@ -110,13 +112,14 @@ const navbarLinksStyle = makeStyles((theme) => {
     },
     buttonLinkRTL: {
       [theme.breakpoints.down('sm')]: {
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        width: '-webkit-fill-available',
-        margin: '10px 15px 0',
-        padding: '10px 15px',
-        display: 'block',
-        position: 'relative',
+        // alignItems: 'center',
+        // justifyContent: 'flex-end',
+        // width: '-webkit-fill-available',
+        // margin: '10px 15px 0',
+        // padding: '10px 15px',
+        // display: 'block',
+        // position: 'relative',
+        // background: 'red',
       },
     },
     buttonLink: {
@@ -166,7 +169,9 @@ const navbarLinksStyle = makeStyles((theme) => {
         fill: whiteColor,
       },
     },
-    linksRTL: {},
+    linkTextRTL: {
+      color: 'red',
+    },
     linkText: {
       zIndex: '4',
       ...defaultFont,
@@ -246,6 +251,18 @@ const navbarLinksStyle = makeStyles((theme) => {
         color: 'black',
       },
     },
+    langGrow: {
+      [theme.breakpoints.up('sm')]: {
+        transformOrigin: '0 0 0',
+        marginLeft: theme.spacing(-10),
+        marginRight: theme.spacing(-9),
+        marginTop: theme.spacing(3),
+      },
+      [theme.breakpoints.down('sm')]: {
+        transformOrigin: '0 0 0',
+        borderRadius: 0,
+      },
+    },
     dropdown: {
       borderRadius: '3px',
       border: '0',
@@ -264,10 +281,17 @@ const navbarLinksStyle = makeStyles((theme) => {
     languagePack: {
       display: 'flex',
       color: theme.palette.text.color,
+      width: 'auto',
       [theme.breakpoints.down('sm')]: {
         color: whiteColor,
+        marginLeft: theme.direction == 'rtl' ? '0' : '15%',
       },
       flexDirection: theme.direction == 'rtl' ? 'row-reverse' : 'row',
+    },
+    avatarImg: {
+      width: 30,
+      height: 30,
+      borderRadius: 50,
     },
   };
 });

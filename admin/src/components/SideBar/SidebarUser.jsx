@@ -1,9 +1,21 @@
-import { Collapse, List, ListItem, ListItemText } from '@mui/material';
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  Zoom,
+  useMediaQuery,
+} from '@mui/material';
+
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import userStyles from './user-style';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
+import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/styles';
 export default function SidebarUser(props) {
   const {
     openCollapse,
@@ -14,10 +26,13 @@ export default function SidebarUser(props) {
     stateMiniActive,
     adminAccessToken,
     t,
+    handleDrawerToggle,
   } = props;
   const classes = userStyles();
   const history = useHistory();
-
+  const theme = useTheme();
+  const { stringLimit } = useSelector((state) => state);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const profile = jwt.verify(
     adminAccessToken,
     process.env.NEXT_PUBLIC_SECRET_KEY,
@@ -28,7 +43,6 @@ export default function SidebarUser(props) {
     }
   );
 
-  
   const userWrapperClass =
     classes.user +
     ' ' +
@@ -79,11 +93,15 @@ export default function SidebarUser(props) {
   return (
     <div className={userWrapperClass}>
       <div className={photo}>
-        <img
-          src={profile.profileImage}
-          className={classes.avatarImg}
-          alt='...'
-        />
+        {profile?.profileImage !== '' ? (
+          <img
+            src={profile?.profileImage}
+            className={classes.avatarImg}
+            alt='...'
+          />
+        ) : (
+          <AccountCircleIcon color='secondary' />
+        )}
       </div>
       <List className={classes.list}>
         <ListItem className={classes.item + ' ' + classes.userItem}>
@@ -94,22 +112,33 @@ export default function SidebarUser(props) {
               e.preventDefault();
               openCollapse('openAvatar');
             }}>
-            <ListItemText
-              primary={`${profile.userName}`}
-              secondary={
-                <b
-                  className={
-                    caret +
-                    ' ' +
-                    classes.userCaret +
-                    ' ' +
-                    (openAvatar ? classes.caretActive : '')
-                  }
-                />
-              }
-              disableTypography={true}
-              className={itemText + ' ' + classes.userItemText}
-            />
+            <Tooltip
+              title={`${profile.userName}`}
+              TransitionComponent={Zoom}
+              placement='top'
+              arrow
+              sx={{ marginLeft: 300 }}>
+              <ListItemText
+                primary={
+                  profile.userName.length < stringLimit
+                    ? `${profile.userName}`
+                    : `${profile.userName.slice(0, stringLimit)} ...`
+                }
+                secondary={
+                  <b
+                    className={
+                      caret +
+                      ' ' +
+                      classes.userCaret +
+                      ' ' +
+                      (openAvatar ? classes.caretActive : '')
+                    }
+                  />
+                }
+                disableTypography={true}
+                className={itemText + ' ' + classes.userItemText}
+              />
+            </Tooltip>
           </a>
           <Collapse in={openAvatar} unmountOnExit>
             <List className={classes.list + ' ' + classes.collapseList}>
@@ -117,10 +146,11 @@ export default function SidebarUser(props) {
                 className={classes.collapseItem}
                 onClick={(e) => {
                   e.preventDefault();
+                  isMobile && handleDrawerToggle();
                   history.push({
                     pathname: '/admin/dashboard/user-page',
                     search: `?_id=${profile.id}`,
-                    profile: profile
+                    profile: profile,
                   });
                 }}>
                 <a
@@ -128,9 +158,11 @@ export default function SidebarUser(props) {
                   className={
                     classes.itemLink + ' ' + classes.userCollapseLinks
                   }>
-                  <span className={collapseItemMini}>
-                    {rtlActive ? 'پ م' : 'MP'}
-                  </span>
+                  {!isMobile && (
+                    <span className={collapseItemMini}>
+                      {rtlActive ? 'پ م' : 'MP'}
+                    </span>
+                  )}
                   <ListItemText
                     primary={t('MyProfile')}
                     disableTypography={true}
@@ -138,38 +170,6 @@ export default function SidebarUser(props) {
                   />
                 </a>
               </ListItem>
-              {/* <ListItem className={classes.collapseItem}>
-                <a
-                  href='#'
-                  className={
-                    classes.itemLink + ' ' + classes.userCollapseLinks
-                  }>
-                  <span className={collapseItemMini}>
-                    {rtlActive ? ' و پ' : 'EP'}
-                  </span>
-                  <ListItemText
-                    primary={t('EditProfile')}
-                    disableTypography={true}
-                    className={collapseItemText}
-                  />
-                </a>
-              </ListItem>
-              <ListItem className={classes.collapseItem}>
-                <a
-                  href='#'
-                  className={
-                    classes.itemLink + ' ' + classes.userCollapseLinks
-                  }>
-                  <span className={collapseItemMini}>
-                    {rtlActive ? 'تپ' : 'S'}
-                  </span>
-                  <ListItemText
-                    primary={t('SettingsProfile')}
-                    disableTypography={true}
-                    className={collapseItemText}
-                  />
-                </a>
-              </ListItem> */}
             </List>
           </Collapse>
         </ListItem>

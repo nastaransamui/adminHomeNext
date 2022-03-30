@@ -11,9 +11,9 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
+  useMediaQuery,
 } from '@mui/material';
-import PropTypes from 'prop-types';
+
 import { removeCookies, setCookies, getCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
@@ -23,9 +23,10 @@ import { useHistory } from 'react-router-dom';
 import navbarLinksStyle from './navbar-links-style';
 import PersonIcon from '@mui/icons-material/Person';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import LanguageIcon from '@mui/icons-material/Language';
 import CheckIcon from '@mui/icons-material/Check';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import classNames from 'classnames';
@@ -37,6 +38,11 @@ export default function NavbarLinks(props) {
   const classes = navbarLinksStyle();
   const history = useHistory();
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { i18n, t, handleDrawerToggle } = props;
+  const rtlActive = i18n.language == 'fa';
+  const dispatch = useDispatch();
   const [openNotification, setOpenNotification] = useState(false);
   const { adminAccessToken } = useSelector((state) => state);
   const profile = jwt.verify(
@@ -57,6 +63,7 @@ export default function NavbarLinks(props) {
   };
   const handleCloseNotification = () => {
     setOpenNotification(null);
+    isMobile && handleDrawerToggle()
   };
 
   const [openProfile, setOpenProfile] = useState(null);
@@ -83,10 +90,6 @@ export default function NavbarLinks(props) {
   const handleCloseSetting = () => {
     setOpenSettings(null);
   };
-  const { i18n, t } = props;
-  const rtlActive = i18n.language == 'fa';
-  const dispatch = useDispatch();
-  const theme = useTheme();
   const handleChangeMode = (e) => {
     localStorage.setItem(
       'adminThemeType',
@@ -102,7 +105,9 @@ export default function NavbarLinks(props) {
     );
   };
   const handleChangeLang = (lang) => {
+    isMobile && handleDrawerToggle()
     localStorage.setItem('i18nextLng', lang);
+    setCookies('i18nextLng', lang.LangCode);
     i18n.changeLanguage(lang.LangCode);
   };
   const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover, {
@@ -127,7 +132,7 @@ export default function NavbarLinks(props) {
         body: JSON.stringify({ _id: profile.id }),
       }
     );
-    const { status,statusText } = res;
+    const { status, statusText } = res;
     if (status == 200) {
       handleCloseProfile();
       removeCookies('adminAccessToken');
@@ -136,17 +141,17 @@ export default function NavbarLinks(props) {
         payload: null,
       });
       router.push('/');
-    }else{
+    } else {
       Alert.error('', {
         customFields: {
           message: statusText,
           styles: {
             backgroundColor: theme.palette.error.dark,
-            zIndex: 99999
+            zIndex: 99999,
           },
         },
         onClose: function () {
-          console.log(res.status)
+          console.log(res.status);
         },
         timeout: 'none',
         position: 'bottom',
@@ -155,32 +160,16 @@ export default function NavbarLinks(props) {
     }
   };
 
+
   return (
     <div className={wrapper}>
-      <IconButton
-        className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
-        classes={{ label: rtlActive ? classes.labelRTL : '' }}
-        onClick={() => {
-          history.push('/admin/dashboard');
-        }}>
-        <DashboardIcon
-          className={
-            classes.headerLinksSvg + ' ' + rtlActive
-              ? classes.links + ' ' + classes.linksRTL
-              : classes.links
-          }
-        />
-        <Hidden smUp implementation='css'>
-          <span className={classes.linkText}>{t('title')}</span>
-        </Hidden>
-      </IconButton>
       <div className={managerClasses}>
         <IconButton
           aria-label='Notifications'
           aria-owns={openNotification ? 'notification-menu-list' : null}
           aria-haspopup='true'
           onClick={handleClickNotification}
-          className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
+          className={classes.buttonLink}
           classes={{ label: rtlActive ? classes.labelRTL : '' }}>
           <NotificationsIcon
             className={
@@ -194,7 +183,9 @@ export default function NavbarLinks(props) {
           <span className={classes.notifications}>5</span>
           <Hidden smUp implementation='css'>
             <span
-              onClick={handleClickNotification}
+              onClick={(e) => {
+                handleClickNotification(e);
+              }}
               className={classes.linkText}>
               {t('notification')}
             </span>
@@ -240,7 +231,7 @@ export default function NavbarLinks(props) {
           aria-owns={openProfile ? 'profile-menu-list' : null}
           aria-haspopup='true'
           onClick={handleClickProfile}
-          className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
+          className={classes.buttonLink}
           classes={{ label: rtlActive ? classes.labelRTL : '' }}>
           <PersonIcon
             className={
@@ -273,35 +264,55 @@ export default function NavbarLinks(props) {
               <Grow
                 {...TransitionProps}
                 id='profile-menu-list'
-                style={{
-                  transformOrigin: '0 0 0',
-                  marginLeft: theme.spacing(-11),
-                  marginRight: theme.spacing(-11),
-                }}>
+                className={classes.langGrow}>
                 <Paper className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleCloseProfile}>
-                    <MenuList role='menu'>
-                      <MenuItem
+                    <List
+                      component='nav'
+                      className={classes.langMenu}
+                      aria-label='profile-menu-list'>
+                      <ListItem
+                        style={{ display: 'flex', flexDirection: 'row' }}
+                        role={undefined}
+                        dense
+                        button
+                        className={dropdownItem + ' ' + classes.languagePack}
                         onClick={() => {
                           handleCloseProfile();
+                          isMobile && handleDrawerToggle()
                           history.push({
                             pathname: '/admin/dashboard/user-page',
                             search: `?_id=${profile.id}`,
                             profile: profile,
                           });
-                        }}
-                        className={dropdownItem}>
-                        {t('Profile')}
-                      </MenuItem>
-                      <Divider light />
-                      <MenuItem
+                        }}>
+                        {profile?.profileImage !== '' ? (
+                          <img
+                            src={profile?.profileImage}
+                            className={classes.avatarImg}
+                            alt='...'
+                          />
+                        ) : (
+                          <AccountCircleIcon color='primary' />
+                        )}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <ListItemText primary={t('Profile')} />
+                      </ListItem>
+                      <ListItem
+                        style={{ display: 'flex', flexDirection: 'row' }}
+                        role={undefined}
+                        dense
+                        button
+                        className={dropdownItem + ' ' + classes.languagePack}
                         onClick={() => {
+                          isMobile && handleDrawerToggle()
                           logOut();
-                        }}
-                        className={dropdownItem}>
-                        {t('Log out')}
-                      </MenuItem>
-                    </MenuList>
+                        }}>
+                        <LogoutIcon color='primary' />
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <ListItemText primary={t('Log out')} />
+                      </ListItem>
+                    </List>
                   </ClickAwayListener>
                 </Paper>
               </Grow>
@@ -314,7 +325,7 @@ export default function NavbarLinks(props) {
           aria-owns={openSettings ? 'settings-menu-list' : null}
           aria-haspopup='true'
           onClick={handleClickSettings}
-          className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
+          className={classes.buttonLink}
           classes={{ label: rtlActive ? classes.labelRTL : '' }}>
           <LanguageIcon
             className={
@@ -346,21 +357,26 @@ export default function NavbarLinks(props) {
             return (
               <Grow
                 {...TransitionProps}
-                id='settings-menu-list'
-                style={{
-                  transformOrigin: '0 0 0',
-                  marginLeft: theme.spacing(-10),
-                  marginRight: theme.spacing(-9),
-                }}>
+                id='Language-menu'
+                className={classes.langGrow}>
                 <Paper className={classes.dropdown}>
                   <ClickAwayListener onClickAway={handleCloseSetting}>
                     <List
-                      component='nav'
                       className={classes.langMenu}
                       aria-label='Language-menu'>
                       {langName.map((item, i) => {
                         return (
                           <ListItem
+                            secondaryAction={
+                              i18n.language === item.LangCode && (
+                                <IconButton
+                                  edge='end'
+                                  aria-label='comments'
+                                  className={classes.checkIcon}>
+                                  <CheckIcon color='primary' />
+                                </IconButton>
+                              )
+                            }
                             key={i.toString()}
                             role={undefined}
                             dense
@@ -379,11 +395,11 @@ export default function NavbarLinks(props) {
                             <ListItemText
                               primary={item[`title_${i18n.language}`]}
                             />
-                            {i18n.language === item.LangCode && (
+                            {/* {i18n.language === item.LangCode && (
                               <ListItemSecondaryAction>
                                 <CheckIcon color='primary' />
                               </ListItemSecondaryAction>
-                            )}
+                            )} */}
                           </ListItem>
                         );
                       })}
@@ -396,7 +412,7 @@ export default function NavbarLinks(props) {
         </Popper>
       </div>
       <IconButton
-        className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
+        className={classes.buttonLink}
         classes={{ label: rtlActive ? classes.labelRTL : '' }}
         onClick={handleChangeMode}>
         {theme.palette.type == 'dark' ? (
