@@ -8,9 +8,8 @@ const authStyles = makeStyles((theme) => {
     pageWrap: {
       textAlign: 'center',
       background: theme.palette.primary.dark,
-      minHeight: '100%',
+      minHeight: '100vh',
       position: 'relative',
-      minHeight: '100%',
       width: '100%',
       alignItems: 'center',
       padding: theme.spacing(10, 5),
@@ -211,8 +210,11 @@ const authStyles = makeStyles((theme) => {
       height: 1500,
       transformOrigin: 'top left',
       fill: theme.palette.primary.main,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.only('md')]: {
         transform: 'scale(0.8)',
+      },
+      [theme.breakpoints.up('lg')]: {
+        transform: 'scale(0.9)',
       },
     },
     rightDeco: {
@@ -221,8 +223,11 @@ const authStyles = makeStyles((theme) => {
       height: 1500,
       transformOrigin: 'top right',
       fill: theme.palette.secondary.dark,
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.only('md')]: {
         transform: 'scale(0.8)',
+      },
+      [theme.breakpoints.up('lg')]: {
+        transform: 'scale(0.9)',
       },
     },
     greeting: {

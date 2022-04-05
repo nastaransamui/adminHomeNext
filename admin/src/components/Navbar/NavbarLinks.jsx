@@ -17,7 +17,7 @@ import {
 import { removeCookies, setCookies, getCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import navbarLinksStyle from './navbar-links-style';

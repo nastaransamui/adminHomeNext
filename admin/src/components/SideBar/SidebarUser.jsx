@@ -8,12 +8,10 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import userStyles from './user-style';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import jwt from 'jsonwebtoken';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/styles';
 export default function SidebarUser(props) {
@@ -24,14 +22,13 @@ export default function SidebarUser(props) {
     bgColor,
     propsMiniActive,
     stateMiniActive,
-    adminAccessToken,
     t,
     handleDrawerToggle,
   } = props;
   const classes = userStyles();
   const history = useHistory();
   const theme = useTheme();
-  const { stringLimit,profile } = useSelector((state) => state);
+  const { stringLimit, profile } = useSelector((state) => state);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const userWrapperClass =
@@ -91,7 +88,11 @@ export default function SidebarUser(props) {
             alt='...'
           />
         ) : (
-          <AccountCircleIcon color='secondary' />
+          <img
+            src='/admin/images/faces/avatar1.jpg'
+            className={classes.avatarImg}
+            alt='...'
+          />
         )}
       </div>
       <List className={classes.list}>
