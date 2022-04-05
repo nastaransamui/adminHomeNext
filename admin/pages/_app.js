@@ -79,7 +79,7 @@ i18next
     },
   });
 
-const isVercel = process.env.NEXT_PUBLIC_SERVER_TYPE == 'vercel';
+const isVercel = process.env.NEXT_PUBLIC_SERVERLESS;
 function MyApp(props) {
   const {
     Component,

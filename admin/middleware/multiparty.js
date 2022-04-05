@@ -23,6 +23,7 @@ const setFilesObj = (form) => {
       fileName: doc[1][0].originalFilename,
       path: doc[1][0].path,
       fileType: doc[1][0].headers['content-type'],
+      finalFolder: doc[0],
     });
   });
   return finalFiles;
@@ -38,6 +39,7 @@ middleware.use(async (req, res, next) => {
       next();
     } else {
       console.log('Handle error from multiparty miideleware');
+      res.status(500).json({ success: false, Error: err.toString() });
       next();
     }
   });

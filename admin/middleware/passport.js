@@ -1,6 +1,6 @@
 import LocalStrategy from 'passport-local';
 import passport from 'passport';
-import { findUser, validatePassword } from '../helpers/auth';
+import { findUserByUsername, validatePassword } from '../helpers/auth';
 
 export const authenticate = async (method, req, res) =>
   new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export const localStrategy = new LocalStrategy.Strategy(async function (
   password,
   done
 ) {
-  findUser({ username })
+  findUserByUsername({ username })
     .then((user) => {
       if (!user) {
         done(null, { message: 'Wrong Email' });

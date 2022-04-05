@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import userStyle from './user-style';
 import PropTypes from 'prop-types';
 
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import avatar from '../../../public/images/faces/avatar1.jpg';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import Card from '../Card/Card';
@@ -34,35 +34,26 @@ import {
   SelectValidator,
 } from 'react-material-ui-form-validator';
 
-import Alert from 'react-s-alert';
-import CustomAlert from '../../components/Alert/CustomAlert';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useQuery } from '../../pages/dashboard/ReactRouter';
-import { useSelector } from 'react-redux';
+import useFormHook from '../../components/Hooks/useFormHook';
 
-export default function User(props) {
+export default function User() {
   let query = useQuery();
   const _id = query.get('_id');
   const classes = userStyle();
   const { t } = useTranslation('users');
   const location = useLocation();
   const theme = useTheme();
-  const history = useHistory();
-  const { adminAccessToken } = useSelector((state) => state);
-
-  const [profileImage, setProfileImage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({
-    userName: '',
-    password: '',
-    isAdmin: false,
-    showPassword: false,
-    firstName: '',
-    lastName: '',
-    city: '',
-    country: '',
-    position: '',
-    aboutMe: '',
-  });
+  const {
+    values,
+    handleChange,
+    loading,
+    profileImage,
+    uploadImage,
+    deleteImage,
+    formSubmit,
+  } = useFormHook(_id, location);
 
   useEffect(() => {
     ValidatorForm.addValidationRule(isRegex(values.password));
@@ -71,139 +62,8 @@ export default function User(props) {
     };
   });
 
-  useEffect(() => {
-    let isMount = true;
-    if (isMount) {
-      if (_id == null) {
-        // _id is empty load create
-      } else if (location.profile) {
-        // location.profile is exist
-        setProfileImage(location.profile.profileImage);
-        setValues((oldValues) => ({
-          ...oldValues,
-          userName: location.profile?.userName || '',
-          isAdmin: location?.profile.isAdmin || '',
-          firstName: location?.profile.firstName || '',
-          lastName: location?.profile.lastName || '',
-          city: location.profile?.city || '',
-          country: location.profile?.country || '',
-          position: location.profile?.position || '',
-          aboutMe: location.profile?.aboutMe || '',
-        }));
-      } else {
-        // Search for user by _id
-        console.log(_id);
-      }
-    }
-    return () => {
-      isMount = false;
-    };
-  }, [location]);
-
-  function toFormData(o) {
-    return Object.entries(o).reduce(
-      (d, e) => (d.append(...e), d),
-      new FormData()
-    );
-  }
-
-  const formSubmit = async () => {
-    delete values.showPassword;
-    if (_id == null) {
-      // Create user
-      setLoading(true);
-      const res = await fetch(`/admin/api/users/create`, {
-        method: 'POST',
-        headers: {
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: toFormData(values),
-      });
-      const { status } = res;
-      const user = await res.json();
-      const errorText = user?.ErrorCode == undefined ? user.Error :  t(`${user?.ErrorCode}`)
-      if (status !== 200 && !user.success) {
-        Alert.error('', {
-          customFields: {
-            message: errorText,
-            styles: {
-              backgroundColor: theme.palette.error.dark,
-              zIndex: 9999,
-            },
-          },
-          onClose: function () {
-            setLoading(false);
-          },
-          timeout: 'none',
-          position: 'bottom',
-          effect: 'bouncyflip',
-        });
-      } else {
-        Alert.success('', {
-          customFields: {
-            message: `${user.data.userName} ${t('userCreateSuccess')}`,
-            styles: {
-              backgroundColor: theme.palette.secondary.main,
-              zIndex: 9999,
-            },
-          },
-          onClose: function () {
-            setLoading(false);
-            history.push('/admin/dashboard/user-page');
-          },
-          timeout: 'none',
-          position: 'bottom',
-          effect: 'bouncyflip',
-        });
-      }
-    } else {
-      // Edit user
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_HOME_VERCEL}/api/auth/login`,
-      //   {
-      //     method: 'POST',
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify(body),
-      //   }
-      // );
-      // setTimeout(() => {
-      //   Alert.error('', {
-      //     customFields: {
-      //       message: t(`notAdmin`),
-      //       styles: {
-      //         backgroundColor: theme.palette.secondary.dark,
-      //         zIndex: 9999,
-      //       },
-      //     },
-      //     onClose: function () {
-      //       setLoading(false);
-      //     },
-      //     timeout: 'none',
-      //     position: 'bottom',
-      //     effect: 'bouncyflip',
-      //   });
-      // }, 2000);
-      console.log('sendEdit');
-    }
-  };
-
-  const handleChange = (name) => (event) => {
-    if (name == 'userName') {
-      setValues({ ...values, [name]: event.target.value.toLowerCase().trim() });
-    } else if (name !== 'password') {
-      setValues({
-        ...values,
-        [name]:
-          event.target.value.charAt(0).toUpperCase() +
-          event.target.value.slice(1),
-      });
-    } else {
-      setValues({ ...values, [name]: event.target.value });
-    }
-  };
-
   return (
-    <Container style={{ marginTop: 10 }}>
+    <Container style={{ marginTop: 10 }} maxWidth='xl'>
       {loading ? (
         <Grid container spacing={2}>
           <CircleToBlockLoading color={theme.palette.secondary.main} />
@@ -220,19 +80,7 @@ export default function User(props) {
                     name='profileImage'
                     hidden
                     onChange={(e) => {
-                      const random = (Math.random() + 1)
-                        .toString(36)
-                        .substring(7);
-                      if (e.currentTarget.files.length > 0) {
-                        let file = e.currentTarget.files[0];
-                        let blob = file.slice(0, file.size, file.type);
-                        let newFile = new File([blob], random + file.name, {
-                          type: file.type,
-                        });
-                        setProfileImage(URL.createObjectURL(newFile));
-                        values.profileImage = newFile;
-                        setValues((oldValue) => ({ ...oldValue }));
-                      }
+                      uploadImage(e);
                     }}
                     accept='image/png, image/jpeg'
                   />
@@ -243,27 +91,40 @@ export default function User(props) {
                     arrow>
                     {profileImage == '' ? (
                       <label htmlFor='profileImage'>
-                        <PermIdentityIcon style={{ cursor: 'pointer' }} />
+                        <img
+                          src={avatar.src}
+                          alt='..'
+                          className={classes.smallAvatar}
+                        />
                       </label>
                     ) : (
                       <label htmlFor='profileImage'>
                         <img
                           src={profileImage}
                           alt='..'
-                          style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 6,
-                            cursor: 'pointer',
-                          }}
+                          className={classes.smallAvatar}
                         />
                       </label>
                     )}
                   </Tooltip>
                 </CardIcon>
-                <h4 className={classes.cardIconTitle}>
-                  {t('editProfile')} - <small>{t('completeProfile')}</small>
-                </h4>
+                <span className={classes.deleteIcon}>
+                  <h4 className={classes.cardIconTitle}>
+                    {t('editProfile')} - <small>{t('completeProfile')} </small>
+                  </h4>
+                  {profileImage !== '' && (
+                    <Tooltip title={t('deleteImage')} arrow>
+                      <IconButton
+                        onClick={() => {
+                          deleteImage();
+                        }}
+                        style={{ marginTop: 10 }}
+                        disableRipple>
+                        <DeleteIcon color='error' />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </span>
               </CardHeader>
               <ValidatorForm onSubmit={formSubmit}>
                 <CardBody>
@@ -273,10 +134,7 @@ export default function User(props) {
                         className={classes.input}
                         autoComplete='off'
                         label={t('isAdmin')}
-                        onChange={() => {
-                          values.isAdmin = !values.isAdmin;
-                          setValues((oldValue) => ({ ...oldValue }));
-                        }}
+                        onClick={handleChange('isAdmin')}
                         value={values.isAdmin ? t('isAdmin') : t('isNotAdmin')}
                         name='isAdmin'
                         variant='standard'
@@ -295,8 +153,13 @@ export default function User(props) {
                     <Grid item xs={12} sm={12} md={5}>
                       <TextValidator
                         className={classes.input}
-                        InputProps={{style: { WebkitTextFillColor: theme.palette.text.color }}}
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         label={t('userName')}
+                        disabled={_id !== null}
                         fullWidth
                         onChange={handleChange('userName')}
                         value={values.userName}
@@ -350,6 +213,11 @@ export default function User(props) {
                     <Grid item xs={12} sm={12} md={6}>
                       <TextValidator
                         className={classes.input}
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         fullWidth
                         label={t('firstName')}
                         onChange={handleChange('firstName')}
@@ -362,6 +230,11 @@ export default function User(props) {
                       <TextValidator
                         className={classes.input}
                         fullWidth
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         label={t('lastName')}
                         onChange={handleChange('lastName')}
                         value={values.lastName}
@@ -375,6 +248,11 @@ export default function User(props) {
                       <TextValidator
                         className={classes.input}
                         fullWidth
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         label={t('city')}
                         onChange={handleChange('city')}
                         value={values.city}
@@ -387,6 +265,11 @@ export default function User(props) {
                         className={classes.input}
                         fullWidth
                         label={t('country')}
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         onChange={handleChange('country')}
                         value={values.country}
                         name='country'
@@ -397,6 +280,11 @@ export default function User(props) {
                       <TextValidator
                         className={classes.input}
                         fullWidth
+                        InputProps={{
+                          style: {
+                            WebkitTextFillColor: theme.palette.text.color,
+                          },
+                        }}
                         label={t('position')}
                         onChange={handleChange('position')}
                         value={values.position}
@@ -425,7 +313,9 @@ export default function User(props) {
                     variant='contained'
                     type='submit'
                     className={classes.updateProfileButton}>
-                    {t('submitProfile')}
+                    {_id == null
+                      ? t('createUserProfile')
+                      : t('editUserProfile')}
                   </Button>
                 </CardBody>
               </ValidatorForm>
@@ -435,9 +325,9 @@ export default function User(props) {
             <Card profile>
               {profileImage == '' ? (
                 <CardHeader color='rose' icon>
-                  <CardIcon color='rose'>
-                    <PermIdentityIcon />
-                  </CardIcon>
+                  <CardAvatar profile>
+                    <img src={avatar.src} alt='..' />
+                  </CardAvatar>
                   <h4 className={classes.cardIconTitle}>
                     {values.userName}
                     <small>

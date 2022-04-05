@@ -17,7 +17,7 @@ import {
 import { removeCookies, setCookies, getCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import navbarLinksStyle from './navbar-links-style';
@@ -25,14 +25,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LanguageIcon from '@mui/icons-material/Language';
 import CheckIcon from '@mui/icons-material/Check';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import classNames from 'classnames';
 import { langName } from '../../../public/text/langNames';
-import jwt from 'jsonwebtoken';
 import Alert from 'react-s-alert';
+import Dashboard from '@mui/icons-material/Dashboard';
 
 export default function NavbarLinks(props) {
   const classes = navbarLinksStyle();
@@ -44,16 +43,8 @@ export default function NavbarLinks(props) {
   const rtlActive = i18n.language == 'fa';
   const dispatch = useDispatch();
   const [openNotification, setOpenNotification] = useState(false);
-  const { adminAccessToken } = useSelector((state) => state);
-  const profile = jwt.verify(
-    adminAccessToken,
-    process.env.NEXT_PUBLIC_SECRET_KEY,
-    (err, user) => {
-      if (!err) {
-        return user;
-      }
-    }
-  );
+  const { profile } = useSelector((state) => state);
+
   const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
@@ -63,7 +54,7 @@ export default function NavbarLinks(props) {
   };
   const handleCloseNotification = () => {
     setOpenNotification(null);
-    isMobile && handleDrawerToggle()
+    isMobile && handleDrawerToggle();
   };
 
   const [openProfile, setOpenProfile] = useState(null);
@@ -105,7 +96,7 @@ export default function NavbarLinks(props) {
     );
   };
   const handleChangeLang = (lang) => {
-    isMobile && handleDrawerToggle()
+    isMobile && handleDrawerToggle();
     localStorage.setItem('i18nextLng', lang);
     setCookies('i18nextLng', lang.LangCode);
     i18n.changeLanguage(lang.LangCode);
@@ -125,11 +116,11 @@ export default function NavbarLinks(props) {
 
   const logOut = async () => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_ADMIN_URL}/api/auth/logout`,
+      `/admin/api/auth/logout`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id: profile.id }),
+        body: JSON.stringify({ _id: profile._id }),
       }
     );
     const { status, statusText } = res;
@@ -150,9 +141,7 @@ export default function NavbarLinks(props) {
             zIndex: 99999,
           },
         },
-        onClose: function () {
-          console.log(res.status);
-        },
+        onClose: function () {},
         timeout: 'none',
         position: 'bottom',
         effect: 'bouncyflip',
@@ -160,9 +149,28 @@ export default function NavbarLinks(props) {
     }
   };
 
-
   return (
     <div className={wrapper}>
+      <div className={managerClasses}>
+        {!isMobile && (
+          <IconButton
+            onClick={() => {
+              history.push('/admin/dashboard');
+            }}
+            className={classes.buttonLink}
+            classes={{ label: rtlActive ? classes.labelRTL : '' }}>
+            <Dashboard
+              className={
+                classes.headerLinksSvg +
+                ' ' +
+                (rtlActive
+                  ? classes.links + ' ' + classes.linksRTL
+                  : classes.links)
+              }
+            />
+          </IconButton>
+        )}
+      </div>
       <div className={managerClasses}>
         <IconButton
           aria-label='Notifications'
@@ -279,7 +287,7 @@ export default function NavbarLinks(props) {
                         className={dropdownItem + ' ' + classes.languagePack}
                         onClick={() => {
                           handleCloseProfile();
-                          isMobile && handleDrawerToggle()
+                          isMobile && handleDrawerToggle();
                           history.push({
                             pathname: '/admin/dashboard/user-page',
                             search: `?_id=${profile.id}`,
@@ -293,7 +301,11 @@ export default function NavbarLinks(props) {
                             alt='...'
                           />
                         ) : (
-                          <AccountCircleIcon color='primary' />
+                          <img
+                            src='/admin/images/faces/avatar1.jpg'
+                            className={classes.avatarImg}
+                            alt='...'
+                          />
                         )}
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <ListItemText primary={t('Profile')} />
@@ -305,7 +317,7 @@ export default function NavbarLinks(props) {
                         button
                         className={dropdownItem + ' ' + classes.languagePack}
                         onClick={() => {
-                          isMobile && handleDrawerToggle()
+                          isMobile && handleDrawerToggle();
                           logOut();
                         }}>
                         <LogoutIcon color='primary' />
@@ -395,11 +407,6 @@ export default function NavbarLinks(props) {
                             <ListItemText
                               primary={item[`title_${i18n.language}`]}
                             />
-                            {/* {i18n.language === item.LangCode && (
-                              <ListItemSecondaryAction>
-                                <CheckIcon color='primary' />
-                              </ListItemSecondaryAction>
-                            )} */}
                           </ListItem>
                         );
                       })}

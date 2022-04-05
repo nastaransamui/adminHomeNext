@@ -72,7 +72,7 @@ export default function ThemeUser(props) {
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
   const [openDrawer, setOpenDrawer] = useState(false);
   const [tab, setTab] = useState(0);
-  const { adminThemeName, adminAccessToken } = useSelector((state) => state);
+  const { adminThemeName } = useSelector((state) => state);
   const { i18n } = props;
   const { t } = useTranslation('common');
 
@@ -107,15 +107,6 @@ export default function ThemeUser(props) {
     console.log('implement websoket')
   };
 
-  const profile = jwt.verify(
-    adminAccessToken,
-    process.env.NEXT_PUBLIC_SECRET_KEY,
-    (err, user) => {
-      if (!err) {
-        return user;
-      }
-    }
-  );
 
   return (
     <Fragment>

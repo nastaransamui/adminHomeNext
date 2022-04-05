@@ -80,8 +80,7 @@ export default function Login(props) {
     };
     dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
     const res = await fetch(
-      //Todo update to vercel url
-      `${process.env.NEXT_PUBLIC_ADMIN_URL}/api/auth/login`,
+      `admin/api/auth/login`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -106,6 +105,7 @@ export default function Login(props) {
         if (profile.isAdmin) {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           dispatch({ type: 'ADMIN_ACCESS_TOKEN', payload: accessToken });
+          dispatch({type: 'ADMIN_PROFILE', profile})
           setCookies('adminAccessToken', accessToken);
           router.push('/dashboard');
         } else {

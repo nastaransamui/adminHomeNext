@@ -38,6 +38,17 @@ const userStyle = makeStyles((theme) => {
       fontWeight: 600,
       padding: '8px 24px',
     },
+    smallAvatar: {
+      width: 40,
+      height: 40,
+      borderRadius: 6,
+      cursor: 'pointer',
+    },
+    deleteIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      textAlign: 'center',
+    },
   };
 });
 

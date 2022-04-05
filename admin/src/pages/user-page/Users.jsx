@@ -32,9 +32,23 @@ export default function UserProfile(props) {
                   e.preventDefault();
                   history.push({
                     pathname: '/admin/dashboard/user-page',
-                    search: `?_id=someuser`,
+                    search: `?_id=624660c599af420025020f39`,
                   });
-                }}>Edit user</button>
+                }}>Edit user 624a8d80ae8407986a9fbc28</button>
+                <button onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: '/admin/dashboard/user-page',
+                    search: `?_id=624a8d80ae8407986a9fbc28`,
+                  });
+                }}>Edit user is vercel 62467721629f891c9645ae6d</button>
+                <button onClick={(e) => {
+                  e.preventDefault();
+                  history.push({
+                    pathname: '/admin/dashboard/user-page',
+                    search: `?_id=shit`,
+                  });
+                }}>shit</button>
         </div>
       )}
     </Fragment>

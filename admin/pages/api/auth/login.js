@@ -2,7 +2,7 @@ import nextConnect from 'next-connect';
 import { authenticate, localStrategy } from '../../../middleware/passport';
 import passport from 'passport';
 import cors from 'cors';
-import { unpdateAccessToken, createUserIsEmpty } from '../../../helpers/auth';
+import { updateAccessToken, createUserIsEmpty } from '../../../helpers/auth';
 import dbConnect from '../../../helpers/dbConnect';
 
 passport.use(localStrategy);
@@ -27,7 +27,7 @@ apiRoute
       try {
         const user = await authenticate(strategy, req, res);
         if (!user.message) {
-          const accessToken = await unpdateAccessToken(user);
+          const accessToken = await updateAccessToken(user, res);
           res.status(200).send({ success: true, accessToken: accessToken });
         } else {
           res.send({ success: false, user });

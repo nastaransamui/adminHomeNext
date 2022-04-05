@@ -31,17 +31,8 @@ export default function SidebarUser(props) {
   const classes = userStyles();
   const history = useHistory();
   const theme = useTheme();
-  const { stringLimit } = useSelector((state) => state);
+  const { stringLimit,profile } = useSelector((state) => state);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const profile = jwt.verify(
-    adminAccessToken,
-    process.env.NEXT_PUBLIC_SECRET_KEY,
-    (err, user) => {
-      if (!err) {
-        return user;
-      }
-    }
-  );
 
   const userWrapperClass =
     classes.user +
@@ -149,7 +140,7 @@ export default function SidebarUser(props) {
                   isMobile && handleDrawerToggle();
                   history.push({
                     pathname: '/admin/dashboard/user-page',
-                    search: `?_id=${profile.id}`,
+                    search: `?_id=${profile._id}`,
                     profile: profile,
                   });
                 }}>

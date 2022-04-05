@@ -9,6 +9,7 @@ import Cookies from 'cookies';
 import { useRouter } from 'next/router';
 import Alert from 'react-s-alert';
 import CustomAlert from '../../src/components/Alert/CustomAlert';
+import jwt from 'jsonwebtoken';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -40,6 +41,16 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     // Request come from Home page
     const cookies = new Cookies(ctx.req, ctx.res);
+    const profile = jwt.verify(
+      getCookies(ctx).adminAccessToken,
+      process.env.NEXT_PUBLIC_SECRET_KEY,
+      (err, user) => {
+        if (!err) {
+          return user;
+        }
+      }
+    );
+
     if (checkCookies('adminAccessToken', ctx)) {
       return {
         props: {
@@ -53,6 +64,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
               : 'light',
+          })),
+          ...(await store.dispatch({
+            type: 'ADMIN_PROFILE',
+            payload: profile,
           })),
         },
       };

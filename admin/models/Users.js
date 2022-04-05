@@ -14,6 +14,7 @@ const UsersSchema = new mongoose.Schema(
     position: { type: String },
     aboutMe: { type: String },
     isAdmin: { type: Boolean, default: false },
+    isVercel: { type: Boolean },
     accessToken: { type: String, default: '' },
     twitter: [
       {

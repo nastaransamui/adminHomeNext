@@ -8,6 +8,7 @@ const initialState = {
   adminLoadingBar: 0,
   adminFormSubmit: false,
   stringLimit: 15,
+  profile: {},
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -26,6 +27,8 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, adminFormSubmit: payload };
     case 'STRING_LIMIT':
       return { ...state, stringLimit: payload };
+    case 'ADMIN_PROFILE':
+      return { ...state, profile: payload };
     default:
       return state;
   }

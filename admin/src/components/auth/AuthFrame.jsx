@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import brand from '../../../public/text/brand';
-import logo from '../../../public/images/logo.svg';
+import logo from '../../../public/images/logo.png';
 import { useText } from '../../../theme/common';
 import useStyles from './auth-style';
 import LoadingOverlay from 'react-loading-overlay';

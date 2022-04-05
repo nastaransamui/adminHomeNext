@@ -2,9 +2,11 @@ const nextConnect = require('next-connect');
 
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
-import middleware from '../../../middleware/multiparty';
+import multiparty from '../../../middleware/multiparty';
 import { hashPassword } from '../../../helpers/auth';
-import { createNewUser, createNewUserWithImage } from '../../../helpers/users';
+import Users from '../../../models/Users';
+import { createMiddleware } from '../../../middleware/userMiddleware';
+import { deleteOnError } from '../../../helpers/aws';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -14,28 +16,43 @@ const apiRoute = nextConnect({
   },
 });
 
-apiRoute.use(middleware);
+apiRoute.use(multiparty);
 
-apiRoute.post(verifyToken, hashPassword, async (req, res, next) => {
-  const dbConnected = await dbConnect();
-  const { success } = dbConnected;
-  if (!success) {
-    res.status(500).json({ success: false, Error: dbConnected.error });
-  } else {
-    try {
-      const isImageProvide = Object.keys(req.files).length !== 0;
-      if (isImageProvide) {
-        // User Upload Image
-        await createNewUserWithImage(req.body, req.files, res);
-      } else {
-        // User not upload image
-        await createNewUser(req.body, res, undefined);
+apiRoute.post(
+  verifyToken,
+  hashPassword,
+  createMiddleware,
+  async (req, res, next) => {
+    const dbConnected = await dbConnect();
+    const { success } = dbConnected;
+    if (!success) {
+      res.status(500).json({ success: false, Error: dbConnected.error });
+    } else {
+      try {
+        const newUser = await new Users(req.body);
+        await newUser.save(async (err, result) => {
+          if (err) {
+            res.status(403).json({
+              success: false,
+              Error: err.toString(),
+              ErrorCode: err?.code,
+            });
+          } else {
+            const totalUser = await Users.find();
+            res.status(200).json({
+              success: true,
+              totalUsersLength: totalUser.length,
+              data: result,
+            });
+          }
+        });
+      } catch (error) {
+        deleteOnError(req, res, next);
+        res.status(500).json({ success: false, Error: error.toString() });
       }
-    } catch (error) {
-      res.status(500).json({ success: false, Error: error.toString() });
     }
   }
-});
+);
 
 export default apiRoute;
 export const config = {
