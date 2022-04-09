@@ -5,7 +5,7 @@ import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 
-export default function Card(props) {
+ function CustomCard(props, ref) {
   const classes= cardStyles();
   const {
     className,
@@ -40,13 +40,15 @@ export default function Card(props) {
     [className]: className !== undefined,
   });
   return (
-    <div className={cardClasses} {...rest}>
+    <div className={cardClasses} {...rest} ref={ref}>
       {children}
     </div>
   );
 }
+const Card = React.forwardRef(CustomCard);
+export default Card;
 
-Card.propTypes = {
+CustomCard.propTypes = {
   className: PropTypes.string,
   plain: PropTypes.bool,
   profile: PropTypes.bool,

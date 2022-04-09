@@ -105,3 +105,23 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   transition: background-color 50000s ease-in-out 0s, color 5000s ease-in-out 0s;
 }
+.s-alert-close:hover,
+.s-alert-close:focus {
+    outline: none;
+}
+
+.s-alert-close::before,
+.s-alert-close::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    background: black !important;
+}
+
+.s-alert-close:hover::before,
+.s-alert-close:hover::after {
+    background: black !important;
+}

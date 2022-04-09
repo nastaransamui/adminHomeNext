@@ -100,6 +100,8 @@ export async function createUserIsEmpty(req, res, next) {
     let collectionIsEmpty = await Users.find();
     if (collectionIsEmpty.length == 0) {
       const userName = process.env.NEXT_PUBLIC_USERNAME;
+      const isVercel =
+        process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
       const cryptoPassword = CryptoJS.AES.encrypt(
         process.env.NEXT_PUBLIC_PASSWORD,
         process.env.NEXT_PUBLIC_SECRET_KEY
@@ -108,6 +110,7 @@ export async function createUserIsEmpty(req, res, next) {
         userName: userName,
         password: cryptoPassword,
         isAdmin: true,
+        isVercel: isVercel,
         firstName: '',
         lastName: '',
         city: '',

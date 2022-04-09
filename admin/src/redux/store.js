@@ -7,8 +7,18 @@ const initialState = {
   adminThemeType: 'light',
   adminLoadingBar: 0,
   adminFormSubmit: false,
-  stringLimit: 15,
+  stringLimit: 35,
   profile: {},
+  usersCardView: true,
+  usersPerPage: 50,
+  usersGrid: 4,
+  usersPageNumber: 1,
+  users: [],
+  totalUsers: 0,
+  usersSortBy: {
+    field: 'createdAt',
+    sorting: -1,
+  },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -29,6 +39,20 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, stringLimit: payload };
     case 'ADMIN_PROFILE':
       return { ...state, profile: payload };
+    case 'USERS_CARD_VIEW':
+      return { ...state, usersCardView: payload };
+    case 'USERS_GRID':
+      return { ...state, usersGrid: payload };
+    case 'USERS_PER_PAGE':
+      return { ...state, usersPerPage: payload };
+    case 'USERS_PAGE_NUMBER':
+      return { ...state, usersPageNumber: payload };
+    case 'USERS':
+      return { ...state, users: payload };
+    case 'TOTAL_USERS':
+      return { ...state, totalUsers: payload };
+    case 'USERS_SORT_BY':
+      return { ...state, usersSortBy: payload };
     default:
       return state;
   }

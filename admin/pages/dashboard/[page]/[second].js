@@ -68,6 +68,33 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_PROFILE',
             payload: profile,
           })),
+          ...(await store.dispatch({
+            type: 'USERS_PER_PAGE',
+            payload: checkCookies('usersPerPage', ctx)
+              ? parseInt(getCookies(ctx).usersPerPage)
+              : 50,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_PAGE_NUMBER',
+            payload: checkCookies('usersPageNumber', ctx)
+              ? parseInt(getCookies(ctx).usersPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_CARD_VIEW',
+            payload: checkCookies('usersCardView', ctx)
+              ? JSON.parse(getCookies(ctx).usersCardView)
+              : true,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_SORT_BY',
+            payload: checkCookies('usersSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).usersSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
+          })),
         },
       };
     } else {
@@ -83,6 +110,33 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
               : 'light',
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_PER_PAGE',
+            payload: checkCookies('usersPerPage', ctx)
+              ? parseInt(getCookies(ctx).usersPerPage)
+              : 50,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_PAGE_NUMBER',
+            payload: checkCookies('usersPageNumber', ctx)
+              ? parseInt(getCookies(ctx).usersPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_CARD_VIEW',
+            payload: checkCookies('usersCardView', ctx)
+              ? JSON.parse(getCookies(ctx).usersCardView)
+              : true,
+          })),
+          ...(await store.dispatch({
+            type: 'USERS_SORT_BY',
+            payload: checkCookies('usersSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).usersSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
           })),
         },
         redirect: {

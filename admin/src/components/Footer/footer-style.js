@@ -30,7 +30,7 @@ const footerStyle = makeStyles((theme) => {
       padding: '15px 0',
       width: '100%',
       ...defaultFont,
-      zIndex: 4,
+      zIndex: 3,
     },
     container: {
       zIndex: 3,

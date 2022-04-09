@@ -63,3 +63,19 @@ export const editMiddleware = async (req, res, next) => {
     res.status(500).json({ success: false, Error: error.toString() });
   }
 };
+
+export const deleteMiddleware = async (req, res, next) => {
+  //isVercel from body and user not system for delete
+  const { isVercel, profileImageKey } = req.body;
+  if (profileImageKey == '') {
+    next();
+  } else {
+    if (isVercel) {
+      await deleteSingleS3(res, next, profileImageKey);
+      next();
+    } else {
+      await deleteSingleFile(res, next, profileImageKey);
+      next();
+    }
+  }
+};

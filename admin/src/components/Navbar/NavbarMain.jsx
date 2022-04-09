@@ -93,7 +93,7 @@ export default function NavbarMain(props) {
             <NavbarLinks {...props} />
           </Hidden>
 
-          <Hidden mdUp implementation='css'>
+          <Hidden smUp implementation='css'>
             <IconButton onClick={handleDrawerToggle}>
               <Menu />
             </IconButton>

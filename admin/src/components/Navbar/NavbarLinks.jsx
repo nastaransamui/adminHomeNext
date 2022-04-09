@@ -95,11 +95,12 @@ export default function NavbarLinks(props) {
       theme.palette.type == 'light' ? 'dark' : 'light'
     );
   };
-  const handleChangeLang = (lang) => {
+  const handleChangeLang = (e,lang) => {
     isMobile && handleDrawerToggle();
     localStorage.setItem('i18nextLng', lang);
     setCookies('i18nextLng', lang.LangCode);
     i18n.changeLanguage(lang.LangCode);
+    setOpenSettings(null);
   };
   const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover, {
     [classes.dropdownItemRTL]: rtlActive,
@@ -396,7 +397,7 @@ export default function NavbarLinks(props) {
                             className={
                               dropdownItem + ' ' + classes.languagePack
                             }
-                            onClick={() => handleChangeLang(item)}
+                            onClick={(e) => handleChangeLang(e,item)}
                             style={{}}>
                             <img
                               src={`/admin/images/langs/${item.Flag}`}

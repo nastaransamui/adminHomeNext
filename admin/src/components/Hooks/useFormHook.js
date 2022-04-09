@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Alert from 'react-s-alert';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { getCookies } from 'cookies-next';
+import { getCookies, setCookies } from 'cookies-next';
 import { useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
@@ -65,7 +65,7 @@ const useFormHook = (_id, location) => {
   useEffect(() => {
     let isMount = true;
     if (isMount) {
-      if (location.profile) {
+      if (location?.profile) {
         // location.profile is exist
         setProfileImage(location.profile.profileImage);
         delete location.profile.iat;
@@ -131,7 +131,7 @@ const useFormHook = (_id, location) => {
     delete values.showPassword;
     if (_id == null) {
       // Create user
-      setLoading(true);
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
       const res = await fetch(createUrl, {
         method: 'POST',
         headers: {
@@ -145,21 +145,23 @@ const useFormHook = (_id, location) => {
         user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
       if (status !== 200 && !user.success) {
         alertCall('error', errorText, () => {
-          setLoading(false);
+          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       } else {
         alertCall(
           'success',
           `${user.data.userName} ${t('userCreateSuccess')}`,
           () => {
-            setLoading(false);
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            dispatch({ type: 'TOTAL_USERS', payload: user.totalUsersLength });
+            setCookies('totalUsers', user.totalUsersLength);
             history.push(pushUrl);
           }
         );
       }
     } else {
       // Edit user
-      setLoading(true);
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
       const res = await fetch(editUrl, {
         method: 'POST',
         headers: {
@@ -173,7 +175,7 @@ const useFormHook = (_id, location) => {
         user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
       if (status !== 200 && !user.success) {
         alertCall('error', errorText, () => {
-          setLoading(false);
+          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       } else {
         // Update profile
@@ -191,7 +193,7 @@ const useFormHook = (_id, location) => {
           'success',
           `${user.data.userName} ${t('userEditSuccess')}`,
           () => {
-            setLoading(false);
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             history.push('/admin/dashboard/user-page');
           }
         );

@@ -14,6 +14,7 @@ class MyDocument extends Document {
             href='//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css'
           />
           <script src='//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js'></script>
+          <script src='//cdn.jsdelivr.net/npm/sweetalert2@11'></script>
           <link
             rel='stylesheet'
             href='https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css'

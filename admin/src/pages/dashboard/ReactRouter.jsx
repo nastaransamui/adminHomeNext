@@ -1,11 +1,11 @@
 import { useEffect,useMemo } from 'react';
-import { Switch, Route, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import NotFound from './NotFound';
 import MainDashboard from '../../components/mainDashboard/MainDashboard';
 import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
-import Users from '../user-page/Users';
-import User from '../../components/Users/User';
+import Users from '../user-page/UsersPage';
+import User from '../../components/User/User';
 
 export function NotFoundPage() {
   return null;

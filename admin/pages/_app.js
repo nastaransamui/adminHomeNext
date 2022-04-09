@@ -2,6 +2,7 @@ import { PropTypes } from 'prop-types';
 import { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import routes from '../routes';
+import Swal from 'sweetalert2';
 
 // Translation
 import { I18nextProvider, initReactI18next } from 'react-i18next';
