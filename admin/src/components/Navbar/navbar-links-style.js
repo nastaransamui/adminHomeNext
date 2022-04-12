@@ -40,6 +40,7 @@ const navbarLinksStyle = makeStyles((theme) => {
       [theme.breakpoints.up('sm')]: {
         '&:hover': {
           backgroundColor: theme.palette.secondary.main,
+          color: theme.palette.secondary.contrastText,
           ...primaryBoxShadow,
         },
       },

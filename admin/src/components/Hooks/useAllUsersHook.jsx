@@ -1,4 +1,4 @@
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material';
 import { setCookies } from 'cookies-next';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,19 +7,24 @@ import Alert from 'react-s-alert';
 import Swal from 'sweetalert2';
 import usePerRowHook from './usePerRowHook';
 
+
 const getAllUserUrl = `/admin/api/users/getAll`;
 const deleteUserUrl = `/admin/api/users/delete`;
-
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-
 const useAllUsersHook = () => {
   const [loading, setLoading] = useState(false);
-  const { usersPerPage, totalUsers, usersPageNumber, adminAccessToken, users, usersSortBy } =
-    useSelector((state) => state);
+  const {
+    usersPerPage,
+    totalUsers,
+    usersPageNumber,
+    adminAccessToken,
+    users,
+    usersSortBy,
+  } = useSelector((state) => state);
   const dispatch = useDispatch();
   const theme = useTheme();
   const { t, i18n } = useTranslation('users');
@@ -43,56 +48,74 @@ const useAllUsersHook = () => {
 
   useEffect(() => {
     const abortController = new AbortController();
+    let isMout = true;
     setLoading(true);
-    const getAllUser = async () => {
-      try {
-        const res = await fetch(getAllUserUrl, {
-          signal: abortController.signal,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            token: `Brearer ${adminAccessToken}`,
-          },
-          body: JSON.stringify({
-            usersPerPage: usersPerPage,
-            usersPageNumber: usersPageNumber,
-            usersSortByField: usersSortBy[`field`],
-            usersSortBySorting: usersSortBy[`sorting`],
-            locale: i18n.language !== 'fa' ? 'en' : 'fa'
-          }),
-        });
+    if (isMout) {
+      const getAllUser = async () => {
+        try {
+          const res = await fetch(getAllUserUrl, {
+            signal: abortController.signal,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              token: `Brearer ${adminAccessToken}`,
+            },
+            body: JSON.stringify({
+              usersPerPage: usersPerPage,
+              usersPageNumber: usersPageNumber,
+              usersSortByField: usersSortBy[`field`],
+              usersSortBySorting: usersSortBy[`sorting`],
+              locale: i18n.language !== 'fa' ? 'en' : 'fa',
+            }),
+          });
 
-        const { status } = res;
-        const user = await res.json();
-        const errorText =
-          user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
-
-        if (status !== 200 && !user.success) {
-          alertCall('error', errorText, () => {
+          const { status } = res;
+          const user = await res.json();
+          const errorText =
+            user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
+          if (status !== 200 && !user.success) {
+            alertCall('error', errorText, () => {
+              setLoading(false);
+            });
+          } else {
+            //Fixe last page if after delete number of page is wrong
+            if (
+              usersPageNumber > Math.ceil(user.totalUsersLength / usersPerPage)
+            ) {
+              dispatch({
+                type: 'USERS_PAGE_NUMBER',
+                payload: Math.ceil(user.totalUsersLength / usersPerPage),
+              });
+              setCookies(
+                'usersPageNumber',
+                Math.ceil(user.totalUsersLength / usersPerPage)
+              );
+            }
+            // saveDataToWebDB(
+            //   user.data,
+            //   usersPageNumber,
+            //   user.totalUsersLength,
+            //   usersPerPage
+            // );
+            dispatch({ type: 'USERS', payload: user.data });
+            dispatch({ type: 'TOTAL_USERS', payload: user.totalUsersLength });
+            setCookies('totalUsers', user.totalUsersLength);
+            setLoading(false);
+          }
+        } catch (e) {
+          abortController.abort();
+          alertCall('error', e.toString(), () => {
             setLoading(false);
           });
-        } else {
-          //Fixe last page if after delete number of page is wrong
-          if(usersPageNumber >Math.ceil(user.totalUsersLength / usersPerPage) ){
-            dispatch({ type: 'USERS_PAGE_NUMBER', payload: Math.ceil(user.totalUsersLength / usersPerPage) });
-            setCookies('usersPageNumber', Math.ceil(user.totalUsersLength / usersPerPage))
-          }
-          dispatch({ type: 'USERS', payload: user.data });
-          dispatch({ type: 'TOTAL_USERS', payload: user.totalUsersLength });
-          setCookies('totalUsers', user.totalUsersLength)
-          setLoading(false);
         }
-      } catch (e) {
-        alertCall('error', e.toString(), () => {
-          setLoading(false);
-        });
-      }
-    };
+      };
 
-    getAllUser();
+      getAllUser();
+    }
 
     return () => {
       abortController.abort();
+      isMout = false;
     };
   }, [totalUsers, usersPerPage, usersPageNumber, usersSortBy]);
 
@@ -102,7 +125,6 @@ const useAllUsersHook = () => {
       payload: perRow,
     });
   }, [perRow]);
-
 
   const alertCall = (type, message, callback) => {
     const backgroundColor =
@@ -135,7 +157,7 @@ const useAllUsersHook = () => {
       cancelButtonColor: theme.palette.primary.main,
       confirmButtonText: `<i class="fa fa-thumbs-up" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('confrimDeleteButton')}<span>`,
+      }">${t('confirmDeleteButton')}<span>`,
       cancelButtonText: `<i class="fa fa-thumbs-down" ></i> <span style="color:${
         theme.palette.primary.contrastText
       }">${t('cancelDeleteButton')}<span>`,
@@ -174,7 +196,7 @@ const useAllUsersHook = () => {
               type: 'TOTAL_USERS',
               payload: response.totalUsersLength,
             });
-            setCookies('totalUsers', user.totalUsersLength)
+            setCookies('totalUsers', user.totalUsersLength);
             Swal.fire({
               title: 'Deleted!',
               ext: 'Your file has been deleted.',
@@ -204,7 +226,7 @@ const useAllUsersHook = () => {
     searchText,
     requestSearch,
     setSearchText,
-    rows
+    rows,
   };
 };
 

@@ -7,10 +7,11 @@ const initialState = {
   adminThemeType: 'light',
   adminLoadingBar: 0,
   adminFormSubmit: false,
-  stringLimit: 35,
+  stringLimit: 50,
   profile: {},
   usersCardView: true,
-  usersPerPage: 50,
+  usersPerPage: 48,
+  perPageArray: [6, 12, 24, 48, 96],
   usersGrid: 4,
   usersPageNumber: 1,
   users: [],
@@ -45,6 +46,8 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, usersGrid: payload };
     case 'USERS_PER_PAGE':
       return { ...state, usersPerPage: payload };
+    case 'PER_PAGE_ARRAY':
+      return { ...state, perPageArray: payload };
     case 'USERS_PAGE_NUMBER':
       return { ...state, usersPageNumber: payload };
     case 'USERS':

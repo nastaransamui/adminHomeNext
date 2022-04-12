@@ -38,7 +38,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'USERS_PER_PAGE',
             payload: checkCookies('usersPerPage', ctx)
               ? parseInt(getCookies(ctx).usersPerPage)
-              : 50,
+              : 48,
           })),
           ...(await store.dispatch({
             type: 'USERS_CARD_VIEW',
@@ -71,7 +71,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'USERS_PER_PAGE',
             payload: checkCookies('usersPerPage', ctx)
               ? parseInt(getCookies(ctx).usersPerPage)
-              : 50,
+              : 48,
           })),
           ...(await store.dispatch({
             type: 'USERS_CARD_VIEW',
