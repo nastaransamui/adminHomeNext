@@ -79,7 +79,7 @@ const SortBy = forwardRef((props, ref) => {
                           }));
                         }}>
                         <ListItemIcon>
-                          <Tooltip title='Account settings'>
+                          <Tooltip title={t('filterType')}>
                             <IconButton
                               size='large'
                               disableFocusRipple

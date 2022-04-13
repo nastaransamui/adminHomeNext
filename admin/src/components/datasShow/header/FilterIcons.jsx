@@ -5,16 +5,18 @@ import { Grid } from '@mui/material';
 import PerPageFilter from './PerPageFilter';
 import PerRowFilter from './PerRowFilter';
 import SortBy from './SortBy';
+import CsvExport from './CsvExport';
 
 const FilterIcons = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-  return(
+  return (
     <Grid ref={ref} container className={classes.Icon}>
+      <CsvExport {...props} />
       <PerPageFilter {...props} />
       <PerRowFilter {...props} />
       <SortBy {...props} />
     </Grid>
-  ) 
+  );
 });
 
 FilterIcons.propTypes = {

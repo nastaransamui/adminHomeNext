@@ -21,6 +21,7 @@ export default function Users(props) {
     requestSearch,
     searchText,
     rows: users,
+    alertCall
   } = useAllUsersHook();
 
   const { totalUsers, usersPerPage, usersPageNumber, usersCardView } =
@@ -50,6 +51,7 @@ export default function Users(props) {
             perPage={usersPerPage}
             mainData={users}
             profile
+            alertCall={alertCall}
             modelName='Users'
             deleteAlert={sweetAlert}
           />

@@ -1,6 +1,10 @@
 import { findUserById } from '../helpers/auth';
-import { awsSingleFile, singleFileMove } from '../helpers/aws';
-import { deleteSingleFile, deleteSingleS3 } from '../helpers/aws';
+import {
+  awsSingleFile,
+  singleFileMove,
+  deleteSingleFile,
+  deleteSingleS3,
+} from '../helpers/aws';
 
 // Upload files base on name of field in multiparty middleware and update body for save in DB
 export const createMiddleware = async (req, res, next) => {

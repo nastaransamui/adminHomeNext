@@ -8,6 +8,7 @@ import Users from '../../../models/Users';
 import { setCookies } from 'cookies-next';
 import { editMiddleware } from '../../../middleware/userMiddleware';
 import { deleteOnError } from '../../../helpers/aws';
+import hazelCast from '../../../helpers/hazelCast';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -58,7 +59,14 @@ apiRoute.post(
                 ErrorCode: err?.code,
               });
             } else {
-              const totalUser = await Users.find();
+              const totalUser = await Users.find().select('-password');
+              const { hzErrorConnection, hz } = await hazelCast();
+              if (!hzErrorConnection) {
+                const multiMap = await hz.getMultiMap('users');
+                await multiMap.destroy();
+                await multiMap.put('allUsers', totalUser);
+                await hz.shutdown();
+              }
               delete result.password;
               res.status(200).json({
                 success: true,

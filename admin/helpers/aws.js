@@ -9,6 +9,13 @@ import aws from 'aws-sdk';
 const path = require('path');
 const fse = require('fs-extra');
 import { v4 as uuidv4 } from 'uuid';
+const { NEXT_PBULIC_FOLDER_PUBLIC_UAT, NEXT_PBULIC_FOLDER_PUBLIC_LIVE } =
+  process.env;
+//Public Folder update
+const publicUrl =
+  process.env.NODE_ENV == 'development'
+    ? NEXT_PBULIC_FOLDER_PUBLIC_UAT
+    : NEXT_PBULIC_FOLDER_PUBLIC_LIVE;
 
 aws.config.update({
   region: process.env.S3_AWS_REGION,
@@ -53,7 +60,7 @@ export const singleFileMove = async (req, res, next, key) => {
     const { fileName, fileType, path: filePath } = req.files;
     const publicFolder = `${process.cwd()}/public/${key}`;
     const uniqueName = uuidv4();
-    const url = process.env.NEXT_PUBLIC_ADMIN_URL;
+    const url = publicUrl;
     const fileExtention = path.extname(fileName);
     const location = `${url}/${key}/${uniqueName}${fileExtention}`;
     const Key = `${publicFolder}/${uniqueName}${fileExtention}`;
