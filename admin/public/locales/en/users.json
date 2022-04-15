@@ -50,5 +50,10 @@
   "cancelDeleteButton": "Cancell",
   "information": "User information",
   "expand": "See more information",
-  "notDefine": "This field not provided."
+  "notDefine": "This field not provided.",
+  "csvExport": "Export data in csv format",
+  "actions": "Actions",
+  "Page": "Page",
+  "deleted": "Deleted!",
+  "deleteSuccess": "Your file has been deleted."
 }

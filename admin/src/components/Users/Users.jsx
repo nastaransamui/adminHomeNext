@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import DataShow from '../datasShow/DataShow';
 import { useTheme } from '@mui/styles';
 
-import { createUrl, editUrl, userFields } from './usersStatic';
+import { createUrl, dataGridColumns, editUrl, userFields } from './usersStatic';
 
 export default function Users(props) {
   const { t } = useTranslation('users');
@@ -31,11 +31,7 @@ export default function Users(props) {
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
-      {users.length == 0 && loading ? (
-        <Grid container spacing={2}>
-          <CircleToBlockLoading color={theme.palette.secondary.main} />
-        </Grid>
-      ) : (
+      
         <Fragment>
           <DataShow
             {...props}
@@ -54,9 +50,10 @@ export default function Users(props) {
             alertCall={alertCall}
             modelName='Users'
             deleteAlert={sweetAlert}
+            loading={loading}
+            dataGridColumns={dataGridColumns}
           />
         </Fragment>
-      )}
     </Container>
   );
 }

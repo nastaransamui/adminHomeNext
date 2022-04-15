@@ -16,6 +16,8 @@ import users_en from '../public/locales/en/users.json';
 import users_fa from '../public/locales/fa/users.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
+import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
+import dataGridLocale_fa from '../public/locales/fa/dataGridLocale.json';
 import i18next from 'i18next';
 import { withTranslation, useTranslation } from 'react-i18next';
 import detector from 'i18next-browser-languagedetector';
@@ -69,6 +71,7 @@ i18next
         404: error_en,
         footer: footer_en,
         users: users_en,
+        dataGridLocale: dataGridLocale_en,
       },
       fa: {
         common: common_fa,
@@ -76,6 +79,7 @@ i18next
         404: error_fa,
         footer: footer_fa,
         users: users_fa,
+        dataGridLocale: dataGridLocale_fa,
       },
     },
   });

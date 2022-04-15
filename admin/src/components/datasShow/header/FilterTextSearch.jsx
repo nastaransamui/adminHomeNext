@@ -17,7 +17,7 @@ const FilterTextSearch = forwardRef((props, ref) => {
     <Grid container className={classes.toolbarText}>
       {
         // Show only on cardView
-        usersCardView && (
+        // usersCardView && (
           <TextField
           autoComplete='off'
             variant='standard'
@@ -53,7 +53,7 @@ const FilterTextSearch = forwardRef((props, ref) => {
               ),
             }}
           />
-        )
+        // )
       }
     </Grid>
   );

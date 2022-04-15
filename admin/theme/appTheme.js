@@ -163,6 +163,13 @@ const appTheme = (color, mode, dir) => {
           },
         },
       },
+      MuiDataGrid: {
+        styleOverrides: {
+          footerContainer: {
+            display: 'none',
+          },
+        },
+      },
     },
   });
 

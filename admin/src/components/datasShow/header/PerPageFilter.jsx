@@ -34,7 +34,7 @@ const PerPageFilter = forwardRef((props, ref) => {
   const { usersCardView } = useSelector((state) => state);
   return (
     <Fragment ref={ref}>
-      {usersCardView && (
+      
         <>
           <Tooltip title={t('perPage')} arrow placement='bottom'>
             <IconButton
@@ -114,7 +114,6 @@ const PerPageFilter = forwardRef((props, ref) => {
             </List>
           </Popover>
         </>
-      )}{' '}
     </Fragment>
   );
 });

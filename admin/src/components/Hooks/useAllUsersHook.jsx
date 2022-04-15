@@ -7,7 +7,6 @@ import Alert from 'react-s-alert';
 import Swal from 'sweetalert2';
 import usePerRowHook from './usePerRowHook';
 
-
 const getAllUserUrl = `/admin/api/users/getAll`;
 const deleteUserUrl = `/admin/api/users/delete`;
 
@@ -91,12 +90,6 @@ const useAllUsersHook = () => {
                 Math.ceil(user.totalUsersLength / usersPerPage)
               );
             }
-            // saveDataToWebDB(
-            //   user.data,
-            //   usersPageNumber,
-            //   user.totalUsersLength,
-            //   usersPerPage
-            // );
             dispatch({ type: 'USERS', payload: user.data });
             dispatch({ type: 'TOTAL_USERS', payload: user.totalUsersLength });
             setCookies('totalUsers', user.totalUsersLength);
@@ -198,8 +191,8 @@ const useAllUsersHook = () => {
             });
             setCookies('totalUsers', user.totalUsersLength);
             Swal.fire({
-              title: 'Deleted!',
-              ext: 'Your file has been deleted.',
+              title: t('deleted'),
+              ext: t("deleteSuccess"),
               icon: 'success',
               confirmButtonColor: theme.palette.primary.main,
               background: theme.palette.background.default,

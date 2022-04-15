@@ -7,7 +7,7 @@ const initialState = {
   adminThemeType: 'light',
   adminLoadingBar: 0,
   adminFormSubmit: false,
-  stringLimit: 50,
+  stringLimit: 40,
   profile: {},
   usersCardView: true,
   usersPerPage: 48,

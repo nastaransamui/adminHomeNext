@@ -58,7 +58,6 @@ const CsvExport = forwardRef((props, ref) => {
 
   return (
     <Fragment ref={ref}>
-      {usersCardView && (
         <>
           <Tooltip title={t('csvExport')} arrow placement='bottom'>
             <IconButton
@@ -71,7 +70,6 @@ const CsvExport = forwardRef((props, ref) => {
             </IconButton>
           </Tooltip>
         </>
-      )}
     </Fragment>
   );
 });

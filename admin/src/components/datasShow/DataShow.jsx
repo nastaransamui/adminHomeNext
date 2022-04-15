@@ -49,7 +49,9 @@ DataShow.propTypes = {
   modelName: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   editUrl: PropTypes.string.isRequired,
-  deleteAlert: PropTypes.func.isRequired
+  deleteAlert: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  dataGridColumns: PropTypes.array.isRequired
 };
 
 export default DataShow;
