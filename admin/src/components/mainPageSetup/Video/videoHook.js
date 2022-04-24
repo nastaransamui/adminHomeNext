@@ -51,25 +51,33 @@ const videoHook = () => {
 
   const uploadFile = (e) => {
     const random = (Math.random() + 1).toString(36).substring(7);
+    const isVercel =
+      process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
     if (e.currentTarget.files.length > 0) {
       let file = e.currentTarget.files[0];
-      let blob = file.slice(0, file.size, file.type);
-      let newFile = new File([blob], random + file.name, {
-        type: file.type,
-      });
-      values[e.target.name] = newFile;
-      switch (e.target.name) {
-        case 'videoLink':
-          setVideoLinkBlob(URL.createObjectURL(newFile));
-          break;
-        case 'imageMobileShow':
-          setImageMobileBlob(URL.createObjectURL(newFile));
-          break;
-        case 'videoPoster':
-          setVideoPosterBlob(URL.createObjectURL(newFile));
-          break;
+      if (isVercel && file.size > 4999999) {
+        alertCall('error', t('isVercelFileSize'), () => {
+          return false;
+        });
+      } else {
+        let blob = file.slice(0, file.size, file.type);
+        let newFile = new File([blob], random + file.name, {
+          type: file.type,
+        });
+        values[e.target.name] = newFile;
+        switch (e.target.name) {
+          case 'videoLink':
+            setVideoLinkBlob(URL.createObjectURL(newFile));
+            break;
+          case 'imageMobileShow':
+            setImageMobileBlob(URL.createObjectURL(newFile));
+            break;
+          case 'videoPoster':
+            setVideoPosterBlob(URL.createObjectURL(newFile));
+            break;
+        }
+        setValues((oldValues) => ({ ...oldValues }));
       }
-      setValues((oldValues) => ({ ...oldValues }));
     }
   };
 

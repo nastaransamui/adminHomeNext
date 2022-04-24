@@ -55,5 +55,6 @@
   "deleted": "Deleted!",
   "deleteSuccess": "Your file has been deleted.",
   "videoEdited": "Video was successfully edited.",
-  "VideosNotfind": "This video is not exist."
+  "VideosNotfind": "This video is not exist.",
+  "isVercelFileSize": "In this environment the biggest file to upload should be less than 5mb."
 }

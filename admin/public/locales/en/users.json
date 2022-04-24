@@ -55,5 +55,6 @@
   "actions": "Actions",
   "Page": "Page",
   "deleted": "Deleted!",
-  "deleteSuccess": "Your file has been deleted."
+  "deleteSuccess": "Your file has been deleted.",
+  "isVercelFileSize": "In this environment the biggest file to upload should be less than 5mb."
 }

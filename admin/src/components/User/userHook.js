@@ -59,15 +59,23 @@ const userHook = () => {
 
   const uploadImage = (e) => {
     const random = (Math.random() + 1).toString(36).substring(7);
+    const isVercel =
+      process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
     if (e.currentTarget.files.length > 0) {
       let file = e.currentTarget.files[0];
-      let blob = file.slice(0, file.size, file.type);
-      let newFile = new File([blob], random + file.name, {
-        type: file.type,
-      });
-      setProfileImageBlob(URL.createObjectURL(newFile));
-      values[e.target.name] = newFile;
-      setValues((oldValue) => ({ ...oldValue }));
+      if (isVercel && file.size > 4999999) {
+        alertCall('error', t('isVercelFileSize'), () => {
+          return false;
+        });
+      } else {
+        let blob = file.slice(0, file.size, file.type);
+        let newFile = new File([blob], random + file.name, {
+          type: file.type,
+        });
+        setProfileImageBlob(URL.createObjectURL(newFile));
+        values[e.target.name] = newFile;
+        setValues((oldValue) => ({ ...oldValue }));
+      }
     }
   };
 
