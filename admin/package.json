@@ -73,9 +73,11 @@
     "react-scrollspy": "^3.4.3",
     "react-slick": "^0.28.1",
     "react-top-loading-bar": "^2.1.0",
+    "react-youtube": "^8.2.1",
     "sweetalert2": "^11.3.3",
     "swr": "^1.1.2",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "video-react": "^0.15.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.1.2",

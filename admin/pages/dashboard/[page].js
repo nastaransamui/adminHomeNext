@@ -50,40 +50,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
         }
       }
     );
-
-    // (async () => {
-    //   try {
-    //     // Start the Hazelcast Client and connect to an already running
-    //     function createClientConfig() {
-    //       return {
-    //         network: {
-    //           hazelcastCloud: {
-    //             discoveryToken:
-    //               'v9mHgeKTFZvmk6usx187IiEmPEK9CztpENfHzDt8Ce8jDjuzxo',
-    //           },
-    //         },
-    //         clusterName: 'pr-3142',
-    //         properties: {
-    //           'hazelcast.client.statistics.enabled': true,
-    //           'hazelcast.client.statistics.period.seconds': 1,
-    //         },
-    //       };
-    //     }
-    //     const hz = await Client.newHazelcastClient();
-    //     // Get the Distributed Map from Cluster
-    //     const map = await hz.getMap('my-distributed-map');
-    //     // Standard Put and Get
-    //     await map.put('key', 'value');
-    //     await map.get('key');
-    //     // Concurrent Map methods, optimistic updating
-    //     await map.putIfAbsent('somekey', 'somevalue');
-    //     await map.replace('key', 'value', 'newvalue');
-    //     // Shutdown this Hazelcast client
-    //     await hz.shutdown();
-    //   } catch (err) {
-    //     console.error('Error occurred:', err);
-    //   }
-    // })();
     if (checkCookies('adminAccessToken', ctx)) {
       return {
         props: {
@@ -129,6 +95,27 @@ export const getServerSideProps = wrapper.getServerSideProps(
                   sorting: -1,
                 },
           })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_PAGE_NUMBER',
+            payload: checkCookies('videosPageNumber', ctx)
+              ? parseInt(getCookies(ctx).videosPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_SORT_BY',
+            payload: checkCookies('videosSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).videosSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
+              : true,
+          })),
         },
       };
     } else {
@@ -171,6 +158,27 @@ export const getServerSideProps = wrapper.getServerSideProps(
                   field: 'createdAt',
                   sorting: -1,
                 },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_PAGE_NUMBER',
+            payload: checkCookies('videosPageNumber', ctx)
+              ? parseInt(getCookies(ctx).videosPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_SORT_BY',
+            payload: checkCookies('videosSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).videosSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
+              : true,
           })),
         },
         redirect: {

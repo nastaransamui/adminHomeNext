@@ -7,7 +7,7 @@ import { findUserById, hashPassword, jwtSign } from '../../../helpers/auth';
 import Users from '../../../models/Users';
 import { setCookies } from 'cookies-next';
 import { editMiddleware } from '../../../middleware/userMiddleware';
-import { deleteOnError } from '../../../helpers/aws';
+import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
 
 const apiRoute = nextConnect({
@@ -62,7 +62,7 @@ apiRoute.post(
               const totalUser = await Users.find().select('-password');
               const { hzErrorConnection, hz } = await hazelCast();
               if (!hzErrorConnection) {
-                const multiMap = await hz.getMultiMap('users');
+                const multiMap = await hz.getMultiMap('Users');
                 await multiMap.destroy();
                 await multiMap.put('allUsers', totalUser);
                 await hz.shutdown();
@@ -77,7 +77,7 @@ apiRoute.post(
           });
         });
       } catch (error) {
-        deleteOnError(req, res, next);
+        deleteFsAwsError(req, res, next);
         res.status(500).json({ success: false, Error: error.toString() });
       }
     }

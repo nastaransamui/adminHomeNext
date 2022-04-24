@@ -116,6 +116,7 @@ export default function NavbarLinks(props) {
   });
 
   const logOut = async () => {
+    dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
     const res = await fetch(
       `/admin/api/auth/logout`,
       {
@@ -132,6 +133,7 @@ export default function NavbarLinks(props) {
         type: 'ADMIN_ACCESS_TOKEN',
         payload: null,
       });
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
       router.push('/');
     } else {
       Alert.error('', {

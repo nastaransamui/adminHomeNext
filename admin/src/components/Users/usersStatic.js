@@ -9,47 +9,59 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export const editUrl = '/admin/dashboard/user-page';
 export const createUrl = '/admin/dashboard/user-page/user';
+export const getAllUserUrl = `/admin/api/mainPageSetup/getAll`;
+export const deleteUserUrl = `/admin/api/mainPageSetup/delete`;
+export const exportCsvUrl = `/admin/api/users/export`;
 export const userFields = [
   {
     Icon: InfoIcon,
     label: 'aboutMe',
+    type: 'string',
   },
   {
     Icon: BadgeIcon,
     label: 'firstName',
+    type: 'string',
   },
   {
     Icon: BadgeIcon,
     label: 'lastName',
+    type: 'string',
   },
   {
     Icon: LocationCityIcon,
     label: 'city',
+    type: 'string',
   },
   {
     Icon: FlagIcon,
     label: 'country',
+    type: 'string',
   },
   {
     Icon: Public,
     label: 'position',
+    type: 'string',
   },
   {
     Icon: People,
     label: 'isAdmin',
+    type: 'boolean',
   },
   {
     Icon: EventIcon,
     label: 'updatedAt',
+    type: 'string',
   },
   {
     Icon: EventIcon,
     label: 'createdAt',
+    type: 'string',
   },
-  ,
   {
     Icon: AccountCircleIcon,
     label: 'userName',
+    type: 'string',
   },
 ];
 
@@ -62,6 +74,7 @@ export const dataGridColumns = [
     type: 'string',
     filterable: true,
     hasAvatar: [true, 'profileImage'],
+    hasVideo: [false, ''],
   },
   {
     field: 'createdAt', // Db name
@@ -70,7 +83,8 @@ export const dataGridColumns = [
     width: 200,
     type: 'dateTime',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'updatedAt', // Db name
@@ -79,7 +93,8 @@ export const dataGridColumns = [
     width: 200,
     type: 'dateTime',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'isAdmin', // Db name
@@ -88,7 +103,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'boolean',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'firstName', // Db name
@@ -97,7 +113,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'lastName', // Db name
@@ -106,7 +123,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'city', // Db name
@@ -115,7 +133,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'country', // Db name
@@ -124,7 +143,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'position', // Db name
@@ -133,7 +153,8 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
   {
     field: 'aboutMe', // Db name
@@ -142,6 +163,7 @@ export const dataGridColumns = [
     width: 140,
     type: 'string',
     filterable: true,
-    hasAvatar: [false, 'profileImage'],
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
   },
 ];

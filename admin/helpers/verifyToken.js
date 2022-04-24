@@ -1,3 +1,7 @@
+/**
+ * verify token base on jwd secret key
+ */
+
 const jwt = require('jsonwebtoken');
 
 function verify(req, res, next) {

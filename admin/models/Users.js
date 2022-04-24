@@ -7,6 +7,8 @@ const UsersSchema = new mongoose.Schema(
     password: { type: String, required: true },
     profileImage: { type: String, default: '' },
     profileImageKey: { type: String, default: '' },
+    finalFolder: { type: String, required: true },
+    folderId: { type: String, required: true },
     firstName: { type: String },
     lastName: { type: String },
     city: { type: String },

@@ -31,7 +31,7 @@ import {
 } from '@mui/material';
 
 import { useTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { CircleToBlockLoading } from 'react-loadingg';
 import {
   ValidatorForm,
@@ -41,7 +41,7 @@ import {
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useQuery } from '../../pages/dashboard/ReactRouter';
-import useFormHook from '../Hooks/useFormHook';
+import userHook from './userHook';
 
 export default function User(props) {
   const { rtlActive } = props;
@@ -49,19 +49,18 @@ export default function User(props) {
   const _id = query.get('_id');
   const classes = userStyle();
   const { t } = useTranslation('users');
-  const location = useLocation();
   const theme = useTheme();
   const history = useHistory();
   const pushUrl = '/admin/dashboard/user-page';
   const {
     values,
+    setValues,
     handleChange,
-    loading,
-    profileImage,
+    profileImageBlob,
     uploadImage,
     deleteImage,
     formSubmit,
-  } = useFormHook(_id, location);
+  } = userHook();
 
   useEffect(() => {
     ValidatorForm.addValidationRule(isRegex(values.password));
@@ -72,11 +71,6 @@ export default function User(props) {
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
-      {loading ? (
-        <Grid container spacing={2}>
-          <CircleToBlockLoading color={theme.palette.secondary.main} />
-        </Grid>
-      ) : (
         <Fragment>
           <Tooltip title={t('goBack')} arrow placement='bottom'>
             <IconButton
@@ -93,7 +87,7 @@ export default function User(props) {
                   <CardIcon color='rose' style={{ cursor: 'pointer' }}>
                     <input
                       type='file'
-                      id='profileImage'
+                      id='profileImageBlob'
                       name='profileImage'
                       hidden
                       onChange={(e) => {
@@ -103,11 +97,11 @@ export default function User(props) {
                     />
                     <Tooltip
                       title={
-                        profileImage == '' ? t('uploadImage') : t('changeImage')
+                        profileImageBlob == '' ? t('uploadImage') : t('changeImage')
                       }
                       arrow>
-                      {profileImage == '' ? (
-                        <label htmlFor='profileImage'>
+                      {profileImageBlob == '' ? (
+                        <label htmlFor='profileImageBlob'>
                           <img
                             src={avatar.src}
                             alt='..'
@@ -115,9 +109,9 @@ export default function User(props) {
                           />
                         </label>
                       ) : (
-                        <label htmlFor='profileImage'>
+                        <label htmlFor='profileImageBlob'>
                           <img
-                            src={profileImage}
+                            src={profileImageBlob}
                             alt='..'
                             className={classes.smallAvatar}
                           />
@@ -130,7 +124,7 @@ export default function User(props) {
                       {t('editProfile')} -{' '}
                       <small>{t('completeProfile')} </small>
                     </h4>
-                    {profileImage !== '' && (
+                    {profileImageBlob !== '' && (
                       <Tooltip title={t('deleteImage')} arrow>
                         <IconButton
                           onClick={() => {
@@ -343,7 +337,7 @@ export default function User(props) {
             </Grid>
             <Grid item xs={12} sm={12} md={4}>
               <Card profile>
-                {profileImage == '' ? (
+                {profileImageBlob == '' ? (
                   <CardHeader color='rose' icon>
                     <CardAvatar profile>
                       <img src={avatar.src} alt='..' />
@@ -362,7 +356,7 @@ export default function User(props) {
                 ) : (
                   <>
                     <CardAvatar profile>
-                      <img src={profileImage} alt='..' />
+                      <img src={profileImageBlob} alt='..' />
                     </CardAvatar>
                     <h4 className={classes.cardIconTitle}>
                       {values.userName}
@@ -391,7 +385,6 @@ export default function User(props) {
             </Grid>
           </Grid>
         </Fragment>
-      )}
     </Container>
   );
 }

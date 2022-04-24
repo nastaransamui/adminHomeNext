@@ -1,8 +1,8 @@
 import Users from '../models/Users';
 import {
-  awsSingleFile,
-  singleFileMove,
-  deleteSingleFile,
+  awsCreateSingle,
+  fsCreateSingle,
+  fsDeleteSingle,
 } from '../helpers/aws';
 const fs = require('fs');
 const path = require('path');
@@ -73,7 +73,8 @@ export const downloadMiddleware = async (req, res, next) => {
         },
         {
           label: 'User Discription',
-          value: (fields) => fields['aboutMe'].replace(/[\r\n]+/g, ' '),
+          //Todo fix values from social media
+          value: (fields) => fields['aboutMe']?.replace(/[\r\n]+/g, ' '),
         },
       ];
       const opts = { fields };
@@ -97,17 +98,17 @@ export const downloadMiddleware = async (req, res, next) => {
               }
               res.setHeader('Content-Type', 'image/jpg');
               req.body.isVercel = isVercel;
-              req.files = {
-                fileName: 'users.csv',
-                path: '/tmp/users.csv',
-                finalFolder: req.body.finalFolder,
-              };
+              req.files = [
+                {
+                  fileName: 'users.csv',
+                  path: '/tmp/users.csv',
+                  finalFolder: req.body.finalFolder,
+                },
+              ];
               if (isVercel) {
-                await awsSingleFile(req, res, next, req.body.finalFolder);
-                //delete from /tmp
-                deleteSingleFile(res, next, req.files.path);
+                await awsCreateSingle(req, res, next);
               } else {
-                await singleFileMove(req, res, next, req.body.finalFolder);
+                await fsCreateSingle(req, res, next);
               }
             }
           );

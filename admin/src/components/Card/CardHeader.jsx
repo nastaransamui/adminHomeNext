@@ -1,10 +1,11 @@
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
+import React from 'react'
 
 import cardHeaderStyle from "./card-header-style";
 
-export default function CardHeader(props) {
+function CustomCardHeader(props, ref) {
   const classes = cardHeaderStyle();
   const {
     className,
@@ -32,11 +33,14 @@ export default function CardHeader(props) {
     [className]: className !== undefined,
   });
   return (
-    <div className={cardHeaderClasses} {...rest}>
+    <div className={cardHeaderClasses} {...rest} ref={ref}>
       {children}
     </div>
   );
 }
+
+const CardHeader = React.forwardRef(CustomCardHeader);
+export default CardHeader;
 
 CardHeader.propTypes = {
   className: PropTypes.string,

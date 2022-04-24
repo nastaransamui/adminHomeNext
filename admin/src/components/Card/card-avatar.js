@@ -29,6 +29,7 @@ const cardAvatarStyle = makeStyles((theme) => {
         ', 0.2)',
       '&$cardAvatarPlain': {
         marginTop: '0',
+        borderRadius: 25,
       },
     },
     cardAvatarPlain: {},

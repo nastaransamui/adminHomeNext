@@ -46,6 +46,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
               ? JSON.parse(getCookies(ctx).usersCardView)
               : true,
           })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
+              : true,
+          })),
         },
         redirect: {
           permanent: false,
@@ -77,6 +83,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'USERS_CARD_VIEW',
             payload: checkCookies('usersCardView', ctx)
               ? JSON.parse(getCookies(ctx).usersCardView)
+              : true,
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
               : true,
           })),
         },

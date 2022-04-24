@@ -5,8 +5,9 @@
 /.pnp
 .pnp.js
 
-/public/profileImage
+/public/users
 /public/download
+/public/videos
 
 # testing
 /coverage

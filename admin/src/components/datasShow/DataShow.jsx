@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
-import CardsShowBody from './cardsbody/CardsShowBody';
-import CardsShowHeader from './header/CardsShowHeader';
-import TableBody from './tableBody/TableBody';
+import Main from './cardsView/Main';
+import MainHeader from './headerView/MainHeader';
+import TableBody from './tableView/TableBody';
 
 import { styled } from '@mui/material/styles';
 import { Container } from '@mui/material';
@@ -19,9 +19,9 @@ const DataShow = forwardRef((props, ref) => {
   const { cardView } = props;
   return (
     <div ref={ref}>
-      <CardsShowHeader {...props} />
+      <MainHeader {...props} />
       <BodyBox maxWidth='xl'>
-        {cardView ? <CardsShowBody {...props} /> : <TableBody {...props} />}
+        {cardView ? <Main {...props} /> : <TableBody {...props} />}
       </BodyBox>
     </div>
   );
@@ -50,8 +50,18 @@ DataShow.propTypes = {
   t: PropTypes.func.isRequired,
   editUrl: PropTypes.string.isRequired,
   deleteAlert: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  dataGridColumns: PropTypes.array.isRequired
+  dataGridColumns: PropTypes.array.isRequired,
+  paginationChange: PropTypes.func.isRequired,
+  perPageFunc: PropTypes.func.isRequired,
+  sortByFunc: PropTypes.func.isRequired,
+  sortByValues: PropTypes.object.isRequired,
+  exportCsv: PropTypes.func,
+  movie: PropTypes.bool,
+  cardHeaderType: PropTypes.object.isRequired,
+  cardAvatarType: PropTypes.object.isRequired,
+  cardViewsFunc: PropTypes.func.isRequired,
+  gridNumberFunc: PropTypes.func.isRequired,
+  gridNumber: PropTypes.number.isRequired
 };
 
 export default DataShow;

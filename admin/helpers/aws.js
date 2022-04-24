@@ -1,6 +1,5 @@
 /**
- * After update body on userFieldsUpdate with serverles or server
- * upload or delete files from s3 or from file system
+ * All s3 and fs move and delete files and folders
  */
 
 import fs from 'fs';
@@ -25,10 +24,9 @@ aws.config.update({
 const s3Bucket = process.env.S3_AWS_BUCKET;
 const s3 = new aws.S3(); // Create a new instance of S3
 
-//function for save in S3
-export const awsSingleFile = async (req, res, next, key) => {
-  const { fileName, fileType, path } = req.files;
-
+export const awsCreateSingle = async (req, res, next) => {
+  const { fileName, fileType, path } = req.files[0];
+  const key = req.body.finalFolder;
   const s3Params = {
     Bucket: s3Bucket,
     ContentType: fileType,
@@ -40,7 +38,7 @@ export const awsSingleFile = async (req, res, next, key) => {
   try {
     s3.upload(s3Params, async (err, data) => {
       if (err) {
-        deleteSingleFile(res, next, req.files.path);
+        fsDeleteSingle(res, next, req.files.path);
         res.status(401).json({ success: false, Error: err });
       } else {
         req.body[key] = data.Location;
@@ -54,10 +52,112 @@ export const awsSingleFile = async (req, res, next, key) => {
   }
 };
 
-//function for move file inside server(isVercel = flase)
-export const singleFileMove = async (req, res, next, key) => {
+export const awsCreateMulti = async (req, res, next) => {
+  const { finalFolder, folderId } = req.body;
+  // Array to wait till all datas come
+  var ResponseData = [];
+  req.files.map((file) => {
+    var s3Params = {
+      Bucket: s3Bucket,
+      ContentType: file.fileType,
+      Body: fs.createReadStream(file.path),
+      ACL: 'public-read',
+      Key: `${finalFolder}/${folderId}/${file.fileName}`,
+    };
+    try {
+      s3.upload(s3Params, async (err, data) => {
+        if (err) {
+          console.log(err);
+          res.status(401).json({ success: false, Error: err });
+        } else {
+          req.body[file.finalFolder] = data.Location;
+          req.body[`${file.finalFolder}Key`] = data.Key;
+          ResponseData.push(data);
+          if (ResponseData.length == req.files.length) next();
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, Error: error.toString() });
+    }
+  });
+};
+
+export const awsEditMulti = async (req, res, next) => {
+  var s3Params = {
+    Bucket: s3Bucket,
+    Delete: {
+      Objects: req.files.map((file) => {
+        return { Key: req.body[`${file.finalFolder}Key`] };
+      }),
+    },
+  };
   try {
-    const { fileName, fileType, path: filePath } = req.files;
+    s3.deleteObjects(s3Params, async (err, data) => {
+      if (err) {
+        res.status(403).json({
+          success: false,
+          Error: err.toString(),
+          ErrorCode: err?.code,
+        });
+      } else {
+        awsCreateMulti(req, res, next);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, Error: error.toString() });
+  }
+};
+
+export const awsDeleteSingle = async (res, next, fileKey) => {
+  s3.deleteObject({ Bucket: s3Bucket, Key: fileKey }, (error) => {
+    if (error) {
+      res.status(403).json({
+        success: false,
+        Error: error.toString(),
+        ErrorCode: error?.code,
+      });
+    }
+    // next();
+  });
+};
+
+export const awsDeleteObjectsFolder = async (res, next, newFolder) => {
+  const listParams = {
+    Bucket: s3Bucket,
+    Prefix: newFolder,
+  };
+
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+  // console.log(listedObjects);
+  if (listedObjects.Contents.length === 0) next();
+  const deleteParams = {
+    Bucket: s3Bucket,
+    Delete: { Objects: [] },
+  };
+
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key });
+  });
+  s3.deleteObjects(deleteParams, (error, data) => {
+    if (error) {
+      res.status(403).json({
+        success: false,
+        Error: error.toString(),
+        ErrorCode: error?.code,
+      });
+    } else {
+      next();
+    }
+  });
+};
+
+export const fsCreateSingle = async (req, res, next) => {
+  try {
+    const key = req.body.finalFolder;
+    console.log(req.files[0]);
+    console.log(req.body);
+    const { fileName, fileType, path: filePath } = req.files[0];
     const publicFolder = `${process.cwd()}/public/${key}`;
     const uniqueName = uuidv4();
     const url = publicUrl;
@@ -78,7 +178,7 @@ export const singleFileMove = async (req, res, next, key) => {
       })
       .catch((err) => {
         console.log(err);
-        deleteSingleFile(res, next, filePath);
+        fsDeleteSingle(res, next, filePath);
         res.status(401).json({ success: false, Error: err });
       });
   } catch (error) {
@@ -86,12 +186,115 @@ export const singleFileMove = async (req, res, next, key) => {
   }
 };
 
-//Delete file if error
-export const deleteOnError = async (req, res, next) => {
+export const fsCreateMulti = async (req, res, next) => {
+  try {
+    const { finalFolder, folderId } = req.body;
+    const publicFolder = `${process.cwd()}/public`;
+    const newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+    const url = publicUrl;
+
+    // check if profileImage directory exists
+    if (!fs.existsSync(newFolder)) {
+      fs.mkdirSync(newFolder, { recursive: true });
+    }
+    try {
+      for (const element of req.files) {
+        const fileExtention = path.extname(element.fileName);
+        const uniqueName = uuidv4();
+        const location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
+        const Key = `${newFolder}/${uniqueName}${fileExtention}`;
+        await fse
+          .move(element.path, Key)
+          .then(async () => {
+            req.body[element.finalFolder] = location;
+            req.body[`${element.finalFolder}Key`] = Key;
+          })
+          .catch((err) => {
+            fsDeleteObjectsFolder(res, next, newFolder);
+            res.status(401).json({ success: false, Error: err.toString() });
+          });
+      }
+      next();
+    } catch (error) {
+      fsDeleteObjectsFolder(res, next, newFolder);
+      res.status(500).json({ success: false, Error: error.toString() });
+    }
+  } catch (error) {
+    fsDeleteObjectsFolder(res, next, newFolder);
+    res.status(500).json({ success: false, Error: error.toString() });
+  }
+};
+
+export const fsEditMulti = async (req, res, next) => {
+  try {
+    const { finalFolder, folderId } = req.body;
+    const publicFolder = `${process.cwd()}/public`;
+    const newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+    const url = publicUrl;
+
+    try {
+      for (const element of req.files) {
+        if (req.body[`${element.finalFolder}Key`] !== '') {
+          fs.unlinkSync(req.body[`${element.finalFolder}Key`]);
+        }
+        const fileExtention = path.extname(element.fileName);
+        const uniqueName = uuidv4();
+        const location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
+        const Key = `${newFolder}/${uniqueName}${fileExtention}`;
+        await fse
+          .move(element.path, Key)
+          .then(async () => {
+            req.body[element.finalFolder] = location;
+            req.body[`${element.finalFolder}Key`] = Key;
+          })
+          .catch((err) => {
+            fsDeleteObjectsFolder(res, next, newFolder);
+            res.status(401).json({ success: false, Error: err.toString() });
+          });
+      }
+      next();
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, Error: error.toString() });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, Error: error.toString() });
+  }
+};
+
+export const fsDeleteSingle = async (res, next, fileKey) => {
+  fs.unlink(fileKey, (error) => {
+    if (error) {
+      console.log(error);
+      res.status(403).json({
+        success: false,
+        Error: error.toString(),
+        ErrorCode: error?.code,
+      });
+    }
+  });
+};
+
+export const fsDeleteObjectsFolder = async (res, next, newFolder) => {
+  fs.rmSync(newFolder, { recursive: true, force: true }, (error) => {
+    if (error) {
+      console.log(error);
+      res.status(403).json({
+        success: false,
+        Error: error.toString(),
+        ErrorCode: error?.code,
+      });
+    }
+  });
+  next();
+};
+
+export const deleteFsAwsError = async (req, res, next) => {
   //Check that form has some files to
-  if (Object.keys(req.files).length !== 0) {
+  if (req.files.length !== 0) {
     // create Key for delete file from S3 or filesystem
-    const key = req.body[`${req.files.finalFolder}Key`];
+    const key = req.body[`${req.files[0].finalFolder}Key`];
     if (req.body.isVercel) {
       s3.deleteObject({ Bucket: s3Bucket, Key: key }, (error) => {
         if (error) {
@@ -117,31 +320,4 @@ export const deleteOnError = async (req, res, next) => {
     }
   }
   next();
-};
-
-export const deleteSingleS3 = async (res, next, fileKey) => {
-  s3.deleteObject({ Bucket: s3Bucket, Key: fileKey }, (error) => {
-    if (error) {
-      console.log(error);
-      res.status(403).json({
-        success: false,
-        Error: error.toString(),
-        ErrorCode: error?.code,
-      });
-    }
-    // next();
-  });
-};
-
-export const deleteSingleFile = async (res, next, fileKey) => {
-  fs.unlink(fileKey, (error) => {
-    if (error) {
-      console.log(error);
-      res.status(403).json({
-        success: false,
-        Error: error.toString(),
-        ErrorCode: error?.code,
-      });
-    }
-  });
 };

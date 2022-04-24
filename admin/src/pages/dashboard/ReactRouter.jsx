@@ -1,11 +1,13 @@
-import { useEffect,useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import NotFound from './NotFound';
 import MainDashboard from '../../components/mainDashboard/MainDashboard';
 import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
-import Users from '../user-page/UsersPage';
+import UsersPage from '../user-page/UsersPage';
 import User from '../../components/User/User';
+import VideosPage from '../video-page/VideoPage'
+import Video from '../../components/mainPageSetup/Video/Video';
 
 export function NotFoundPage() {
   return null;
@@ -37,9 +39,9 @@ export function CustomSwitch(props) {
   const location = useLocation();
   let query = useQuery();
   // check if current path has query or not and compare with react Route
-  let {pathname, search} = location;
+  let { pathname, search } = location;
 
-  let fullPath = query.toString().length == 0 ? pathname : pathname
+  let fullPath = query.toString().length == 0 ? pathname : pathname;
   // //Mix pathname with search param and remove the '=' and '?' sign
   // pathname.concat('/', search.replace('?', '')).substring(0, pathname.concat('/', search.replace('?', '')).indexOf('='))
 
@@ -48,7 +50,7 @@ export function CustomSwitch(props) {
   let showErrorPage = !reactPath.includes(fullPath);
   useEffect(() => {
     if (showErrorPage) history.push('/admin/dashboard/notfoundpage');
-  }, [router,  location,query, showErrorPage, search]);
+  }, [router, location, query, showErrorPage, search]);
   return (
     <Switch>
       {children}
@@ -66,11 +68,19 @@ export default function ReactRouter(props) {
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/user-page'>
-          <Users {...props} />
+          <UsersPage {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/user-page/user'>
           <User {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/videos'>
+          <VideosPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/videos/video'>
+          <Video {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/pricing-page'>
@@ -79,10 +89,6 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/regular-forms'>
           Tforms
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/buttons'>
-          buttons multi
           <ThemeUser {...props} />
         </Route>
         <Route path='/admin/dashboard/notfoundpage'>

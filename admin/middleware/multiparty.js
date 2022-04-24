@@ -17,14 +17,18 @@ const setFieldsObj = (form) => {
 
 // Set files object if exist
 const setFilesObj = (form) => {
-  const finalFiles = {};
+  let finalFiles = [];
   Object.entries(form).forEach((doc) => {
-    Object.assign(finalFiles, {
-      fileName: doc[1][0].originalFilename,
-      path: doc[1][0].path,
-      fileType: doc[1][0].headers['content-type'],
-      finalFolder: doc[0],
-    });
+    for (const [key, value] of Object.entries(doc)) {
+      if (typeof value == 'object') {
+        finalFiles.push({
+          fileName: value[0].originalFilename,
+          path: value[0].path,
+          fileType: value[0].headers['content-type'],
+          finalFolder: doc[0],
+        });
+      }
+    }
   });
   return finalFiles;
 };

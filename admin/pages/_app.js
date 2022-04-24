@@ -1,8 +1,5 @@
 import { PropTypes } from 'prop-types';
-import { Fragment, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import routes from '../routes';
-import Swal from 'sweetalert2';
+import { useEffect, useState } from 'react';
 
 // Translation
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -14,11 +11,14 @@ import footer_en from '../public/locales/en/footer.json';
 import footer_fa from '../public/locales/fa/footer.json';
 import users_en from '../public/locales/en/users.json';
 import users_fa from '../public/locales/fa/users.json';
+import video_en from '../public/locales/en/video.json';
+import video_fa from '../public/locales/fa/video.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
 import dataGridLocale_fa from '../public/locales/fa/dataGridLocale.json';
 import i18next from 'i18next';
+import 'video-react/dist/video-react.css';
 import { withTranslation, useTranslation } from 'react-i18next';
 import detector from 'i18next-browser-languagedetector';
 
@@ -71,6 +71,7 @@ i18next
         404: error_en,
         footer: footer_en,
         users: users_en,
+        video: video_en,
         dataGridLocale: dataGridLocale_en,
       },
       fa: {
@@ -79,6 +80,7 @@ i18next
         404: error_fa,
         footer: footer_fa,
         users: users_fa,
+        video: video_fa,
         dataGridLocale: dataGridLocale_fa,
       },
     },

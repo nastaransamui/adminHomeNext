@@ -1,13 +1,11 @@
-import AppsIcon from '@mui/icons-material/Apps';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ImageIcon from '@mui/icons-material/Image';
+import { AccountBox, Dashboard, Apps } from '@mui/icons-material/';
 
 var dashRoutes = [
   {
     path: '/dashboard',
     'name_en-US': 'Dashboard',
     name_fa: 'داشبورد',
-    icon: DashboardIcon,
+    icon: Dashboard,
 
     layout: '/admin',
   },
@@ -16,7 +14,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Users',
     name_fa: 'کاربران',
-    icon: ImageIcon,
+    icon: AccountBox,
     state: 'pageCollapse',
     layout: '/admin',
     views: [
@@ -41,26 +39,36 @@ var dashRoutes = [
     ],
   },
   {
+    path: '/dashboard/main-page-setup',
     collapse: true,
-    'name_en-US': 'Components',
-    name_fa: 'اجزاء',
-    icon: AppsIcon,
-    state: 'componentsCollapse',
+    'name_en-US': 'Main page setup',
+    name_fa: 'صفحه اصلی',
+    icon: Apps,
+    state: 'mainPageCollapse',
     views: [
       {
         collapse: true,
-        'name_en-US': 'Multi Level Collapse',
-        name_fa: 'چند سطحی',
-        'mini_en-US': 'MC',
-        mini_fa: 'ر',
+        'name_en-US': 'Video banner',
+        name_fa: 'بنر ویدیویی',
+        'mini_en-US': 'VB',
+        mini_fa: 'ب و',
         state: 'multiCollapse',
         views: [
           {
-            path: '/dashboard/buttons',
-            'name_en-US': 'Buttons',
-            name_fa: 'دکمه ها',
-            'mini_en-US': 'B',
-            mini_fa: 'ب',
+            path: '/dashboard/main-page-setup/videos',
+            'name_en-US': 'Videos',
+            name_fa: 'فیلم های',
+            'mini_en-US': 'V',
+            mini_fa: 'ف',
+
+            layout: '/admin',
+          },
+          {
+            path: '/dashboard/main-page-setup/videos/video',
+            'name_en-US': 'Video',
+            name_fa: 'فیلم',
+            'mini_en-US': 'V',
+            mini_fa: 'ف',
 
             layout: '/admin',
           },

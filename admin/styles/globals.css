@@ -125,3 +125,19 @@ input:-webkit-autofill:active {
 .s-alert-close:hover::after {
     background: black !important;
 }
+
+.video-react .video-react-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.video-react{
+  border-radius: 25px;
+}
+
+.video-react-has-started .video-react-control-bar{
+  border-radius: 0px 0px 25px 25px;
+}

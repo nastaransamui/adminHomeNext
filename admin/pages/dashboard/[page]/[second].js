@@ -95,6 +95,27 @@ export const getServerSideProps = wrapper.getServerSideProps(
                   sorting: -1,
                 },
           })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_PAGE_NUMBER',
+            payload: checkCookies('videosPageNumber', ctx)
+              ? parseInt(getCookies(ctx).videosPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_SORT_BY',
+            payload: checkCookies('videosSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).videosSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
+              : true,
+          })),
         },
       };
     } else {
@@ -137,6 +158,27 @@ export const getServerSideProps = wrapper.getServerSideProps(
                   field: 'createdAt',
                   sorting: -1,
                 },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_PAGE_NUMBER',
+            payload: checkCookies('videosPageNumber', ctx)
+              ? parseInt(getCookies(ctx).videosPageNumber)
+              : 1,
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_SORT_BY',
+            payload: checkCookies('videosSortBy', ctx)
+              ? JSON.parse(getCookies(ctx).videosSortBy)
+              : {
+                  field: 'createdAt',
+                  sorting: -1,
+                },
+          })),
+          ...(await store.dispatch({
+            type: 'VIDEOS_CARD_VIEW',
+            payload: checkCookies('videosCardView', ctx)
+              ? JSON.parse(getCookies(ctx).videosCardView)
+              : true,
           })),
         },
         redirect: {

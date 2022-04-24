@@ -63,7 +63,7 @@ const cardHeaderStyle = makeStyles((theme) => {
         marginLeft: '15px',
         marginRight: '15px',
         marginTop: '-30px',
-        borderRadius: '6px',
+        borderRadius: '25px',
       },
       '&$cardHeaderText': {
         display: 'inline-block',
@@ -163,7 +163,18 @@ const cardHeaderStyle = makeStyles((theme) => {
     primaryCardHeader: {
       color: whiteColor,
       '&:not($cardHeaderText):not($cardHeaderIcon)': {
-        ...primaryCardHeader,
+        boxShadow:
+          '0 4px 20px 0 rgba(' +
+          hexToRgb(theme.palette.background.default) +
+          ',.14), 0 7px 10px -5px rgba(' +
+          hexToRgb(theme.palette.secondary.main) +
+          ',.4)',
+        background:
+          'linear-gradient(60deg, ' +
+          theme.palette.secondary.light +
+          ', ' +
+          theme.palette.secondary.dark +
+          ')',
       },
     },
     roseCardHeader: {
