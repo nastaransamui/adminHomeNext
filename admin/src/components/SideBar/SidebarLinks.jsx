@@ -6,12 +6,73 @@ import {
   ListItem,
   useMediaQuery,
 } from '@mui/material';
-import React from 'react';
+import { useEffect } from 'react';
 import cx from 'classnames';
 import linkStyle from './links-style';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
 import PropTypes from 'prop-types';
+
+const createClasses = (
+  classes,
+  getCollapseInitialState,
+  route,
+  propsMiniActive,
+  stateMiniActive,
+  rtlActive,
+  activeRoute,
+  color
+) => {
+  const navLinkClasses =
+    classes.itemLink +
+    ' ' +
+    cx({
+      [' ' + classes.collapseActive]:
+        route.views !== undefined && getCollapseInitialState(route.views),
+    });
+  const itemText =
+    classes.itemText +
+    ' ' +
+    cx({
+      [classes.itemTextMini]: !propsMiniActive && stateMiniActive,
+      [classes.itemTextMiniRTL]:
+        rtlActive && !propsMiniActive && stateMiniActive,
+      [classes.itemTextRTL]: rtlActive,
+    });
+
+  const collapseItemText =
+    classes.collapseItemText +
+    ' ' +
+    cx({
+      [classes.collapseItemTextMini]: !propsMiniActive && stateMiniActive,
+      [classes.collapseItemTextMiniRTL]:
+        rtlActive && !propsMiniActive && stateMiniActive,
+      [classes.collapseItemTextRTL]: rtlActive,
+    });
+
+  const itemIcon =
+    classes.itemIcon + ' ' + cx({ [classes.itemIconRTL]: rtlActive });
+  const caret = classes.caret + ' ' + cx({ [classes.caretRTL]: rtlActive });
+  const collapseItemMini =
+    classes.collapseItemMini +
+    ' ' +
+    cx({ [classes.collapseItemMiniRTL]: rtlActive });
+
+  const innerNavLinkClasses =
+    classes.collapseItemLink +
+    ' ' +
+    cx({ [' ' + classes[color]]: activeRoute(route.path) });
+
+  return {
+    navLinkClasses,
+    itemText,
+    collapseItemText,
+    itemIcon,
+    caret,
+    collapseItemMini,
+    innerNavLinkClasses,
+  };
+};
 
 export default function SidebarLinks(props) {
   const {
@@ -24,7 +85,8 @@ export default function SidebarLinks(props) {
     router,
     color,
     rtlActive,
-    handleDrawerToggle
+    handleDrawerToggle,
+    getCollapseInitialState,
   } = props;
   const classes = linkStyle();
   const location = useLocation();
@@ -34,48 +96,52 @@ export default function SidebarLinks(props) {
   const activeRoute = (routeName) => {
     return location.pathname == router.basePath + routeName;
   };
-  // this creates the intial state of this component based on the collapse routes
-  // that it gets through this.props.routes
-  const getCollapseStates = (routes) => {
-    let initialState = {};
-    routes.map((prop) => {
-      if (prop.collapse) {
-        initialState = {
-          [prop.state]: getCollapseInitialState(prop.views),
-          ...getCollapseStates(prop.views),
-          ...initialState,
-        };
-      }
-      return null;
-    });
-    return initialState;
-  };
-  // this verifies if any of the collapses should be default opened on a rerender of this component
-  // for example, on the refresh of the page,
-  const getCollapseInitialState = (routes) => {
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse && getCollapseInitialState(routes[i].views)) {
-        return true;
-      } else if (router.pathname.indexOf(routes[i].path) !== -1) {
-        return true;
-      }
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount) {
+      // handle open sidebar
+      let nst = {};
+      routes.map((route, index) => {
+        if (route.collapse) {
+          if (location.pathname == route.layout + route.path) {
+            nst[route['state']] = true;
+            setState((oldState) => ({ ...oldState, ...nst }));
+          } else {
+            for (let i = 0; i < route.views.length; i++) {
+              const element = route.views[i];
+              if (element.views !== undefined) {
+                for (let j = 0; j < element.views.length; j++) {
+                  const elem = element.views[j];
+                  if (location.pathname == elem.layout + elem.path) {
+                    nst[route['state']] = true;
+                    nst[element['state']] = true;
+                    nst[elem['state']] = true;
+                    setState((oldState) => ({ ...oldState, ...nst }));
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
     }
-    return false;
-  };
+    return () => {
+      isMount = false;
+    };
+  }, []);
 
   const createLinks = (routes) => {
-    return routes.map((prop, key) => {
-      if (prop.redirect) {
-        return null;
-      }
-      if (prop.collapse) {
+    return routes.map((route, index) => {
+      if (route.collapse) {
         var st = {};
-        st[prop['state']] = !state[prop.state];
         const navLinkClasses =
           classes.itemLink +
           ' ' +
           cx({
-            [' ' + classes.collapseActive]: getCollapseInitialState(prop.views),
+            [' ' + classes.collapseActive]: getCollapseInitialState(
+              route.views
+            ),
           });
         const itemText =
           classes.itemText +
@@ -114,64 +180,66 @@ export default function SidebarLinks(props) {
           cx({
             [classes.collapseItemMiniRTL]: rtlActive,
           });
+        st[route['state']] = !state[route.state];
+
         return (
           <ListItem
-            key={key}
+            key={index}
             className={cx(
-              { [classes.item]: prop.icon !== undefined },
-              { [classes.collapseItem]: prop.icon === undefined }
+              { [classes.item]: route.icon !== undefined },
+              { [classes.collapseItem]: route.icon === undefined }
             )}>
             <a
               href='#'
               className={navLinkClasses}
-              style={{textAlign:rtlActive ? 'right' : 'left'}}
               onClick={(e) => {
                 e.preventDefault();
                 setState((oldState) => ({ ...oldState, ...st }));
               }}>
-              {prop.icon !== undefined ? (
-                typeof prop.icon === 'string' ? (
-                  <Icon className={itemIcon}>{prop.icon}</Icon>
+              {route.icon !== undefined ? (
+                typeof route.icon == 'string' ? (
+                  <Icon className={itemIcon}>{route.icon}</Icon>
                 ) : (
-                  <prop.icon className={itemIcon}  />
+                  <route.icon className={itemIcon} />
                 )
               ) : (
                 <span className={collapseItemMini}>
-                  {isMobile ? '\xa0' :  prop[`mini_${i18n.language}`]}
+                  {isMobile ? '\xa0' : route[`mini_${i18n.language}`]}
                 </span>
               )}
               <ListItemText
-                primary={prop[`name_${i18n.language}`]}
+                primary={route[`name_${i18n.language}`]}
                 secondary={
                   <b
-                  style={{marginRight: rtlActive ? -10 : 0}}
+                    style={{ marginRight: rtlActive ? -10 : 0 }}
                     className={
                       caret +
                       ' ' +
-                      (state[prop.state] ? classes.caretActive : '')
+                      (state[route.state] ? classes.caretActive : '')
                     }
                   />
                 }
                 disableTypography={true}
                 className={cx(
-                  { [itemText]: prop.icon !== undefined },
-                  { [collapseItemText]: prop.icon === undefined }
+                  { [itemText]: route.icon !== undefined },
+                  { [collapseItemText]: route.icon === undefined }
                 )}
               />
             </a>
-            <Collapse in={state[prop.state]} unmountOnExit>
+            <Collapse in={state[route.state]} unmountOnExit>
               <List className={classes.list + ' ' + classes.collapseList}>
-                {createLinks(prop.views)}
+                {createLinks(route.views)}
               </List>
             </Collapse>
           </ListItem>
         );
       }
+
       const innerNavLinkClasses =
         classes.collapseItemLink +
         ' ' +
         cx({
-          [' ' + classes[color]]: activeRoute(prop.path),
+          [' ' + classes[color]]: activeRoute(route.path),
         });
 
       const collapseItemMini =
@@ -184,7 +252,7 @@ export default function SidebarLinks(props) {
         classes.itemLink +
         ' ' +
         cx({
-          [' ' + classes[color]]: activeRoute(prop.path),
+          [' ' + classes[color]]: activeRoute(route.path),
         });
       const itemText =
         classes.itemText +
@@ -210,43 +278,42 @@ export default function SidebarLinks(props) {
         cx({
           [classes.itemIconRTL]: rtlActive,
         });
-
       return (
         <ListItem
-          key={key}
+          key={index}
           className={cx(
-            { [classes.item]: prop.icon !== undefined },
-            { [classes.collapseItem]: prop.icon === undefined }
+            { [classes.item]: route.icon !== undefined },
+            { [classes.collapseItem]: route.icon === undefined }
           )}>
           <Link
-            to={prop.layout + prop.path}
+            to={route.layout + route.path}
             onClick={() => {
               isMobile && handleDrawerToggle();
-              router.asPath = prop.layout + prop.path;
+              router.asPath = route.layout + route.path;
             }}>
             <span
               className={cx(
-                { [navLinkClasses]: prop.icon !== undefined },
-                { [innerNavLinkClasses]: prop.icon === undefined }
+                { [navLinkClasses]: route.icon !== undefined },
+                { [innerNavLinkClasses]: route.icon === undefined }
               )}>
-              {prop.icon !== undefined ? (
-                typeof prop.icon === 'string' ? (
-                  <Icon className={itemIcon}>{prop.icon}</Icon>
+              {route.icon !== undefined ? (
+                typeof route.icon === 'string' ? (
+                  <Icon className={itemIcon}>{route.icon}</Icon>
                 ) : (
-                  <prop.icon className={itemIcon} />
+                  <route.icon className={itemIcon} />
                 )
               ) : (
                 <span className={collapseItemMini}>
-                  {isMobile ? '\xa0' :  prop[`mini_${i18n.language}`]}
+                  {isMobile ? '\xa0' : route[`mini_${i18n.language}`]}
                 </span>
               )}
               <ListItemText
-                primary={prop[`name_${i18n.language}`]}
+                primary={route[`name_${i18n.language}`]}
                 disableTypography={true}
-                style={{ textAlign: rtlActive ? 'right' : 'left'}}
+                style={{ textAlign: rtlActive ? 'right' : 'left' }}
                 className={cx(
-                  { [itemText]: prop.icon !== undefined },
-                  { [collapseItemText]: prop.icon === undefined }
+                  { [itemText]: route.icon !== undefined },
+                  { [collapseItemText]: route.icon === undefined }
                 )}
               />
             </span>
@@ -255,6 +322,7 @@ export default function SidebarLinks(props) {
       );
     });
   };
+
   return <List className={classes.list}>{createLinks(routes)}</List>;
 }
 

@@ -5,7 +5,7 @@ import { useQuery } from '../dashboard/ReactRouter';
 import Video from '../../components/mainPageSetup/Video/Video';
 import Videos from '../../components/mainPageSetup/Videos/Videos';
 
-export default function UsersPage(props) {
+export default function VideosPage(props) {
   const location = useLocation();
   
  

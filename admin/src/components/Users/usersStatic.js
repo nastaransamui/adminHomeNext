@@ -167,3 +167,16 @@ export const dataGridColumns = [
     hasVideo: [false, ''],
   },
 ];
+
+export const Users = {
+  users: [],
+  totalUsers: 0,
+  usersPageNumber: 1,
+  usersSortBy: {
+    field: 'createdAt',
+    sorting: -1,
+  },
+  usersCardView: true,
+  usersPerPage: 48,
+  usersGrid: 4,
+};

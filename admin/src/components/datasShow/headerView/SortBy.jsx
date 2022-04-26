@@ -15,23 +15,21 @@ import {
 } from '@mui/material';
 import { Sort, ArrowRight, ArrowLeft, Check } from '@mui/icons-material';
 import { useTheme } from '@mui/styles';
-import { setCookies } from 'cookies-next';
-import { useDispatch, useSelector } from 'react-redux';
 
 const SortBy = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-  const { t, rtlActive, dataFields, sortByFunc, sortByValues } = props;
+  const { t, rtlActive, dataFields, sortByFunc, sortByValues, cardView } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'sort-by-popover' : undefined;
-  const {  usersCardView } = useSelector((state) => state);
+
   const [anchorSTl, setAnchorSTl] = useState({
     0: null,
   });
   const theme= useTheme()
   return (
     <Fragment ref={ref}>
-      {usersCardView && (
+      {cardView && (
         <>
           <Tooltip title={t('sortBy')} arrow placement='bottom'>
             <IconButton

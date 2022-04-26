@@ -5,7 +5,7 @@ const initialState = {
   themeName: 'cloud',
   themeType: 'light',
   loadingBar: 0,
-  showMovie: true,
+  showMovie: false,
   youTubeBanner: false,
   accessToken: null,
   formSubmit: false,

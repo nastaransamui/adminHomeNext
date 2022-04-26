@@ -8,6 +8,9 @@ import Cookies from 'cookies';
 import Alert from 'react-s-alert';
 import CustomAlert from '../../src/components/Alert/CustomAlert';
 import jwt from 'jsonwebtoken';
+import { Users } from '../../src/components/Users/usersStatic';
+import { sliderImage } from '../../src/components/mainPageSetup/Photos/photosStatic';
+import { sliderVideo } from '../../src/components/mainPageSetup/Videos/videosStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -54,52 +57,22 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: profile,
           })),
           ...(await store.dispatch({
-            type: 'USERS_PER_PAGE',
-            payload: checkCookies('usersPerPage', ctx)
-              ? parseInt(getCookies(ctx).usersPerPage)
-              : 48,
+            type: 'USERS',
+            payload: checkCookies('users', ctx)
+              ? JSON.parse(getCookies(ctx).users)
+              : { ...Users },
           })),
           ...(await store.dispatch({
-            type: 'USERS_PAGE_NUMBER',
-            payload: checkCookies('usersPageNumber', ctx)
-              ? parseInt(getCookies(ctx).usersPageNumber)
-              : 1,
+            type: 'SLIDER_IMAGE',
+            payload: checkCookies('sliderImage', ctx)
+              ? JSON.parse(getCookies(ctx).sliderImage)
+              : { ...sliderImage },
           })),
           ...(await store.dispatch({
-            type: 'USERS_CARD_VIEW',
-            payload: checkCookies('usersCardView', ctx)
-              ? JSON.parse(getCookies(ctx).usersCardView)
-              : true,
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_SORT_BY',
-            payload: checkCookies('usersSortBy', ctx)
-              ? JSON.parse(getCookies(ctx).usersSortBy)
-              : {
-                  field: 'createdAt',
-                  sorting: -1,
-                },
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_PAGE_NUMBER',
-            payload: checkCookies('videosPageNumber', ctx)
-              ? parseInt(getCookies(ctx).videosPageNumber)
-              : 1,
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_SORT_BY',
-            payload: checkCookies('videosSortBy', ctx)
-              ? JSON.parse(getCookies(ctx).videosSortBy)
-              : {
-                  field: 'createdAt',
-                  sorting: -1,
-                },
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_CARD_VIEW',
-            payload: checkCookies('videosCardView', ctx)
-              ? JSON.parse(getCookies(ctx).videosCardView)
-              : true,
+            type: 'SLIDER_VIDEO',
+            payload: checkCookies('sliderVideo', ctx)
+              ? JSON.parse(getCookies(ctx).sliderVideo)
+              : { ...sliderVideo },
           })),
         },
       };
@@ -116,54 +89,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
               : 'light',
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_PER_PAGE',
-            payload: checkCookies('usersPerPage', ctx)
-              ? parseInt(getCookies(ctx).usersPerPage)
-              : 48,
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_PAGE_NUMBER',
-            payload: checkCookies('usersPageNumber', ctx)
-              ? parseInt(getCookies(ctx).usersPageNumber)
-              : 1,
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_CARD_VIEW',
-            payload: checkCookies('usersCardView', ctx)
-              ? JSON.parse(getCookies(ctx).usersCardView)
-              : true,
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_SORT_BY',
-            payload: checkCookies('usersSortBy', ctx)
-              ? JSON.parse(getCookies(ctx).usersSortBy)
-              : {
-                  field: 'createdAt',
-                  sorting: -1,
-                },
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_PAGE_NUMBER',
-            payload: checkCookies('videosPageNumber', ctx)
-              ? parseInt(getCookies(ctx).videosPageNumber)
-              : 1,
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_SORT_BY',
-            payload: checkCookies('videosSortBy', ctx)
-              ? JSON.parse(getCookies(ctx).videosSortBy)
-              : {
-                  field: 'createdAt',
-                  sorting: -1,
-                },
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_CARD_VIEW',
-            payload: checkCookies('videosCardView', ctx)
-              ? JSON.parse(getCookies(ctx).videosCardView)
-              : true,
           })),
         },
         redirect: {

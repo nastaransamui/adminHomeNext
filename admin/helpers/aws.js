@@ -231,7 +231,6 @@ export const fsEditMulti = async (req, res, next) => {
     const publicFolder = `${process.cwd()}/public`;
     const newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
     const url = publicUrl;
-
     try {
       for (const element of req.files) {
         if (req.body[`${element.finalFolder}Key`] !== '') {

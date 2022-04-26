@@ -6,8 +6,10 @@ import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
 import UsersPage from '../user-page/UsersPage';
 import User from '../../components/User/User';
-import VideosPage from '../video-page/VideoPage'
+import VideosPage from '../video-page/VideosPage'
 import Video from '../../components/mainPageSetup/Video/Video';
+import PhotosPage from '../photo-page/PhotosPage';
+import Photo from '../../components/mainPageSetup/Photo/Photo';
 
 export function NotFoundPage() {
   return null;
@@ -81,6 +83,14 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/main-page-setup/videos/video'>
           <Video {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/photos'>
+          <PhotosPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/photos/photo'>
+          <Photo {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/pricing-page'>

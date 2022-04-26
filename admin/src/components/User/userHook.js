@@ -120,6 +120,7 @@ const userHook = () => {
       }
     } else {
       // Edit user
+      console.log(values);
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
       const res = await fetch(editUrl, {
         method: 'POST',
@@ -225,9 +226,11 @@ const userHook = () => {
             const { status } = res;
             const user = await res.json();
             const errorText =
-              user?.ErrorCode == undefined
-                ? user.Error
-                : t(`${user?.ErrorCode}`);
+              user?.ErrorCode == undefined && user.Error == 'Notfind'
+                ? t('Notfind')
+                : user.Error
+                ? t(`${user?.ErrorCode}`)
+                : user.Error;
             if (status !== 200 && !user.success) {
               alertCall('error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });

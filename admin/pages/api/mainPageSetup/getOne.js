@@ -3,6 +3,9 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import mongoose from 'mongoose';
+import Videos from '../../../models/Videos';
+import Users from '../../../models/Users';
+import Photos from '../../../models/Photos';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -29,7 +32,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         res.status(200).json({ success: true, data: value });
       }
     } catch (error) {
-      res.status(500).json({ success: false, Error: error.toString() });
+      let errorText = error.toString();
+      error?.kind == 'ObjectId' ? (errorText = 'Notfind') : errorText;
+      res.status(500).json({ success: false, Error: errorText });
     }
   }
 });

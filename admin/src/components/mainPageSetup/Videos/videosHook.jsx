@@ -14,15 +14,16 @@ export function escapeRegExp(value) {
 }
 
 const videosHook = () => {
+  const { sliderVideo, adminAccessToken } = useSelector((state) => state);
   const {
-    videosPerPage,
+    videos,
     totalVideos,
     videosPageNumber,
-    adminAccessToken,
-    videos,
     videosSortBy,
     videosCardView,
-  } = useSelector((state) => state);
+    videosPerPage,
+  } = sliderVideo;
+
   const dispatch = useDispatch();
   const theme = useTheme();
   const { t, i18n } = useTranslation('video');
@@ -72,19 +73,35 @@ const videosHook = () => {
               videos.totalValuesLength !== 0
             ) {
               dispatch({
-                type: 'VIDEOS_PAGE_NUMBER',
-                payload: Math.ceil(videos.totalValuesLength / videosPerPage),
+                type: 'SLIDER_VIDEO',
+                payload: {
+                  ...sliderVideo,
+                  videosPageNumber: Math.ceil(
+                    videos.totalValuesLength / videosPerPage
+                  ),
+                },
               });
+
+              sliderVideo.videos = [];
               setCookies(
-                'videosPageNumber',
-                Math.ceil(videos.totalValuesLength / videosPerPage)
+                'sliderVideo',
+                JSON.stringify({
+                  ...sliderVideo,
+                  videosPageNumber: Math.ceil(
+                    videos.totalValuesLength / videosPerPage
+                  ),
+                })
               );
             }
-            dispatch({ type: 'VIDEOS', payload: videos.data });
             dispatch({
-              type: 'TOTAL_VIDEOS',
-              payload: videos.totalValuesLength,
+              type: 'SLIDER_VIDEO',
+              payload: {
+                ...sliderVideo,
+                videos: videos.data,
+                totalVideos: videos.totalValuesLength,
+              },
             });
+
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           }
         } catch (e) {
@@ -107,8 +124,8 @@ const videosHook = () => {
   useEffect(() => {
     if (perRow !== undefined) {
       dispatch({
-        type: 'VIDEOS_GRID',
-        payload: perRow,
+        type: 'SLIDER_VIDEO',
+        payload: { ...sliderVideo, videosGrid: perRow },
       });
     }
   }, [perRow]);
@@ -178,8 +195,11 @@ const videosHook = () => {
           } else {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             dispatch({
-              type: 'TOTAL_VIDEOS',
-              payload: response.totalValuesLength,
+              type: 'SLIDER_VIDEO',
+              payload: {
+                ...sliderVideo,
+                totalVideos: response.totalValuesLength,
+              },
             });
             Swal.fire({
               title: t('deleted'),
@@ -203,54 +223,115 @@ const videosHook = () => {
   };
 
   const paginationChange = (value) => {
-    dispatch({ type: 'VIDEOS_PAGE_NUMBER', payload: value });
-    setCookies('videosPageNumber', value);
+    dispatch({
+      type: 'SLIDER_VIDEO',
+      payload: { ...sliderVideo, videosPageNumber: value },
+    });
+
+    sliderVideo.videos = [];
+    setCookies(
+      'sliderVideo',
+      JSON.stringify({
+        ...sliderVideo,
+        videosPageNumber: value,
+      })
+    );
   };
 
   const perPageFunc = (list) => {
     if (Math.ceil(totalVideos / list) < videosPageNumber) {
       dispatch({
-        type: 'VIDEOS_PAGE_NUMBER',
-        payload: Math.ceil(totalVideos / list),
+        type: 'SLIDER_VIDEO',
+        payload: {
+          ...sliderVideo,
+          videosPerPage: Math.ceil(totalVideos / list),
+        },
       });
-      setCookies('videosPageNumber', Math.ceil(totalVideos / list));
+
+      sliderVideo.videos = [];
+      setCookies(
+        'sliderVideo',
+        JSON.stringify({
+          ...sliderVideo,
+          videosPerPage: Math.ceil(totalVideos / list),
+        })
+      );
     }
     dispatch({
-      type: 'VIDEOS_PER_PAGE',
-      payload: list,
+      type: 'SLIDER_VIDEO',
+      payload: { ...sliderVideo, videosPerPage: list },
     });
-    localStorage.setItem('videosPerPage', list);
-    setCookies('videosPerPage', list);
+
+    sliderVideo.videos = [];
+    setCookies(
+      'sliderVideo',
+      JSON.stringify({
+        ...sliderVideo,
+        videosPerPage: list,
+      })
+    );
   };
 
   const sortByFunc = (field, listNumber) => {
     dispatch({
-      type: 'VIDEOS_SORT_BY',
+      type: 'SLIDER_VIDEO',
       payload: {
-        field: field,
-        sorting: listNumber,
+        ...sliderVideo,
+        videosSortBy: {
+          field: field,
+          sorting: listNumber,
+        },
       },
     });
-    setCookies('videosSortBy', {
-      field: field,
-      sorting: listNumber,
-    });
+
+    sliderVideo.videos = [];
+
+    setCookies(
+      'sliderVideo',
+      JSON.stringify({
+        ...sliderVideo,
+        videosSortBy: {
+          field: field,
+          sorting: listNumber,
+        },
+      })
+    );
   };
 
   const cardViewsFunc = () => {
+    // dispatch({
+    //   type: 'VIDEOS_CARD_VIEW',
+    //   payload: !videosCardView,
+    // });
+    // setCookies('videosCardView', !videosCardView);
     dispatch({
-      type: 'VIDEOS_CARD_VIEW',
-      payload: !videosCardView,
+      type: 'SLIDER_VIDEO',
+      payload: { ...sliderVideo, videosCardView: !videosCardView },
     });
-    setCookies('videosCardView', !videosCardView);
+
+    sliderVideo.videos = []
+    setCookies(
+      'sliderVideo',
+      JSON.stringify({
+        ...sliderVideo,
+        videosCardView: !videosCardView,
+      })
+    );
   };
 
   const gridNumberFunc = (list) => {
     dispatch({
-      type: 'VIDEOS_GRID',
-      payload: list,
+      type: 'SLIDER_VIDEO',
+      payload: { ...sliderVideo, videosGrid: list },
     });
-    localStorage.setItem('videosGrid', list);
+    sliderVideo.videos = []
+    setCookies(
+      'sliderVideo',
+      JSON.stringify({
+        ...sliderVideo,
+        videosGrid: list,
+      })
+    );
   };
 
   return {

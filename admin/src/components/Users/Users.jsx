@@ -23,17 +23,17 @@ export default function Users(props) {
     sortByFunc,
     exportCsv,
     cardViewsFunc,
-    gridNumberFunc
+    gridNumberFunc,
   } = usersHook();
-
+  const { Users } = useSelector((state) => state);
   const {
     totalUsers,
-    usersPerPage,
     usersPageNumber,
-    usersCardView,
     usersSortBy,
-    usersGrid
-  } = useSelector((state) => state);
+    usersCardView,
+    usersPerPage,
+    usersGrid,
+  } = Users;
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>

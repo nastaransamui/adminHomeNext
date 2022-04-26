@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import { forwardRef, Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setCookies } from 'cookies-next';
-
 import {
   Tooltip,
   IconButton,
@@ -19,10 +17,9 @@ import { FilterList, Check } from '@mui/icons-material';
 import cardsShowStyles from '../cards-show-styles';
 
 const PerPageFilter = forwardRef((props, ref) => {
-  const { t, perPageFunc } = props;
-  const dispatch = useDispatch();
+  const { t, perPageFunc, perPage } = props;
   const classes = cardsShowStyles();
-  const { usersPerPage,perPageArray } = useSelector(
+  const { perPageArray } = useSelector(
     (state) => state
   );
 
@@ -90,7 +87,7 @@ const PerPageFilter = forwardRef((props, ref) => {
                       }}>
                       <ListItemButton>
                         <ListItemIcon>
-                          {list == usersPerPage && <Check color='primary' />}
+                          {list == perPage && <Check color='primary' />}
                         </ListItemIcon>
                         <ListItemText primary={`${text}`} secondary={`${t('result')}`}/>
                       </ListItemButton>

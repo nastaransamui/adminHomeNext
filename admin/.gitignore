@@ -8,6 +8,7 @@
 /public/users
 /public/download
 /public/videos
+/public/photos
 
 # testing
 /coverage

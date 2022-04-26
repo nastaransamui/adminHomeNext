@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import { hashPassword } from '../../../helpers/auth';
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
+import Photos from '../../../models/Photos';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {

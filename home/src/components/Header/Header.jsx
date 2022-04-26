@@ -145,7 +145,7 @@ export default function Header(props) {
               <div className={classes.logo}>
                 <Link href='/'>
                   <img
-                    src='/images/logo.svg'
+                    src='/images/logo.png'
                     alt='logo'
                     style={{ cursor: 'pointer' }}
                   />

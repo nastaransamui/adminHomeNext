@@ -1,26 +1,14 @@
-import {
-  Info,
-  Flag,
-  CheckBox,
-  Title,
-  Event,
-  CheckBoxOutlineBlank,
-} from '@mui/icons-material';
+import { Info, Flag, CheckBox, Title, Event } from '@mui/icons-material';
 
-export const editUrl = '/admin/dashboard/main-page-setup/videos';
-export const createUrl = '/admin/dashboard/main-page-setup/videos/video';
-export const getAllVideosUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteVideoUrl = `/admin/api/mainPageSetup/delete`;
+export const editUrl = '/admin/dashboard/main-page-setup/photos';
+export const createUrl = '/admin/dashboard/main-page-setup/photos/photo';
+export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
+export const deleteUrl = `/admin/api/mainPageSetup/delete`;
 
-export const videosFields = [
+export const photosFields = [
   {
     Icon: CheckBox,
     label: 'isActive',
-    type: 'boolean',
-  },
-  {
-    Icon: CheckBoxOutlineBlank,
-    label: 'youTubeBanner',
     type: 'boolean',
   },
   {
@@ -63,11 +51,6 @@ export const videosFields = [
     label: 'createdAt',
     type: 'string',
   },
-  {
-    Icon: Title,
-    label: 'youTubeId',
-    type: 'string',
-  },
 ];
 
 export const dataGridColumns = [
@@ -78,23 +61,13 @@ export const dataGridColumns = [
     width: 200,
     type: 'string',
     filterable: true,
-    hasAvatar: [true, 'videoPoster'],
-    hasVideo: [true, 'videoLink'],
+    hasAvatar: [true, 'imageShow'],
+    hasVideo: [false, ''],
   },
   {
     field: 'isActive', // Db name
     headerAlign: 'center', //
     description: 'isActive', //Discription from translation
-    width: 120,
-    type: 'boolean',
-    filterable: true,
-    hasAvatar: [false, ''],
-    hasVideo: [false, ''],
-  },
-  {
-    field: 'youTubeBanner', // Db name
-    headerAlign: 'center', //
-    description: 'youTubeBanner', //Discription from translation
     width: 120,
     type: 'boolean',
     filterable: true,
@@ -171,27 +144,17 @@ export const dataGridColumns = [
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
   },
-  {
-    field: 'youTubeId', // Db name
-    headerAlign: 'center', //
-    description: 'youTubeId', //Discription from translation
-    width: 150,
-    type: 'string',
-    filterable: true,
-    hasAvatar: [false, ''],
-    hasVideo: [true, 'youTubeId'],
-  },
 ];
 
-export const sliderVideo = {
-  videos: [],
-  totalVideos: 0,
-  videosPageNumber: 1,
-  videosSortBy: {
+export const sliderImage = {
+  photos: [],
+  totalPhotos: 0,
+  photosPageNumber: 1,
+  photosSortBy: {
     field: 'createdAt',
     sorting: -1,
   },
-  videosCardView: true,
-  videosPerPage: 6,
-  videosGrid: 4,
+  photosCardView: true,
+  photosPerPage: 6,
+  photosGrid: 4,
 };

@@ -5,6 +5,9 @@ import verifyToken from '../../../helpers/verifyToken';
 import { MultifileMiddlewareDelete } from '../../../middleware/multifileMiddleware';
 import hazelCast from '../../../helpers/hazelCast';
 import mongoose from 'mongoose';
+import Videos from '../../../models/Videos';
+import Users from '../../../models/Users';
+import Photos from '../../../models/Photos';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {

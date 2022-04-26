@@ -5,6 +5,10 @@ import { withTranslation, useTranslation } from 'react-i18next';
 import { checkCookies, getCookies } from 'cookies-next';
 import { Fragment } from 'react';
 import Cookies from 'cookies';
+import { Users } from '../src/components/Users/usersStatic';
+import { sliderImage } from '../src/components/mainPageSetup/Photos/photosStatic';
+import { sliderVideo } from '../src/components/mainPageSetup/Videos/videosStatic';
+
 function Admin(props) {
   const { t, ready, i18n } = useTranslation('common');
   return (
@@ -35,22 +39,22 @@ export const getServerSideProps = wrapper.getServerSideProps(
               : 'light',
           })),
           ...(await store.dispatch({
-            type: 'USERS_PER_PAGE',
-            payload: checkCookies('usersPerPage', ctx)
-              ? parseInt(getCookies(ctx).usersPerPage)
-              : 48,
+            type: 'USERS',
+            payload: checkCookies('users', ctx)
+              ? JSON.parse(getCookies(ctx).users)
+              : { ...Users },
           })),
           ...(await store.dispatch({
-            type: 'USERS_CARD_VIEW',
-            payload: checkCookies('usersCardView', ctx)
-              ? JSON.parse(getCookies(ctx).usersCardView)
-              : true,
+            type: 'SLIDER_IMAGE',
+            payload: checkCookies('sliderImage', ctx)
+              ? JSON.parse(getCookies(ctx).sliderImage)
+              : { ...sliderImage },
           })),
           ...(await store.dispatch({
-            type: 'VIDEOS_CARD_VIEW',
-            payload: checkCookies('videosCardView', ctx)
-              ? JSON.parse(getCookies(ctx).videosCardView)
-              : true,
+            type: 'SLIDER_VIDEO',
+            payload: checkCookies('sliderVideo', ctx)
+              ? JSON.parse(getCookies(ctx).sliderVideo)
+              : { ...sliderVideo },
           })),
         },
         redirect: {
@@ -72,24 +76,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
               : 'light',
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_PER_PAGE',
-            payload: checkCookies('usersPerPage', ctx)
-              ? parseInt(getCookies(ctx).usersPerPage)
-              : 48,
-          })),
-          ...(await store.dispatch({
-            type: 'USERS_CARD_VIEW',
-            payload: checkCookies('usersCardView', ctx)
-              ? JSON.parse(getCookies(ctx).usersCardView)
-              : true,
-          })),
-          ...(await store.dispatch({
-            type: 'VIDEOS_CARD_VIEW',
-            payload: checkCookies('videosCardView', ctx)
-              ? JSON.parse(getCookies(ctx).videosCardView)
-              : true,
           })),
         },
       };

@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import { Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import videosHook from './videosHook';
+import photosHook from './photosHook';
 import { useSelector } from 'react-redux';
 // import VideoStyles from './video-styles';
 import DataShow from '../../datasShow/DataShow';
@@ -10,33 +10,32 @@ import {
   editUrl,
   createUrl,
   dataGridColumns,
-  videosFields,
-} from './videosStatic';
+  photosFields,
+} from './photosStatic';
 
-const Videos = (props) => {
-  const { t } = useTranslation('video');
+const Photos = (props) => {
+  const { t } = useTranslation('photos');
   const {
     sweetAlert,
     requestSearch,
     searchText,
-    rows: videos,
+    rows: photos,
     alertCall,
     paginationChange,
     perPageFunc,
     sortByFunc,
     cardViewsFunc,
-    gridNumberFunc,
-  } = videosHook();
-
-  const { sliderVideo } = useSelector((state) => state);
+    gridNumberFunc
+  } = photosHook();
+  const {  sliderImage } = useSelector((state) => state);
   const {
-    totalVideos,
-    videosCardView,
-    videosPageNumber,
-    videosPerPage,
-    videosSortBy,
-    videosGrid,
-  } = sliderVideo;
+    totalPhotos,
+    photosPageNumber,
+    photosSortBy,
+    photosCardView,
+    photosPerPage,
+    photosGrid
+  } = sliderImage;
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -46,26 +45,25 @@ const Videos = (props) => {
           t={t}
           requestSearch={requestSearch}
           searchText={searchText}
-          dataFields={videosFields}
+          dataFields={photosFields}
           createUrl={createUrl}
           editUrl={editUrl}
-          cardView={videosCardView}
-          pageNumber={videosPageNumber}
-          total={totalVideos}
-          perPage={videosPerPage}
-          mainData={videos}
+          cardView={photosCardView}
+          pageNumber={photosPageNumber}
+          total={totalPhotos}
+          perPage={photosPerPage}
+          mainData={photos}
           profile
-          movie
           alertCall={alertCall}
-          modelName='Videos'
+          modelName='Photos'
           deleteAlert={sweetAlert}
           dataGridColumns={dataGridColumns}
           gridNumberFunc={gridNumberFunc}
-          gridNumber={videosGrid}
+          gridNumber={photosGrid}
           paginationChange={paginationChange}
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
-          sortByValues={videosSortBy}
+          sortByValues={photosSortBy}
           cardHeaderType={{
             icon: false,
             image: true,
@@ -81,4 +79,4 @@ const Videos = (props) => {
   );
 };
 
-export default Videos;
+export default Photos;

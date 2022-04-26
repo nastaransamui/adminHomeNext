@@ -19,10 +19,19 @@ const TableBody = forwardRef((props, ref) => {
   const classes = tableBodyStyles();
   const theme = useTheme();
   const history = useHistory();
-  const { perPageArray, usersPageNumber, totalUsers, profile } = useSelector(
+  const { perPageArray, profile } = useSelector(
     (state) => state
   );
-  const { t, mainData, perPage, editUrl, deleteAlert, dataGridColumns,  } = props;
+  const {
+    t,
+    mainData,
+    perPage,
+    editUrl,
+    deleteAlert,
+    dataGridColumns,
+    pageNumber,
+    total,
+  } = props;
 
   const columns = [
     ...createColumns(dataGridColumns, props, t),
@@ -42,7 +51,7 @@ const TableBody = forwardRef((props, ref) => {
             label={t('Edit')}
             className='textPrimary'
             onClick={() => {
-              gotToEdit(params.id);
+              gotToEdit(params);
             }}
             color='inherit'
           />,
@@ -53,7 +62,9 @@ const TableBody = forwardRef((props, ref) => {
               deleteAlert(params.row);
             }}
             color='inherit'
-            style={{visibility: params.id == profile._id ?  "hidden" : 'visible'}}
+            style={{
+              visibility: params.id == profile._id ? 'hidden' : 'visible',
+            }}
           />,
         ];
       },
@@ -64,10 +75,11 @@ const TableBody = forwardRef((props, ref) => {
     CustomFilterInputs(columns);
   }
 
-  const gotToEdit = (_id) => {
+  const gotToEdit = (params) => {
     history.push({
       pathname: editUrl,
-      search: `?_id=${_id}`,
+      search: `?_id=${params.id}`,
+      state: params.row,
     });
   };
 
@@ -97,16 +109,16 @@ const TableBody = forwardRef((props, ref) => {
           rowHeight={100}
           pageSize={perPage}
           paginationMode='server'
-          rowCount={totalUsers}
-          page={usersPageNumber - 1}
+          rowCount={total}
+          page={pageNumber - 1}
           rowsPerPageOptions={perPageArray}
           initialState={{
             pagination: {
-              page: usersPageNumber,
+              page: pageNumber,
             },
           }}
           onRowDoubleClick={(params) => {
-            gotToEdit(params.id);
+            gotToEdit(params);
           }}
         />
       </Box>

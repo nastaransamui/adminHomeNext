@@ -1,43 +1,44 @@
 import { useTheme } from '@mui/material';
-import { setCookies } from 'cookies-next';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import Alert from 'react-s-alert';
 import Swal from 'sweetalert2';
-import usePerRowHook from '../Hooks/usePerRowHook';
-import useSearch from '../Hooks/useSearch';
-import { getAllUserUrl, deleteUserUrl, exportCsvUrl } from './usersStatic';
+import usePerRowHook from '../../Hooks/usePerRowHook';
+import { setCookies } from 'cookies-next';
+import useSearch from '../../Hooks/useSearch';
+import { getAllUrl, deleteUrl } from './photosStatic';
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-const usersHook = () => {
-  const { Users, adminAccessToken } = useSelector((state) => state);
+const photosHook = () => {
+  const { adminAccessToken, sliderImage } = useSelector((state) => state);
   const {
-    users,
-    totalUsers,
-    usersPageNumber,
-    usersSortBy,
-    usersCardView,
-    usersPerPage,
-  } = Users;
+    photos,
+    totalPhotos,
+    photosPageNumber,
+    photosSortBy,
+    photosCardView,
+    photosPerPage,
+  } = sliderImage;
 
   const dispatch = useDispatch();
   const theme = useTheme();
-  const { t, i18n } = useTranslation('users');
-  const perRow = usePerRowHook('usersGrid');
-  const { searchText, requestSearch, setSearchText, rows } = useSearch(users);
+  const { t, i18n } = useTranslation('photos');
+  const perRow = usePerRowHook('photosGrid');
+  const { searchText, requestSearch, setSearchText, rows } = useSearch(photos);
 
   useEffect(() => {
     const abortController = new AbortController();
     let isMout = true;
     dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+
     if (isMout) {
-      const getAllUser = async () => {
+      const getAllPhotos = async () => {
         try {
-          const res = await fetch(getAllUserUrl, {
+          const res = await fetch(getAllUrl, {
             signal: abortController.signal,
             method: 'POST',
             headers: {
@@ -45,69 +46,61 @@ const usersHook = () => {
               token: `Brearer ${adminAccessToken}`,
             },
             body: JSON.stringify({
-              modelName: 'Users',
-              valuesPerPage: usersPerPage,
-              valuesPageNumber: usersPageNumber,
-              valuesSortByField: usersSortBy[`field`],
-              valuesSortBySorting: usersSortBy[`sorting`],
+              modelName: 'Photos',
+              valuesPerPage: photosPerPage,
+              valuesPageNumber: photosPageNumber,
+              valuesSortByField: photosSortBy[`field`],
+              valuesSortBySorting: photosSortBy[`sorting`],
               locale: i18n.language !== 'fa' ? 'en' : 'fa',
             }),
           });
 
           const { status } = res;
-          const response = await res.json();
+          const photos = await res.json();
           const errorText =
-            response?.ErrorCode == undefined
-              ? response.Error
-              : t(`${response?.ErrorCode}`);
-          if (status !== 200 && !response.success) {
+            photos?.ErrorCode == undefined
+              ? photos.Error
+              : t(`${photos?.ErrorCode}`);
+          if (status !== 200 && !photos.success) {
             alertCall('error', errorText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             });
           } else {
-            //Fixed last page if after delete number of page is wrong
+            //Fixe last page if after delete number of page is wrong
             if (
-              usersPageNumber >
-              Math.ceil(response.totalValuesLength / usersPerPage)
+              photosPageNumber >
+                Math.ceil(photos.totalValuesLength / photosPerPage) &&
+              photos.totalValuesLength !== 0
             ) {
               dispatch({
-                type: 'USERS',
+                type: 'SLIDER_IMAGE',
                 payload: {
-                  ...Users,
-                  usersPageNumber: Math.ceil(
-                    response.totalValuesLength / usersPerPage
+                  ...sliderImage,
+                  photosPageNumber: Math.ceil(
+                    photos.totalValuesLength / photosPerPage
                   ),
                 },
               });
 
-              Users.users = [];
+              sliderImage.photos =[]
               setCookies(
-                'users',
+                'sliderImage',
                 JSON.stringify({
-                  ...Users,
-                  usersPageNumber: Math.ceil(
-                    response.totalValuesLength / usersPerPage
+                  ...sliderImage,
+                  photosPageNumber: Math.ceil(
+                    photos.totalValuesLength / photosPerPage
                   ),
                 })
               );
             }
-
             dispatch({
-              type: 'USERS',
+              type: 'SLIDER_IMAGE',
               payload: {
-                ...Users,
-                users: response.data,
-                totalUsers: response.totalValuesLength,
+                ...sliderImage,
+                photos: photos.data,
+                totalPhotos: photos.totalValuesLength,
               },
             });
-            Users.users = [];
-            setCookies(
-              'users',
-              JSON.stringify({
-                ...Users,
-                totalUsers: response.totalValuesLength,
-              })
-            );
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           }
         } catch (e) {
@@ -118,20 +111,20 @@ const usersHook = () => {
         }
       };
 
-      getAllUser();
+      getAllPhotos();
     }
 
     return () => {
       abortController.abort();
       isMout = false;
     };
-  }, [totalUsers, usersPerPage, usersPageNumber, usersSortBy]);
+  }, [totalPhotos, photosPerPage, photosPageNumber, photosSortBy]);
 
   useEffect(() => {
     if (perRow !== undefined) {
       dispatch({
-        type: 'USERS',
-        payload: { ...Users, usersGrid: perRow },
+        type: 'SLIDER_IMAGE',
+        payload: { ...sliderImage, photosGrid: perRow },
       });
     }
   }, [perRow]);
@@ -157,7 +150,8 @@ const usersHook = () => {
     });
   };
 
-  const sweetAlert = (user) => {
+  const sweetAlert = (photo) => {
+    photo.modelName = 'Photos';
     Swal.fire({
       title: `${t('deleteTitle')}`,
       text: `${t('confirmDelete')}`,
@@ -182,15 +176,14 @@ const usersHook = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-        user.modelName = 'Users';
-        const getAllUser = async () => {
-          const res = await fetch(deleteUserUrl, {
+        const getAllPhotos = async () => {
+          const res = await fetch(deleteUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               token: `Brearer ${adminAccessToken}`,
             },
-            body: JSON.stringify(user),
+            body: JSON.stringify(photo),
           });
           const { status } = res;
           const response = await res.json();
@@ -201,18 +194,12 @@ const usersHook = () => {
           } else {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             dispatch({
-              type: 'USERS',
-              payload: { ...Users, totalUsers: response.totalValuesLength },
+              type: 'SLIDER_IMAGE',
+              payload: {
+                ...sliderImage,
+                totalPhotos: response.totalValuesLength,
+              },
             });
-
-            Users.users = [];
-            setCookies(
-              'users',
-              JSON.stringify({
-                ...Users,
-                totalUsers: response.totalValuesLength,
-              })
-            );
             Swal.fire({
               title: t('deleted'),
               ext: t('deleteSuccess'),
@@ -229,81 +216,82 @@ const usersHook = () => {
             });
           }
         };
-
-        getAllUser();
+        getAllPhotos();
       }
     });
   };
 
   const paginationChange = (value) => {
     dispatch({
-      type: 'USERS',
-      payload: { ...Users, usersPageNumber: value },
+      type: 'SLIDER_IMAGE',
+      payload: { ...sliderImage, photosPageNumber: value },
     });
 
-    Users.users = [];
+    sliderImage.photos = []
     setCookies(
-      'users',
+      'sliderImage',
       JSON.stringify({
-        ...Users,
-        usersPageNumber: value,
+        ...sliderImage,
+        photosPageNumber: value,
       })
     );
+
   };
 
   const perPageFunc = (list) => {
-    if (Math.ceil(totalUsers / list) < usersPageNumber) {
+    if (Math.ceil(totalPhotos / list) < photosPageNumber) {
       dispatch({
-        type: 'USERS',
+        type: 'SLIDER_IMAGE',
         payload: {
-          ...Users,
-          usersPerPage: Math.ceil(totalUsers / list),
+          ...sliderImage,
+          photosPerPage: Math.ceil(totalPhotos / list),
         },
       });
 
-      Users.users = [];
+      sliderImage.photos = []
       setCookies(
-        'users',
+        'sliderImage',
         JSON.stringify({
-          ...Users,
-          usersPerPage: Math.ceil(totalUsers / list),
+          ...sliderImage,
+          photosPerPage: Math.ceil(totalPhotos / list),
         })
       );
     }
+
     dispatch({
-      type: 'USERS',
-      payload: { ...Users, usersPerPage: list },
+      type: 'SLIDER_IMAGE',
+      payload: { ...sliderImage, photosPerPage: list },
     });
 
-    Users.users = [];
+     sliderImage.photos = []
     setCookies(
-      'users',
+      'sliderImage',
       JSON.stringify({
-        ...Users,
-        usersPerPage: list,
+        ...sliderImage,
+        photosPerPage: list,
       })
     );
   };
 
   const sortByFunc = (field, listNumber) => {
     dispatch({
-      type: 'USERS',
+      type: 'SLIDER_IMAGE',
       payload: {
-        ...Users,
-        usersSortBy: {
+        ...sliderImage,
+        photosSortBy: {
           field: field,
           sorting: listNumber,
         },
       },
     });
 
-    Users.users = [];
+    sliderImage.photos = []
 
     setCookies(
-      'users',
+      'sliderImage',
       JSON.stringify({
-        ...Users,
-        usersSortBy: {
+        ...sliderImage,
+        photosSortBy: {
           field: field,
           sorting: listNumber,
         },
@@ -311,65 +299,33 @@ const usersHook = () => {
     );
   };
 
-  const exportCsv = async () => {
-    dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-    try {
-      const res = await fetch(exportCsvUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify({
-          download: '',
-          downloadKey: '',
-          finalFolder: 'download',
-        }),
-      });
-      const { status, ok } = res;
-      if (status !== 200 && !ok) {
-        alertCall('error', res.Error, () => {});
-      }
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-      const { fileLink } = await res.json();
-      var link = document.createElement('a');
-      link.href = fileLink;
-      link.download = 'Users.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      alertCall('error', error.toString(), () => {});
-    }
-  };
-
   const cardViewsFunc = () => {
     dispatch({
-      type: 'USERS',
-      payload: { ...Users, usersCardView: !usersCardView },
+      type: 'SLIDER_IMAGE',
+      payload: { ...sliderImage, photosCardView: !photosCardView },
     });
 
-    Users.users = [];
+    sliderImage.photos = []
     setCookies(
-      'users',
+      'sliderImage',
       JSON.stringify({
-        ...Users,
-        usersCardView: !usersCardView,
+        ...sliderImage,
+        photosCardView: !photosCardView,
       })
     );
   };
 
   const gridNumberFunc = (list) => {
     dispatch({
-      type: 'USERS',
-      payload: { ...Users, usersGrid: list },
+      type: 'SLIDER_IMAGE',
+      payload: { ...sliderImage, photosGrid: list },
     });
-    Users.users = [];
+    sliderImage.photos = []
     setCookies(
-      'users',
+      'sliderImage',
       JSON.stringify({
-        ...Users,
-        usersGrid: list,
+        ...sliderImage,
+        photosGrid: list,
       })
     );
   };
@@ -384,10 +340,9 @@ const usersHook = () => {
     paginationChange,
     perPageFunc,
     sortByFunc,
-    exportCsv,
     cardViewsFunc,
     gridNumberFunc,
   };
 };
 
-export default usersHook;
+export default photosHook;

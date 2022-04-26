@@ -13,6 +13,8 @@ import users_en from '../public/locales/en/users.json';
 import users_fa from '../public/locales/fa/users.json';
 import video_en from '../public/locales/en/video.json';
 import video_fa from '../public/locales/fa/video.json';
+import photos_en from '../public/locales/en/photos.json';
+import photos_fa from '../public/locales/fa/photos.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
@@ -72,6 +74,7 @@ i18next
         footer: footer_en,
         users: users_en,
         video: video_en,
+        photos: photos_en,
         dataGridLocale: dataGridLocale_en,
       },
       fa: {
@@ -81,6 +84,7 @@ i18next
         footer: footer_fa,
         users: users_fa,
         video: video_fa,
+        photos: photos_fa,
         dataGridLocale: dataGridLocale_fa,
       },
     },

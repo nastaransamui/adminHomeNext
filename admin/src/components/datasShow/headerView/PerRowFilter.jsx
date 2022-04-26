@@ -17,17 +17,17 @@ import { ViewColumn, Check } from '@mui/icons-material';
 import cardsShowStyles from '../cards-show-styles';
 
 const PerRowFilter = forwardRef((props, ref) => {
-  const { t, gridNumberFunc, gridNumber } = props;
+  const { t, gridNumberFunc, gridNumber, cardView } = props;
   const classes = cardsShowStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'per-row-popover' : undefined;
   const dispatch = useDispatch();
-  const {  usersCardView } = useSelector((state) => state);
+ 
 
   return (
     <Fragment ref={ref}>
-      {usersCardView && (
+      {cardView && (
         <>
           <Tooltip title={t('perRow')} arrow placement='bottom'>
             <IconButton

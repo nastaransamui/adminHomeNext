@@ -14,7 +14,10 @@ export const editMiddleware = async (req, res, next) => {
   try {
     if (req.files.length == 0) {
       //No files or image update, check if already has file delete it
-      if (oldUserData.profileImageKey == '') {
+      if (
+        oldUserData.profileImageKey == '' ||
+        oldUserData.profileImageKey == req.body.profileImageKey
+      ) {
         next();
       } else {
         if (oldUserData.isVercel) {

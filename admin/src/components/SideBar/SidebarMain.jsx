@@ -24,10 +24,40 @@ const SidebarMain = (props) => {
     adminAccessToken,
   } = props;
   const classes = mainStyles();
+    // this verifies if any of the collapses should be default opened on a rerender of this component
+  // for example, on the refresh of the page,
+  const getCollapseInitialState = (routes) => {
+    for (let i = 0; i < routes.length; i++) {
+      if (routes[i].collapse && getCollapseInitialState(routes[i].views)) {
+        return true;
+      } else if (router.pathname.indexOf(routes[i].path) !== -1) {
+        return true;
+      }
+    }
+    return false;
+  };
+    // this creates the intial state of this component based on the collapse routes
+  // that it gets through this.props.routes
+
+  const getCollapseStates = (routes) => {
+    let initialState = {};
+    routes.map((prop) => {
+      if (prop.collapse) {
+        initialState = {
+          [prop.state]: getCollapseInitialState(prop.views),
+          ...getCollapseStates(prop.views),
+          ...initialState,
+        };
+      }
+      return null;
+    });
+    return initialState;
+  };
 
   const [state, setState] = useState({
     stateMiniActive: true,
     openAvatar: false,
+    ...getCollapseStates(routes)
   });
   const drawerPaper =
     classes.drawerPaper +
@@ -92,6 +122,7 @@ const SidebarMain = (props) => {
                 color={color}
                 rtlActive={rtlActive}
                 handleDrawerToggle={handleDrawerToggle}
+                getCollapseInitialState={getCollapseInitialState}
               />
             }
             headerLinks={
@@ -150,6 +181,7 @@ const SidebarMain = (props) => {
                 router={router}
                 color={color}
                 rtlActive={rtlActive}
+                getCollapseInitialState={getCollapseInitialState}
               />
             }
           />
