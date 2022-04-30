@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
+import About from '../../../models/About';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
