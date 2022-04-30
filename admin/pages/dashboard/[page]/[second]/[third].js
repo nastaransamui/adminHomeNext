@@ -13,6 +13,7 @@ import jwt from 'jsonwebtoken';
 import { Users } from '../../../../src/components/Users/usersStatic';
 import { sliderImage } from '../../../../src/components/mainPageSetup/Photos/photosStatic';
 import { sliderVideo } from '../../../../src/components/mainPageSetup/Videos/videosStatic';
+import { Features } from '../../../../src/components/mainPageSetup/Features/featuresStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -88,6 +89,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('sliderVideo', ctx)
               ? JSON.parse(getCookies(ctx).sliderVideo)
               : { ...sliderVideo },
+          })),
+          ...(await store.dispatch({
+            type: 'FEATURES',
+            payload: checkCookies('features', ctx)
+              ? JSON.parse(getCookies(ctx).features)
+              : { ...Features },
           })),
         },
       };

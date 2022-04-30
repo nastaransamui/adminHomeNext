@@ -101,6 +101,7 @@ export default function ThemeUser(props) {
   const changeAdminTheme = (clr) => {
     localStorage.setItem('adminThemeName', clr);
     dispatch({ type: 'ADMIN_THEMENAME', payload: clr });
+    setOpenDrawer(false);
   };
 
   const changeHomePageTheme = (clr) => {

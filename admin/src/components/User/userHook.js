@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Alert from 'react-s-alert';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { getCookies, setCookies } from 'cookies-next';
@@ -7,6 +6,7 @@ import { useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 import { useLocation } from 'react-router-dom';
+import alertCall from '../Hooks/useAlert';
 
 import { getUserUrl, pushUrl, createUrl, editUrl } from './userStatic';
 
@@ -64,7 +64,7 @@ const userHook = () => {
     if (e.currentTarget.files.length > 0) {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
-        alertCall('error', t('isVercelFileSize'), () => {
+        alertCall(theme, 'error', t('isVercelFileSize'), () => {
           return false;
         });
       } else {
@@ -103,11 +103,12 @@ const userHook = () => {
       const errorText =
         user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
       if (status !== 200 && !user.success) {
-        alertCall('error', errorText, () => {
+        alertCall(theme, 'error', errorText, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       } else {
         alertCall(
+          theme,
           'success',
           `${user.data.userName} ${t('userCreateSuccess')}`,
           () => {
@@ -120,7 +121,6 @@ const userHook = () => {
       }
     } else {
       // Edit user
-      console.log(values);
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
       const res = await fetch(editUrl, {
         method: 'POST',
@@ -134,7 +134,7 @@ const userHook = () => {
       const errorText =
         user?.ErrorCode == undefined ? user.Error : t(`${user?.ErrorCode}`);
       if (status !== 200 && !user.success) {
-        alertCall('error', errorText, () => {
+        alertCall(theme, 'error', errorText, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       } else {
@@ -150,6 +150,7 @@ const userHook = () => {
         );
         dispatch({ type: 'ADMIN_PROFILE', payload: NewProfile });
         alertCall(
+          theme,
           'success',
           `${user.data.userName} ${t('userEditSuccess')}`,
           () => {
@@ -159,27 +160,6 @@ const userHook = () => {
         );
       }
     }
-  };
-
-  const alertCall = (type, message, callback) => {
-    const backgroundColor =
-      type == 'error' ? theme.palette.error.dark : theme.palette.secondary.main;
-    Alert[type]('', {
-      customFields: {
-        message: `${message}`,
-        styles: {
-          backgroundColor: backgroundColor,
-          color: 'black',
-          zIndex: 9999,
-        },
-      },
-      onClose: function () {
-        callback();
-      },
-      timeout: 'none',
-      position: 'bottom',
-      effect: 'bouncyflip',
-    });
   };
 
   useEffect(() => {
@@ -232,7 +212,7 @@ const userHook = () => {
                 ? t(`${user?.ErrorCode}`)
                 : user.Error;
             if (status !== 200 && !user.success) {
-              alertCall('error', errorText, () => {
+              alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
                 history.push(pushUrl);
               });

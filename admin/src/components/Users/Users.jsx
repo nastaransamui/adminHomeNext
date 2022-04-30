@@ -7,33 +7,43 @@ import usersHook from './usersHook';
 import { useSelector } from 'react-redux';
 import DataShow from '../datasShow/DataShow';
 
-import { createUrl, dataGridColumns, editUrl, userFields } from './usersStatic';
+import {
+  createUrl,
+  dataGridColumns,
+  editUrl,
+  userFields,
+  deleteUrl,
+} from './usersStatic';
+import useDeleteAlert from '../Hooks/useDeleteAlert';
+import useDataHeaders from '../Hooks/useDataHeaders';
 
 export default function Users(props) {
   const { t } = useTranslation('users');
 
+  const { requestSearch, searchText, rows: users, exportCsv } = usersHook();
+  const { Users } = useSelector((state) => state);
+  const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
+    Users;
+
+  const sweetDeleteAlert = useDeleteAlert({
+    state: Users,
+    modelName: 'Users',
+    t: t,
+    deleteUrl: deleteUrl,
+    dispatchType: 'USERS',
+  });
+
   const {
-    sweetAlert,
-    requestSearch,
-    searchText,
-    rows: users,
-    alertCall,
+    gridNumberFunc,
+    cardViewsFunc,
     paginationChange,
     perPageFunc,
     sortByFunc,
-    exportCsv,
-    cardViewsFunc,
-    gridNumberFunc,
-  } = usersHook();
-  const { Users } = useSelector((state) => state);
-  const {
-    totalUsers,
-    usersPageNumber,
-    usersSortBy,
-    usersCardView,
-    usersPerPage,
-    usersGrid,
-  } = Users;
+  } = useDataHeaders({
+    state: Users,
+    dispatchType: 'USERS',
+    cookieName: 'users',
+  });
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -46,22 +56,21 @@ export default function Users(props) {
           dataFields={userFields}
           createUrl={createUrl}
           editUrl={editUrl}
-          cardView={usersCardView}
-          pageNumber={usersPageNumber}
-          total={totalUsers}
-          perPage={usersPerPage}
+          cardView={CardView}
+          pageNumber={pageNumber}
+          total={dataArrayLengh}
+          perPage={PerPage}
           mainData={users}
           profile
-          alertCall={alertCall}
           modelName='Users'
-          deleteAlert={sweetAlert}
+          deleteAlert={sweetDeleteAlert}
           dataGridColumns={dataGridColumns}
           gridNumberFunc={gridNumberFunc}
-          gridNumber={usersGrid}
+          gridNumber={GridView}
           paginationChange={paginationChange}
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
-          sortByValues={usersSortBy}
+          sortByValues={SortBy}
           exportCsv={exportCsv}
           cardHeaderType={{
             icon: true,

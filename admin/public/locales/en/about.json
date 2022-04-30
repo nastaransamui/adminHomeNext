@@ -1,0 +1,17 @@
+{
+  "AboutTitle": "Edit home page About us",
+  "photoHorizen": "Set photo horizontal position",
+  "thumbDelete": "Delete this photo",
+  "photoVertical": "Set photo vertical position",
+  "456x304": "Best resolution photo is 456x304",
+  "required": "This field is required.",
+  "title_en": "English title",
+  "title_fa": "Farsi title",
+  "desc_en": "English description",
+  "desc_fa": "Farsi description",
+  "button_en": "English button",
+  "button_fa": "Farsi button",
+  "submit": "Save changes",
+  "isVercelFileSize": "In this environment the biggest file to upload should be less than 5mb.",
+  "aboutEdited": "About text and photos edited."
+}

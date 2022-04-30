@@ -9,8 +9,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export const editUrl = '/admin/dashboard/user-page';
 export const createUrl = '/admin/dashboard/user-page/user';
-export const getAllUserUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUserUrl = `/admin/api/mainPageSetup/delete`;
+export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
+export const deleteUrl = `/admin/api/mainPageSetup/delete`;
 export const exportCsvUrl = `/admin/api/users/export`;
 export const userFields = [
   {
@@ -169,14 +169,14 @@ export const dataGridColumns = [
 ];
 
 export const Users = {
-  users: [],
-  totalUsers: 0,
-  usersPageNumber: 1,
-  usersSortBy: {
+  dataArray: [],
+  dataArrayLengh: 0,
+  pageNumber: 1,
+  SortBy: {
     field: 'createdAt',
     sorting: -1,
   },
-  usersCardView: true,
-  usersPerPage: 48,
-  usersGrid: 4,
+  CardView: true,
+  PerPage: 48,
+  GridView: 4,
 };

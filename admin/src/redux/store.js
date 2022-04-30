@@ -3,6 +3,7 @@ import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import { sliderImage } from '../components/mainPageSetup/Photos/photosStatic';
 import { sliderVideo } from '../components/mainPageSetup/Videos/videosStatic';
 import { Users } from '../components/Users/usersStatic';
+import { Features } from '../components/mainPageSetup/Features/featuresStatic';
 const initialState = {
   adminAccessToken: null,
   adminThemeName: 'cloud',
@@ -15,6 +16,7 @@ const initialState = {
   Users: { ...Users },
   sliderVideo: { ...sliderVideo },
   sliderImage: { ...sliderImage },
+  Features: { ...Features },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -51,6 +53,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sliderImage: { ...payload },
+      };
+    case 'FEATURES':
+      return {
+        ...state,
+        Features: { ...payload },
       };
     default:
       return state;

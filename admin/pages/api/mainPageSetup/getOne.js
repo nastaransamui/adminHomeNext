@@ -6,6 +6,9 @@ import mongoose from 'mongoose';
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
+import Features from '../../../models/Features';
+import About from '../../../models/About';
+import { createAboutIsEmpty } from '../../../helpers/about';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -25,11 +28,23 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     try {
       const { _id, modelName } = req.body;
       const collection = mongoose.model(modelName);
-      const value = await collection.findById(_id).select('-password');
-      if (!value) {
-        res.status(400).json({ success: false, Error: `${modelName}Notfind` });
+      let value =
+        modelName == 'About'
+          ? await collection.find({})
+          : await collection.findById(_id).select('-password');
+      if (!value || value.length == 0) {
+        if (modelName == 'About') {
+          createAboutIsEmpty(req, res, next);
+        } else {
+          res
+            .status(400)
+            .json({ success: false, Error: `${modelName}Notfind` });
+        }
       } else {
-        res.status(200).json({ success: true, data: value });
+        res.status(200).json({
+          success: true,
+          data: modelName == 'About' ? value[0] : value,
+        });
       }
     } catch (error) {
       let errorText = error.toString();

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Alert from 'react-s-alert';
 import { useTheme } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import alertCall from '../../Hooks/useAlert';
 
 import { pushUrl, getUrl, createUrl, editUrl } from './photoStatic';
 
@@ -48,7 +48,7 @@ const photoHook = () => {
     if (e.currentTarget.files.length > 0) {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
-        alertCall('error', t('isVercelFileSize'), () => {
+        alertCall(theme, 'error', t('isVercelFileSize'), () => {
           return false;
         });
       } else {
@@ -84,17 +84,17 @@ const photoHook = () => {
         const photo = await res.json();
 
         if (status !== 200 && !photo.success) {
-          alertCall('error', photo.Error, () => {
+          alertCall(theme, 'error', photo.Error, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           });
         } else {
-          alertCall('success', t('photoCreated'), () => {
+          alertCall(theme, 'success', t('photoCreated'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             history.push(pushUrl);
           });
         }
       } catch (error) {
-        alertCall('error', error.toString(), () => {
+        alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       }
@@ -112,42 +112,21 @@ const photoHook = () => {
         const { status } = res;
         const photo = await res.json();
         if (status !== 200 && !photo.success) {
-          alertCall('error', photo.Error, () => {
+          alertCall(theme, 'error', photo.Error, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           });
         } else {
-          alertCall('success', t('photoEdited'), () => {
+          alertCall(theme, 'success', t('photoEdited'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             history.push(pushUrl);
           });
         }
       } catch (error) {
-        alertCall('error', error.toString(), () => {
+        alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       }
     }
-  };
-
-  const alertCall = (type, message, callback) => {
-    const backgroundColor =
-      type == 'error' ? theme.palette.error.dark : theme.palette.secondary.main;
-    Alert[type]('', {
-      customFields: {
-        message: `${message}`,
-        styles: {
-          backgroundColor: backgroundColor,
-          color: 'black',
-          zIndex: 9999,
-        },
-      },
-      onClose: function () {
-        callback();
-      },
-      timeout: 'none',
-      position: 'bottom',
-      effect: 'bouncyflip',
-    });
   };
 
   useEffect(() => {
@@ -177,7 +156,7 @@ const photoHook = () => {
                 ? t(`${photo.Error}`)
                 : t(`${photo?.ErrorCode}`);
             if (status !== 200 && !photo.success) {
-              alertCall('error', errorText, () => {
+              alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
                 history.push(pushUrl);
               });

@@ -259,7 +259,19 @@ export const RenderCellAvatar = (params) => {
 };
 
 export const RenderCellVideo = (params) => {
-  const { modelName, row } = params;
+  const { modelName, row, rtlActive } = params;
+  const badgeColor = () => {
+    if (modelName == 'Users') {
+      return 'secondary';
+    } else {
+      if (row.isActive) {
+        return 'secondary';
+      } else {
+        return 'primary';
+      }
+    }
+  };
+
   if (params.field.includes('youTube')) {
     if (row.youTubeId !== '') {
       return (
@@ -283,7 +295,7 @@ export const RenderCellVideo = (params) => {
     }
   } else {
     return (
-      <Tooltip title={row.title_en} placement='left' arrow>
+      <Tooltip title={row.title_en} placement={rtlActive ? 'right' : 'left'}>
         <span
           style={{
             display: 'flex',
@@ -292,19 +304,29 @@ export const RenderCellVideo = (params) => {
             flexDirection: 'column',
             width: '100%',
           }}>
-          <Avatar>
-            <Player
-              autoPlay
-              aspectRatio='auto'
-              ref={(player) => {
-                // console.log(player);
-              }}
-              fluid={false}
-              preload='auto'
-              muted
-              src={row.videoLink}
-            />
-          </Avatar>
+          <Badge
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            color={badgeColor()}
+            variant='dot'
+            badgeContent=' '
+            overlap='circular'>
+            <Avatar>
+              <Player
+                autoPlay
+                aspectRatio='auto'
+                ref={(player) => {
+                  // console.log(player);
+                }}
+                fluid={false}
+                preload='auto'
+                muted
+                src={row.videoLink || row.featureLink}
+              />
+            </Avatar>
+          </Badge>
           <Typography>{row.title_en}</Typography>
         </span>
       </Tooltip>

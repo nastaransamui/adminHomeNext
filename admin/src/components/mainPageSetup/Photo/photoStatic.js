@@ -123,7 +123,7 @@ export const Stories = (
             accept='image/png, image/jpeg'
           />
           <h4 className={classes.cardIconTitle}>
-            <small>{values?.imageShow['name']}</small>
+            <small></small>
           </h4>
           <TextValidator
             validators={['required']}
@@ -137,16 +137,17 @@ export const Stories = (
           />
         </CardHeader>
       ),
-      footerTitle: '',
+      footerTitle:
+        values?.imageShow !== '' ? `${values?.imageShow['name']}` : ``,
     },
     ...languagesArray.map((la, i) => {
       return {
         inverted: i % 2 !== 0,
-        badgeColor: 'primary',
+        badgeColor: i % 2 !== 0 ? 'primary' : 'secondary',
         badgeIcon: TextFormat,
         title: t(`title_${la}`),
         badgeTooltip: t(`title_${la}`),
-        titleColor: 'primary',
+        titleColor: i % 2 !== 0 ? 'primary' : 'secondary',
         body: (
           <>
             <Grid container>

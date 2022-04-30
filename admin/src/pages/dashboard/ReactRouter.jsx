@@ -10,6 +10,9 @@ import VideosPage from '../video-page/VideosPage'
 import Video from '../../components/mainPageSetup/Video/Video';
 import PhotosPage from '../photo-page/PhotosPage';
 import Photo from '../../components/mainPageSetup/Photo/Photo';
+import FeaturePage from '../feature-page/FeaturePage';
+import Feature from '../../components/mainPageSetup/Feature/Feature';
+import About from '../../components/mainPageSetup/About/About'
 
 export function NotFoundPage() {
   return null;
@@ -91,6 +94,18 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/main-page-setup/photos/photo'>
           <Photo {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/features'>
+          <FeaturePage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/features/feature'>
+          <Feature {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/main-page-setup/about'>
+          <About {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/pricing-page'>

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Alert from 'react-s-alert';
 import { useTheme } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import alertCall from '../../Hooks/useAlert';
 
 import { pushUrl, getUrl, createUrl, editUrl } from './videoStatic';
 
@@ -56,7 +56,7 @@ const videoHook = () => {
     if (e.currentTarget.files.length > 0) {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
-        alertCall('error', t('isVercelFileSize'), () => {
+        alertCall(theme, 'error', t('isVercelFileSize'), () => {
           return false;
         });
       } else {
@@ -102,17 +102,17 @@ const videoHook = () => {
         const video = await res.json();
         const errorText = video.Error == 'onlyOne' ? t('onlyOne') : video.Error;
         if (status !== 200 && !video.success) {
-          alertCall('error', errorText, () => {
+          alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           });
         } else {
-          alertCall('success', t('videoCreated'), () => {
+          alertCall(theme, 'success', t('videoCreated'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             history.push(pushUrl);
           });
         }
       } catch (error) {
-        alertCall('error', error.toString(), () => {
+        alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       }
@@ -131,42 +131,21 @@ const videoHook = () => {
         const video = await res.json();
         const errorText = video.Error == 'onlyOne' ? t('onlyOne') : video.Error;
         if (status !== 200 && !video.success) {
-          alertCall('error', errorText, () => {
+          alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           });
         } else {
-          alertCall('success', t('videoEdited'), () => {
+          alertCall(theme, 'success', t('videoEdited'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             history.push(pushUrl);
           });
         }
       } catch (error) {
-        alertCall('error', error.toString(), () => {
+        alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         });
       }
     }
-  };
-
-  const alertCall = (type, message, callback) => {
-    const backgroundColor =
-      type == 'error' ? theme.palette.error.dark : theme.palette.secondary.main;
-    Alert[type]('', {
-      customFields: {
-        message: `${message}`,
-        styles: {
-          backgroundColor: backgroundColor,
-          color: 'black',
-          zIndex: 9999,
-        },
-      },
-      onClose: function () {
-        callback();
-      },
-      timeout: 'none',
-      position: 'bottom',
-      effect: 'bouncyflip',
-    });
   };
 
   useEffect(() => {
@@ -198,7 +177,7 @@ const videoHook = () => {
                 ? t(`${video.Error}`)
                 : t(`${video?.ErrorCode}`);
             if (status !== 200 && !video.success) {
-              alertCall('error', errorText, () => {
+              alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
                 history.push(pushUrl);
               });

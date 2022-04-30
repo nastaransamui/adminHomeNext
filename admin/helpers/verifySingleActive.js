@@ -1,5 +1,6 @@
 import dbConnect from './dbConnect';
 import Videos from '../models/Videos';
+import Features from '../models/Features';
 import mongoose from 'mongoose';
 
 /**
@@ -20,6 +21,7 @@ const verifySingleActive = async (req, res, next) => {
       if (!req.body.isActive) {
         next();
       } else {
+        console.log(req?.body?.modelName);
         var collection = mongoose.model(req?.body?.modelName);
         if (req?.body?.modelName == 'Videos') {
           collection
@@ -33,6 +35,20 @@ const verifySingleActive = async (req, res, next) => {
                   next();
                 } else {
                   res.status(500).json({ success: false, Error: 'onlyOne' });
+                }
+              }
+            });
+        } else if (req?.body?.modelName == 'Features') {
+          collection
+            .find({ isActive: true }, { isActive: 1 })
+            .then(async (result) => {
+              if (result.length < 3) {
+                next();
+              } else {
+                if (result[0]._id.equals(req.body._id)) {
+                  next();
+                } else {
+                  res.status(500).json({ success: false, Error: 'onlyThree' });
                 }
               }
             });

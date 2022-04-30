@@ -9,8 +9,8 @@ import {
 
 export const editUrl = '/admin/dashboard/main-page-setup/videos';
 export const createUrl = '/admin/dashboard/main-page-setup/videos/video';
-export const getAllVideosUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteVideoUrl = `/admin/api/mainPageSetup/delete`;
+export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
+export const deleteUrl = `/admin/api/mainPageSetup/delete`;
 
 export const videosFields = [
   {
@@ -184,14 +184,14 @@ export const dataGridColumns = [
 ];
 
 export const sliderVideo = {
-  videos: [],
-  totalVideos: 0,
-  videosPageNumber: 1,
-  videosSortBy: {
+  dataArray: [],
+  dataArrayLengh: 0,
+  pageNumber: 1,
+  SortBy: {
     field: 'createdAt',
     sorting: -1,
   },
-  videosCardView: true,
-  videosPerPage: 6,
-  videosGrid: 4,
+  CardView: true,
+  PerPage: 6,
+  GridView: 4,
 };

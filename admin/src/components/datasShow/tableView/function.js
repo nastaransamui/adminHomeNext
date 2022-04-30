@@ -36,6 +36,7 @@ export const createColumns = (dataGridColumns, props, t) => {
               <RenderCellVideo
                 dataGridColumns={dataGridColumns}
                 modelName={props.modelName}
+                rtlActive={props.rtlActive}
                 {...params}
               />
             ) : element.hasAvatar[0] ? (

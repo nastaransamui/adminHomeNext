@@ -6,37 +6,48 @@ import videosHook from './videosHook';
 import { useSelector } from 'react-redux';
 // import VideoStyles from './video-styles';
 import DataShow from '../../datasShow/DataShow';
+import useDeleteAlert from '../../Hooks/useDeleteAlert';
+import useDataHeaders from '../../Hooks/useDataHeaders';
+
 import {
   editUrl,
   createUrl,
   dataGridColumns,
   videosFields,
+  deleteUrl,
 } from './videosStatic';
 
 const Videos = (props) => {
   const { t } = useTranslation('video');
   const {
-    sweetAlert,
     requestSearch,
     searchText,
     rows: videos,
-    alertCall,
-    paginationChange,
-    perPageFunc,
-    sortByFunc,
-    cardViewsFunc,
-    gridNumberFunc,
   } = videosHook();
 
   const { sliderVideo } = useSelector((state) => state);
+  const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
+    sliderVideo;
+
+  const sweetDeleteAlert = useDeleteAlert({
+    state: sliderVideo,
+    modelName: 'Videos',
+    t: t,
+    deleteUrl: deleteUrl,
+    dispatchType: 'SLIDER_VIDEO',
+  });
+
   const {
-    totalVideos,
-    videosCardView,
-    videosPageNumber,
-    videosPerPage,
-    videosSortBy,
-    videosGrid,
-  } = sliderVideo;
+    gridNumberFunc,
+    cardViewsFunc,
+    paginationChange,
+    perPageFunc,
+    sortByFunc,
+  } = useDataHeaders({
+    state: sliderVideo,
+    dispatchType: 'SLIDER_VIDEO',
+    cookieName: 'sliderVideo',
+  });
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -49,23 +60,22 @@ const Videos = (props) => {
           dataFields={videosFields}
           createUrl={createUrl}
           editUrl={editUrl}
-          cardView={videosCardView}
-          pageNumber={videosPageNumber}
-          total={totalVideos}
-          perPage={videosPerPage}
+          cardView={CardView}
+          pageNumber={pageNumber}
+          total={dataArrayLengh}
+          perPage={PerPage}
           mainData={videos}
           profile
           movie
-          alertCall={alertCall}
           modelName='Videos'
-          deleteAlert={sweetAlert}
+          deleteAlert={sweetDeleteAlert}
           dataGridColumns={dataGridColumns}
           gridNumberFunc={gridNumberFunc}
-          gridNumber={videosGrid}
+          gridNumber={GridView}
           paginationChange={paginationChange}
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
-          sortByValues={videosSortBy}
+          sortByValues={SortBy}
           cardHeaderType={{
             icon: false,
             image: true,

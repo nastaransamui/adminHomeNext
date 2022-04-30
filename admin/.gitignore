@@ -9,6 +9,7 @@
 /public/download
 /public/videos
 /public/photos
+/public/features
 
 # testing
 /coverage

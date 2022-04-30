@@ -11,31 +11,37 @@ import {
   createUrl,
   dataGridColumns,
   photosFields,
+  deleteUrl,
 } from './photosStatic';
+import useDeleteAlert from '../../Hooks/useDeleteAlert';
+import useDataHeaders from '../../Hooks/useDataHeaders';
 
 const Photos = (props) => {
   const { t } = useTranslation('photos');
+  const { requestSearch, searchText, rows: photos } = photosHook();
+  const { sliderImage } = useSelector((state) => state);
+  const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
+    sliderImage;
+
+  const sweetDeleteAlert = useDeleteAlert({
+    state: sliderImage,
+    modelName: 'Photos',
+    t: t,
+    deleteUrl: deleteUrl,
+    dispatchType: 'SLIDER_IMAGE',
+  });
+
   const {
-    sweetAlert,
-    requestSearch,
-    searchText,
-    rows: photos,
-    alertCall,
+    gridNumberFunc,
+    cardViewsFunc,
     paginationChange,
     perPageFunc,
     sortByFunc,
-    cardViewsFunc,
-    gridNumberFunc
-  } = photosHook();
-  const {  sliderImage } = useSelector((state) => state);
-  const {
-    totalPhotos,
-    photosPageNumber,
-    photosSortBy,
-    photosCardView,
-    photosPerPage,
-    photosGrid
-  } = sliderImage;
+  } = useDataHeaders({
+    state: sliderImage,
+    dispatchType: 'SLIDER_IMAGE',
+    cookieName: 'sliderImage',
+  });
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -48,22 +54,21 @@ const Photos = (props) => {
           dataFields={photosFields}
           createUrl={createUrl}
           editUrl={editUrl}
-          cardView={photosCardView}
-          pageNumber={photosPageNumber}
-          total={totalPhotos}
-          perPage={photosPerPage}
+          cardView={CardView}
+          pageNumber={pageNumber}
+          total={dataArrayLengh}
+          perPage={PerPage}
           mainData={photos}
           profile
-          alertCall={alertCall}
           modelName='Photos'
-          deleteAlert={sweetAlert}
+          deleteAlert={sweetDeleteAlert}
           dataGridColumns={dataGridColumns}
           gridNumberFunc={gridNumberFunc}
-          gridNumber={photosGrid}
+          gridNumber={GridView}
           paginationChange={paginationChange}
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
-          sortByValues={photosSortBy}
+          sortByValues={SortBy}
           cardHeaderType={{
             icon: false,
             image: true,

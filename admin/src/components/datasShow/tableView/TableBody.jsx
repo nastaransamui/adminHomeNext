@@ -19,9 +19,7 @@ const TableBody = forwardRef((props, ref) => {
   const classes = tableBodyStyles();
   const theme = useTheme();
   const history = useHistory();
-  const { perPageArray, profile } = useSelector(
-    (state) => state
-  );
+  const { perPageArray, profile } = useSelector((state) => state);
   const {
     t,
     mainData,
@@ -45,6 +43,10 @@ const TableBody = forwardRef((props, ref) => {
       filterable: false,
       cellClassName: 'super-app-theme--cell',
       getActions: (params) => {
+        const hideDelete =
+          props.modelName == 'Users'
+            ? params.id == profile._id
+            : params.row.isActive;
         return [
           <GridActionsCellItem
             icon={<Edit style={{ color: theme.palette.primary.main }} />}
@@ -63,7 +65,7 @@ const TableBody = forwardRef((props, ref) => {
             }}
             color='inherit'
             style={{
-              visibility: params.id == profile._id ? 'hidden' : 'visible',
+              visibility: hideDelete ? 'hidden' : 'visible',
             }}
           />,
         ];

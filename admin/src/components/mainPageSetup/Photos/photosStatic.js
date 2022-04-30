@@ -147,14 +147,14 @@ export const dataGridColumns = [
 ];
 
 export const sliderImage = {
-  photos: [],
-  totalPhotos: 0,
-  photosPageNumber: 1,
-  photosSortBy: {
+  dataArray: [],
+  dataArrayLengh: 0,
+  pageNumber: 1,
+  SortBy: {
     field: 'createdAt',
     sorting: -1,
   },
-  photosCardView: true,
-  photosPerPage: 6,
-  photosGrid: 4,
+  CardView: true,
+  PerPage: 6,
+  GridView: 4,
 };

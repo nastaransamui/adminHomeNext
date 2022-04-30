@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
+import Features from '../../../models/Features';
 // Pagination function
 function paginate(array, valuesPerPage, valuesPageNumber) {
   // human-readable page numbers usually start with 1, so we reduce 1 in the first argument

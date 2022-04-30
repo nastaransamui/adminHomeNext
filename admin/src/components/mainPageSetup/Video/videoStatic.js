@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import {
   VideoLibrary,
   AddPhotoAlternate,
-  YouTubeIcon,
+  YouTube as YoutubeIcon,
   TextFormat,
   Delete,
 } from '@mui/icons-material';
@@ -143,7 +143,7 @@ export const Stories = (
             accept='video/mp4,video/x-m4v,video/*'
           />
           <h4 className={classes.cardIconTitle}>
-            <small>{values?.videoLink['name']}</small>
+            <small></small>
           </h4>
           <TextValidator
             validators={['required']}
@@ -157,7 +157,10 @@ export const Stories = (
           />
         </CardHeader>
       ),
-      footerTitle: '',
+      footerTitle:
+        values?.videoLink['name'] !== undefined
+          ? `${values?.videoLink['name']}`
+          : ``,
     },
     {
       // Second story
@@ -216,7 +219,7 @@ export const Stories = (
             />
           </CardAvatar>
           <h4 className={classes.cardIconTitle}>
-            <small>{values?.imageMobileShow['name']}</small>
+            <small></small>
           </h4>
           <TextValidator
             validators={['required']}
@@ -230,15 +233,19 @@ export const Stories = (
           />
         </CardHeader>
       ),
+      footerTitle:
+        values?.imageMobileShow['name'] !== undefined
+          ? `${values?.imageMobileShow['name']}`
+          : ``,
     },
     {
       // Third story
       inverted: true,
-      badgeColor: 'success',
+      badgeColor: 'primary',
       badgeIcon: AddPhotoAlternate,
       title: t('videoPoster'),
       badgeTooltip: t('videoPoster'),
-      titleColor: 'success',
+      titleColor: 'primary',
       body: (
         <CardHeader color='rose' icon>
           {values.videoPoster !== '' && (
@@ -290,7 +297,7 @@ export const Stories = (
             />
           </CardAvatar>
           <h4 className={classes.cardIconTitle}>
-            <small>{values?.videoPoster['name']}</small>
+            <small></small>
           </h4>
           <TextValidator
             className={classes.root}
@@ -304,14 +311,18 @@ export const Stories = (
           />
         </CardHeader>
       ),
+      footerTitle:
+        values?.videoPoster['name'] !== undefined
+          ? `${values?.videoPoster['name']}`
+          : ``,
     },
     {
       // Fourth story
-      badgeColor: 'danger',
-      badgeIcon: YouTubeIcon,
+      badgeColor: 'secondary',
+      badgeIcon: YoutubeIcon,
       title: t('youTubeId'),
       badgeTooltip: t('youTubeId'),
-      titleColor: 'danger',
+      titleColor: 'secondary',
       body: (
         <Grid
           container
@@ -362,11 +373,11 @@ export const Stories = (
     ...languagesArray.map((la, i) => {
       return {
         inverted: i % 2 == 0,
-        badgeColor: 'primary',
+        badgeColor: i % 2 == 0 ? 'primary' : 'secondary',
         badgeIcon: TextFormat,
         title: t(`title_${la}`),
         badgeTooltip: t(`title_${la}`),
-        titleColor: 'primary',
+        titleColor: i % 2 == 0 ? 'primary' : 'secondary',
         body: (
           <>
             <Grid container>
