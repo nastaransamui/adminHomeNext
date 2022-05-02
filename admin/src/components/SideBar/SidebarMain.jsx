@@ -7,6 +7,7 @@ import SidebarWraper from './SidebarWraper';
 import SidebarUser from './SidebarUser';
 import SidebarLinks from './SidebarLinks';
 import NavbarLinks from '../Navbar/NavbarLinks';
+import {  useLocation } from 'react-router-dom';
 
 const SidebarMain = (props) => {
   const mainPanel = createRef();
@@ -24,6 +25,7 @@ const SidebarMain = (props) => {
     adminAccessToken,
   } = props;
   const classes = mainStyles();
+  const location = useLocation();
     // this verifies if any of the collapses should be default opened on a rerender of this component
   // for example, on the refresh of the page,
   const getCollapseInitialState = (routes) => {

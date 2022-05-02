@@ -6,13 +6,14 @@ import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
 import UsersPage from '../user-page/UsersPage';
 import User from '../../components/User/User';
-import VideosPage from '../video-page/VideosPage'
+import VideosPage from '../video-page/VideosPage';
 import Video from '../../components/mainPageSetup/Video/Video';
 import PhotosPage from '../photo-page/PhotosPage';
 import Photo from '../../components/mainPageSetup/Photo/Photo';
 import FeaturePage from '../feature-page/FeaturePage';
 import Feature from '../../components/mainPageSetup/Feature/Feature';
-import About from '../../components/mainPageSetup/About/About'
+import About from '../../components/mainPageSetup/About/About';
+import CountriesPage from '../countries-page/CountriesPage';
 
 export function NotFoundPage() {
   return null;
@@ -108,12 +109,20 @@ export default function ReactRouter(props) {
           <About {...props} />
           <ThemeUser {...props} />
         </Route>
-        <Route exact path='/admin/dashboard/pricing-page'>
-          The Price test page
+        <Route exact path='/admin/dashboard/g-locations/countries'>
+          <CountriesPage {...props} componentView="global_countries"/>
           <ThemeUser {...props} />
         </Route>
-        <Route exact path='/admin/dashboard/regular-forms'>
-          Tforms
+        <Route exact path='/admin/dashboard/a-locations/countries'>
+        <CountriesPage {...props} componentView="active"/>
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-locations/provinces'>
+          Active provinces/states
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-locations/cities'>
+          Active cities
           <ThemeUser {...props} />
         </Route>
         <Route path='/admin/dashboard/notfoundpage'>

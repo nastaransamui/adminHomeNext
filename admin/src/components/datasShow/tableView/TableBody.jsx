@@ -3,7 +3,7 @@ import tableBodyStyles from './table-body-styles';
 
 import PropTypes from 'prop-types';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, ToggleOff, ToggleOn } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 
@@ -29,6 +29,10 @@ const TableBody = forwardRef((props, ref) => {
     dataGridColumns,
     pageNumber,
     total,
+    modelName,
+    activesId,
+    activeAlert,
+    diactiveAlert,
   } = props;
 
   const columns = [
@@ -44,31 +48,63 @@ const TableBody = forwardRef((props, ref) => {
       cellClassName: 'super-app-theme--cell',
       getActions: (params) => {
         const hideDelete =
-          props.modelName == 'Users'
-            ? params.id == profile._id
-            : params.row.isActive;
-        return [
-          <GridActionsCellItem
-            icon={<Edit style={{ color: theme.palette.primary.main }} />}
-            label={t('Edit')}
-            className='textPrimary'
-            onClick={() => {
-              gotToEdit(params);
-            }}
-            color='inherit'
-          />,
-          <GridActionsCellItem
-            icon={<Delete style={{ color: theme.palette.error.main }} />}
-            label={t('Delete')}
-            onClick={() => {
-              deleteAlert(params.row);
-            }}
-            color='inherit'
-            style={{
-              visibility: hideDelete ? 'hidden' : 'visible',
-            }}
-          />,
-        ];
+          modelName == 'Users' ? params.id == profile._id : params.row.isActive;
+        const hideEdit = editUrl == '';
+        if (editUrl !== '') {
+          return [
+            <GridActionsCellItem
+              icon={<Edit style={{ color: theme.palette.primary.main }} />}
+              label={t('Edit')}
+              className='textPrimary'
+              onClick={() => {
+                doubleClickFunc(params);
+              }}
+              style={{
+                visibility: hideEdit ? 'hidden' : 'visible',
+              }}
+              color='inherit'
+            />,
+            <GridActionsCellItem
+              icon={<Delete style={{ color: theme.palette.error.main }} />}
+              label={t('Delete')}
+              onClick={() => {
+                deleteAlert(params.row);
+              }}
+              color='inherit'
+              style={{
+                visibility: hideDelete ? 'hidden' : 'visible',
+              }}
+            />,
+          ];
+        } else {
+          return [
+            <GridActionsCellItem
+              icon={
+                activesId == undefined ? (
+                  <ToggleOn style={{ color: theme.palette.success.main }} />
+                ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
+                  <ToggleOff style={{ color: theme.palette.success.main }} />
+                ) : (
+                  <ToggleOn style={{ color: theme.palette.error.main }} />
+                )
+              }
+              label={t('Edit')}
+              className='textPrimary'
+              onClick={() => {
+                if(activesId == undefined){
+                  diactiveAlert(params.row);
+                }else{
+                  if (activesId?.filter((e) => e.id == params.id).length > 0) {
+                    diactiveAlert(params.row);
+                  } else {
+                    activeAlert(params.row);
+                  }
+                }
+              }}
+              color='inherit'
+            />,
+          ];
+        }
       },
     },
   ];
@@ -77,12 +113,24 @@ const TableBody = forwardRef((props, ref) => {
     CustomFilterInputs(columns);
   }
 
-  const gotToEdit = (params) => {
-    history.push({
-      pathname: editUrl,
-      search: `?_id=${params.id}`,
-      state: params.row,
-    });
+  const doubleClickFunc = (params) => {
+    if (editUrl !== '') {
+      history.push({
+        pathname: editUrl,
+        search: `?_id=${params.id}`,
+        state: params.row,
+      });
+    }else{
+      if(activesId == undefined){
+        diactiveAlert(params.row);
+      }else{
+        if (activesId?.filter((e) => e.id == params.id).length > 0) {
+          diactiveAlert(params.row);
+        } else {
+          activeAlert(params.row);
+        }
+      }
+    }
   };
 
   return (
@@ -120,7 +168,7 @@ const TableBody = forwardRef((props, ref) => {
             },
           }}
           onRowDoubleClick={(params) => {
-            gotToEdit(params);
+            doubleClickFunc(params);
           }}
         />
       </Box>
@@ -135,7 +183,9 @@ TableBody.propTypes = {
   perPage: PropTypes.number.isRequired,
   rtlActive: PropTypes.bool.isRequired,
   editUrl: PropTypes.string.isRequired,
-  deleteAlert: PropTypes.func.isRequired,
+  deleteAlert: PropTypes.func,
+  activeAlert: PropTypes.func,
+  diactiveAlert: PropTypes.func,
 };
 
 export default TableBody;

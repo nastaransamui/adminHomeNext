@@ -19,14 +19,14 @@ const StyledBox = styled(Container)(({ theme }) => ({
 
 const MainHeader = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-
+  const { createUrl } = props;
   return (
     <StyledBox ref={ref} maxWidth='xl'>
       <Grid className={classes.filterToolbar}>
         <FilterSwitch {...props} />
         <FilterTextSearch {...props} />
         <FilterIcons {...props} />
-        <CreateNew {...props} />
+        {createUrl !== '' && <CreateNew {...props} />}
       </Grid>
     </StyledBox>
   );

@@ -19,6 +19,8 @@ import feature_en from '../public/locales/en/feature.json';
 import feature_fa from '../public/locales/fa/feature.json';
 import about_en from '../public/locales/en/about.json';
 import about_fa from '../public/locales/fa/about.json';
+import geoLocations_en from '../public/locales/en/geoLocations.json';
+import geoLocations_fa from '../public/locales/fa/geoLocations.json';
 import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
@@ -81,6 +83,7 @@ i18next
         feature: feature_en,
         photos: photos_en,
         about: about_en,
+        geoLocations: geoLocations_en,
         dataGridLocale: dataGridLocale_en,
       },
       fa: {
@@ -93,6 +96,7 @@ i18next
         feature: feature_fa,
         about: about_fa,
         photos: photos_fa,
+        geoLocations: geoLocations_fa,
         dataGridLocale: dataGridLocale_fa,
       },
     },

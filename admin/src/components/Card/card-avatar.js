@@ -10,6 +10,15 @@ const cardAvatarStyle = makeStyles((theme) => {
         height: 130,
       },
     },
+    cardAvatarSquare: {
+      maxWidth: '125px',
+      maxHeight: '125px',
+      minWidth: '125px',
+      minHeight: '125px',
+      margin: '-50px auto 0',
+      overflow: 'hidden',
+      padding: '0',
+    },
     cardAvatarProfile: {
       maxWidth: '130px',
       maxHeight: '130px',

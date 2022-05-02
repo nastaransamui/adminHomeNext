@@ -49,7 +49,9 @@ DataShow.propTypes = {
   modelName: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   editUrl: PropTypes.string.isRequired,
-  deleteAlert: PropTypes.func.isRequired,
+  deleteAlert: PropTypes.func,
+  activeAlert: PropTypes.func,
+  diactiveAlert: PropTypes.func,
   dataGridColumns: PropTypes.array.isRequired,
   paginationChange: PropTypes.func.isRequired,
   perPageFunc: PropTypes.func.isRequired,
@@ -61,7 +63,8 @@ DataShow.propTypes = {
   cardAvatarType: PropTypes.object.isRequired,
   cardViewsFunc: PropTypes.func.isRequired,
   gridNumberFunc: PropTypes.func.isRequired,
-  gridNumber: PropTypes.number.isRequired
+  gridNumber: PropTypes.number.isRequired,
+  activesId: PropTypes.array,
 };
 
 export default DataShow;

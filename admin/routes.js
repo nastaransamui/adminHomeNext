@@ -1,4 +1,4 @@
-import { AccountBox, Dashboard, Apps } from '@mui/icons-material/';
+import { AccountBox, Dashboard, Apps, Public } from '@mui/icons-material/';
 
 var dashRoutes = [
   {
@@ -135,55 +135,82 @@ var dashRoutes = [
         ],
       },
       {
-        // collapse: true,
         'name_en-US': 'About us',
         name_fa: 'درباره',
         'mini_en-US': 'AU',
         mini_fa: 'د',
-        state: 'featureMultiCollapse',
+        state: 'aboutCollapse',
         path: '/dashboard/main-page-setup/about',
         layout: '/admin',
-        // views: [
-        //   {
-        //     path: '/dashboard/main-page-setup/features',
-        //     'name_en-US': 'Features List',
-        //     name_fa: 'درباره',
-        //     'mini_en-US': 'F',
-        //     mini_fa: 'ا',
-        //     state: 'featuresCollapse',
-        //     layout: '/admin',
-        //   },
-        //   {
-        //     path: '/dashboard/main-page-setup/features/feature',
-        //     'name_en-US': 'Add Feature',
-        //     name_fa: 'ویژگی',
-        //     'mini_en-US': 'F',
-        //     mini_fa: 'و',
-        //     state: 'featureCollapse',
-        //     layout: '/admin',
-        //   },
-        // ],
       },
     ],
   },
-  // {
-  //   collapse: true,
-  //   'name_en-US': 'Forms',
-  //   name_fa: 'فرم ها',
-  //   icon: 'content_paste',
-  //   state: 'formsCollapse',
-  //   views: [
-  //     {
-  //       path: '/dashboard/regular-forms',
-  //       'name_en-US': 'Regular Forms',
-  //       name_fa: 'فرمهای عادی',
-  //       'mini_en-US': 'RF',
-  //       mini_fa: 'فع',
-
-  //       layout: '/admin',
-  //     },
-  //   ],
-  // },
+  {
+    path: '/dashboard/g-locations',
+    collapse: true,
+    'name_en-US': 'Geo locations',
+    name_fa: 'مکان های جغرافیایی',
+    icon: Public,
+    state: 'geoLocationsCollapse',
+    views: [
+      {
+        collapse: true,
+        'name_en-US': 'All',
+        name_fa: 'همه',
+        'mini_en-US': 'A',
+        mini_fa: 'ه',
+        state: 'allGlobeCollapse',
+        views: [
+          {
+            path: '/dashboard/g-locations/countries',
+            'name_en-US': 'All countries',
+            name_fa: 'همه کشورها',
+            'mini_en-US': 'AC',
+            mini_fa: 'ه ک',
+            state: 'gCountriesCollapse',
+            layout: '/admin',
+          },
+        ],
+      },
+      {
+        collapse: true,
+        'name_en-US': 'Only actives',
+        name_fa: 'فقط فعال',
+        'mini_en-US': 'OA',
+        mini_fa: 'ف',
+        state: 'activeGlobeCollapse',
+        views: [
+          {
+            path: '/dashboard/a-locations/countries',
+            'name_en-US': 'Active countries',
+            name_fa: 'کشورها فعال',
+            'mini_en-US': 'AC',
+            mini_fa: 'ک',
+            state: 'aCountriesCollapse',
+            layout: '/admin',
+          },
+          {
+            path: '/dashboard/a-locations/provinces',
+            'name_en-US': 'Active provinces/states',
+            name_fa: 'استان ها / ایالتهای فعال',
+            'mini_en-US': 'AP',
+            mini_fa: ' ا',
+            state: 'aProvincesCollapse',
+            layout: '/admin',
+          },
+          {
+            path: '/dashboard/a-locations/cities',
+            'name_en-US': 'Active cities',
+            name_fa: 'شهرها ی فعال',
+            'mini_en-US': 'AC',
+            mini_fa: 'ش',
+            state: 'aCitiesCollapse',
+            layout: '/admin',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default dashRoutes;

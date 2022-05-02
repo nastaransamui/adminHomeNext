@@ -42,8 +42,6 @@ const aboutHook = () => {
   });
 
   const formValueChanged = (e) => {
-    console.log(e.target.name);
-    console.log(e.target.value);
     values[e.target.name] = e.target.value;
     setValues((oldValues) => ({ ...oldValues }));
   };

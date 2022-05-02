@@ -12,7 +12,7 @@ import { createAboutIsEmpty } from '../../../helpers/about';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
-    console.log('some');
+    console.log('Error api rout');
     res
       .status(405)
       .json({ success: false, Error: `Method '${req.method}' Not Allowed` });

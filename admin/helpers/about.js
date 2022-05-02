@@ -62,7 +62,6 @@ export async function createAboutIsEmpty(req, res, next) {
       var collection = mongoose.model(modelName);
       const newValue = await new collection(about);
       await newValue.save(async (err, result) => {
-        console.log(result);
         if (err) {
           res.status(403).json({
             success: false,

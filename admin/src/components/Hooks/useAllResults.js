@@ -6,6 +6,7 @@ import { setCookies } from 'cookies-next';
 const useAllResults = ({
   state,
   modelName,
+  fileName,
   t,
   i18n,
   getAllUrl,
@@ -29,6 +30,7 @@ const useAllResults = ({
         },
         body: JSON.stringify({
           modelName: modelName,
+          fileName: fileName,
           valuesPerPage: PerPage,
           valuesPageNumber: pageNumber,
           valuesSortByField: SortBy[`field`],
@@ -76,6 +78,7 @@ const useAllResults = ({
             ...state,
             dataArray: response.data,
             dataArrayLengh: response.totalValuesLength,
+            activesId: response?.activesId,
           },
         });
 

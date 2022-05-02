@@ -10,6 +10,8 @@ import {
   RenderCellAvatar,
   RenderCellVideo,
   DateFilters,
+  RenderArrayTotal,
+  RenderArray,
 } from './RenderCell';
 
 export const createColumns = (dataGridColumns, props, t) => {
@@ -32,6 +34,12 @@ export const createColumns = (dataGridColumns, props, t) => {
               <RenderCellBoolean modelName={props.modelName} {...params} />
             ) : element.type == 'dateTime' ? (
               <RenderCellDate modelName={props.modelName} {...params} />
+            ) : element.type == 'array' ? (
+              element.arrayTotal ? (
+                <RenderArrayTotal modelName={props.modelName} {...params} />
+              ) : (
+                <RenderArray modelName={props.modelName} {...params} />
+              )
             ) : element.hasVideo[0] ? (
               <RenderCellVideo
                 dataGridColumns={dataGridColumns}
@@ -41,6 +49,7 @@ export const createColumns = (dataGridColumns, props, t) => {
               />
             ) : element.hasAvatar[0] ? (
               <RenderCellAvatar
+                activesId={props.activesId}
                 dataGridColumns={dataGridColumns}
                 modelName={props.modelName}
                 {...params}

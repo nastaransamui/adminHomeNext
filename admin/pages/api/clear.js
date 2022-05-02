@@ -14,8 +14,16 @@ apiRoute.get(async (req, res, next) => {
   if (!hzErrorConnection) {
     const multiMapu = await hz.getMultiMap('Users');
     const multiMapv = await hz.getMultiMap('Videos');
+    const multiMapf = await hz.getMultiMap('Features');
+    const multiMapp = await hz.getMultiMap('Photos');
+    const multiMapc = await hz.getMultiMap('Countries');
+    console.log(multiMapc);
     await multiMapu.destroy();
     await multiMapv.destroy();
+    await multiMapf.destroy();
+    await multiMapp.destroy();
+    await multiMapc.destroy();
+
     console.log('clear all catch');
     await hz.shutdown();
     res.status(200).redirect('/admin/dashboard');

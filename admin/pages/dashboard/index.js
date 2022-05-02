@@ -12,6 +12,10 @@ import { Users } from '../../src/components/Users/usersStatic';
 import { sliderImage } from '../../src/components/mainPageSetup/Photos/photosStatic';
 import { sliderVideo } from '../../src/components/mainPageSetup/Videos/videosStatic';
 import { Features } from '../../src/components/mainPageSetup/Features/featuresStatic';
+import {
+  countriesGStore,
+  countriesAStore,
+} from '../../src/components/geoLocations/Countries/countriesStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -80,6 +84,18 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('features', ctx)
               ? JSON.parse(getCookies(ctx).features)
               : { ...Features },
+          })),
+          ...(await store.dispatch({
+            type: 'COUNTRIES_G_STORE',
+            payload: checkCookies('countriesGStore', ctx)
+              ? JSON.parse(getCookies(ctx).countriesGStore)
+              : { ...countriesGStore },
+          })),
+          ...(await store.dispatch({
+            type: 'COUNTRIES_A_STORE',
+            payload: checkCookies('countriesAStore', ctx)
+              ? JSON.parse(getCookies(ctx).countriesAStore)
+              : { ...countriesAStore },
           })),
         },
       };

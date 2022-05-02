@@ -12,6 +12,8 @@ import {
   KeyboardArrowDown,
   CheckBox,
   CheckBoxOutlineBlank,
+  ToggleOff,
+  ToggleOn,
 } from '@mui/icons-material';
 
 import {
@@ -42,10 +44,12 @@ const Body = forwardRef((props, ref) => {
     modelName,
     index,
     deleteAlert,
-    gridNumber
+    activeAlert,
+    diactiveAlert,
+    gridNumber,
+    activesId,
   } = props;
   const { stringLimit, profile } = useSelector((state) => state);
-
 
   const { i18n } = useTranslation();
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
@@ -131,16 +135,25 @@ const Body = forwardRef((props, ref) => {
   };
 
   const gotToEdit = (_id) => {
-    history.push({
-      pathname: editUrl,
-      search: `?_id=${_id}`,
-      state: data,
-    });
+    if (editUrl !== '') {
+      history.push({
+        pathname: editUrl,
+        search: `?_id=${_id}`,
+        state: data,
+      });
+    }
   };
 
   const primaryTextData = (data, label) => {
-    if(modelName !== 'Users' || data.facebook.length == 0 && data.twitter.length == 0 && data.google.length == 0){
-      if (typeof data[label] !== 'boolean') {
+    if (
+      modelName !== 'Users' ||
+      (data.facebook.length == 0 &&
+        data.twitter.length == 0 &&
+        data.google.length == 0)
+    ) {
+      if (typeof data[label] == 'object') {
+        return `${label}: ${data[label]?.length}`;
+      } else if (typeof data[label] !== 'boolean') {
         if (data[label] == '') {
           return `${t('notDefine')}`;
         } else {
@@ -164,9 +177,8 @@ const Body = forwardRef((props, ref) => {
           <Close style={{ color: theme.palette.error.main }} />
         );
       }
-    }else{
-
-      console.log(data)
+    } else {
+      console.log(data);
     }
   };
 
@@ -175,24 +187,71 @@ const Body = forwardRef((props, ref) => {
       return <Icon style={iconStyle(i)} />;
     } else {
       if (data[label]) {
-        return <CheckBox style={iconStyle(i)}/>
+        return <CheckBox style={iconStyle(i)} />;
       } else {
-        return <CheckBoxOutlineBlank style={iconStyle(i)}/>
+        return <CheckBoxOutlineBlank style={iconStyle(i)} />;
       }
     }
   };
+  // console.log()
+  // console.log(data.id)
   return (
     <CardBody ref={ref}>
       <div className={classes.cardHoverUnder}>
-        <Tooltip
-          title={t('editTooltip')}
-          placement='bottom'
-          classes={{ tooltip: classes.tooltip }}>
-          <Button color='primary' onClick={() => gotToEdit(data._id)}>
-            <ArtTrack className={classes.underChartIcons} />
-          </Button>
-        </Tooltip>
-        {modelName == 'Users' && data._id !== profile._id ? (
+        {activesId !== undefined ? (
+          activesId.filter((e) => e.id == data.id).length > 0 ? (
+            <Tooltip
+              title={t('ToggleOff')}
+              placement='bottom'
+              classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color='primary'
+                onClick={() => {
+                  diactiveAlert(data);
+                }}>
+                <ToggleOff style={{ color: theme.palette.success.main }} />
+              </Button>
+            </Tooltip>
+          ) : (
+            <Tooltip
+              title={t('ToggleOn')}
+              placement='bottom'
+              classes={{ tooltip: classes.tooltip }}>
+              <Button
+                color='primary'
+                onClick={() => {
+                  activeAlert(data);
+                }}>
+                <ToggleOn style={{ color: theme.palette.error.main }} />
+              </Button>
+            </Tooltip>
+          )
+        ) : (
+          editUrl !== '' && (
+            <Tooltip
+              title={t('editTooltip')}
+              placement='bottom'
+              classes={{ tooltip: classes.tooltip }}>
+              <Button color='primary' onClick={() => gotToEdit(data._id)}>
+                <ArtTrack className={classes.underChartIcons} />
+              </Button>
+            </Tooltip>
+          )
+        )}
+        {modelName == 'Countries' ? (
+          <Tooltip
+            title={t('ToggleOff')}
+            placement='bottom'
+            classes={{ tooltip: classes.tooltip }}>
+            <Button
+              color='primary'
+              onClick={() => {
+                diactiveAlert(data);
+              }}>
+              <ToggleOff style={{ color: theme.palette.success.main }} />
+            </Button>
+          </Tooltip>
+        ) : modelName == 'Users' && data._id !== profile._id ? (
           <Tooltip
             title={t('deleteTooltip')}
             placement='bottom'
@@ -205,7 +264,8 @@ const Body = forwardRef((props, ref) => {
               <DeleteForeverOutlined />
             </Button>
           </Tooltip>
-        ) : modelName !== 'Users' && !data.isActive ? (
+        ) : activesId !== undefined ? null : modelName !== 'Users' &&
+          !data.isActive ? (
           <Tooltip
             title={t('deleteTooltip')}
             placement='bottom'
@@ -223,21 +283,39 @@ const Body = forwardRef((props, ref) => {
       <span
         style={{
           display: 'flex',
-          flexDirection: rtlActive ? 'row-reverse' : 'row',
-          marginBottom: 20
+          flexDirection:
+            rtlActive && modelName == 'Users' ? 'row-reverse' : 'row',
+          marginBottom: 20,
         }}>
         <h4 className={classes.cardProductTitle}>
           <Tooltip
-            title={modelName == 'Users' ? data.userName : data[`title_${lang}`]}
+            title={
+              modelName == 'Users'
+                ? data.userName
+                : modelName == 'global_countries' || modelName == 'Countries'
+                ? rtlActive
+                  ? data?.translations?.fa
+                  : data?.name
+                : data[`title_${lang}`]
+            }
             placement='top'
             arrow>
-            <a href='#' onClick={() => gotToEdit(data._id)}>
+            <a
+              href=''
+              onClick={(e) => {
+                e.preventDefault();
+                gotToEdit(data._id);
+              }}>
               {modelName == 'Users'
                 ? data.userName.length <= stringLimit
                   ? data.userName
                   : rtlActive
                   ? `... ${data.userName.slice(0, stringLimit)}`
                   : `${data.userName.slice(0, stringLimit)} ...`
+                : modelName == 'global_countries' || modelName == 'Countries'
+                ? rtlActive
+                  ? data?.translations?.fa
+                  : data?.name
                 : data[`title_${lang}`]}
             </a>
           </Tooltip>
@@ -251,7 +329,11 @@ const Body = forwardRef((props, ref) => {
             onClick={() => expandClicked(index)}
             sx={setItemButtonStyle(index, expanded)}>
             <ListItemText
-              primary={t('information')}
+              primary={
+                rtlActive
+                  ? data?.translations?.fa || t('information')
+                  : data.name || t('information')
+              }
               primaryTypographyProps={primaryProps}
               secondary={dataFields.map((e) => t(`${e.label}`)).join(', ')}
               secondaryTypographyProps={secondaryProps}
@@ -261,7 +343,7 @@ const Body = forwardRef((props, ref) => {
           </ListItemButton>
           {expanded[index] && (
             <ClickAwayListener onClickAway={() => awayClicked(index, expanded)}>
-              <span >
+              <span>
                 {expanded[index] &&
                   dataFields.map((item, i) => {
                     const { Icon, label, type } = item;
@@ -309,7 +391,8 @@ Body.propTypes = {
   dataFields: PropTypes.array.isRequired,
   modelName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
-  deleteAlert: PropTypes.func.isRequired,
+  deleteAlert: PropTypes.func,
+  activeAlert: PropTypes.func,
 };
 
 export default Body;

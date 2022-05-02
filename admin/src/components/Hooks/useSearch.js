@@ -12,7 +12,9 @@ const useSearch = (model) => {
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
     const filterdData = model.filter((row) => {
       return Object.keys(row).some((field) => {
-        return searchRegex.test(row[field].toString());
+        if (row[field] !== null) {
+          return searchRegex.test(row[field].toString());
+        }
       });
     });
     setRows(filterdData);

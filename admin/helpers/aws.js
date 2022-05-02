@@ -155,8 +155,6 @@ export const awsDeleteObjectsFolder = async (res, next, newFolder) => {
 export const fsCreateSingle = async (req, res, next) => {
   try {
     const key = req.body.finalFolder;
-    console.log(req.files[0]);
-    console.log(req.body);
     const { fileName, fileType, path: filePath } = req.files[0];
     const publicFolder = `${process.cwd()}/public/${key}`;
     const uniqueName = uuidv4();

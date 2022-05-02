@@ -17,7 +17,7 @@ import {
   GridToolbarDensitySelector,
   GridToolbarColumnsButton,
 } from '@mui/x-data-grid';
-import moment from 'moment';
+import moment, { lang } from 'moment';
 import { useTheme } from '@mui/styles';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
@@ -191,13 +191,24 @@ export const RenderCellAvatar = (params) => {
   const { stringLimit, profile } = useSelector((state) => state);
   const { i18n } = useTranslation();
   const rtlActive = i18n.language == 'fa';
-  const { dataGridColumns, modelName, row } = params;
+  const lang = i18n.language == 'fa' ? 'fa' : 'en';
+  const { dataGridColumns, modelName, row, activesId, formattedValue } = params;
   const Image = () => {
     if (modelName == 'Users') {
       return (
         <img
           style={{ height: 40, width: 40, borderRadius: '50%' }}
           src={row.profileImage || avatar.src}
+          alt='...'
+        />
+      );
+    } else if (modelName == 'global_countries' || modelName == 'Countries') {
+      return (
+        <img
+          style={{ height: 40, width: 40, borderRadius: '50%' }}
+          src={`/admin/flags/128x128/${
+            row[dataGridColumns[0].hasAvatar[1]]
+          }.png`}
           alt='...'
         />
       );
@@ -218,6 +229,14 @@ export const RenderCellAvatar = (params) => {
 
   const badgeColor = () => {
     if (modelName == 'Users') {
+      return 'secondary';
+    } else if (modelName == 'global_countries') {
+      if (activesId.filter((e) => e.id == params.id).length > 0) {
+        return 'secondary';
+      } else {
+        return 'primary';
+      }
+    } else if (modelName == 'Countries') {
       return 'secondary';
     } else {
       if (row.isActive) {
@@ -249,11 +268,17 @@ export const RenderCellAvatar = (params) => {
         invisible={params.modelName == 'Users' && params.id !== profile._id}>
         <Image />
       </Badge>
-      {params.formattedValue.length < stringLimit
-        ? params.formattedValue
-        : rtlActive
-        ? `... ${params.formattedValue.slice(0, stringLimit)}`
-        : `${params.formattedValue.slice(0, stringLimit)} ...`}
+      {modelName == 'Users'
+        ? formattedValue.length <= stringLimit
+          ? formattedValue
+          : rtlActive
+          ? `... ${formattedValue.slice(0, stringLimit)}`
+          : `${formattedValue.slice(0, stringLimit)} ...`
+        : modelName == 'global_countries' || modelName == 'Countries'
+        ? rtlActive
+          ? row?.translations?.fa
+          : row?.name
+        : row[`title_${lang}`]}
     </span>
   );
 };
@@ -331,6 +356,47 @@ export const RenderCellVideo = (params) => {
         </span>
       </Tooltip>
     );
+  }
+};
+
+export const RenderArrayTotal = (params) => {
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        width: '100%',
+      }}>
+      {params?.row[params?.field]?.length}
+    </span>
+  );
+};
+
+export const RenderArray = (params) => {
+  if (params?.field == 'timezones') {
+    const timeZoneArray = params?.row[params?.field].map(
+      (e) => `${e?.gmtOffsetName}
+      ${e?.tzName}`
+    );
+    return (
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          width: '100%',
+        }}>
+        <GridCellExpand
+          value={timeZoneArray.join(' ') || ''}
+          width={params.colDef.computedWidth}
+        />
+      </span>
+    );
+  } else {
+    return 'fixRenderArray';
   }
 };
 

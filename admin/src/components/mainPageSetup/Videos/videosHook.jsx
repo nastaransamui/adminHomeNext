@@ -8,7 +8,7 @@ import useAllResults from '../../Hooks/useAllResults';
 
 const videosHook = () => {
   const { sliderVideo } = useSelector((state) => state);
-  const { dataArray, dataArrayLengh, pageNumber, SortBy, CardView, PerPage } =
+  const { dataArray, dataArrayLengh, pageNumber, SortBy, PerPage } =
     sliderVideo;
 
   const dispatch = useDispatch();

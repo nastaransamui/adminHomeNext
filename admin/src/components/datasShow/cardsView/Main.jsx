@@ -97,7 +97,9 @@ Main.propTypes = {
   modelName: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   editUrl: PropTypes.string.isRequired,
-  deleteAlert: PropTypes.func.isRequired,
+  deleteAlert: PropTypes.func,
+  activeAlert: PropTypes.func,
+  diactiveAlert: PropTypes.func,
 };
 
 export default Main;

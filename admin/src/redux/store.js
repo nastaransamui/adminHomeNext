@@ -4,6 +4,11 @@ import { sliderImage } from '../components/mainPageSetup/Photos/photosStatic';
 import { sliderVideo } from '../components/mainPageSetup/Videos/videosStatic';
 import { Users } from '../components/Users/usersStatic';
 import { Features } from '../components/mainPageSetup/Features/featuresStatic';
+import {
+  countriesGStore,
+  countriesAStore,
+} from '../components/geoLocations/Countries/countriesStatic';
+
 const initialState = {
   adminAccessToken: null,
   adminThemeName: 'cloud',
@@ -17,6 +22,8 @@ const initialState = {
   sliderVideo: { ...sliderVideo },
   sliderImage: { ...sliderImage },
   Features: { ...Features },
+  countriesGStore: { ...countriesGStore },
+  countriesAStore: { ...countriesAStore },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -58,6 +65,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         Features: { ...payload },
+      };
+    case 'COUNTRIES_G_STORE':
+      return {
+        ...state,
+        countriesGStore: { ...payload },
+      };
+    case 'COUNTRIES_A_STORE':
+      return {
+        ...state,
+        countriesAStore: { ...payload },
       };
     default:
       return state;

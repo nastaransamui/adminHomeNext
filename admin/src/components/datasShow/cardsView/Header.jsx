@@ -18,24 +18,35 @@ const Header = forwardRef((props, ref) => {
     movie,
     cardHeaderType,
     cardAvatarType,
-    gridNumber
+    gridNumber,
+    activesId,
   } = props;
   const { profile } = useSelector((state) => state);
   const [headerWidth, setHeaderWidth] = useState(null);
-  const headerRef = useRef(null)
+  const headerRef = useRef(null);
   useEffect(() => {
-    setHeaderWidth(headerRef.current.offsetWidth)
+    setHeaderWidth(headerRef.current.offsetWidth);
   }, [gridNumber]);
+
   const Image = () => {
     if (modelName == 'Users') {
       return <img src={data.profileImage || avatar.src} alt='...' />;
+    } else if (modelName == 'global_countries' || modelName == 'Countries') {
+      return (
+        <img
+          src={`/admin/flags/128x128/${
+            data[dataGridColumns[0].hasAvatar[1]]
+          }.png`}
+          alt='...'
+        />
+      );
     } else {
       if (movie) {
         return (
           <Player
             aspectRatio='auto'
             width={headerWidth}
-            height={headerWidth/2}
+            height={headerWidth / 2}
             fluid={false}
             preload='auto'
             muted
@@ -63,6 +74,14 @@ const Header = forwardRef((props, ref) => {
   const badgeColor = () => {
     if (modelName == 'Users') {
       return 'secondary';
+    } else if (modelName == 'global_countries') {
+      if (activesId?.filter((e) => e.id == data.id).length > 0) {
+        return 'secondary';
+      } else {
+        return 'primary';
+      }
+    } else if (modelName == 'Countries') {
+      return 'secondary'
     } else {
       if (data.isActive) {
         return 'secondary';
@@ -89,6 +108,7 @@ const Header = forwardRef((props, ref) => {
         invisible={modelName == 'Users' && data._id !== profile._id}>
         <CardAvatar
           profile={cardAvatarType.profile}
+          square={cardAvatarType.square}
           plain={cardAvatarType.plain}>
           {/* pass hasAvatar true with field to first dataGridColumns*/}
           <Image />

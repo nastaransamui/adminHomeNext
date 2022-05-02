@@ -12,12 +12,14 @@ export default function CardAvatar(props) {
     className,
     plain,
     profile,
+    square,
     testimonial,
     testimonialFooter,
     ...rest
   } = props;
   const cardAvatarClasses = classNames({
     [classes.cardAvatar]: true,
+    [classes.cardAvatarSquare]: square,
     [classes.cardAvatarProfile]: profile,
     [classes.cardAvatarPlain]: plain,
     [classes.cardAvatarTestimonial]: testimonial,
@@ -36,6 +38,7 @@ CardAvatar.propTypes = {
   className: PropTypes.string,
   profile: PropTypes.bool,
   plain: PropTypes.bool,
+  square: PropTypes.bool,
   testimonial: PropTypes.bool,
   testimonialFooter: PropTypes.bool,
 };
