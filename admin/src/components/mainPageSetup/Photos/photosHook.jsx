@@ -14,7 +14,7 @@ const photosHook = () => {
 
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation('photos');
-  const perRow = usePerRowHook('photosGrid');
+  const perRow = usePerRowHook(sliderImage);
   const { searchText, requestSearch, setSearchText, rows } =
     useSearch(dataArray);
 

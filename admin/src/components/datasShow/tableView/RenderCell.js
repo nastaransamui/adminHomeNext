@@ -143,10 +143,23 @@ GridCellExpand.propTypes = {
 
 export const RenderCellExpand = (params) => {
   return (
-    <GridCellExpand
-      value={params.value || ''}
-      width={params.colDef.computedWidth}
-    />
+    <>
+      {typeof params.value == 'string' ? (
+        <GridCellExpand
+          value={params.value || ''}
+          width={params.colDef.computedWidth}
+        />
+      ) : (
+        <span
+          style={{
+            width: params.colDef.computedWidth,
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+          {params.value}
+        </span>
+      )}
+    </>
   );
 };
 
@@ -202,7 +215,12 @@ export const RenderCellAvatar = (params) => {
           alt='...'
         />
       );
-    } else if (modelName == 'global_countries' || modelName == 'Countries') {
+    } else if (
+      modelName == 'global_countries' ||
+      modelName == 'Countries' ||
+      modelName == 'Provinces' ||
+      modelName == 'Cities'
+    ) {
       return (
         <img
           style={{ height: 40, width: 40, borderRadius: '50%' }}
@@ -236,7 +254,11 @@ export const RenderCellAvatar = (params) => {
       } else {
         return 'primary';
       }
-    } else if (modelName == 'Countries') {
+    } else if (
+      modelName == 'Countries' ||
+      modelName == 'Provinces' ||
+      modelName == 'Cities'
+    ) {
       return 'secondary';
     } else {
       if (row.isActive) {
@@ -276,8 +298,10 @@ export const RenderCellAvatar = (params) => {
           : `${formattedValue.slice(0, stringLimit)} ...`
         : modelName == 'global_countries' || modelName == 'Countries'
         ? rtlActive
-          ? row?.translations?.fa
+          ? `${row?.translations?.fa} / ${row?.name}`
           : row?.name
+        : modelName == 'Provinces' || modelName == 'Cities'
+        ? row?.name
         : row[`title_${lang}`]}
     </span>
   );

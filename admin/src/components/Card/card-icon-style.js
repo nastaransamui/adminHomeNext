@@ -29,7 +29,7 @@ const cardIconStyle = makeStyles((theme) => {
     dangerCardHeader,
     infoCardHeader,
     primaryCardHeader,
-    roseCardHeader,
+    roseCardHeader: roseCardHeader(theme.palette.primary),
     darkCardHeader,
   };
 });

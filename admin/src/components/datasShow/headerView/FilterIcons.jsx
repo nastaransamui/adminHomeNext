@@ -14,9 +14,7 @@ const FilterIcons = forwardRef((props, ref) => {
     <Grid ref={ref} container className={classes.Icon}>
       {modelName == 'Users' ? <CsvExport {...props} /> : null}
       <PerPageFilter {...props} />
-      <Hidden mdDown>
       <PerRowFilter {...props} />
-      </Hidden>
       <SortBy {...props} />
     </Grid>
   );

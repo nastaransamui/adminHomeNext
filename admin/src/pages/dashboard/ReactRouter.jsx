@@ -14,6 +14,11 @@ import FeaturePage from '../feature-page/FeaturePage';
 import Feature from '../../components/mainPageSetup/Feature/Feature';
 import About from '../../components/mainPageSetup/About/About';
 import CountriesPage from '../countries-page/CountriesPage';
+import Country from '../../components/geoLocations/Country/Country';
+import ProvincesPage from '../provinces-page/ProvincesPage';
+import Province from '../../components/geoLocations/Province/Province';
+import CitiesPage from '../cities-page/CitiesPage';
+import City from '../../components/geoLocations/City/City';
 
 export function NotFoundPage() {
   return null;
@@ -110,19 +115,31 @@ export default function ReactRouter(props) {
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/g-locations/countries'>
-          <CountriesPage {...props} componentView="global_countries"/>
+          <CountriesPage {...props} componentView='global_countries' />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/a-locations/countries'>
-        <CountriesPage {...props} componentView="active"/>
+          <CountriesPage {...props} componentView='active' />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-locations/countries/country'>
+          <Country {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/a-locations/provinces'>
-          Active provinces/states
+          <ProvincesPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-locations/provinces/province'>
+          <Province {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/a-locations/cities'>
-          Active cities
+          <CitiesPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-locations/cities/city'>
+          <City {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route path='/admin/dashboard/notfoundpage'>

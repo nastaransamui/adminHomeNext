@@ -20,7 +20,7 @@ const usersHook = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const { t, i18n } = useTranslation('users');
-  const perRow = usePerRowHook('usersGrid');
+  const perRow = usePerRowHook(Users);
   const { searchText, requestSearch, setSearchText, rows } =
     useSearch(dataArray);
 

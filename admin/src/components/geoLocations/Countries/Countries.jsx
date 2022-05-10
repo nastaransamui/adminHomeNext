@@ -5,14 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import countriesHook from './countriesHook';
 import DataShow from '../../datasShow/DataShow';
-import useDeleteAlert from '../../Hooks/useDeleteAlert';
 import useDataHeaders from '../../Hooks/useDataHeaders';
 import {
-  deactiveUrl,
   countriesFields,
   dataGridColumns,
   activeUrl,
   diActiveUrl,
+  editUrl,
 } from './countriesStatic';
 import useActiveAlert from '../../Hooks/useActiveAlert';
 
@@ -85,7 +84,7 @@ const Countries = (props) => {
           searchText={searchText}
           dataFields={countriesFields}
           createUrl=''
-          editUrl=''
+          editUrl={componentView == 'global_countries' ? '' : editUrl}
           cardView={CardView}
           pageNumber={pageNumber}
           total={dataArrayLengh}

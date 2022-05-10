@@ -54,7 +54,8 @@ const useDataHeaders = ({ state, dispatchType, cookieName }) => {
         type: dispatchType,
         payload: {
           ...state,
-          PerPage: Math.ceil(dataArrayLengh / list),
+          pageNumber: Math.ceil(dataArrayLengh / list),
+          PerPage: list,
         },
       });
 
@@ -63,23 +64,25 @@ const useDataHeaders = ({ state, dispatchType, cookieName }) => {
         cookieName,
         JSON.stringify({
           ...state,
-          PerPage: Math.ceil(dataArrayLengh / list),
+          pageNumber: Math.ceil(dataArrayLengh / list),
+          PerPage: list,
+        })
+      );
+    } else {
+      dispatch({
+        type: dispatchType,
+        payload: { ...state, PerPage: list },
+      });
+
+      state.dataArray = [];
+      setCookies(
+        cookieName,
+        JSON.stringify({
+          ...state,
+          PerPage: list,
         })
       );
     }
-    dispatch({
-      type: dispatchType,
-      payload: { ...state, PerPage: list },
-    });
-
-    state.dataArray = [];
-    setCookies(
-      cookieName,
-      JSON.stringify({
-        ...state,
-        PerPage: list,
-      })
-    );
   };
   const sortByFunc = (field, listNumber) => {
     dispatch({

@@ -1,7 +1,7 @@
 export const getAllUrl = '/admin/api/geoLocations/getAll';
-export const deactiveUrl = '/admin/api/geoLocations/deactive';
 export const activeUrl = '/admin/api/geoLocations/active';
 export const diActiveUrl = '/admin/api/geoLocations/diactive';
+export const editUrl = '/admin/dashboard/a-locations/countries/country';
 import {
   Info,
   Flag,
@@ -107,12 +107,11 @@ export const dataGridColumns = [
     hasVideo: [false, ''],
   },
   {
-    field: 'states', // Db name
+    field: 'totalStates', // Db name
     headerAlign: 'center', //
-    description: 'states', //Discription from translation
+    description: 'totalStates', //Discription from translation
     width: 150,
-    type: 'array',
-    arrayTotal: true,
+    type: 'number',
     filterable: false,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
@@ -195,91 +194,109 @@ export const countriesFields = [
     Icon: Title,
     label: 'name',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: LocationCity,
     label: 'capital',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: CurrencyExchange,
     label: 'currency',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'native',
     type: 'string',
+    filterable: false,
   },
   {
     Icon: LocalPhone,
     label: 'phone_code',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: SouthAmerica,
     label: 'region',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: SouthAmerica,
-    label: 'states',
-    type: 'array',
+    label: 'totalStates',
+    type: 'number',
+    filterable: false,
   },
   {
     Icon: SouthAmerica,
     label: 'subregion',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Update,
     label: 'timezones',
     type: 'array',
+    filterable: false,
   },
   {
     Icon: Dns,
     label: 'tld',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Map,
     label: 'latitude',
     type: 'string',
+    filterable: false,
   },
   {
     Icon: Map,
     label: 'longitude',
     type: 'string',
+    filterable: false,
   },
   {
     Icon: CurrencyExchange,
     label: 'currency_symbol',
     type: 'string',
+    filterable: false,
   },
   {
     Icon: CurrencyExchange,
     label: 'currency_name',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'iso2',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'iso3',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'numeric_code',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Flag,
     label: 'emoji',
     type: 'string',
+    filterable: false,
   },
 ];
 

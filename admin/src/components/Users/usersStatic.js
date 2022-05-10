@@ -17,51 +17,61 @@ export const userFields = [
     Icon: InfoIcon,
     label: 'aboutMe',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: BadgeIcon,
     label: 'firstName',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: BadgeIcon,
     label: 'lastName',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: LocationCityIcon,
     label: 'city',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: FlagIcon,
     label: 'country',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Public,
     label: 'position',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: People,
     label: 'isAdmin',
     type: 'boolean',
+    filterable: true,
   },
   {
     Icon: EventIcon,
     label: 'updatedAt',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: EventIcon,
     label: 'createdAt',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: AccountCircleIcon,
     label: 'userName',
     type: 'string',
+    filterable: true,
   },
 ];
 

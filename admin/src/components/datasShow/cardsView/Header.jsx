@@ -31,7 +31,12 @@ const Header = forwardRef((props, ref) => {
   const Image = () => {
     if (modelName == 'Users') {
       return <img src={data.profileImage || avatar.src} alt='...' />;
-    } else if (modelName == 'global_countries' || modelName == 'Countries') {
+    } else if (
+      modelName == 'global_countries' ||
+      modelName == 'Countries' ||
+      modelName == 'Provinces' ||
+      modelName == 'Cities'
+    ) {
       return (
         <img
           src={`/admin/flags/128x128/${
@@ -81,7 +86,7 @@ const Header = forwardRef((props, ref) => {
         return 'primary';
       }
     } else if (modelName == 'Countries') {
-      return 'secondary'
+      return 'secondary';
     } else {
       if (data.isActive) {
         return 'secondary';

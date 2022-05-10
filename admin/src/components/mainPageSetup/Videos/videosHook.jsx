@@ -13,7 +13,7 @@ const videosHook = () => {
 
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation('video');
-  const perRow = usePerRowHook('videosGrid');
+  const perRow = usePerRowHook(sliderVideo);
   const { searchText, requestSearch, setSearchText, rows } =
     useSearch(dataArray);
 

@@ -13,7 +13,7 @@ const countriesHook = (componentView) => {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation('geoLocations');
   const perRow = usePerRowHook(
-    componentView == 'global_countries' ? 'countriesGGrid' : 'countriesAGrid'
+    componentView == 'global_countries' ? countriesGStore : countriesAStore
   );
   const { searchText, requestSearch, setSearchText, rows } =
     useSearch(dataArray);

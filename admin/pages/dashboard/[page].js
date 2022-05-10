@@ -18,6 +18,8 @@ import {
   countriesAStore,
   countriesGStore,
 } from '../../src/components/geoLocations/Countries/countriesStatic';
+import { provincesStore } from '../../src/components/geoLocations/Provinces/provincesStatic';
+import { citiesStore } from '../../src/components/geoLocations/Cities/citiesStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -111,6 +113,18 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('countriesAStore', ctx)
               ? JSON.parse(getCookies(ctx).countriesAStore)
               : { ...countriesAStore },
+          })),
+          ...(await store.dispatch({
+            type: 'PROVINCES_STORE',
+            payload: checkCookies('provincesStore', ctx)
+              ? JSON.parse(getCookies(ctx).provincesStore)
+              : { ...provincesStore },
+          })),
+          ...(await store.dispatch({
+            type: 'CITIES_STORE',
+            payload: checkCookies('citiesStore', ctx)
+              ? JSON.parse(getCookies(ctx).citiesStore)
+              : { ...citiesStore },
           })),
         },
       };

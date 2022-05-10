@@ -8,6 +8,8 @@ import {
   countriesGStore,
   countriesAStore,
 } from '../components/geoLocations/Countries/countriesStatic';
+import { provincesStore } from '../components/geoLocations/Provinces/provincesStatic';
+import { citiesStore } from '../components/geoLocations/Cities/citiesStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -24,6 +26,8 @@ const initialState = {
   Features: { ...Features },
   countriesGStore: { ...countriesGStore },
   countriesAStore: { ...countriesAStore },
+  provincesStore: { ...provincesStore },
+  citiesStore: { ...citiesStore },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -75,6 +79,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         countriesAStore: { ...payload },
+      };
+    case 'PROVINCES_STORE':
+      return {
+        ...state,
+        provincesStore: { ...payload },
+      };
+    case 'CITIES_STORE':
+      return {
+        ...state,
+        citiesStore: { ...payload },
       };
     default:
       return state;

@@ -17,36 +17,43 @@ export const featuresFields = [
     Icon: CheckBox,
     label: 'isActive',
     type: 'boolean',
+    filterable: true,
   },
   {
     Icon: CheckBoxOutlineBlank,
     label: 'isYoutube',
     type: 'boolean',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'title_en',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Info,
     label: 'title_fa',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Event,
     label: 'updatedAt',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Event,
     label: 'createdAt',
     type: 'string',
+    filterable: true,
   },
   {
     Icon: Title,
     label: 'youTubeId',
     type: 'string',
+    filterable: true,
   },
 ];
 

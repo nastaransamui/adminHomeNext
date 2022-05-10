@@ -48,9 +48,14 @@ const TableBody = forwardRef((props, ref) => {
       cellClassName: 'super-app-theme--cell',
       getActions: (params) => {
         const hideDelete =
-          modelName == 'Users' ? params.id == profile._id : params.row.isActive;
+          modelName == 'Users'
+            ? params.id == profile._id
+            : params.row.isActive
+            ? modelName == 'Countries'
+            : true;
         const hideEdit = editUrl == '';
-        if (editUrl !== '') {
+        const hideActive = modelName == 'Provinces' || modelName == 'Cities';
+        if (modelName !== 'Countries' || modelName !== 'global_countries' || modelName !== 'Cities') {
           return [
             <GridActionsCellItem
               icon={<Edit style={{ color: theme.palette.primary.main }} />}
@@ -60,7 +65,33 @@ const TableBody = forwardRef((props, ref) => {
                 doubleClickFunc(params);
               }}
               style={{
-                visibility: hideEdit ? 'hidden' : 'visible',
+                display: hideEdit ? 'none' : 'block',
+              }}
+              color='inherit'
+            />,
+            <GridActionsCellItem
+            style={{ display: hideActive ? 'none' : 'block',}}
+              icon={
+                activesId == undefined ? (
+                  <ToggleOn style={{ color: theme.palette.success.main }} />
+                ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
+                  <ToggleOff style={{ color: theme.palette.success.main,  }} />
+                ) : (
+                  <ToggleOn style={{ color: theme.palette.error.main,}} />
+                )
+              }
+              label={t('Edit')}
+              className='textPrimary'
+              onClick={() => {
+                if (activesId == undefined) {
+                  diactiveAlert(params.row);
+                } else {
+                  if (activesId?.filter((e) => e.id == params.id).length > 0) {
+                    diactiveAlert(params.row);
+                  } else {
+                    activeAlert(params.row);
+                  }
+                }
               }}
               color='inherit'
             />,
@@ -72,7 +103,7 @@ const TableBody = forwardRef((props, ref) => {
               }}
               color='inherit'
               style={{
-                visibility: hideDelete ? 'hidden' : 'visible',
+                display: hideDelete ? 'none' : 'block',
               }}
             />,
           ];
@@ -91,9 +122,9 @@ const TableBody = forwardRef((props, ref) => {
               label={t('Edit')}
               className='textPrimary'
               onClick={() => {
-                if(activesId == undefined){
+                if (activesId == undefined) {
                   diactiveAlert(params.row);
-                }else{
+                } else {
                   if (activesId?.filter((e) => e.id == params.id).length > 0) {
                     diactiveAlert(params.row);
                   } else {
@@ -115,15 +146,35 @@ const TableBody = forwardRef((props, ref) => {
 
   const doubleClickFunc = (params) => {
     if (editUrl !== '') {
-      history.push({
-        pathname: editUrl,
-        search: `?_id=${params.id}`,
-        state: params.row,
-      });
-    }else{
-      if(activesId == undefined){
+      if (modelName == 'Provinces') {
+        history.push({
+          pathname: editUrl,
+          search: `?state_id=${params?.row?.id}`,
+          state: params.row,
+        });
+      } else if (modelName == 'Countries') {
+        history.push({
+          pathname: editUrl,
+          search: `?country_id=${params?.row?.id}`,
+          state: params.row,
+        });
+      }else if (modelName == 'Cities') {
+        history.push({
+          pathname: editUrl,
+          search: `?city_id=${params?.row?.id}`,
+          state: params.row,
+        });
+      } else {
+        history.push({
+          pathname: editUrl,
+          search: `?_id=${params.id}`,
+          state: params.row,
+        });
+      }
+    } else {
+      if (activesId == undefined) {
         diactiveAlert(params.row);
-      }else{
+      } else {
         if (activesId?.filter((e) => e.id == params.id).length > 0) {
           diactiveAlert(params.row);
         } else {

@@ -288,20 +288,23 @@ export const warningBoxShadow = (warning) => {
   };
 };
 
+export const roseBoxShadow = (secondary) => {
+  return {
+    boxShadow:
+      '0 4px 20px 0 rgba(' +
+      hexToRgb(blackColor) +
+      ',.14), 0 7px 10px -5px rgba(' +
+      hexToRgb(secondary.light) +
+      ',.4)',
+  };
+};
+
 export const dangerBoxShadow = {
   boxShadow:
     '0 4px 20px 0 rgba(' +
     hexToRgb(blackColor) +
     ',.14), 0 7px 10px -5px rgba(' +
     hexToRgb(dangerColor[0]) +
-    ',.4)',
-};
-export const roseBoxShadow = {
-  boxShadow:
-    '0 4px 20px 0 rgba(' +
-    hexToRgb(blackColor) +
-    ',.14), 0 7px 10px -5px rgba(' +
-    hexToRgb(roseColor[0]) +
     ',.4)',
 };
 
@@ -341,10 +344,12 @@ export const primaryCardHeader = {
     'linear-gradient(60deg, ' + primaryColor[1] + ', ' + primaryColor[2] + ')',
   ...primaryBoxShadow,
 };
-export const roseCardHeader = {
-  background:
-    'linear-gradient(60deg, ' + roseColor[1] + ', ' + roseColor[2] + ')',
-  ...roseBoxShadow,
+export const roseCardHeader = (secondary) => {
+  return {
+    background:
+      'linear-gradient(60deg, ' + secondary.main + ', ' + secondary.dark + ')',
+    roseBoxShadow: roseBoxShadow(secondary),
+  };
 };
 
 export const darkCardHeader = {

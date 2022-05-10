@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { checkCookies, getCookies } from 'cookies-next';
+import { useSelector } from 'react-redux';
 
-const usePerRowHook = (modelGrid) => {
+const usePerRowHook = (storeName) => {
   const [perRow, setPerRow] = useState();
   const theme = useTheme();
   const xlRows = useMediaQuery(theme.breakpoints.only('xl'));
@@ -14,8 +16,8 @@ const usePerRowHook = (modelGrid) => {
   useEffect(() => {
     let isMount = true;
     if (isMount) {
-      if (xlRows) setPerRow(parseInt(localStorage.getItem(modelGrid)) || 2);
-      if (lgRows) setPerRow(parseInt(localStorage.getItem(modelGrid)) || 3);
+      if (xlRows) setPerRow(storeName.GridView || 2);
+      if (lgRows) setPerRow(storeName.GridView || 3);
       if (mdRows) setPerRow(4);
       if (smRows) setPerRow(12);
       if (xsRows) setPerRow(12);

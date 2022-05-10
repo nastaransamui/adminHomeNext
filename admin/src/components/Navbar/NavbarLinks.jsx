@@ -14,7 +14,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import { removeCookies, setCookies, getCookies } from 'cookies-next';
+import { removeCookies, setCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
 import { useRouter } from 'next/router';
 import {  useState } from 'react';

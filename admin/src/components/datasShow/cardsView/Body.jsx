@@ -53,7 +53,6 @@ const Body = forwardRef((props, ref) => {
 
   const { i18n } = useTranslation();
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
-
   const theme = useTheme();
   const history = useHistory();
   const setBoxStyle = (index, expanded) => {
@@ -136,15 +135,35 @@ const Body = forwardRef((props, ref) => {
 
   const gotToEdit = (_id) => {
     if (editUrl !== '') {
-      history.push({
-        pathname: editUrl,
-        search: `?_id=${_id}`,
-        state: data,
-      });
+      if (modelName == 'Countries') {
+        history.push({
+          pathname: editUrl,
+          search: `?country_id=${data?.id}`,
+          state: data,
+        });
+      } else if (modelName == 'Provinces') {
+        history.push({
+          pathname: editUrl,
+          search: `?state_id=${data?.id}`,
+          state: data,
+        });
+      }else if (modelName == 'Cities') {
+        history.push({
+          pathname: editUrl,
+          search: `?city_id=${data?.id}`,
+          state: data,
+        });
+      } else {
+        history.push({
+          pathname: editUrl,
+          search: `?_id=${_id}`,
+          state: data,
+        });
+      }
     }
   };
 
-  const primaryTextData = (data, label) => {
+  const primaryTextData = (data, label, type) => {
     if (
       modelName !== 'Users' ||
       (data.facebook.length == 0 &&
@@ -158,15 +177,24 @@ const Body = forwardRef((props, ref) => {
           return `${t('notDefine')}`;
         } else {
           // Validate date
-          if (moment(data[label], moment.ISO_8601, true).isValid()) {
+          if (
+            moment(data[label], moment.ISO_8601, true).isValid() &&
+            type !== 'number'
+          ) {
             return moment(data[label]).format('MMMM Do YYYY, H:mm');
           } else {
             if (data[label]?.length < stringLimit) {
               return data[label];
             } else {
-              return rtlActive
-                ? `... ${data[label].slice(0, stringLimit)}`
-                : `${data[label].slice(0, stringLimit)} ...`;
+              return type == 'number'
+                ? data[label]
+                : type == 'string'
+                ? data[label] == null
+                  ? `${t('notDefine')}`
+                  : rtlActive
+                  ? `... ${data[label].slice(0, stringLimit)}`
+                  : `${data[label].slice(0, stringLimit)} ...`
+                : null;
             }
           }
         }
@@ -193,8 +221,7 @@ const Body = forwardRef((props, ref) => {
       }
     }
   };
-  // console.log()
-  // console.log(data.id)
+
   return (
     <CardBody ref={ref}>
       <div className={classes.cardHoverUnder}>
@@ -251,7 +278,9 @@ const Body = forwardRef((props, ref) => {
               <ToggleOff style={{ color: theme.palette.success.main }} />
             </Button>
           </Tooltip>
-        ) : modelName == 'Users' && data._id !== profile._id ? (
+        ) : modelName == 'Users' &&
+          data._id !== profile._id &&
+          editUrl !== '' ? (
           <Tooltip
             title={t('deleteTooltip')}
             placement='bottom'
@@ -265,7 +294,8 @@ const Body = forwardRef((props, ref) => {
             </Button>
           </Tooltip>
         ) : activesId !== undefined ? null : modelName !== 'Users' &&
-          !data.isActive ? (
+          !data.isActive &&
+          deleteAlert !== undefined ? (
           <Tooltip
             title={t('deleteTooltip')}
             placement='bottom'
@@ -296,6 +326,8 @@ const Body = forwardRef((props, ref) => {
                 ? rtlActive
                   ? data?.translations?.fa
                   : data?.name
+                : modelName == 'Provinces' || modelName == 'Cities'
+                ? data?.name
                 : data[`title_${lang}`]
             }
             placement='top'
@@ -312,9 +344,12 @@ const Body = forwardRef((props, ref) => {
                   : rtlActive
                   ? `... ${data.userName.slice(0, stringLimit)}`
                   : `${data.userName.slice(0, stringLimit)} ...`
-                : modelName == 'global_countries' || modelName == 'Countries'
+                : modelName == 'global_countries' ||
+                  modelName == 'Countries' ||
+                  modelName == 'Provinces' ||
+                  modelName == 'Cities'
                 ? rtlActive
-                  ? data?.translations?.fa
+                  ? data?.translations?.fa || data?.name || t('information')
                   : data?.name
                 : data[`title_${lang}`]}
             </a>
@@ -331,7 +366,7 @@ const Body = forwardRef((props, ref) => {
             <ListItemText
               primary={
                 rtlActive
-                  ? data?.translations?.fa || t('information')
+                  ? data?.translations?.fa || data?.name || t('information')
                   : data.name || t('information')
               }
               primaryTypographyProps={primaryProps}
@@ -347,9 +382,21 @@ const Body = forwardRef((props, ref) => {
                 {expanded[index] &&
                   dataFields.map((item, i) => {
                     const { Icon, label, type } = item;
+                    const showLabel =
+                      modelName == 'Cities' && label == 'name'
+                        ? t('cityName')
+                        : modelName == 'Cities' && label == 'id'
+                        ? t('cityid')
+                        : modelName ==
+                        'Provinces' && label == 'id'
+                          ? t('stateId')
+                        : (modelName ==
+                            'Provinces' && label == 'name'
+                              ? t('stateName')
+                              : t(`${label}`));
                     return (
                       <Tooltip
-                        title={t(`${label}`)}
+                        title={showLabel}
                         placement='top'
                         key={label}
                         arrow>
@@ -365,7 +412,7 @@ const Body = forwardRef((props, ref) => {
                               fontSize: 14,
                               fontWeight: 'medium',
                             }}
-                            primary={primaryTextData(data, label)}
+                            primary={primaryTextData(data, label, type)}
                             style={{ textAlign: rtlActive ? 'right' : 'left' }}
                           />
                         </ListItemButton>

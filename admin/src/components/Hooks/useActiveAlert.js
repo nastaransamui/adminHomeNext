@@ -54,7 +54,7 @@ const useActiveAlert = ({
                 valuesPageNumber: state.pageNumber,
                 valuesSortByField: state.SortBy[`field`],
                 valuesSortBySorting: state.SortBy[`sorting`],
-                data: data,
+                country_id: data.id,
               }),
             });
             const { status } = res;
@@ -148,6 +148,7 @@ const useActiveAlert = ({
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               });
             } else {
+              console.log(response);
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               dispatch({
                 type: dispatchType,

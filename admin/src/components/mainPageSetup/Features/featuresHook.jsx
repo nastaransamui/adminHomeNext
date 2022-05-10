@@ -14,7 +14,7 @@ const featuresHook = () => {
 
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation('feature');
-  const perRow = usePerRowHook('featuresGrid');
+  const perRow = usePerRowHook(Features);
   const { searchText, requestSearch, setSearchText, rows } =
     useSearch(dataArray);
 

@@ -71,10 +71,17 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             );
             if (!hzErrorConnection) {
               const multiMap = await hz.getMultiMap(modelName);
+              const multiMapPr = await hz.getMultiMap('Provinces');
               await multiMap.destroy();
-              const valuesList = await collection
-                .find({})
-                .sort({ [req.body['valuesSortByField']]: valuesSortBySorting });
+              await multiMapPr.destroy();
+              const valuesList = await collection.aggregate([
+                {
+                  $addFields: {
+                    totalStates: { $size: '$states' },
+                  },
+                },
+                { $unset: 'states' },
+              ]);
               await multiMap.put(`all${modelName}`, valuesList);
               await hz.shutdown();
             }
@@ -97,21 +104,43 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           } else {
             // Request come from Active countries
             if (hzErrorConnection) {
-              const valuesList = await collection
-                .find({})
-                .sort({ [req.body['valuesSortByField']]: valuesSortBySorting });
+              const valuesList = await collection.aggregate([
+                {
+                  $addFields: {
+                    totalStates: { $size: '$states' },
+                  },
+                },
+                { $unset: 'states' },
+              ]);
               res.status(200).json({
                 success: true,
                 totalValuesLength: valuesList.length,
-                data: paginate(valuesList, valuesPerPage, valuesPageNumber),
+                data: paginate(
+                  data.sort(
+                    sort_by(
+                      [req.body['valuesSortByField']],
+                      valuesSortBySorting > 0 ? false : true,
+                      (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                    )
+                  ),
+                  valuesPerPage,
+                  valuesPageNumber
+                ),
               });
             } else {
               // use Catch system with Hz
               const multiMap = await hz.getMultiMap(modelName);
+              const multiMapPr = await hz.getMultiMap('Provinces');
               await multiMap.destroy();
-              const valuesList = await collection.find({}).sort({
-                [req.body['valuesSortByField']]: valuesSortBySorting,
-              });
+              await multiMapPr.destroy();
+              const valuesList = await collection.aggregate([
+                {
+                  $addFields: {
+                    totalStates: { $size: '$states' },
+                  },
+                },
+                { $unset: 'states' },
+              ]);
 
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({
@@ -139,5 +168,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     }
   }
 });
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb', // Set desired value here
+    },
+  },
+};
 
 export default apiRoute;

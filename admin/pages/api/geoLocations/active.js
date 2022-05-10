@@ -47,6 +47,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     valuesSortBySorting,
     modelName,
     fileName,
+    country_id,
   } = req.body;
   const { success } = dbConnected;
   if (!success) {
@@ -54,8 +55,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   } else {
     try {
       var collection = mongoose.model(modelName);
-      delete req.body.data._id;
-      const newValue = await new collection(req.body.data);
+      const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
+      let rawdata = fs.readFileSync(fileToRead);
+      let data = JSON.parse(rawdata).filter(function (entry) {
+        delete entry._id;
+        return entry.id === country_id;
+      })[0];
+      const newValue = await new collection(data);
       const { hzErrorConnection, hz } = await hazelCast();
       await newValue.save(async (err, result) => {
         if (err) {
@@ -71,10 +77,17 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           var activesIds = await collection.find({}, { _id: false, id: true });
           if (!hzErrorConnection) {
             const multiMap = await hz.getMultiMap(modelName);
+            const multiMapPr = await hz.getMultiMap('Provinces');
             await multiMap.destroy();
-            const valuesList = await collection
-              .find({})
-              .sort({ [req.body['valuesSortByField']]: valuesSortBySorting });
+            await multiMapPr.destroy();
+            const valuesList = await collection.aggregate([
+              {
+                $addFields: {
+                  totalStates: { $size: '$states' },
+                },
+              },
+              { $unset: 'states' },
+            ]);
             await multiMap.put(`all${modelName}`, valuesList);
             await hz.shutdown();
           }
@@ -101,5 +114,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     }
   }
 });
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '4mb', // Set desired value here
+    },
+  },
+};
 
 export default apiRoute;

@@ -11,14 +11,22 @@ import {
   ListItemButton,
   Divider,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
 } from '@mui/material';
 import { Sort, ArrowRight, ArrowLeft, Check } from '@mui/icons-material';
 import { useTheme } from '@mui/styles';
 
 const SortBy = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-  const { t, rtlActive, dataFields, sortByFunc, sortByValues, cardView } = props;
+  const {
+    t,
+    rtlActive,
+    dataFields,
+    sortByFunc,
+    sortByValues,
+    cardView,
+    modelName,
+  } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'sort-by-popover' : undefined;
@@ -26,7 +34,8 @@ const SortBy = forwardRef((props, ref) => {
   const [anchorSTl, setAnchorSTl] = useState({
     0: null,
   });
-  const theme= useTheme()
+  const theme = useTheme();
+
   return (
     <Fragment ref={ref}>
       {cardView && (
@@ -57,55 +66,74 @@ const SortBy = forwardRef((props, ref) => {
               horizontal: 'center',
             }}>
             <List
-            className={classes.IconsList}
+              className={classes.IconsList}
               component='nav'
               aria-label='Page-menu'>
               {dataFields.map((fields, index) => {
-                const { Icon } = fields;
-                return (
-                  <Fragment key={index}>
-                    <ListItem
-                      disablePadding
-                      className={classes.listItemHover}
-                      onClick={() => {}}>
-                      <ListItemButton
-                        onClick={(e) => {
-                          setAnchorSTl((prev) => ({
-                            0: e.currentTarget,
-                            filed: fields.label,
-                          }));
-                        }}>
-                        <ListItemIcon>
-                          <Tooltip title={t('filterType')}>
-                            <IconButton
-                              size='large'
-                              disableFocusRipple
-                              disableRipple>
-                              {rtlActive ? (
-                                <ArrowRight
-                                  className={classes.listItemHoverSmallArrowRight}
-                                />
-                              ) : (
-                                <ArrowLeft
-                                  className={classes.listItemHoverSmallArrowLeft}
-                                />
-                              )}
-                            </IconButton>
-                          </Tooltip>
-                          <Icon
-                            style={{
-                              color:
-                                theme.palette[
-                                  `${index % 2 == 0 ? 'primary' : 'secondary'}`
-                                ].main,
-                            }}
+                const { Icon, filterable } = fields;
+                if (filterable) {
+                  return (
+                    <Fragment key={index}>
+                      <ListItem
+                        disablePadding
+                        className={classes.listItemHover}
+                        onClick={() => {}}>
+                        <ListItemButton
+                          onClick={(e) => {
+                            setAnchorSTl((prev) => ({
+                              0: e.currentTarget,
+                              filed: fields.label,
+                            }));
+                          }}>
+                          <ListItemIcon>
+                            <Tooltip title={t('filterType')}>
+                              <IconButton
+                                size='large'
+                                disableFocusRipple
+                                disableRipple>
+                                {rtlActive ? (
+                                  <ArrowRight
+                                    className={
+                                      classes.listItemHoverSmallArrowRight
+                                    }
+                                  />
+                                ) : (
+                                  <ArrowLeft
+                                    className={
+                                      classes.listItemHoverSmallArrowLeft
+                                    }
+                                  />
+                                )}
+                              </IconButton>
+                            </Tooltip>
+                            <Icon
+                              style={{
+                                color:
+                                  theme.palette[
+                                    `${
+                                      index % 2 == 0 ? 'primary' : 'secondary'
+                                    }`
+                                  ].main,
+                              }}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              modelName == 'Provinces' && fields.label == 'name'
+                                ? t('provinceName')
+                                : modelName == 'Cities' &&
+                                  fields.label == 'name'
+                                ? t('cityName')
+                                : modelName == 'Cities' && fields.label == 'id'
+                                ? t('cityId')
+                                : t(`${fields.label}`)
+                            }
                           />
-                        </ListItemIcon>
-                        <ListItemText primary={t(`${fields.label}`)} />
-                      </ListItemButton>
-                    </ListItem>
-                  </Fragment>
-                );
+                        </ListItemButton>
+                      </ListItem>
+                    </Fragment>
+                  );
+                }
               })}
             </List>
           </Popover>
@@ -162,8 +190,11 @@ const SortBy = forwardRef((props, ref) => {
                         disableGutters={true}
                         dense
                         onClick={() => {
-                          sortByFunc(anchorSTl[`filed`], list == 'ASC' ? 1 : -1)
-                          
+                          sortByFunc(
+                            anchorSTl[`filed`],
+                            list == 'ASC' ? 1 : -1
+                          );
+
                           setAnchorEl(null);
                           setAnchorSTl({
                             0: null,
@@ -173,12 +204,24 @@ const SortBy = forwardRef((props, ref) => {
                           <ListItemIcon>
                             {sortByValues.field == anchorSTl[`filed`] &&
                             ((sortByValues.sorting == 1 && list == 'ASC') ||
-                              (sortByValues.sorting == -1 && list == 'DESC')) ? (
+                              (sortByValues.sorting == -1 &&
+                                list == 'DESC')) ? (
                               <Check color='primary' />
                             ) : null}
                           </ListItemIcon>
                           <ListItemText
-                            primary={t(`${anchorSTl[`filed`]}`)}
+                            primary={
+                              modelName == 'Provinces' &&
+                              anchorSTl[`filed`] == 'name'
+                                ? t('provinceName')
+                                : modelName == 'Cities' &&
+                                  anchorSTl[`filed`] == 'name'
+                                ? t('cityName')
+                                : modelName == 'Cities' &&
+                                  anchorSTl[`filed`] == 'id'
+                                ? t('cityid')
+                                : t(`${anchorSTl[`filed`]}`)
+                            }
                             secondary={t(`${list}`)}
                           />
                         </ListItemButton>
@@ -197,9 +240,9 @@ const SortBy = forwardRef((props, ref) => {
 });
 
 SortBy.propTypes = {
-  t:PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   rtlActive: PropTypes.bool.isRequired,
-  dataFields: PropTypes.array.isRequired, 
+  dataFields: PropTypes.array.isRequired,
 };
 
 export default SortBy;

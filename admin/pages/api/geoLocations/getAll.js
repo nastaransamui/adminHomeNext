@@ -58,6 +58,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
           let rawdata = fs.readFileSync(fileToRead);
           let data = JSON.parse(rawdata);
+          data.map((doc) => {
+            doc.totalStates = doc.states.length;
+            delete doc.states;
+            return doc;
+          });
           var collection = mongoose.model(modelName);
           var activesIds = await collection.find({}, { _id: false, id: true });
           res.status(200).json({
@@ -86,14 +91,28 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const { hzErrorConnection, hz } = await hazelCast();
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
-            const valuesList = await collection
-              .find({})
-              .collation({ locale: locale })
-              .sort({ [req.body['valuesSortByField']]: valuesSortBySorting });
+            const valuesList = await collection.aggregate([
+              {
+                $addFields: {
+                  totalStates: { $size: '$states' },
+                },
+              },
+              { $unset: 'states' },
+            ]);
             res.status(200).json({
               success: true,
               totalValuesLength: valuesList.length,
-              data: paginate(valuesList, valuesPerPage, valuesPageNumber),
+              data: paginate(
+                valuesList.sort(
+                  sort_by(
+                    [req.body['valuesSortByField']],
+                    valuesSortBySorting > 0 ? false : true,
+                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                  )
+                ),
+                valuesPerPage,
+                valuesPageNumber
+              ),
             });
           } else {
             // use Catch system with Hz
@@ -120,15 +139,29 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 });
               }
             } else {
-              const valuesList = await collection
-                .find({})
-                .collation({ locale: locale })
-                .sort({ [req.body['valuesSortByField']]: valuesSortBySorting });
+              const valuesList = await collection.aggregate([
+                {
+                  $addFields: {
+                    totalStates: { $size: '$states' },
+                  },
+                },
+                { $unset: 'states' },
+              ]);
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({
                 success: true,
                 totalValuesLength: valuesList.length,
-                data: paginate(valuesList, valuesPerPage, valuesPageNumber),
+                data: paginate(
+                  valuesList.sort(
+                    sort_by(
+                      [req.body['valuesSortByField']],
+                      valuesSortBySorting > 0 ? false : true,
+                      (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                    )
+                  ),
+                  valuesPerPage,
+                  valuesPageNumber
+                ),
               });
             }
             await hz.shutdown();
