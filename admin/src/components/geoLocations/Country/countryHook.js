@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -207,12 +207,10 @@ const countryHook = () => {
       return false;
     }
   };
-  function toFormData(o) {
-    return Object.entries(o).reduce(
-      (d, e) => (d.append(...e), d),
-      new FormData()
-    );
-  }
+
+  const topRef = useRef(null);
+
+  const executeScroll = () => topRef.current.scrollIntoView();
 
   return {
     values,
@@ -230,6 +228,8 @@ const countryHook = () => {
     handleTimeExpand,
     childExpanded,
     handleChildExpand,
+    topRef,
+    executeScroll,
   };
 };
 

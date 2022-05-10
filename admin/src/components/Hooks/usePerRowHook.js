@@ -12,7 +12,6 @@ const usePerRowHook = (storeName) => {
   const mdRows = useMediaQuery(theme.breakpoints.only('md'));
   const smRows = useMediaQuery(theme.breakpoints.only('sm'));
   const xsRows = useMediaQuery(theme.breakpoints.only('xs'));
-
   useEffect(() => {
     let isMount = true;
     if (isMount) {

@@ -59,6 +59,8 @@ export default function Country(props) {
     handleTimeExpand,
     childExpanded,
     handleChildExpand,
+    topRef,
+    executeScroll,
   } = countryHook();
   
   return (
@@ -455,7 +457,7 @@ export default function Country(props) {
                 <Card>
                   <CardHeader color='rose' icon>
                     <CardIcon color='rose'>
-                      <LocationOn />
+                      <LocationOn ref={topRef}/>
                     </CardIcon>
                     <h4 className={classes.cardIconTitle}>{t('countryMap')}</h4>
                   </CardHeader>
@@ -598,7 +600,7 @@ export default function Country(props) {
                                             variant='standard'
                                             label={t('type')}
                                             name='type'
-                                            value={state.type}
+                                            value={state.type !== null ? state.type : t('notDefine')}
                                           />
                                         </Grid>
                                         <Grid
@@ -658,6 +660,17 @@ export default function Country(props) {
                             )}
                           </InfiniteScroll>
                         )}
+                        {childArray !== null &&
+                          childArray.length >= values.totalStates && (
+                            <Button
+                              fullWidth
+                              variant='contained'
+                              color='secondary'
+                              onClick={executeScroll}
+                              sx={{ mb: 5 }}>
+                              {t('scroll')}
+                            </Button>
+                          )}
                       </AccordionDetails>
                     </Accordion>
                   </CardBody>

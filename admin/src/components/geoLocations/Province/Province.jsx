@@ -442,7 +442,6 @@ export default function Province(props) {
                               fullWidth
                               variant='contained'
                               color='secondary'
-                              type='submit'
                               onClick={executeScroll}
                               sx={{ mb: 5 }}>
                               {t('scroll')}

@@ -24,6 +24,8 @@ const cityStyle = makeStyles((theme) => {
     mapDiv: {
       [theme.breakpoints.up('lg')]: { height: `280px` },
       [theme.breakpoints.only('md')]: { height: `330px` },
+      [theme.breakpoints.only('sm')]: { height: `330px` },
+      [theme.breakpoints.only('xs')]: { height: `330px` },
       borderRadius: '6px',
       overflow: 'hidden',
     },
