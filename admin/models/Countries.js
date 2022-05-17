@@ -67,6 +67,12 @@ const CountriesSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+CountriesSchema.index({
+  name: 'text',
+  'states.name': 'text',
+  'states.cities.name': 'text',
+});
+
 CountriesSchema.plugin(timeZone, {
   path: ['createdAt', 'updatedAt'],
 });

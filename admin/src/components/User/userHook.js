@@ -8,7 +8,15 @@ import jwt from 'jsonwebtoken';
 import { useLocation } from 'react-router-dom';
 import alertCall from '../Hooks/useAlert';
 
-import { getUserUrl, pushUrl, createUrl, editUrl } from './userStatic';
+import {
+  getUserUrl,
+  pushUrl,
+  createUrl,
+  editUrl,
+  cityUrl,
+  countryUrl,
+  provinceUrl,
+} from './userStatic';
 
 const userHook = () => {
   const [profileImageBlob, setProfileImageBlob] = useState('');
@@ -28,12 +36,27 @@ const userHook = () => {
     finalFolder: 'users',
     modelName: 'Users',
     folderId: (Math.random() + 1).toString(36).substring(7),
-    city: '',
     country: '',
+    province: '',
+    city: '',
     position: '',
     aboutMe: '',
     _id: _id || '',
   });
+  const [openCity, setOpenCity] = useState(false);
+  const [cityOptions, setCityOptions] = useState([]);
+  let loadingCity = openCity && cityOptions.length === 0;
+  const [cityFilter, setCityFilter] = useState('');
+
+  const [openProvince, setOpenProvince] = useState(false);
+  const [provinceOptions, setProvinceOptions] = useState([]);
+  let loadingProvince = openProvince && provinceOptions.length === 0;
+  const [provinceFilter, setProvinceFilter] = useState('');
+
+  const [openCountry, setOpenCountry] = useState(false);
+  const [countryOptions, setCountryOptions] = useState([]);
+  const loadingCountry = openCountry && countryOptions.length === 0;
+  const [countryFilter, setCountryFilter] = useState('');
 
   const { adminAccessToken, profile } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -54,6 +77,45 @@ const userHook = () => {
       });
     } else {
       setValues({ ...values, [name]: event.target.value });
+    }
+  };
+
+  const handleAutocomplete = (name, newValue) => {
+    if (newValue == null) {
+      if (name == 'city') {
+        setValues({ ...values, [name]: '', province: '', country: '' });
+      }
+      if (name == 'province') {
+        setValues({ ...values, [name]: '', city: '' });
+      }
+      if (name == 'country') {
+        setValues({ ...values, [name]: '' });
+      }
+    } else {
+      if (name == 'city') {
+        setValues({
+          ...values,
+          [name]: newValue.name,
+          province: newValue.state_name,
+          country: newValue.country,
+        });
+      }
+      if (name == 'province') {
+        setValues({
+          ...values,
+          city: '',
+          province: newValue.name,
+          country: newValue.country,
+        });
+      }
+      if (name == 'country') {
+        setValues({
+          ...values,
+          province: '',
+          city: '',
+          country: newValue.name,
+        });
+      }
     }
   };
 
@@ -241,6 +303,217 @@ const userHook = () => {
     };
   }, [location]);
 
+  const sleep = (delay = 0) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay);
+    });
+  };
+
+  const getCities = async () => {
+    const abortController = new AbortController();
+    try {
+      const res = await fetch(cityUrl, {
+        signal: abortController.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify({
+          modelName: 'Countries',
+          filter: cityFilter,
+        }),
+      });
+      const { status } = res;
+      const response = await res.json();
+      console.log('call');
+      console.log(response);
+      if (status !== 200 && !response.success) {
+        setCityOptions([
+          {
+            name: response.Error,
+            emoji: '⚠️',
+            error: true,
+          },
+        ]);
+      } else {
+        setCityOptions([...response.data]);
+      }
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
+  };
+
+  const getCountries = async () => {
+    const abortController = new AbortController();
+    try {
+      const res = await fetch(countryUrl, {
+        signal: abortController.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify({
+          modelName: 'Countries',
+          filter: countryFilter,
+        }),
+      });
+      const { status } = res;
+      const response = await res.json();
+      console.log('call');
+      console.log(response);
+      if (status !== 200 && !response.success) {
+        setCountryOptions([
+          {
+            name: response.Error,
+            emoji: '⚠️',
+            error: true,
+          },
+        ]);
+      } else {
+        setCountryOptions([...response.data]);
+      }
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
+  };
+
+  const getProvinces = async () => {
+    const abortController = new AbortController();
+    try {
+      const res = await fetch(provinceUrl, {
+        signal: abortController.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify({
+          modelName: 'Countries',
+          filter: provinceFilter,
+        }),
+      });
+      const { status } = res;
+      const response = await res.json();
+      console.log('call');
+      console.log(response);
+      if (status !== 200 && !response.success) {
+        setProvinceOptions([
+          {
+            name: response.Error,
+            emoji: '⚠️',
+            error: true,
+            id: 0,
+          },
+        ]);
+      } else {
+        setProvinceOptions([...response.data]);
+      }
+    } catch (error) {
+      setProvinceOptions([
+        {
+          name: response.Error,
+          emoji: '⚠️',
+          error: true,
+          id: 0,
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    let isMount = true;
+    if (!loadingCity) {
+      return undefined;
+    }
+
+    (async () => {
+      await sleep(1e3); // For demo purposes.
+      if (isMount) {
+        getCities();
+      }
+    })();
+
+    return () => {
+      isMount = false;
+    };
+  }, [loadingCity, cityFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+    console.log();
+    if (isMount && cityFilter !== '') {
+      getCities();
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [cityFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+
+    if (!loadingProvince) {
+      return undefined;
+    }
+
+    (async () => {
+      await sleep(1e3); // For demo purposes.
+
+      if (isMount) {
+        getProvinces();
+      }
+    })();
+
+    return () => {
+      isMount = false;
+    };
+  }, [loadingProvince, provinceFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount && provinceFilter !== '') {
+      getProvinces();
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [provinceFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+    console.log(countryFilter);
+    if (isMount && countryFilter !== '') {
+      getCountries();
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [countryFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+
+    if (!loadingCountry) {
+      return undefined;
+    }
+
+    (async () => {
+      await sleep(1e3); // For demo purposes.
+
+      if (isMount) {
+        getCountries();
+      }
+    })();
+
+    return () => {
+      isMount = false;
+    };
+  }, [loadingCountry]);
+
   return {
     values,
     setValues,
@@ -249,6 +522,24 @@ const userHook = () => {
     uploadImage,
     deleteImage,
     formSubmit,
+    handleAutocomplete,
+    openCity,
+    setOpenCity,
+    openProvince,
+    setOpenProvince,
+    openCountry,
+    setOpenCountry,
+    loadingCity,
+    loadingProvince,
+    loadingCountry,
+    cityOptions,
+    provinceOptions,
+    countryOptions,
+    sleep,
+    setCountryFilter,
+    setProvinceFilter,
+    setCityFilter,
+    getCities,
   };
 };
 

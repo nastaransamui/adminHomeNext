@@ -2,7 +2,7 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import { downloadMiddleware } from '../../../middleware/download';
-import { deleteFsAwsError, fsDeleteSingle } from '../../../helpers/aws';
+import { deleteFsAwsError } from '../../../helpers/aws';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {

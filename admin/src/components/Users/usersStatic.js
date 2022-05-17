@@ -38,6 +38,12 @@ export const userFields = [
     filterable: true,
   },
   {
+    Icon: LocationCityIcon,
+    label: 'province',
+    type: 'string',
+    filterable: true,
+  },
+  {
     Icon: FlagIcon,
     label: 'country',
     type: 'string',
@@ -109,7 +115,7 @@ export const dataGridColumns = [
   {
     field: 'isAdmin', // Db name
     headerAlign: 'center', //
-    description: 'updatedAt', //Discription from translation
+    description: 'isAdmin', //Discription from translation
     width: 140,
     type: 'boolean',
     filterable: true,
@@ -140,6 +146,16 @@ export const dataGridColumns = [
     field: 'city', // Db name
     headerAlign: 'center', //
     description: 'city', //Discription from translation
+    width: 140,
+    type: 'string',
+    filterable: true,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+  },
+  {
+    field: 'province', // Db name
+    headerAlign: 'center', //
+    description: 'province', //Discription from translation
     width: 140,
     type: 'string',
     filterable: true,

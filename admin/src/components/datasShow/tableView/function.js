@@ -23,7 +23,7 @@ export const createColumns = (dataGridColumns, props, t) => {
       cellClassName: 'super-app-theme--cell',
       type: element.type,
       filterable: element.filterable,
-      headerName: t(`${element.descriptio}`),
+      headerName: t(`${element.description}`),
       headerAlign: element.headerAlign,
       description: t(`${element.description}`),
       width: element.width,

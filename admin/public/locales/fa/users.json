@@ -13,6 +13,7 @@
   "firstName": "نام کوچک",
   "lastName": "نام خانوادگی",
   "city": "شهر",
+  "province": "استان / ایالت",
   "country": "کشور",
   "position": "موقعیت",
   "aboutMe": "درمورد من",

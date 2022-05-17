@@ -47,95 +47,74 @@ const TableBody = forwardRef((props, ref) => {
       filterable: false,
       cellClassName: 'super-app-theme--cell',
       getActions: (params) => {
-        const hideDelete =
-          modelName == 'Users'
-            ? params.id == profile._id
-            : params.row.isActive
-            ? modelName == 'Countries'
-            : true;
         const hideEdit = editUrl == '';
-        const hideActive = modelName == 'Provinces' || modelName == 'Cities';
-        if (modelName !== 'Countries' || modelName !== 'global_countries' || modelName !== 'Cities') {
-          return [
-            <GridActionsCellItem
-              icon={<Edit style={{ color: theme.palette.primary.main }} />}
-              label={t('Edit')}
-              className='textPrimary'
-              onClick={() => {
-                doubleClickFunc(params);
-              }}
-              style={{
-                display: hideEdit ? 'none' : 'block',
-              }}
-              color='inherit'
-            />,
-            <GridActionsCellItem
-            style={{ display: hideActive ? 'none' : 'block',}}
-              icon={
-                activesId == undefined ? (
-                  <ToggleOn style={{ color: theme.palette.success.main }} />
-                ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
-                  <ToggleOff style={{ color: theme.palette.success.main,  }} />
-                ) : (
-                  <ToggleOn style={{ color: theme.palette.error.main,}} />
-                )
-              }
-              label={t('Edit')}
-              className='textPrimary'
-              onClick={() => {
-                if (activesId == undefined) {
+        const hideDelete =
+          modelName == 'Countries' ||
+          modelName == 'Provinces' ||
+          modelName == 'Cities' ||
+          modelName == 'global_countries'
+            ? true
+            : modelName == 'Users'
+            ? params.id == profile._id
+            : params.row.isActive;
+
+        const hideToggle =
+          modelName == 'Countries' || modelName == 'global_countries'
+            ? false
+            : true;
+        return [
+          <GridActionsCellItem
+            icon={<Edit style={{ color: theme.palette.primary.main }} />}
+            label={t('Edit')}
+            className='textPrimary'
+            onClick={() => {
+              doubleClickFunc(params);
+            }}
+            style={{
+              display: hideEdit ? 'none' : 'block',
+            }}
+            color='inherit'
+          />,
+          <GridActionsCellItem
+            icon={
+              activesId == undefined ? (
+                <ToggleOn style={{ color: theme.palette.success.main }} />
+              ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
+                <ToggleOff style={{ color: theme.palette.success.main }} />
+              ) : (
+                <ToggleOn style={{ color: theme.palette.error.main }} />
+              )
+            }
+            label={t('Edit')}
+            className='textPrimary'
+            onClick={() => {
+              if (activesId == undefined) {
+                diactiveAlert(params.row);
+              } else {
+                if (activesId?.filter((e) => e.id == params.id).length > 0) {
                   diactiveAlert(params.row);
                 } else {
-                  if (activesId?.filter((e) => e.id == params.id).length > 0) {
-                    diactiveAlert(params.row);
-                  } else {
-                    activeAlert(params.row);
-                  }
+                  activeAlert(params.row);
                 }
-              }}
-              color='inherit'
-            />,
-            <GridActionsCellItem
-              icon={<Delete style={{ color: theme.palette.error.main }} />}
-              label={t('Delete')}
-              onClick={() => {
-                deleteAlert(params.row);
-              }}
-              color='inherit'
-              style={{
-                display: hideDelete ? 'none' : 'block',
-              }}
-            />,
-          ];
-        } else {
-          return [
-            <GridActionsCellItem
-              icon={
-                activesId == undefined ? (
-                  <ToggleOn style={{ color: theme.palette.success.main }} />
-                ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
-                  <ToggleOff style={{ color: theme.palette.success.main }} />
-                ) : (
-                  <ToggleOn style={{ color: theme.palette.error.main }} />
-                )
               }
-              label={t('Edit')}
-              className='textPrimary'
-              onClick={() => {
-                if (activesId == undefined) {
-                  diactiveAlert(params.row);
-                } else {
-                  if (activesId?.filter((e) => e.id == params.id).length > 0) {
-                    diactiveAlert(params.row);
-                  } else {
-                    activeAlert(params.row);
-                  }
-                }
-              }}
-              color='inherit'
-            />,
-          ];
-        }
+            }}
+            color='inherit'
+            style={{
+              display: hideToggle ? 'none' : 'block',
+            }}
+          />,
+          <GridActionsCellItem
+            icon={<Delete style={{ color: theme.palette.error.main }} />}
+            label={t('Delete')}
+            onClick={() => {
+              deleteAlert(params.row);
+            }}
+            color='inherit'
+            style={{
+              display: hideDelete ? 'none' : 'block',
+            }}
+          />,
+        ];
       },
     },
   ];
@@ -158,7 +137,7 @@ const TableBody = forwardRef((props, ref) => {
           search: `?country_id=${params?.row?.id}`,
           state: params.row,
         });
-      }else if (modelName == 'Cities') {
+      } else if (modelName == 'Cities') {
         history.push({
           pathname: editUrl,
           search: `?city_id=${params?.row?.id}`,

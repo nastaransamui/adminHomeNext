@@ -56,6 +56,10 @@ export const downloadMiddleware = async (req, res, next) => {
           value: `city`,
         },
         {
+          label: 'Province/State',
+          value: `province`,
+        },
+        {
           label: 'Country',
           value: `country`,
         },

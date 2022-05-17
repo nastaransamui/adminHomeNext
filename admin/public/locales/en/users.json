@@ -13,6 +13,7 @@
   "firstName": "First Name",
   "lastName": "Last Name",
   "city": "City",
+  "province": "Province/State",
   "country": "Country",
   "position": "Position",
   "aboutMe": "About Me",
