@@ -74,6 +74,7 @@
   "information": "information",
   "editTooltip": "Edit this",
   "stateMap": "State/Province map",
+  "csvExport": "Export data in csv format",
   "stateInformation": "State/Province Information",
   "countryName": "Country Name",
   "provinceName": "State/Province name",
@@ -93,5 +94,8 @@
   "cityInformation": "City Informations",
   "cityMap": "City Map",
   "state_id": "State Id",
-  "Not Found": "result not found"
+  "Not Found": "result not found",
+  "Field": "Field",
+  "labelSearch": "Search label",
+  "loadingField": "It's loading"
 }

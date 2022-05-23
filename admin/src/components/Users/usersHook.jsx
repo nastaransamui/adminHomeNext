@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import usePerRowHook from '../Hooks/usePerRowHook';
-import useSearch from '../Hooks/useSearch';
+import usePageSearch from '../Hooks/usePageSearch';
 import { getAllUrl, exportCsvUrl } from './usersStatic';
 import alertCall from '../Hooks/useAlert';
 import useAllResults from '../Hooks/useAllResults';
@@ -22,7 +22,7 @@ const usersHook = () => {
   const { t, i18n } = useTranslation('users');
   const perRow = usePerRowHook(Users);
   const { searchText, requestSearch, setSearchText, rows } =
-    useSearch(dataArray);
+    usePageSearch(dataArray);
 
   const allResults = useAllResults({
     state: Users,

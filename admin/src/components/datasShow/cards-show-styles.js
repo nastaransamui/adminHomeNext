@@ -74,6 +74,24 @@ const cardsShowStyles = makeStyles((theme) => {
     cardProductTitle: {
       color: theme.palette.text.color,
     },
+    select: {
+      position: 'absolute',
+      left: theme.direction == 'ltr' ? -6 : 25,
+    },
+    textfield: {
+      '& fieldset': {
+        '& legend': {
+          textAlign: 'left',
+        },
+      },
+      '& label': {
+        left: theme.direction == 'ltr' ? theme.spacing(0.5) : theme.spacing(6),
+      },
+
+      '& label.Mui-focused': {
+        left: theme.direction == 'ltr' ? -6 : theme.spacing(3),
+      },
+    },
   };
 });
 

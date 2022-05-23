@@ -91,6 +91,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'videoPoster'],
     hasVideo: [true, 'videoLink'],
+    searchAble: true,
   },
   {
     field: 'isActive', // Db name
@@ -101,6 +102,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'youTubeBanner', // Db name
@@ -111,6 +113,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'title_fa', // Db name
@@ -121,6 +124,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'createdAt', // Db name
@@ -131,6 +135,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'updatedAt', // Db name
@@ -141,6 +146,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'button_en', // Db name
@@ -151,6 +157,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'button_fa', // Db name
@@ -161,6 +168,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'subTitle_en', // Db name
@@ -171,6 +179,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'subTitle_fa', // Db name
@@ -181,6 +190,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'youTubeId', // Db name
@@ -191,6 +201,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [true, 'youTubeId'],
+    searchAble: false,
   },
 ];
 

@@ -18,6 +18,7 @@ const Cities = (props) => {
     requestSearch,
     searchText,
     rows: cities,
+    exportCsv
   } = citiesHook();
   const { citiesStore } = useSelector((state) => state);
   const {
@@ -50,6 +51,7 @@ const Cities = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={citiesFields}
+          state={citiesStore}
           createUrl=''
           editUrl={editUrl}
           cardView={CardView}
@@ -76,6 +78,7 @@ const Cities = (props) => {
             square: true,
           }}
           cardViewsFunc={cardViewsFunc}
+          exportCsv={exportCsv}
         />
       </Fragment>
     </Container>

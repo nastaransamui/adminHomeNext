@@ -54,6 +54,7 @@ export default function Users(props) {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={userFields}
+          state={Users}
           createUrl={createUrl}
           editUrl={editUrl}
           cardView={CardView}

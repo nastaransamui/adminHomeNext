@@ -59,5 +59,10 @@
   "deleteSuccess": "Your file has been deleted.",
   "Notfind": "This user is not exist.",
   "isVercelFileSize": "In this environment the biggest file to upload should be less than 5mb.",
-  "noRow": "No rows found"
+  "noRow": "No rows found",
+  "userEditSuccess": "User was successfully updated.",
+  "Not Found": "result not found",
+  "Field": "Field",
+  "labelSearch": "Search label",
+  "loadingField": "It's loading"
 }

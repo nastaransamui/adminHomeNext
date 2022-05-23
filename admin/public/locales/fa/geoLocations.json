@@ -93,5 +93,8 @@
   "cityInformation": "اطلاعات شهر",
   "cityMap": "نقشه شهر",
   "state_id": "شناسه استان",
-  "Not Found": "نتیجه یافت نشد"
+  "Not Found": "نتیجه یافت نشد",
+  "Field": "زمینه",
+  "labelSearch": "برچسب جستجو",
+  "loadingField": "در حال بارگذاری"
 }

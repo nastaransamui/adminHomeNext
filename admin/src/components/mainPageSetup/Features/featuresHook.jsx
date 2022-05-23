@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import usePerRowHook from '../../Hooks/usePerRowHook';
-import useSearch from '../../Hooks/useSearch';
+import usePageSearch from '../../Hooks/usePageSearch';
 import { getAllUrl } from './featuresStatic';
 import useAllResults from '../../Hooks/useAllResults';
 
@@ -16,7 +16,7 @@ const featuresHook = () => {
   const { t, i18n } = useTranslation('feature');
   const perRow = usePerRowHook(Features);
   const { searchText, requestSearch, setSearchText, rows } =
-    useSearch(dataArray);
+    usePageSearch(dataArray);
 
   const allResults = useAllResults({
     state: Features,

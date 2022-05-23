@@ -52,6 +52,7 @@ const Features = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={featuresFields}
+          state={Features}
           createUrl={createUrl}
           editUrl={editUrl}
           cardView={CardView}

@@ -52,6 +52,7 @@ const Photos = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={photosFields}
+          state={sliderImage}
           createUrl={createUrl}
           editUrl={editUrl}
           cardView={CardView}

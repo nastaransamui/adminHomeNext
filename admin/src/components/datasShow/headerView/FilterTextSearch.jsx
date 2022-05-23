@@ -6,7 +6,7 @@ import {  useSelector } from 'react-redux';
 
 import cardsShowStyles from '../cards-show-styles.js';
 
-import { Search, Clear } from '@mui/icons-material';
+import { FindInPage, Clear } from '@mui/icons-material';
 
 const FilterTextSearch = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
@@ -16,8 +16,6 @@ const FilterTextSearch = forwardRef((props, ref) => {
   return (
     <Grid container className={classes.toolbarText}>
       {
-        // Show only on cardView
-        // usersCardView && (
           <TextField
           autoComplete='off'
             variant='standard'
@@ -36,7 +34,7 @@ const FilterTextSearch = forwardRef((props, ref) => {
               },
             }}
             InputProps={{
-              startAdornment: <Search fontSize='small' />,
+              startAdornment: <FindInPage fontSize='small' />,
               endAdornment: (
                 <IconButton
                   title={`${t('clear')}`}
@@ -53,7 +51,6 @@ const FilterTextSearch = forwardRef((props, ref) => {
               ),
             }}
           />
-        // )
       }
     </Grid>
   );

@@ -22,6 +22,7 @@ const Countries = (props) => {
     requestSearch,
     searchText,
     rows: countries,
+    exportCsv
   } = countriesHook(componentView);
   const { countriesGStore, countriesAStore } = useSelector((state) => state);
   const {
@@ -83,6 +84,7 @@ const Countries = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={countriesFields}
+          state = {componentView == 'global_countries' ? countriesGStore : countriesAStore}
           createUrl=''
           editUrl={componentView == 'global_countries' ? '' : editUrl}
           cardView={CardView}
@@ -114,6 +116,7 @@ const Countries = (props) => {
           activesId={activesId}
           activeAlert={sweetActiveAlert}
           diactiveAlert={sweetDiactiveAlert}
+          exportCsv={exportCsv}
         />
       </Fragment>
     </Container>

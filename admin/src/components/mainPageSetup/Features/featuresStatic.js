@@ -67,6 +67,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'featureThumb'],
     hasVideo: [true, 'featureLink'],
+    searchAble: true,
   },
   {
     field: 'isActive', // Db name
@@ -77,6 +78,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'isYoutube', // Db name
@@ -87,6 +89,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'title_fa', // Db name
@@ -97,6 +100,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'createdAt', // Db name
@@ -107,6 +111,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'updatedAt', // Db name
@@ -117,6 +122,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'youTubeId', // Db name
@@ -127,6 +133,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [true, 'youTubeId'],
+    searchAble: false,
   },
 ];
 

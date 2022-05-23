@@ -50,7 +50,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             ],
           },
           { $sort: { 'states.name': 1 } },
-          { $limit: 150 },
+          { $limit: 50 },
           { $group: { _id: null, provinces: { $push: '$states' } } },
           { $project: { _id: 0, provinces: '$provinces' } },
         ]);

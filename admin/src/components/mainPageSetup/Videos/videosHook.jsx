@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import usePerRowHook from '../../Hooks/usePerRowHook';
-import useSearch from '../../Hooks/useSearch';
+import usePageSearch from '../../Hooks/usePageSearch';
 import { getAllUrl } from './videosStatic';
 import useAllResults from '../../Hooks/useAllResults';
 
@@ -15,7 +15,7 @@ const videosHook = () => {
   const { t, i18n } = useTranslation('video');
   const perRow = usePerRowHook(sliderVideo);
   const { searchText, requestSearch, setSearchText, rows } =
-    useSearch(dataArray);
+    usePageSearch(dataArray);
 
   const allResults = useAllResults({
     state: sliderVideo,

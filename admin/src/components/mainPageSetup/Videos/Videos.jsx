@@ -58,6 +58,7 @@ const Videos = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={videosFields}
+          state={sliderVideo}
           createUrl={createUrl}
           editUrl={editUrl}
           cardView={CardView}

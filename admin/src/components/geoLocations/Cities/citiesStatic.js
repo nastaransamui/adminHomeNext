@@ -1,5 +1,6 @@
 export const getAllUrl = '/admin/api/geoLocations/getAllCities';
 export const editUrl = '/admin/dashboard/a-locations/cities/city';
+export const exportCsvUrl = `/admin/api/geoLocations/export`;
 import { Info, Flag, Title, Map, Domain } from '@mui/icons-material';
 
 export const dataGridColumns = [
@@ -12,6 +13,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'iso2'],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'state_name', // Db country
@@ -22,6 +24,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'country', // Db name
@@ -33,6 +36,7 @@ export const dataGridColumns = [
     filterable: false,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'latitude', // Db name
@@ -43,6 +47,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'longitude', // Db name
@@ -53,16 +58,18 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'id',
     headerAlign: 'center', //
-    description: 'id',
+    description: 'cityid',
     width: 200,
     type: 'string',
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
 ];
 

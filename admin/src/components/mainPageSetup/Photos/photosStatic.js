@@ -72,6 +72,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'imageShow'],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'isActive', // Db name
@@ -82,6 +83,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'title_fa', // Db name
@@ -92,6 +94,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'createdAt', // Db name
@@ -102,6 +105,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'updatedAt', // Db name
@@ -112,6 +116,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'button_en', // Db name
@@ -122,6 +127,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'button_fa', // Db name
@@ -132,6 +138,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'subTitle_en', // Db name
@@ -142,6 +149,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'subTitle_fa', // Db name
@@ -152,6 +160,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
 ];
 

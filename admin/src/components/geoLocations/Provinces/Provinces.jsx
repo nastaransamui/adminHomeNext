@@ -6,11 +6,7 @@ import { useSelector } from 'react-redux';
 import provincesHook from './provincesHook';
 import DataShow from '../../datasShow/DataShow';
 import useDataHeaders from '../../Hooks/useDataHeaders';
-import {
-  provincesFields,
-  dataGridColumns,
-  editUrl
-} from './provincesStatic';
+import { provincesFields, dataGridColumns, editUrl } from './provincesStatic';
 
 const Provinces = (props) => {
   const { t } = useTranslation('geoLocations');
@@ -18,17 +14,11 @@ const Provinces = (props) => {
     requestSearch,
     searchText,
     rows: provinces,
+    exportCsv,
   } = provincesHook();
   const { provincesStore } = useSelector((state) => state);
-  const {
-    dataArrayLengh,
-    pageNumber,
-    SortBy,
-    CardView,
-    PerPage,
-    GridView,
-  } = provincesStore;
-
+  const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
+    provincesStore;
 
   const {
     gridNumberFunc,
@@ -37,9 +27,9 @@ const Provinces = (props) => {
     perPageFunc,
     sortByFunc,
   } = useDataHeaders({
-    state:provincesStore,
+    state: provincesStore,
     dispatchType: 'PROVINCES_STORE',
-    cookieName:'provincesStore',
+    cookieName: 'provincesStore',
   });
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -50,6 +40,7 @@ const Provinces = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={provincesFields}
+          state={provincesStore}
           createUrl=''
           editUrl={editUrl}
           cardView={CardView}
@@ -66,6 +57,7 @@ const Provinces = (props) => {
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
           sortByValues={SortBy}
+          exportCsv={exportCsv}
           cardHeaderType={{
             icon: true,
             image: false,

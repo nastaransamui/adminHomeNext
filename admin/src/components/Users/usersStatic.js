@@ -14,8 +14,20 @@ export const deleteUrl = `/admin/api/mainPageSetup/delete`;
 export const exportCsvUrl = `/admin/api/users/export`;
 export const userFields = [
   {
-    Icon: InfoIcon,
-    label: 'aboutMe',
+    Icon: AccountCircleIcon,
+    label: 'userName',
+    type: 'string',
+    filterable: true,
+  },
+  {
+    Icon: EventIcon,
+    label: 'createdAt',
+    type: 'string',
+    filterable: true,
+  },
+  {
+    Icon: EventIcon,
+    label: 'updatedAt',
     type: 'string',
     filterable: true,
   },
@@ -62,20 +74,8 @@ export const userFields = [
     filterable: true,
   },
   {
-    Icon: EventIcon,
-    label: 'updatedAt',
-    type: 'string',
-    filterable: true,
-  },
-  {
-    Icon: EventIcon,
-    label: 'createdAt',
-    type: 'string',
-    filterable: true,
-  },
-  {
-    Icon: AccountCircleIcon,
-    label: 'userName',
+    Icon: InfoIcon,
+    label: 'aboutMe',
     type: 'string',
     filterable: true,
   },
@@ -91,6 +91,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'profileImage'],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'createdAt', // Db name
@@ -101,6 +102,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'updatedAt', // Db name
@@ -111,6 +113,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'isAdmin', // Db name
@@ -121,6 +124,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'firstName', // Db name
@@ -131,6 +135,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'lastName', // Db name
@@ -141,6 +146,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'city', // Db name
@@ -151,6 +157,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'province', // Db name
@@ -161,6 +168,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'country', // Db name
@@ -171,6 +179,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'position', // Db name
@@ -181,6 +190,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'aboutMe', // Db name
@@ -191,6 +201,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
 ];
 

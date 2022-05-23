@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import usePerRowHook from '../../Hooks/usePerRowHook';
 import { setCookies } from 'cookies-next';
-import useSearch from '../../Hooks/useSearch';
+import usePageSearch from '../../Hooks/usePageSearch';
 import { getAllUrl } from './photosStatic';
 import useAllResults from '../../Hooks/useAllResults';
 
@@ -16,7 +16,7 @@ const photosHook = () => {
   const { t, i18n } = useTranslation('photos');
   const perRow = usePerRowHook(sliderImage);
   const { searchText, requestSearch, setSearchText, rows } =
-    useSearch(dataArray);
+    usePageSearch(dataArray);
 
   const allResults = useAllResults({
     state: sliderImage,

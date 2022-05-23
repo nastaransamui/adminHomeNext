@@ -326,8 +326,6 @@ const userHook = () => {
       });
       const { status } = res;
       const response = await res.json();
-      console.log('call');
-      console.log(response);
       if (status !== 200 && !response.success) {
         setCityOptions([
           {
@@ -340,7 +338,6 @@ const userHook = () => {
         setCityOptions([...response.data]);
       }
     } catch (error) {
-      console.log(error);
       return undefined;
     }
   };
@@ -362,8 +359,6 @@ const userHook = () => {
       });
       const { status } = res;
       const response = await res.json();
-      console.log('call');
-      console.log(response);
       if (status !== 200 && !response.success) {
         setCountryOptions([
           {
@@ -376,7 +371,6 @@ const userHook = () => {
         setCountryOptions([...response.data]);
       }
     } catch (error) {
-      console.log(error);
       return undefined;
     }
   };
@@ -398,8 +392,6 @@ const userHook = () => {
       });
       const { status } = res;
       const response = await res.json();
-      console.log('call');
-      console.log(response);
       if (status !== 200 && !response.success) {
         setProvinceOptions([
           {
@@ -444,7 +436,6 @@ const userHook = () => {
 
   useEffect(() => {
     let isMount = true;
-    console.log();
     if (isMount && cityFilter !== '') {
       getCities();
     }
@@ -485,7 +476,6 @@ const userHook = () => {
 
   useEffect(() => {
     let isMount = true;
-    console.log(countryFilter);
     if (isMount && countryFilter !== '') {
       getCountries();
     }

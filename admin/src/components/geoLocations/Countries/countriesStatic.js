@@ -2,6 +2,7 @@ export const getAllUrl = '/admin/api/geoLocations/getAll';
 export const activeUrl = '/admin/api/geoLocations/active';
 export const diActiveUrl = '/admin/api/geoLocations/diactive';
 export const editUrl = '/admin/dashboard/a-locations/countries/country';
+export const exportCsvUrl = `/admin/api/geoLocations/export`;
 import {
   Info,
   Flag,
@@ -25,6 +26,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [true, 'iso2'],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'iso3', // Db name
@@ -35,6 +37,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'iso2', // Db name
@@ -45,6 +48,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'capital', // Db name
@@ -55,6 +59,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'currency', // Db name
@@ -65,6 +70,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'native', // Db name
@@ -75,6 +81,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'numeric_code', // Db name
@@ -85,6 +92,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'phone_code', // Db name
@@ -95,6 +103,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'region', // Db name
@@ -105,6 +114,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'totalStates', // Db name
@@ -115,6 +125,7 @@ export const dataGridColumns = [
     filterable: false,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'subregion', // Db name
@@ -125,6 +136,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'timezones', // Db name
@@ -136,6 +148,7 @@ export const dataGridColumns = [
     filterable: false,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'tld', // Db name
@@ -146,6 +159,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'latitude', // Db name
@@ -156,6 +170,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'longitude', // Db name
@@ -166,6 +181,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'currency_name', // Db name
@@ -176,6 +192,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'currency_symbol', // Db name
@@ -186,6 +203,7 @@ export const dataGridColumns = [
     filterable: true,
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
+    searchAble: false,
   },
 ];
 

@@ -333,6 +333,11 @@ export default function User(props) {
                             label={t('city')}
                             variant='standard'
                             value={values.city}
+                            onBlur={()=>{
+                              if(cityOptions.map(a => a.name).indexOf(values.city) == -1){
+                                setValues({ ...values, city: '' });
+                              }
+                            }}
                             onChange={(e) => {
                               setValues({ ...values, city: e.target.value });
                               (async () => {
@@ -363,6 +368,7 @@ export default function User(props) {
                     <Grid item xs={12} sm={12} md={3}>
                       <Autocomplete
                         id='province-select'
+                        disablePortal
                         options={provinceOptions}
                         loading={loadingProvince}
                         loadingText={t('loadingProvince')}
@@ -416,6 +422,11 @@ export default function User(props) {
                             label={t('province')}
                             variant='standard'
                             value={values.province}
+                            onBlur={()=>{
+                              if(provinceOptions.map(a => a.name).indexOf(values.province) == -1){
+                                setValues({ ...values, province: '', });
+                              }
+                            }}
                             onChange={(e) => {
                               setValues({
                                 ...values,
@@ -500,6 +511,11 @@ export default function User(props) {
                             label={t('country')}
                             variant='standard'
                             value={values.country}
+                            onBlur={()=>{
+                              if(countryOptions.map(a => a.name).indexOf(values.country) == -1){
+                                setValues({ ...values, country: '', });
+                              }
+                            }}
                             onChange={(e) => {
                               setValues({ ...values, country: e.target.value });
                               (async () => {

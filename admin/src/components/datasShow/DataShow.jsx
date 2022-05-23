@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
+import { forwardRef, useState, useEffect, useRef } from 'react';
 import Main from './cardsView/Main';
 import MainHeader from './headerView/MainHeader';
 import TableBody from './tableView/TableBody';
@@ -17,11 +17,35 @@ const BodyBox = styled(Container)(({ theme }) => ({
 
 const DataShow = forwardRef((props, ref) => {
   const { cardView } = props;
+  const [showSearch, setShowSearch] = useState(false);
+  const [width, setWidth] = useState(0);
+  const widthRef = useRef(null);
+  useEffect(() => {
+    setWidth(widthRef.current.offsetWidth);
+  });
+
+const [mainData, setMainData] = useState(props.mainData)
+useEffect(() => {
+  let isMount = true;
+  if(isMount){
+    setMainData(props.mainData)
+  }
+  return () => {
+    isMount = false;
+  };
+}, [props.mainData]);
   return (
     <div ref={ref}>
-      <MainHeader {...props} />
-      <BodyBox maxWidth='xl'>
-        {cardView ? <Main {...props} /> : <TableBody {...props} />}
+      <MainHeader
+        {...props}
+        showSearch={showSearch}
+        setShowSearch={setShowSearch}
+        width={width}
+        mainData={mainData}
+        setMainData={setMainData}
+      />
+      <BodyBox maxWidth='xl' ref={widthRef} className="animate__animated animate__zoomIn">
+        {cardView ? <Main {...props} mainData={mainData}/> : <TableBody {...props} mainData={mainData}/>}
       </BodyBox>
     </div>
   );
@@ -32,6 +56,7 @@ DataShow.propTypes = {
   requestSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
   dataFields: PropTypes.array.isRequired,
+  state: PropTypes.object.isRequired,
   createUrl: PropTypes.string.isRequired,
   editUrl: PropTypes.string.isRequired,
   cardView: PropTypes.bool.isRequired,

@@ -4,7 +4,7 @@ export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
-const useSearch = (model) => {
+const usePageSearch = (model) => {
   const [searchText, setSearchText] = useState('');
   const [rows, setRows] = useState(model);
   const requestSearch = (searchValue) => {
@@ -30,4 +30,4 @@ const useSearch = (model) => {
   };
 };
 
-export default useSearch;
+export default usePageSearch;
