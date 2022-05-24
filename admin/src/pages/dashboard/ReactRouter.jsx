@@ -19,6 +19,8 @@ import ProvincesPage from '../provinces-page/ProvincesPage';
 import Province from '../../components/geoLocations/Province/Province';
 import CitiesPage from '../cities-page/CitiesPage';
 import City from '../../components/geoLocations/City/City';
+import CurrencyPage from '../currency-page/CurrencyPage';
+import Currency from '../../components/exchange/Currency/Currency';
 
 export function NotFoundPage() {
   return null;
@@ -140,6 +142,18 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/a-locations/cities/city'>
           <City {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/g-currencies/currencies'>
+          <CurrencyPage {...props} componentView='global_currencies' />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-currencies/currencies'>
+          <CurrencyPage {...props} componentView='active' />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/a-currencies/currencies/currency'>
+          <Currency {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route path='/admin/dashboard/notfoundpage'>

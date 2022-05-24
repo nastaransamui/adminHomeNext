@@ -429,6 +429,96 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             }
           }
           break;
+        case 'global_currencies':
+          const currencies = `${process.cwd()}/public/locationsData/currencies.json`;
+          const rawCurrencies = fs.readFileSync(currencies);
+          const currenciesData = JSON.parse(rawCurrencies);
+          var filterdCurrencies = currenciesData.filter((row) => {
+            return Object.keys(row).some((field) => {
+              if (field == fieldValue) {
+                if (row[field] !== null) {
+                  return searchRegex.test(row[field].toString());
+                }
+              }
+            });
+          });
+          if (filterdCurrencies.length > 0) {
+            res.status(200).json({
+              success: true,
+              data: paginate(
+                filterdCurrencies.sort(
+                  sort_by('currency_name', false, (a) => a.toUpperCase())
+                ),
+                50,
+                1
+              ),
+            });
+          } else {
+            res.status(200).json({
+              success: true,
+              data: [],
+            });
+          }
+          break;
+        case 'Currencies':
+          var collection = mongoose.model(modelName);
+          if (hzErrorConnection) {
+            const valuesList = await collection.find({});
+            if (valuesList.length > 0) {
+              res.status(200).json({ success: true, data: valuesList });
+            } else {
+              res.status(200).json({
+                success: true,
+                data: [],
+              });
+            }
+          } else {
+            const multiMap = await hz.getMultiMap(modelName);
+            const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+            if (dataIsExist) {
+              const values = await multiMap.get(`all${modelName}`);
+              for (const value of values) {
+                const filterdCurrencies = value.filter((row) => {
+                  return Object.keys(row).some((field) => {
+                    if (field == fieldValue) {
+                      if (row[field] !== null) {
+                        return searchRegex.test(row[field].toString());
+                      }
+                    }
+                  });
+                });
+                if (filterdCurrencies.length > 0) {
+                  res.status(200).json({
+                    success: true,
+                    data: paginate(
+                      filterdCurrencies.sort(
+                        sort_by('currency_name', false, (a) => a.toUpperCase())
+                      ),
+                      50,
+                      1
+                    ),
+                  });
+                } else {
+                  res.status(200).json({
+                    success: true,
+                    data: [],
+                  });
+                }
+              }
+            } else {
+              const valuesList = await collection.find({});
+              if (valuesList.length > 0) {
+                res.status(200).json({ success: true, data: valuesList });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  data: [],
+                });
+              }
+            }
+          }
+          break;
+
         default:
           if (hzErrorConnection) {
             var collection = mongoose.model(modelName);

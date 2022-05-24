@@ -35,7 +35,9 @@ const Header = forwardRef((props, ref) => {
       modelName == 'global_countries' ||
       modelName == 'Countries' ||
       modelName == 'Provinces' ||
-      modelName == 'Cities'
+      modelName == 'Cities' ||
+      modelName == 'global_currencies' ||
+      modelName == 'Currencies'
     ) {
       return (
         <img
@@ -79,13 +81,13 @@ const Header = forwardRef((props, ref) => {
   const badgeColor = () => {
     if (modelName == 'Users') {
       return 'secondary';
-    } else if (modelName == 'global_countries') {
+    } else if (modelName == 'global_countries' || modelName == 'global_currencies') {
       if (activesId?.filter((e) => e.id == data.id).length > 0) {
         return 'secondary';
       } else {
         return 'primary';
       }
-    } else if (modelName == 'Countries') {
+    } else if (modelName == 'Countries' || modelName == 'Currencies') {
       return 'secondary';
     } else {
       if (data.isActive) {

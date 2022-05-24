@@ -148,7 +148,6 @@ const useActiveAlert = ({
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               });
             } else {
-              console.log(response);
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               dispatch({
                 type: dispatchType,

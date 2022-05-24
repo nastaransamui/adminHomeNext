@@ -25,6 +25,8 @@ import error_en from '../public/locales/en/404.json';
 import error_fa from '../public/locales/fa/404.json';
 import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
 import dataGridLocale_fa from '../public/locales/fa/dataGridLocale.json';
+import exchange_en from '../public/locales/en/exchange.json';
+import exchange_fa from '../public/locales/fa/exchange.json';
 import i18next from 'i18next';
 import 'video-react/dist/video-react.css';
 import { withTranslation, useTranslation } from 'react-i18next';
@@ -85,6 +87,7 @@ i18next
         about: about_en,
         geoLocations: geoLocations_en,
         dataGridLocale: dataGridLocale_en,
+        exchange: exchange_en,
       },
       fa: {
         common: common_fa,
@@ -98,6 +101,7 @@ i18next
         photos: photos_fa,
         geoLocations: geoLocations_fa,
         dataGridLocale: dataGridLocale_fa,
+        exchange: exchange_fa,
       },
     },
   });

@@ -1,4 +1,10 @@
-import { AccountBox, Dashboard, Apps, Public } from '@mui/icons-material/';
+import {
+  AccountBox,
+  Dashboard,
+  Apps,
+  Public,
+  CurrencyExchange,
+} from '@mui/icons-material/';
 
 var dashRoutes = [
   {
@@ -205,6 +211,54 @@ var dashRoutes = [
             'mini_en-US': 'AC',
             mini_fa: 'ش',
             state: 'aCitiesCollapse',
+            layout: '/admin',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/dashboard/g-currencies',
+    collapse: true,
+    'name_en-US': 'Currencies',
+    name_fa: 'ارزها',
+    icon: CurrencyExchange,
+    state: 'currenciesCollapse',
+    views: [
+      {
+        collapse: true,
+        'name_en-US': 'All',
+        name_fa: 'همه',
+        'mini_en-US': 'A',
+        mini_fa: 'ه',
+        state: 'allCurrenciesCollapse',
+        views: [
+          {
+            path: '/dashboard/g-currencies/currencies',
+            'name_en-US': 'All currencies',
+            name_fa: 'همه ارزها',
+            'mini_en-US': 'AC',
+            mini_fa: 'ه ا',
+            state: 'gCurrenciesCollapse',
+            layout: '/admin',
+          },
+        ],
+      },
+      {
+        collapse: true,
+        'name_en-US': 'Only actives',
+        name_fa: 'فقط فعال',
+        'mini_en-US': 'OA',
+        mini_fa: 'ف',
+        state: 'activeGlobeCurrenciesCollapse',
+        views: [
+          {
+            path: '/dashboard/a-currencies/currencies',
+            'name_en-US': 'Active currencies',
+            name_fa: 'ارزهای فعال',
+            'mini_en-US': 'AC',
+            mini_fa: 'ک',
+            state: 'aCurrenciesCollapse',
             layout: '/admin',
           },
         ],

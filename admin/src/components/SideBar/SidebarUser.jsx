@@ -112,9 +112,10 @@ export default function SidebarUser(props) {
               sx={{ marginLeft: 300 }}>
               <ListItemText
                 primary={
-                  profile.userName.length < stringLimit
-                    ? `${profile.userName}`
-                    : `${profile.userName.slice(0, stringLimit)} ...`
+                  `${profile?.userName.slice(0, profile?.userName.indexOf("@"))} ...`
+                  // profile?.userName?.length < stringLimit
+                  //   ? `${profile.userName}`
+                  //   : `${profile.userName.slice(0, stringLimit)} ...`
                 }
                 secondary={
                   <b

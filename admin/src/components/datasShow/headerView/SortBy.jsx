@@ -124,6 +124,12 @@ const SortBy = forwardRef((props, ref) => {
                                 : modelName == 'Cities' &&
                                   fields.label == 'name'
                                 ? t('cityName')
+                                : modelName == 'global_currencies'  &&
+                                  fields.label == 'name'
+                                ? t('country_name')
+                                : modelName == 'Currencies'  &&
+                                  fields.label == 'name'
+                                ? t('country_name')
                                 : modelName == 'Cities' && fields.label == 'id'
                                 ? t('cityId')
                                 : t(`${fields.label}`)

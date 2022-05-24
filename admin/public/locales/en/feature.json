@@ -57,5 +57,6 @@
   "Not Found": "result not found",
   "Field": "Field",
   "labelSearch": "Search label",
-  "loadingField": "It's loading"
+  "loadingField": "It's loading",
+  "searchData": "Search in whole data"
 }

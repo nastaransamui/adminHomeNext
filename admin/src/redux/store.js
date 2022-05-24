@@ -10,6 +10,10 @@ import {
 } from '../components/geoLocations/Countries/countriesStatic';
 import { provincesStore } from '../components/geoLocations/Provinces/provincesStatic';
 import { citiesStore } from '../components/geoLocations/Cities/citiesStatic';
+import {
+  currenciesGStore,
+  currenciesAStore,
+} from '../components/exchange/Currencies/currenciesStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -28,6 +32,8 @@ const initialState = {
   countriesAStore: { ...countriesAStore },
   provincesStore: { ...provincesStore },
   citiesStore: { ...citiesStore },
+  currenciesGStore: { ...currenciesGStore },
+  currenciesAStore: { ...currenciesAStore },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -89,6 +95,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         citiesStore: { ...payload },
+      };
+    case 'CURRENCIES_G_STORE':
+      return {
+        ...state,
+        currenciesGStore: { ...payload },
+      };
+    case 'CURRENCIES_A_STORE':
+      return {
+        ...state,
+        currenciesAStore: { ...payload },
       };
     default:
       return state;

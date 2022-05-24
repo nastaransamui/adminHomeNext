@@ -219,7 +219,9 @@ export const RenderCellAvatar = (params) => {
       modelName == 'global_countries' ||
       modelName == 'Countries' ||
       modelName == 'Provinces' ||
-      modelName == 'Cities'
+      modelName == 'Cities' ||
+      modelName == 'global_currencies' ||
+      modelName == 'Currencies'
     ) {
       return (
         <img
@@ -248,7 +250,10 @@ export const RenderCellAvatar = (params) => {
   const badgeColor = () => {
     if (modelName == 'Users') {
       return 'secondary';
-    } else if (modelName == 'global_countries') {
+    } else if (
+      modelName == 'global_countries' ||
+      modelName == 'global_currencies'
+    ) {
       if (activesId.filter((e) => e.id == params.id).length > 0) {
         return 'secondary';
       } else {
@@ -257,7 +262,8 @@ export const RenderCellAvatar = (params) => {
     } else if (
       modelName == 'Countries' ||
       modelName == 'Provinces' ||
-      modelName == 'Cities'
+      modelName == 'Cities' ||
+      modelName == 'Currencies'
     ) {
       return 'secondary';
     } else {
@@ -302,6 +308,8 @@ export const RenderCellAvatar = (params) => {
           : row?.name
         : modelName == 'Provinces' || modelName == 'Cities'
         ? row?.name
+        : modelName == 'global_currencies' || modelName == 'Currencies'
+        ? row?.currency_name
         : row[`title_${lang}`]}
     </span>
   );

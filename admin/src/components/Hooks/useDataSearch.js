@@ -80,11 +80,14 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'global_countries':
         setFilterValue(newValue?.name || '');
         break;
+      case 'global_currencies':
+      case 'Currencies':
+        setFilterValue(newValue[`${fieldValue}`] || '');
+        break;
       case 'Features':
       case 'Photos':
       case 'Videos':
       case 'Users':
-        console.log(newValue);
         setFilterValue(newValue[`${fieldValue}`] || '');
         break;
     }
@@ -99,6 +102,11 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'Countries':
       case 'global_countries':
         return `${dataOptions.emoji} ${dataOptions.name} ${dataOptions.iso2} ${
+          dataOptions[`${fieldValue}`]
+        }`;
+      case 'global_currencies':
+      case 'Currencies':
+        return `${dataOptions.emoji} ${dataOptions.currency_name} ${
           dataOptions[`${fieldValue}`]
         }`;
       case 'Features':
@@ -166,6 +174,9 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'Provinces':
       case 'Countries':
         return dataOptions.name;
+      case 'global_currencies':
+      case 'Currencies':
+        return dataOptions.currency_name;
       case 'Features':
       case 'Photos':
       case 'Videos':

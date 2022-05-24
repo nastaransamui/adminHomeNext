@@ -141,13 +141,19 @@ const Body = forwardRef((props, ref) => {
           search: `?country_id=${data?.id}`,
           state: data,
         });
+      }else if(modelName == 'Currencies'){
+        history.push({
+          pathname: editUrl,
+          search: `?currency_id=${data?._id}`,
+          state: data,
+        });
       } else if (modelName == 'Provinces') {
         history.push({
           pathname: editUrl,
           search: `?state_id=${data?.id}`,
           state: data,
         });
-      }else if (modelName == 'Cities') {
+      } else if (modelName == 'Cities') {
         history.push({
           pathname: editUrl,
           search: `?city_id=${data?.id}`,
@@ -265,7 +271,7 @@ const Body = forwardRef((props, ref) => {
             </Tooltip>
           )
         )}
-        {modelName == 'Countries' ? (
+        {modelName == 'Countries' || modelName == 'Currencies' ? (
           <Tooltip
             title={t('ToggleOff')}
             placement='bottom'
@@ -326,6 +332,8 @@ const Body = forwardRef((props, ref) => {
                 ? rtlActive
                   ? data?.translations?.fa
                   : data?.name
+                : modelName == 'global_currencies' || modelName == 'Currencies'
+                ? data?.currency_name
                 : modelName == 'Provinces' || modelName == 'Cities'
                 ? data?.name
                 : data[`title_${lang}`]
@@ -367,6 +375,9 @@ const Body = forwardRef((props, ref) => {
               primary={
                 rtlActive
                   ? data?.translations?.fa || data?.name || t('information')
+                  : modelName == 'global_currencies' ||
+                    modelName == 'Currencies'
+                  ? data?.currency_name
                   : data.name || t('information')
               }
               primaryTypographyProps={primaryProps}
@@ -387,13 +398,15 @@ const Body = forwardRef((props, ref) => {
                         ? t('cityName')
                         : modelName == 'Cities' && label == 'id'
                         ? t('cityid')
-                        : modelName ==
-                        'Provinces' && label == 'id'
-                          ? t('stateId')
-                        : (modelName ==
-                            'Provinces' && label == 'name'
-                              ? t('stateName')
-                              : t(`${label}`));
+                        : modelName == 'Provinces' && label == 'id'
+                        ? t('stateId')
+                        : modelName == 'Provinces' && label == 'name'
+                        ? t('stateName')
+                        : modelName == 'global_currencies' && label == 'name'
+                        ? t('country_name')
+                        : modelName == 'Currencies' && label == 'name'
+                        ? t('country_name')
+                        : t(`${label}`);
                     return (
                       <Tooltip
                         title={showLabel}

@@ -52,14 +52,19 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'Countries' ||
           modelName == 'Provinces' ||
           modelName == 'Cities' ||
-          modelName == 'global_countries'
+          modelName == 'global_countries' ||
+          modelName == 'Currencies' ||
+          modelName == 'global_currencies'
             ? true
             : modelName == 'Users'
             ? params.id == profile._id
             : params.row.isActive;
 
         const hideToggle =
-          modelName == 'Countries' || modelName == 'global_countries'
+          modelName == 'Countries' ||
+          modelName == 'global_countries' ||
+          modelName == 'Currencies' ||
+          modelName == 'global_currencies'
             ? false
             : true;
         return [
@@ -141,6 +146,12 @@ const TableBody = forwardRef((props, ref) => {
         history.push({
           pathname: editUrl,
           search: `?city_id=${params?.row?.id}`,
+          state: params.row,
+        });
+      } else if (modelName == 'Currencies') {
+        history.push({
+          pathname: editUrl,
+          search: `?currency_id=${params?.row?._id}`,
           state: params.row,
         });
       } else {
