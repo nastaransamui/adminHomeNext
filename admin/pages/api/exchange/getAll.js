@@ -53,7 +53,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         modelName,
         fileName,
       } = req.body;
-      console.log(req.body);
       if (fileName !== undefined) {
         try {
           const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
@@ -61,7 +60,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           let data = JSON.parse(rawdata);
           var collection = mongoose.model(modelName);
           var activesIds = await collection.find({}, { _id: false, id: true });
-          console.log(activesIds);
           res.status(200).json({
             success: true,
             totalValuesLength: data.length,
@@ -88,14 +86,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const { hzErrorConnection, hz } = await hazelCast();
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
-            const valuesList = await collection.aggregate([
-              {
-                $addFields: {
-                  totalStates: { $size: '$states' },
-                },
-              },
-              { $unset: 'states' },
-            ]);
+            const valuesList = await collection.find({});
             res.status(200).json({
               success: true,
               totalValuesLength: valuesList.length,
@@ -136,14 +127,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 });
               }
             } else {
-              const valuesList = await collection.aggregate([
-                {
-                  $addFields: {
-                    totalStates: { $size: '$states' },
-                  },
-                },
-                { $unset: 'states' },
-              ]);
+              const valuesList = await collection.find({});
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({
                 success: true,

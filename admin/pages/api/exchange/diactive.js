@@ -100,7 +100,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 success: true,
                 totalValuesLength: valuesList.length,
                 data: paginate(
-                  data.sort(
+                  valuesList.sort(
                     sort_by(
                       [req.body['valuesSortByField']],
                       valuesSortBySorting > 0 ? false : true,

@@ -17,12 +17,6 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
     dataGridColumns.filter((a) => a.searchAble)[0]?.field
   );
 
-  const sleep = (delay = 0) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, delay);
-    });
-  };
-
   const getData = async () => {
     const abortController = new AbortController();
     try {
@@ -41,6 +35,7 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       });
       const { status } = res;
       const response = await res.json();
+
       if (status !== 200 && !response.success) {
         setDataOptions([
           {
@@ -82,7 +77,9 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         break;
       case 'global_currencies':
       case 'Currencies':
-        setFilterValue(newValue[`${fieldValue}`] || '');
+        if (newValue != null) {
+          setFilterValue(newValue[`${fieldValue}`] || '');
+        }
         break;
       case 'Features':
       case 'Photos':

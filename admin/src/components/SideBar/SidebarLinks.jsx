@@ -103,14 +103,15 @@ export default function SidebarLinks(props) {
       // handle open sidebar
       let nst = {};
       routes.map((route, index) => {
-        if (route.collapse) {
+        if (route?.collapse) {
           if (location.pathname == route.layout + route.path) {
+            //First layer collapse
             nst[route['state']] = true;
             setState((oldState) => ({ ...oldState, ...nst }));
           } else {
             for (let i = 0; i < route.views.length; i++) {
               const element = route.views[i];
-              if (element.views !== undefined) {
+              if (element.collapse) {
                 for (let j = 0; j < element.views.length; j++) {
                   const elem = element.views[j];
                   if (location.pathname == elem.layout + elem.path) {
@@ -119,6 +120,12 @@ export default function SidebarLinks(props) {
                     nst[elem['state']] = true;
                     setState((oldState) => ({ ...oldState, ...nst }));
                   }
+                }
+              } else {
+                //Second layer not collapse(about)
+                if (location.pathname == element.layout + element.path) {
+                  nst[route['state']] = true;
+                  setState((oldState) => ({ ...oldState, ...nst }));
                 }
               }
             }
@@ -200,10 +207,24 @@ export default function SidebarLinks(props) {
                 typeof route.icon == 'string' ? (
                   <Icon className={itemIcon}>{route.icon}</Icon>
                 ) : (
-                  <route.icon className={itemIcon} />
+                  <route.icon
+                    className={itemIcon}
+                    style={{
+                      position: rtlActive ? 'absolute' : 'unset',
+                      right: rtlActive ? -18 : 0,
+                      top: rtlActive ? 15 : 0,
+                    }}
+                  />
                 )
               ) : (
-                <span className={collapseItemMini}>
+                <span
+                  className={collapseItemMini}
+                  style={{
+                    display:
+                      (rtlActive && propsMiniActive) || !stateMiniActive
+                        ? 'none'
+                        : 'block',
+                  }}>
                   {isMobile ? '\xa0' : route[`mini_${i18n.language}`]}
                 </span>
               )}
@@ -211,7 +232,9 @@ export default function SidebarLinks(props) {
                 primary={route[`name_${i18n.language}`]}
                 secondary={
                   <b
-                    style={{ marginRight: rtlActive ? -10 : 0 }}
+                    style={{
+                      marginRight: rtlActive ? 181 : 0,
+                    }}
                     className={
                       caret +
                       ' ' +
@@ -220,6 +243,9 @@ export default function SidebarLinks(props) {
                   />
                 }
                 disableTypography={true}
+                style={{
+                  marginLeft: rtlActive ? 128 : 0,
+                }}
                 className={cx(
                   { [itemText]: route.icon !== undefined },
                   { [collapseItemText]: route.icon === undefined }
@@ -300,10 +326,24 @@ export default function SidebarLinks(props) {
                 typeof route.icon === 'string' ? (
                   <Icon className={itemIcon}>{route.icon}</Icon>
                 ) : (
-                  <route.icon className={itemIcon} />
+                  <route.icon
+                    className={itemIcon}
+                    style={{
+                      position: rtlActive ? 'absolute' : 'unset',
+                      right: rtlActive ? -18 : 0,
+                      top: rtlActive ? 15 : 0,
+                    }}
+                  />
                 )
               ) : (
-                <span className={collapseItemMini}>
+                <span
+                  className={collapseItemMini}
+                  style={{
+                    display:
+                      (rtlActive && propsMiniActive) || !stateMiniActive
+                        ? 'none'
+                        : 'block',
+                  }}>
                   {isMobile ? '\xa0' : route[`mini_${i18n.language}`]}
                 </span>
               )}

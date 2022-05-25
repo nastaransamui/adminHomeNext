@@ -463,7 +463,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         case 'Currencies':
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
-            const valuesList = await collection.find({});
+            const valuesList = await collection.aggregate([
+              { $sort: { currency_name: 1 } },
+              { $match: { [fieldValue]: searchRegex } },
+              { $limit: 50 },
+            ]);
             if (valuesList.length > 0) {
               res.status(200).json({ success: true, data: valuesList });
             } else {
@@ -506,7 +510,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 }
               }
             } else {
-              const valuesList = await collection.find({});
+              const valuesList = await collection.aggregate([
+                { $sort: { currency_name: 1 } },
+                { $match: { [fieldValue]: searchRegex } },
+                { $limit: 50 },
+              ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
               } else {
