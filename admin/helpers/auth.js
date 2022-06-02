@@ -1,4 +1,5 @@
 import Users from '../models/Users';
+import Agencies from '../models/Agencies';
 import dbConnect from './dbConnect';
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
@@ -22,6 +23,17 @@ export async function findUserById(_id) {
   } else {
     let user = await Users.findById(_id, '-password');
     return user;
+  }
+}
+
+export async function findAgentById(_id) {
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
+  } else {
+    let agent = await Agencies.findById(_id);
+    return agent;
   }
 }
 
@@ -77,7 +89,7 @@ export function validatePassword(user, inputPassword) {
 
 export async function hashPassword(req, res, next) {
   try {
-    if (req.body.password !== '') {
+    if (req.body.password !== undefined && req.body.password !== '') {
       const cryptoPassword = CryptoJS.AES.encrypt(
         req.body.password,
         process.env.NEXT_PUBLIC_SECRET_KEY

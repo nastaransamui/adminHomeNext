@@ -21,6 +21,8 @@ import CitiesPage from '../cities-page/CitiesPage';
 import City from '../../components/geoLocations/City/City';
 import CurrencyPage from '../currency-page/CurrencyPage';
 import Currency from '../../components/exchange/Currency/Currency';
+import AgencyPage from '../agencies-page/AgencyPage';
+import Agency from '../../components/Clients/Agency/Agency';
 
 export function NotFoundPage() {
   return null;
@@ -154,6 +156,14 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/a-currencies/currencies/currency'>
           <Currency {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/client-data/clients'>
+          <AgencyPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/client-data/clients/client'>
+          <Agency {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route path='/admin/dashboard/notfoundpage'>

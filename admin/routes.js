@@ -7,6 +7,7 @@ import {
   DataThresholding,
   Apartment,
   SouthAmerica,
+  Badge,
 } from '@mui/icons-material/';
 
 var dashRoutes = [
@@ -23,7 +24,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Users',
     name_fa: 'کاربران',
-    icon: AccountBox,
+    icon: Badge,
     state: 'userCollapse',
     layout: '/admin',
     views: [
@@ -240,6 +241,34 @@ var dashRoutes = [
             icon: AttachMoney,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    collapse: true,
+    'name_en-US': 'Agency/Client Data',
+    name_fa: 'اطلاعات آژانس/مشتری',
+    icon: AccountBox,
+    state: 'agencyDataCollapse',
+    views: [
+      {
+        path: '/dashboard/client-data/clients',
+        'name_en-US': 'Agencies List',
+        name_fa: 'فهرست آژانس ها',
+        'mini_en-US': 'AL',
+        mini_fa: 'ف آ',
+        state: 'agenciesCollapse',
+        layout: '/admin',
+      },
+      {
+        path: '/dashboard/client-data/clients/client',
+        'name_en-US': 'Add agency',
+        name_fa: 'آژانس اضافه کنید',
+        'mini_en-US': 'AA',
+        mini_fa: 'آا',
+        state: 'agencyCollapse',
+        layout: '/admin',
       },
     ],
   },

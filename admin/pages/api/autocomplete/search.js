@@ -9,6 +9,7 @@ import Features from '../../../models/Features';
 import Photos from '../../../models/Photos';
 import Users from '../../../models/Users';
 import Videos from '../../../models/Videos';
+import Agencies from '../../../models/Agencies';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -526,7 +527,158 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             }
           }
           break;
-
+        case 'Agencies':
+          var collection = mongoose.model(modelName);
+          if (fieldValue !== 'phones') {
+            if (hzErrorConnection) {
+              const valuesList = await collection.aggregate([
+                { $sort: { agentName: 1 } },
+                { $match: { [fieldValue]: searchRegex } },
+                { $limit: 50 },
+              ]);
+              if (valuesList.length > 0) {
+                res.status(200).json({ success: true, data: valuesList });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  data: [],
+                });
+              }
+            } else {
+              const multiMap = await hz.getMultiMap(modelName);
+              const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+              if (dataIsExist) {
+                const values = await multiMap.get(`all${modelName}`);
+                for (const value of values) {
+                  const filterdAgencies = value.filter((row) => {
+                    return Object.keys(row).some((field) => {
+                      if (field == fieldValue) {
+                        if (row[field] !== null) {
+                          return searchRegex.test(row[field].toString());
+                        }
+                      }
+                    });
+                  });
+                  if (filterdAgencies.length > 0) {
+                    res.status(200).json({
+                      success: true,
+                      data: paginate(
+                        filterdAgencies.sort(
+                          sort_by('agentName', false, (a) => a.toUpperCase())
+                        ),
+                        50,
+                        1
+                      ),
+                    });
+                  } else {
+                    res.status(200).json({
+                      success: true,
+                      data: [],
+                    });
+                  }
+                }
+              } else {
+                const valuesList = await collection.aggregate([
+                  { $sort: { agentName: 1 } },
+                  { $match: { [fieldValue]: searchRegex } },
+                  { $limit: 50 },
+                ]);
+                if (valuesList.length > 0) {
+                  res.status(200).json({ success: true, data: valuesList });
+                } else {
+                  res.status(200).json({
+                    success: true,
+                    data: [],
+                  });
+                }
+              }
+            }
+          } else {
+            if (hzErrorConnection) {
+              let phoneNumber = filterValue;
+              if (!phoneNumber.startsWith('+')) {
+                phoneNumber = [
+                  phoneNumber.slice(0, 0),
+                  '+',
+                  phoneNumber.slice(0),
+                ].join('');
+              }
+              const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
+              const valuesList = await collection.aggregate([
+                { $sort: { agentName: 1 } },
+                { $match: { 'phones.number': phoneRegex } },
+                { $limit: 50 },
+              ]);
+              if (valuesList.length > 0) {
+                res.status(200).json({ success: true, data: valuesList });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  data: [],
+                });
+              }
+            } else {
+              const multiMap = await hz.getMultiMap(modelName);
+              const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+              if (dataIsExist) {
+                const values = await multiMap.get(`all${modelName}`);
+                for (const value of values) {
+                  const filterdData = value.filter((row) => {
+                    return Object.keys(row).some((field) => {
+                      if (field == fieldValue) {
+                        if (row[field] !== null) {
+                          return searchRegex.test(
+                            row[field].map((a, i) => a.number)[0].toString()
+                          );
+                        }
+                      }
+                    });
+                  });
+                  if (filterdData.length > 0) {
+                    res.status(200).json({
+                      success: true,
+                      data: paginate(
+                        filterdData.sort(
+                          sort_by('agentName', false, (a) => a.toUpperCase())
+                        ),
+                        50,
+                        1
+                      ),
+                    });
+                  } else {
+                    res.status(200).json({
+                      success: true,
+                      data: [],
+                    });
+                  }
+                }
+              } else {
+                let phoneNumber = filterValue;
+                if (!phoneNumber.startsWith('+')) {
+                  phoneNumber = [
+                    phoneNumber.slice(0, 0),
+                    '+',
+                    phoneNumber.slice(0),
+                  ].join('');
+                }
+                const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
+                const valuesList = await collection.aggregate([
+                  { $sort: { agentName: 1 } },
+                  { $match: { 'phones.number': phoneRegex } },
+                  { $limit: 50 },
+                ]);
+                if (valuesList.length > 0) {
+                  res.status(200).json({ success: true, data: valuesList });
+                } else {
+                  res.status(200).json({
+                    success: true,
+                    data: [],
+                  });
+                }
+              }
+            }
+          }
+          break;
         default:
           if (hzErrorConnection) {
             var collection = mongoose.model(modelName);

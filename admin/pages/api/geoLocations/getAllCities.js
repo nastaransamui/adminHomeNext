@@ -55,7 +55,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       var collection = mongoose.model(modelName);
       if (hzErrorConnection) {
         const valuesList = await collection.aggregate([
-          { $project: { _id: 0 } },
           { $unwind: '$states' },
           { $unwind: '$states.cities' },
           {
@@ -63,13 +62,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.cities.country': '$name',
               'states.cities.emoji': '$emoji',
               'states.cities.iso2': '$iso2',
-              'states.cities.country_id': '$id',
-              'states.cities.state_id': '$states.id',
+              'states.cities.countryId': '$id',
+              'states.cities.country_id': '$_id',
+              'states.cities.stateId': '$states.id',
               'states.cities.state_name': '$states.name',
+              'states.cities.state_id': '$states._id',
             },
           },
           { $group: { _id: null, cities: { $push: '$states.cities' } } },
-          { $project: { _id: 0, cities: '$cities' } },
+          { $project: { _id: 1, cities: '$cities' } },
         ]);
         if (valuesList.length > 0) {
           const cities = valuesList[0].cities;
@@ -122,7 +123,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
         } else {
           const valuesList = await collection.aggregate([
-            { $project: { _id: 0 } },
             { $unwind: '$states' },
             { $unwind: '$states.cities' },
             {
@@ -130,13 +130,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.cities.country': '$name',
                 'states.cities.emoji': '$emoji',
                 'states.cities.iso2': '$iso2',
-                'states.cities.country_id': '$id',
-                'states.cities.state_id': '$states.id',
+                'states.cities.countryId': '$id',
+                'states.cities.country_id': '$_id',
+                'states.cities.stateId': '$states.id',
                 'states.cities.state_name': '$states.name',
+                'states.cities.state_id': '$states._id',
               },
             },
             { $group: { _id: null, cities: { $push: '$states.cities' } } },
-            { $project: { _id: 0, cities: '$cities' } },
+            { $project: { _id: 1, cities: '$cities' } },
           ]);
           if (valuesList.length > 0) {
             const cities = valuesList[0].cities;

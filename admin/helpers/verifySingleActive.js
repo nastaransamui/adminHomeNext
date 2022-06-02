@@ -21,7 +21,6 @@ const verifySingleActive = async (req, res, next) => {
       if (!req.body.isActive) {
         next();
       } else {
-        console.log(req?.body?.modelName);
         var collection = mongoose.model(req?.body?.modelName);
         if (req?.body?.modelName == 'Videos') {
           collection

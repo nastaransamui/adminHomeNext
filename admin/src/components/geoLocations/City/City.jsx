@@ -103,10 +103,10 @@ export default function City(props) {
                           className={classes.input}
                           variant='standard'
                           label={t('country_id')}
-                          name='country_id'
+                          name='countryId'
                           fullWidth
                           disabled
-                          value={values.country_id}
+                          value={values.countryId}
                           onChange={(e) => {
                             formValueChanged(e);
                           }}
@@ -136,9 +136,9 @@ export default function City(props) {
                           fullWidth
                           variant='standard'
                           label={t('state_id')}
-                          name='state_id'
+                          name='stateId'
                           disabled
-                          value={values.state_id}
+                          value={values.stateId}
                           onChange={(e) => {
                             formValueChanged(e);
                           }}

@@ -39,7 +39,12 @@ export const createColumns = (dataGridColumns, props, t) => {
               element.arrayTotal ? (
                 <RenderArrayTotal modelName={props.modelName} {...params} />
               ) : (
-                <RenderArray modelName={props.modelName} {...params} />
+                <RenderArray
+                  type={element.type}
+                  t={t}
+                  modelName={props.modelName}
+                  {...params}
+                />
               )
             ) : element.hasVideo[0] ? (
               <RenderCellVideo
@@ -56,7 +61,11 @@ export const createColumns = (dataGridColumns, props, t) => {
                 {...params}
               />
             ) : (
-              <RenderCellExpand modelName={props.modelName} {...params} />
+              <RenderCellExpand
+                type={element.type}
+                modelName={props.modelName}
+                {...params}
+              />
             )}
           </>
         );

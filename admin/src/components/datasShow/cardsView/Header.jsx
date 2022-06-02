@@ -7,6 +7,7 @@ import CardHeader from '../../Card/CardHeader';
 import CardAvatar from '../../Card/CardAvatar';
 import { Player } from 'video-react';
 import avatar from '../../../../public/images/faces/avatar1.jpg';
+import customerAvatar from '../../../../public/images/faces/Customer.png'
 import { useSelector } from 'react-redux';
 
 const Header = forwardRef((props, ref) => {
@@ -31,6 +32,8 @@ const Header = forwardRef((props, ref) => {
   const Image = () => {
     if (modelName == 'Users') {
       return <img src={data.profileImage || avatar.src} alt='...' />;
+    }else if(modelName == 'Agencies'){
+      return <img src={data.logoImage || customerAvatar.src} alt='...' />;
     } else if (
       modelName == 'global_countries' ||
       modelName == 'Countries' ||

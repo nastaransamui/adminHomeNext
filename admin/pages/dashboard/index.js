@@ -22,6 +22,7 @@ import {
   currenciesGStore,
   currenciesAStore,
 } from '../../src/components/exchange/Currencies/currenciesStatic';
+import { Agencies } from '../../src/components/Clients/Agencies/agenciesStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -126,6 +127,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('currenciesAStore', ctx)
               ? JSON.parse(getCookies(ctx).currenciesAStore)
               : { ...currenciesAStore },
+          })),
+          ...(await store.dispatch({
+            type: 'AGENCIES',
+            payload: checkCookies('agencies', ctx)
+              ? JSON.parse(getCookies(ctx).agencies)
+              : { ...Agencies },
           })),
         },
       };

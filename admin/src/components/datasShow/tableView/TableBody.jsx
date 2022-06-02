@@ -4,7 +4,7 @@ import tableBodyStyles from './table-body-styles';
 import PropTypes from 'prop-types';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { Edit, Delete, ToggleOff, ToggleOn } from '@mui/icons-material';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 import { useHistory } from 'react-router-dom';
@@ -56,6 +56,8 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'Currencies' ||
           modelName == 'global_currencies'
             ? true
+            : modelName == 'Agencies'
+            ? false
             : modelName == 'Users'
             ? params.id == profile._id
             : params.row.isActive;
@@ -69,7 +71,11 @@ const TableBody = forwardRef((props, ref) => {
             : true;
         return [
           <GridActionsCellItem
-            icon={<Edit style={{ color: theme.palette.primary.main }} />}
+            icon={
+              <Tooltip arrow title={t('editTooltip')}>
+                <Edit style={{ color: theme.palette.primary.main }} />
+              </Tooltip>
+            }
             label={t('Edit')}
             className='textPrimary'
             onClick={() => {
@@ -79,15 +85,23 @@ const TableBody = forwardRef((props, ref) => {
               display: hideEdit ? 'none' : 'block',
             }}
             color='inherit'
+            disableRipple
+            disableFocusRipple
           />,
           <GridActionsCellItem
             icon={
               activesId == undefined ? (
-                <ToggleOn style={{ color: theme.palette.success.main }} />
+                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                  <ToggleOn style={{ color: theme.palette.success.main }} />
+                </Tooltip>
               ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
-                <ToggleOff style={{ color: theme.palette.success.main }} />
+                <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+                  <ToggleOff style={{ color: theme.palette.success.main }} />
+                </Tooltip>
               ) : (
-                <ToggleOn style={{ color: theme.palette.error.main }} />
+                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                  <ToggleOn style={{ color: theme.palette.error.main }} />
+                </Tooltip>
               )
             }
             label={t('Edit')}
@@ -107,9 +121,15 @@ const TableBody = forwardRef((props, ref) => {
             style={{
               display: hideToggle ? 'none' : 'block',
             }}
+            disableRipple
+            disableFocusRipple
           />,
           <GridActionsCellItem
-            icon={<Delete style={{ color: theme.palette.error.main }} />}
+            icon={
+              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+                <Delete style={{ color: theme.palette.error.main }} />
+              </Tooltip>
+            }
             label={t('Delete')}
             onClick={() => {
               deleteAlert(params.row);
@@ -118,6 +138,8 @@ const TableBody = forwardRef((props, ref) => {
             style={{
               display: hideDelete ? 'none' : 'block',
             }}
+            disableRipple
+            disableFocusRipple
           />,
         ];
       },
@@ -152,6 +174,12 @@ const TableBody = forwardRef((props, ref) => {
         history.push({
           pathname: editUrl,
           search: `?currency_id=${params?.row?._id}`,
+          state: params.row,
+        });
+      } else if (modelName == 'Agencies') {
+        history.push({
+          pathname: editUrl,
+          search: `?client_id=${params?.row?._id}`,
           state: params.row,
         });
       } else {

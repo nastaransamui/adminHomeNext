@@ -12,6 +12,7 @@ import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
+import Agencies from '../../../models/Agencies';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -38,12 +39,16 @@ apiRoute.post(
         const { modelName } = req.body;
         var collection = mongoose.model(modelName);
         delete req.body._id;
+        if (modelName == 'Agencies') {
+          req.body.phones = JSON.parse(req?.body?.phones);
+        }
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
           if (err) {
             res.status(403).json({
               success: false,
               Error: err.toString(),
+              keyPattern: err?.keyPattern,
               ErrorCode: err?.code,
             });
           } else {

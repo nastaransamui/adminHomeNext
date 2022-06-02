@@ -10,14 +10,11 @@ import ShowSearchData from './ShowSearchData';
 
 const FilterIcons = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-  const { modelName } = props;
+  const { modelName, exportCsv } = props;
+  console.log()
   return (
     <Grid ref={ref} container className={classes.Icon}>
-      {modelName == 'Users' ||
-      modelName == 'global_countries' ||
-      modelName == 'Countries' ||
-      modelName == 'Provinces' ||
-      modelName == 'Cities' ? (
+      {exportCsv !== undefined ? (
         <CsvExport {...props} />
       ) : null}
       <ShowSearchData {...props} />

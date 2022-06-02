@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import avatar from '../../../../public/images/faces/avatar1.jpg';
+import customerAvatar from '../../../../public/images/faces/Customer.png';
 import { Close, Done } from '@mui/icons-material';
 import {
   GridToolbarContainer,
@@ -122,7 +123,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
         <Popper
           open={showFullCell && anchorEl !== null}
           anchorEl={anchorEl}
-          style={{ width, marginLeft: -17 }}>
+          style={{ width }}>
           <Paper
             elevation={1}
             style={{ minHeight: wrapper.current.offsetHeight - 3 }}>
@@ -131,6 +132,11 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
             </Typography>
           </Paper>
         </Popper>
+        // <Tooltip arrow title={value}>
+        //   <Typography variant='body2' style={{ padding: 8 }}>
+        //     {value}
+        //   </Typography>
+        // </Tooltip>
       )}
     </Box>
   );
@@ -156,7 +162,9 @@ export const RenderCellExpand = (params) => {
             display: 'flex',
             justifyContent: 'center',
           }}>
-          {params.value}
+          {params.type !== 'number'
+            ? params.value
+            : params?.row?.currencyCode + ' ' + params.value.toLocaleString()}
         </span>
       )}
     </>
@@ -212,6 +220,14 @@ export const RenderCellAvatar = (params) => {
         <img
           style={{ height: 40, width: 40, borderRadius: '50%' }}
           src={row.profileImage || avatar.src}
+          alt='...'
+        />
+      );
+    } else if (modelName == 'Agencies') {
+      return (
+        <img
+          style={{ height: 40, width: 40, borderRadius: '50%' }}
+          src={row[dataGridColumns[0].hasAvatar[1]] || customerAvatar.src}
           alt='...'
         />
       );
@@ -308,6 +324,8 @@ export const RenderCellAvatar = (params) => {
           : row?.name
         : modelName == 'Provinces' || modelName == 'Cities'
         ? row?.name
+        : modelName == 'Agencies'
+        ? row?.agentName
         : modelName == 'global_currencies' || modelName == 'Currencies'
         ? row?.currency_name
         : row[`title_${lang}`]}
@@ -352,7 +370,10 @@ export const RenderCellVideo = (params) => {
     }
   } else {
     return (
-      <Tooltip title={row.title_en} placement={rtlActive ? 'right' : 'left'}>
+      <Tooltip
+        title={row.title_en}
+        placement={rtlActive ? 'right' : 'left'}
+        arrow>
         <span
           style={{
             display: 'flex',
@@ -407,6 +428,7 @@ export const RenderArrayTotal = (params) => {
 };
 
 export const RenderArray = (params) => {
+  const { type, row } = params;
   if (params?.field == 'timezones') {
     const timeZoneArray = params?.row[params?.field].map(
       (e) => `${e?.gmtOffsetName}
@@ -428,7 +450,45 @@ export const RenderArray = (params) => {
       </span>
     );
   } else {
-    return 'fixRenderArray';
+    return (
+      <Tooltip title={tooltipData(params)} placement='top' arrow>
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            width: '100%',
+          }}>
+          {row[[params?.field][0]][0].number}
+        </span>
+      </Tooltip>
+    );
+  }
+};
+
+const tooltipData = (params) => {
+  const theme = useTheme();
+  const { type, row } = params;
+  const { t } = params;
+
+  if (type == 'array') {
+    return row[params?.field].map((p, i) => {
+      const keys = Object.keys(p);
+      return (
+        <Typography
+          key={i}
+          variant='subtitle1'
+          sx={{
+            borderBottom:
+              i !== row[params?.field].length - 1
+                ? `1px solid ${theme.palette.secondary.main}`
+                : 'none',
+          }}>
+          {t(`${keys[1]}`)}: {p.number}-{p.tags[0]}-{p.remark}
+        </Typography>
+      );
+    });
   }
 };
 

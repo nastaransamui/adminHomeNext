@@ -8,13 +8,12 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import ArtTrackIcon from '@mui/icons-material/ArtTrack';
 
-
 import Card from '../Card/Card';
 import CardHeader from '../Card/CardHeader';
 import CardFooter from '../Card/CardFooter';
 import CardBody from '../Card/CardBody';
 
-import {tableValuesLocaleConvert} from './MainDashboard'
+import { tableValuesLocaleConvert } from './MainDashboard';
 
 export const mainDashboardProduct = [
   {
@@ -93,7 +92,7 @@ export default function ForthRow({ rtlActive, showLang, t }) {
                       id='tooltip-top'
                       title={t('3rdRow').tooltip_0}
                       placement='bottom'
-                      classes={{ tooltip: classes.tooltip }}>
+                      arrow>
                       <Button color='primary'>
                         <ArtTrackIcon className={classes.underChartIcons} />
                       </Button>
@@ -102,7 +101,7 @@ export default function ForthRow({ rtlActive, showLang, t }) {
                       id='tooltip-top'
                       title={t('3rdRow').tooltip_1}
                       placement='bottom'
-                      classes={{ tooltip: classes.tooltip }}>
+                      arrow>
                       <Button color='success'>
                         <RefreshIcon className={classes.underChartIcons} />
                       </Button>
@@ -111,7 +110,7 @@ export default function ForthRow({ rtlActive, showLang, t }) {
                       id='tooltip-top'
                       title={t('3rdRow').tooltip_2}
                       placement='bottom'
-                      classes={{ tooltip: classes.tooltip }}>
+                      arrow>
                       <Button color='error'>
                         <EditIcon className={classes.underChartIcons} />
                       </Button>
@@ -149,5 +148,5 @@ export default function ForthRow({ rtlActive, showLang, t }) {
 ForthRow.propTypes = {
   rtlActive: PropTypes.bool.isRequired,
   showLang: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };

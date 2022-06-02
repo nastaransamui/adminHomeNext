@@ -61,8 +61,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.cities.country': '$name',
               'states.cities.emoji': '$emoji',
               'states.cities.iso2': '$iso2',
-              'states.cities.country_id': '$id',
+              'states.cities.countryId': '$id',
+              'states.cities.country_id': '$_id',
+              'states.cities.stateId': '$states.id',
               'states.cities.state_name': '$states.name',
+              'states.cities.state_id': '$states._id',
             },
           },
           {
@@ -71,7 +74,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           { $sort: { 'states.cities.name': 1 } },
           { $limit: 50 },
           { $group: { _id: null, cities: { $push: '$states.cities' } } },
-          { $project: { cities: 1, _id: 0 } },
+          { $project: { cities: 1, _id: 1 } },
         ]);
         if (valuesList.length > 0) {
           const cities = valuesList[0].cities;
@@ -93,8 +96,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 _id: a._id,
                 emoji: a.emoji,
                 iso2: a.iso2,
+                countryId: a.countryId,
                 country_id: a.country_id,
+                stateId: a.stateId,
                 state_name: a.state_name,
+                state_id: a.state_id,
               };
             });
             const filterdData = filterCityItem.filter((row) => {
@@ -132,8 +138,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.cities.country': '$name',
                 'states.cities.emoji': '$emoji',
                 'states.cities.iso2': '$iso2',
-                'states.cities.country_id': '$id',
+                'states.cities.countryId': '$id',
+                'states.cities.country_id': '$_id',
+                'states.cities.stateId': '$states.id',
                 'states.cities.state_name': '$states.name',
+                'states.cities.state_id': '$states._id',
               },
             },
             {
@@ -142,7 +151,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             { $sort: { 'states.cities.name': 1 } },
             { $limit: 50 },
             { $group: { _id: null, cities: { $push: '$states.cities' } } },
-            { $project: { cities: 1, _id: 0 } },
+            { $project: { cities: 1, _id: 1 } },
           ]);
           if (valuesList.length > 0) {
             const cities = valuesList[0].cities;

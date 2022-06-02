@@ -44,7 +44,7 @@ const provinceHook = () => {
         token: `Brearer ${adminAccessToken}`,
       },
       body: JSON.stringify({
-        country_id: values.country_id,
+        country_id: values.countryId,
         state_id: values.id,
         limitNumber: limitNumber,
         modelName: 'Countries',
@@ -81,7 +81,6 @@ const provinceHook = () => {
     setChildExpanded(isExpanded ? panel : false);
   };
   const loadMore = () => {
-    console.log(childArray);
     loadCities(childArray?.length + 10);
   };
 

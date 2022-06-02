@@ -34,12 +34,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.country': '$name',
               'states.emoji': '$emoji',
               'states.iso2': '$iso2',
-              'states.country_id': '$id',
+              'states.countryId': '$id',
+              'states.country_id': '$_id',
               'states.totalCities': { $size: '$states.cities' },
             },
           },
           { $group: { _id: null, province: { $push: '$states' } } },
-          { $project: { _id: 0, province: '$province' } },
+          { $project: { _id: 1, province: '$province' } },
         ]);
         if (valuesList.length > 0) {
           const province = valuesList[0].province[0];
@@ -66,12 +67,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.country': '$name',
                 'states.emoji': '$emoji',
                 'states.iso2': '$iso2',
-                'states.country_id': '$id',
+                'states.countryId': '$id',
+                'states.country_id': '$_id',
                 'states.totalCities': { $size: '$states.cities' },
               },
             },
             { $group: { _id: null, province: { $push: '$states' } } },
-            { $project: { _id: 0, province: '$province' } },
+            { $project: { _id: 1, province: '$province' } },
           ]);
           if (valuesList.length > 0) {
             const province = valuesList[0].province[0];

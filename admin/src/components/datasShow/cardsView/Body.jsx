@@ -25,6 +25,7 @@ import {
   ListItemText,
   Tooltip,
   Box,
+  Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/styles';
@@ -141,7 +142,7 @@ const Body = forwardRef((props, ref) => {
           search: `?country_id=${data?.id}`,
           state: data,
         });
-      }else if(modelName == 'Currencies'){
+      } else if (modelName == 'Currencies') {
         history.push({
           pathname: editUrl,
           search: `?currency_id=${data?._id}`,
@@ -157,6 +158,13 @@ const Body = forwardRef((props, ref) => {
         history.push({
           pathname: editUrl,
           search: `?city_id=${data?.id}`,
+          state: data,
+        });
+        client_id;
+      } else if (modelName == 'Agencies') {
+        history.push({
+          pathname: editUrl,
+          search: `?client_id=${_id}`,
           state: data,
         });
       } else {
@@ -177,9 +185,13 @@ const Body = forwardRef((props, ref) => {
         data.google.length == 0)
     ) {
       if (typeof data[label] == 'object') {
-        return `${label}: ${data[label]?.length}`;
+        if (type == 'array') {
+          return `${data[label][0].number}`;
+        } else {
+          return `${label}: ${data[label]?.length}`;
+        }
       } else if (typeof data[label] !== 'boolean') {
-        if (data[label] == '') {
+        if (typeof data[label] !== 'number' && data[label] == '') {
           return `${t('notDefine')}`;
         } else {
           // Validate date
@@ -193,7 +205,9 @@ const Body = forwardRef((props, ref) => {
               return data[label];
             } else {
               return type == 'number'
-                ? data[label]
+                ? modelName == 'Agencies'
+                  ? data.currencyCode + ' ' + data[label].toLocaleString()
+                  : data[label]
                 : type == 'string'
                 ? data[label] == null
                   ? `${t('notDefine')}`
@@ -216,14 +230,122 @@ const Body = forwardRef((props, ref) => {
     }
   };
 
+  const primaryTooltipData = (data, label, type) => {
+    if (
+      modelName !== 'Users' ||
+      (data.facebook.length == 0 &&
+        data.twitter.length == 0 &&
+        data.google.length == 0)
+    ) {
+      if (typeof data[label] == 'object') {
+        if (type == 'array') {
+          return data[label].map((p, i) => {
+            const keys = Object.keys(p);
+            return (
+              <Typography
+                key={i}
+                variant='subtitle1'
+                sx={{
+                  borderBottom:
+                    i !== data[label].length - 1
+                      ? `1px solid ${theme.palette.secondary.main}`
+                      : 'none',
+                }}>
+                {t(`${keys[1]}`)}: {p.number}-{p.tags[0]}-{p.remark}
+              </Typography>
+            );
+          });
+        } else {
+          return `${label}: ${data[label]?.length}`;
+        }
+      } else if (typeof data[label] !== 'boolean') {
+        if (typeof data[label] !== 'number' && data[label] == '') {
+          return `${t('notDefine')}`;
+        } else {
+          // Validate date
+          if (
+            moment(data[label], moment.ISO_8601, true).isValid() &&
+            type !== 'number'
+          ) {
+            return moment(data[label]).format('MMMM Do YYYY, H:mm');
+          } else {
+            if (data[label]?.length < stringLimit) {
+              return data[label];
+            } else {
+              return type == 'number'
+                ? modelName == 'Agencies'
+                  ? data.currencyCode + ' ' + data[label].toLocaleString()
+                  : data[label]
+                : type == 'string'
+                ? data[label] == null
+                  ? `${t('notDefine')}`
+                  : data[label]
+                : null;
+            }
+          }
+        }
+      } else {
+        return data[label] ? (
+          <Typography style={{ color: theme.palette.success.main }}>
+            {t(`${label}`)}
+          </Typography>
+        ) : (
+          <Typography style={{ color: theme.palette.error.main }}>
+            {t(`${label}`)}
+          </Typography>
+        );
+      }
+    } else {
+      console.log(data);
+    }
+  };
+
   const listIcons = (data, Icon, label, type, i) => {
+    const showLabel =
+      modelName == 'Cities' && label == 'name'
+        ? t('cityName')
+        : modelName == 'Cities' && label == 'id'
+        ? t('cityid')
+        : modelName == 'Provinces' && label == 'id'
+        ? t('stateId')
+        : modelName == 'Provinces' && label == 'name'
+        ? t('stateName')
+        : modelName == 'global_currencies' && label == 'name'
+        ? t('country_name')
+        : modelName == 'Currencies' && label == 'name'
+        ? t('country_name')
+        : t(`${label}`);
     if (type !== 'boolean') {
-      return <Icon style={iconStyle(i)} />;
+      return (
+        <Box className={classes.expandIconBox}>
+          <Icon style={iconStyle(i)} />
+          <Typography variant='caption' display='block' gutterBottom>
+            {t(`${showLabel}`)}
+            {' :'}
+          </Typography>
+        </Box>
+      );
     } else {
       if (data[label]) {
-        return <CheckBox style={iconStyle(i)} />;
+        return (
+          <Box className={classes.expandIconBox}>
+            <CheckBox style={iconStyle(i)} />
+            <Typography variant='caption' display='block' gutterBottom>
+              {t(`${showLabel}`)}
+              {' :'}
+            </Typography>
+          </Box>
+        );
       } else {
-        return <CheckBoxOutlineBlank style={iconStyle(i)} />;
+        return (
+          <Box className={classes.expandIconBox}>
+            <CheckBoxOutlineBlank style={iconStyle(i)} />
+            <Typography variant='caption' display='block' gutterBottom>
+              {t(`${showLabel}`)}
+              {' :'}
+            </Typography>
+          </Box>
+        );
       }
     }
   };
@@ -233,10 +355,7 @@ const Body = forwardRef((props, ref) => {
       <div className={classes.cardHoverUnder}>
         {activesId !== undefined ? (
           activesId.filter((e) => e.id == data.id).length > 0 ? (
-            <Tooltip
-              title={t('ToggleOff')}
-              placement='bottom'
-              classes={{ tooltip: classes.tooltip }}>
+            <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
               <Button
                 color='primary'
                 onClick={() => {
@@ -246,10 +365,7 @@ const Body = forwardRef((props, ref) => {
               </Button>
             </Tooltip>
           ) : (
-            <Tooltip
-              title={t('ToggleOn')}
-              placement='bottom'
-              classes={{ tooltip: classes.tooltip }}>
+            <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
               <Button
                 color='primary'
                 onClick={() => {
@@ -261,10 +377,7 @@ const Body = forwardRef((props, ref) => {
           )
         ) : (
           editUrl !== '' && (
-            <Tooltip
-              title={t('editTooltip')}
-              placement='bottom'
-              classes={{ tooltip: classes.tooltip }}>
+            <Tooltip title={t('editTooltip')} placement='bottom' arrow>
               <Button color='primary' onClick={() => gotToEdit(data._id)}>
                 <ArtTrack className={classes.underChartIcons} />
               </Button>
@@ -272,10 +385,7 @@ const Body = forwardRef((props, ref) => {
           )
         )}
         {modelName == 'Countries' || modelName == 'Currencies' ? (
-          <Tooltip
-            title={t('ToggleOff')}
-            placement='bottom'
-            classes={{ tooltip: classes.tooltip }}>
+          <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
             <Button
               color='primary'
               onClick={() => {
@@ -284,13 +394,11 @@ const Body = forwardRef((props, ref) => {
               <ToggleOff style={{ color: theme.palette.success.main }} />
             </Button>
           </Tooltip>
-        ) : modelName == 'Users' &&
-          data._id !== profile._id &&
-          editUrl !== '' ? (
-          <Tooltip
-            title={t('deleteTooltip')}
-            placement='bottom'
-            classes={{ tooltip: classes.tooltip }}>
+        ) : (modelName == 'Users' &&
+            data._id !== profile._id &&
+            editUrl !== '') ||
+          modelName == 'Agencies' ? (
+          <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
             <Button
               color='error'
               onClick={() => {
@@ -302,10 +410,7 @@ const Body = forwardRef((props, ref) => {
         ) : activesId !== undefined ? null : modelName !== 'Users' &&
           !data.isActive &&
           deleteAlert !== undefined ? (
-          <Tooltip
-            title={t('deleteTooltip')}
-            placement='bottom'
-            classes={{ tooltip: classes.tooltip }}>
+          <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
             <Button
               color='error'
               onClick={() => {
@@ -336,6 +441,8 @@ const Body = forwardRef((props, ref) => {
                 ? data?.currency_name
                 : modelName == 'Provinces' || modelName == 'Cities'
                 ? data?.name
+                : modelName == 'Agencies'
+                ? data?.agentName
                 : data[`title_${lang}`]
             }
             placement='top'
@@ -359,6 +466,8 @@ const Body = forwardRef((props, ref) => {
                 ? rtlActive
                   ? data?.translations?.fa || data?.name || t('information')
                   : data?.name
+                : modelName == 'Agencies'
+                ? data?.agentName
                 : data[`title_${lang}`]}
             </a>
           </Tooltip>
@@ -393,23 +502,9 @@ const Body = forwardRef((props, ref) => {
                 {expanded[index] &&
                   dataFields.map((item, i) => {
                     const { Icon, label, type } = item;
-                    const showLabel =
-                      modelName == 'Cities' && label == 'name'
-                        ? t('cityName')
-                        : modelName == 'Cities' && label == 'id'
-                        ? t('cityid')
-                        : modelName == 'Provinces' && label == 'id'
-                        ? t('stateId')
-                        : modelName == 'Provinces' && label == 'name'
-                        ? t('stateName')
-                        : modelName == 'global_currencies' && label == 'name'
-                        ? t('country_name')
-                        : modelName == 'Currencies' && label == 'name'
-                        ? t('country_name')
-                        : t(`${label}`);
                     return (
                       <Tooltip
-                        title={showLabel}
+                        title={primaryTooltipData(data, label, type)}
                         placement='top'
                         key={label}
                         arrow>
@@ -424,9 +519,15 @@ const Body = forwardRef((props, ref) => {
                             primaryTypographyProps={{
                               fontSize: 14,
                               fontWeight: 'medium',
+                              lineHeight: 3.5,
+                              noWrap: true,
                             }}
                             primary={primaryTextData(data, label, type)}
-                            style={{ textAlign: rtlActive ? 'right' : 'left' }}
+                            style={{
+                              textAlign: rtlActive ? 'right' : 'left',
+                              borderBottom: `1px solid ${theme.palette.primary.main}`,
+                              minHeight: 50,
+                            }}
                           />
                         </ListItemButton>
                       </Tooltip>

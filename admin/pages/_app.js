@@ -27,6 +27,8 @@ import dataGridLocale_en from '../public/locales/en/dataGridLocale.json';
 import dataGridLocale_fa from '../public/locales/fa/dataGridLocale.json';
 import exchange_en from '../public/locales/en/exchange.json';
 import exchange_fa from '../public/locales/fa/exchange.json';
+import agencies_en from '../public/locales/en/agencies.json';
+import agencies_fa from '../public/locales/fa/agencies.json';
 import i18next from 'i18next';
 import 'video-react/dist/video-react.css';
 import { withTranslation, useTranslation } from 'react-i18next';
@@ -44,6 +46,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
 import 'animate.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import 'react-phone-input-material-ui/lib/style.css';
 
 //Theme
 import { ThemeProvider } from '@mui/material/styles';
@@ -88,6 +91,7 @@ i18next
         geoLocations: geoLocations_en,
         dataGridLocale: dataGridLocale_en,
         exchange: exchange_en,
+        agencies: agencies_en,
       },
       fa: {
         common: common_fa,
@@ -102,6 +106,7 @@ i18next
         geoLocations: geoLocations_fa,
         dataGridLocale: dataGridLocale_fa,
         exchange: exchange_fa,
+        agencies: agencies_fa,
       },
     },
   });

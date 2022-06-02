@@ -211,6 +211,7 @@ export default function User(props) {
                     <Grid item xs={12} sm={12} md={4}>
                       <TextValidator
                         className={classes.input}
+                        fullWidth
                         label={t('password')}
                         onChange={handleChange('password')}
                         value={values.password}
@@ -345,7 +346,7 @@ export default function User(props) {
                                 setCityFilter(e.target.value);
                               })();
                             }}
-                            className={classes.input}
+                            className={classes.inputAutocomplete}
                             fullWidth
                             InputProps={{
                               ...params.InputProps,
@@ -437,7 +438,7 @@ export default function User(props) {
                                 setProvinceFilter(e.target.value);
                               })();
                             }}
-                            className={classes.input}
+                            className={classes.inputAutocomplete}
                             fullWidth
                             InputProps={{
                               ...params.InputProps,
@@ -523,7 +524,7 @@ export default function User(props) {
                                 setCountryFilter(e.target.value);
                               })();
                             }}
-                            className={classes.input}
+                            className={classes.inputAutocomplete}
                             fullWidth
                             InputProps={{
                               ...params.InputProps,

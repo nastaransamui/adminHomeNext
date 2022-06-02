@@ -56,7 +56,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
 
       if (hzErrorConnection) {
         const valuesList = await collection.aggregate([
-          { $project: { _id: 0 } },
           { $unwind: '$states' },
 
           {
@@ -64,16 +63,18 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.country': '$name',
               'states.emoji': '$emoji',
               'states.iso2': '$iso2',
-              'states.country_id': '$id',
+              'states.countryId': '$id',
+              'states.country_id': '$_id',
               'states.totalCities': { $size: '$states.cities' },
             },
           },
           { $unset: 'states.cities' },
           { $group: { _id: null, provinces: { $push: '$states' } } },
-          { $project: { _id: 0, provinces: '$provinces' } },
+          { $project: { _id: 1, provinces: '$provinces' } },
         ]);
         if (valuesList.length > 0) {
           const provinces = valuesList[0].provinces;
+          console.log(provinces);
           res.status(200).json({
             success: true,
             totalValuesLength: provinces.length,
@@ -125,20 +126,21 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
         } else {
           const valuesList = await collection.aggregate([
-            { $project: { _id: 0 } },
             { $unwind: '$states' },
+
             {
               $addFields: {
                 'states.country': '$name',
                 'states.emoji': '$emoji',
                 'states.iso2': '$iso2',
-                'states.country_id': '$id',
+                'states.countryId': '$id',
+                'states.country_id': '$_id',
                 'states.totalCities': { $size: '$states.cities' },
               },
             },
             { $unset: 'states.cities' },
             { $group: { _id: null, provinces: { $push: '$states' } } },
-            { $project: { _id: 0, provinces: '$provinces' } },
+            { $project: { _id: 1, provinces: '$provinces' } },
           ]);
           if (valuesList.length > 0) {
             const provinces = valuesList[0].provinces;

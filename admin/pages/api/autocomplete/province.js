@@ -30,7 +30,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       const searchRegex = new RegExp(escapeRegExp(filter), 'i');
       if (hzErrorConnection) {
         const valuesList = await collection.aggregate([
-          { $project: { _id: 0 } },
           { $unwind: '$states' },
           { $match: { 'states.name': searchRegex } },
           {
@@ -38,6 +37,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.country': '$name',
               'states.emoji': '$emoji',
               'states.iso2': '$iso2',
+              'states.country_id': '$_id',
             },
           },
           {
@@ -52,7 +52,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           { $sort: { 'states.name': 1 } },
           { $limit: 50 },
           { $group: { _id: null, provinces: { $push: '$states' } } },
-          { $project: { _id: 0, provinces: '$provinces' } },
+          { $project: { _id: 1, provinces: '$provinces' } },
         ]);
         if (valuesList.length > 0) {
           const provinces = valuesList[0].provinces;
@@ -66,11 +66,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`allProvinces`);
           for (const value of values) {
+            console.log(value);
             const filterProvincesItem = value.map((a) => {
               return {
                 id: a.id,
                 name: a.name,
                 country: a.country,
+                country_id: a.country_id,
                 _id: a._id,
                 emoji: a.emoji,
                 iso2: a.iso2,
@@ -94,7 +96,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
         } else {
           const valuesList = await collection.aggregate([
-            { $project: { _id: 0 } },
             { $unwind: '$states' },
             { $match: { 'states.name': searchRegex } },
             {
@@ -102,6 +103,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.country': '$name',
                 'states.emoji': '$emoji',
                 'states.iso2': '$iso2',
+                'states.country_id': '$_id',
               },
             },
             {
@@ -114,9 +116,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
             },
             { $sort: { 'states.name': 1 } },
-            { $limit: 150 },
+            { $limit: 50 },
             { $group: { _id: null, provinces: { $push: '$states' } } },
-            { $project: { _id: 0, provinces: '$provinces' } },
+            { $project: { _id: 1, provinces: '$provinces' } },
           ]);
           if (valuesList.length > 0) {
             const provinces = valuesList[0].provinces;

@@ -33,6 +33,12 @@ const userStyle = makeStyles((theme) => {
         left: theme.direction == 'ltr' ? theme.spacing(0.5) : theme.spacing(1),
       },
     },
+    inputAutocomplete: {
+      color: theme.palette.text.color,
+      '& label': {
+        left: theme.direction == 'ltr' ? theme.spacing(0.5) : theme.spacing(3),
+      },
+    },
     followButton: {
       borderRadius: 36,
       fontWeight: 600,

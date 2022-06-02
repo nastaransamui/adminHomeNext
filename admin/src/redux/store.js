@@ -14,6 +14,7 @@ import {
   currenciesGStore,
   currenciesAStore,
 } from '../components/exchange/Currencies/currenciesStatic';
+import { Agencies } from '../components/Clients/Agencies/agenciesStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -34,6 +35,7 @@ const initialState = {
   citiesStore: { ...citiesStore },
   currenciesGStore: { ...currenciesGStore },
   currenciesAStore: { ...currenciesAStore },
+  Agencies: { ...Agencies },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -105,6 +107,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         currenciesAStore: { ...payload },
+      };
+    case 'AGENCIES':
+      return {
+        ...state,
+        Agencies: { ...payload },
       };
     default:
       return state;

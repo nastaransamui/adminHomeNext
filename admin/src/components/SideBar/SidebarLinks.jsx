@@ -221,7 +221,7 @@ export default function SidebarLinks(props) {
                   className={collapseItemMini}
                   style={{
                     display:
-                      (rtlActive && propsMiniActive) || !stateMiniActive
+                      (rtlActive && propsMiniActive) || (rtlActive &&!stateMiniActive)
                         ? 'none'
                         : 'block',
                   }}>
@@ -340,7 +340,7 @@ export default function SidebarLinks(props) {
                   className={collapseItemMini}
                   style={{
                     display:
-                      (rtlActive && propsMiniActive) || !stateMiniActive
+                      rtlActive && (propsMiniActive) || (rtlActive &&!stateMiniActive)
                         ? 'none'
                         : 'block',
                   }}>

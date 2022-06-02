@@ -152,8 +152,7 @@ export default function ThirdRow({rtlActive, t}) {
                   <Tooltip
                     id='tooltip-top'
                     title={t('charts').buttonHover1}
-                    placement='bottom'
-                    classes={{ tooltip: classes.tooltip }}>
+                    placement='bottom' arrow>
                     <Button color='primary'>
                       <RefreshIcon className={classes.underChartIcons} />
                     </Button>
@@ -161,8 +160,7 @@ export default function ThirdRow({rtlActive, t}) {
                   <Tooltip
                     id='tooltip-top'
                     title={t('charts').buttonHover2}
-                    placement='bottom'
-                    classes={{ tooltip: classes.tooltip }}>
+                    placement='bottom' arrow>
                     <Button color='primary'>
                       <EditIcon className={classes.underChartIcons} />
                     </Button>

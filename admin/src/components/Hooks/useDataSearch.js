@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import avatar from '../../../public/images/faces/avatar1.jpg';
+import customerAvatar from '../../../public/images/faces/Customer.png';
 
 const getDataUrl = '/admin/api/autocomplete/search';
 
@@ -73,19 +74,34 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'Provinces':
       case 'Countries':
       case 'global_countries':
-        setFilterValue(newValue?.name || '');
+        setFilterValue(
+          newValue !== null ? newValue[`${fieldValue}`] || '' : ''
+        );
         break;
       case 'global_currencies':
       case 'Currencies':
-        if (newValue != null) {
-          setFilterValue(newValue[`${fieldValue}`] || '');
-        }
+        setFilterValue(
+          newValue !== null ? newValue[`${fieldValue}`] || '' : ''
+        );
         break;
       case 'Features':
       case 'Photos':
       case 'Videos':
       case 'Users':
-        setFilterValue(newValue[`${fieldValue}`] || '');
+        setFilterValue(
+          newValue !== null ? newValue[`${fieldValue}`] || '' : ''
+        );
+        break;
+      case 'Agencies':
+        if (fieldValue !== 'phones') {
+          setFilterValue(
+            newValue !== null ? newValue[`${fieldValue}`] || '' : ''
+          );
+        } else {
+          setFilterValue(
+            newValue !== null ? newValue[`${fieldValue}`][0].number || '' : ''
+          );
+        }
         break;
     }
   };
@@ -162,6 +178,56 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             {`${dataOptions[fieldValue]}`}
           </>
         );
+      case 'Agencies':
+        if (typeof dataOptions[fieldValue] == 'number') {
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {`${dataOptions.agentName} ${dataOptions[
+                fieldValue
+              ].toLocaleString()} ${dataOptions?.currencyCode}`}
+            </>
+          );
+        }
+        if (fieldValue !== 'phones') {
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {`${dataOptions.agentName} ${dataOptions[fieldValue]}`}
+            </>
+          );
+        } else {
+          const phoneValue = dataOptions[fieldValue].map((a, i) => {
+            return `${dataOptions.agentName} ${a.number} ${a.tags[0]} ${a.remark} \n`;
+          });
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {phoneValue}
+            </>
+          );
+        }
     }
   };
 
@@ -170,6 +236,7 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'Cities':
       case 'Provinces':
       case 'Countries':
+      case 'global_countries':
         return dataOptions.name;
       case 'global_currencies':
       case 'Currencies':
@@ -180,6 +247,8 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         return dataOptions.title_en;
       case 'Users':
         return dataOptions.userName;
+      case 'Agencies':
+        return dataOptions.agentName;
     }
   };
 

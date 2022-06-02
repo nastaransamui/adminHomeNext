@@ -170,6 +170,25 @@ const appTheme = (color, mode, dir) => {
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            backgroundColor: mode === 'dark' ? '#424242' : '#f5f5f5', //theme.palette.background.default,
+            fontWeight: 600,
+            fontSize: 12,
+            whiteSpace: 'pre-line',
+            borderRadius: 4,
+            color: mode === 'dark' ? '#fff' : '#000000', //theme.palette.text.color,
+            border: `solid 0.5px ${palette[color].palette.secondary.main}`,
+          },
+          arrow: {
+            '&:before': {
+              border: `0.5px solid ${palette[color].palette.secondary.main}`, //${theme.palette.secondary.main}
+            },
+            color: mode === 'dark' ? '#424242' : '#f5f5f5', //theme.palette.background.default,
+          },
+        },
+      },
     },
   });
 

@@ -1,9 +1,8 @@
 import { makeStyles } from '@mui/styles';
-import { cardTitle, tooltip, grayColor } from '../../../theme/common';
+import { cardTitle, grayColor } from '../../../theme/common';
 
 const forthStyle = makeStyles((theme) => {
   return {
-    tooltip,
     cardHover: {
       '&:hover': {
         '& $cardHeaderHover': {

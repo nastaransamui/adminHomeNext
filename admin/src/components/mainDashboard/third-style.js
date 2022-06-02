@@ -1,13 +1,7 @@
 import { makeStyles } from '@mui/styles';
-import {
-  cardTitle,
-  tooltip,
-  successColor,
-  dangerColor,
-} from '../../../theme/common';
+import { cardTitle, successColor, dangerColor } from '../../../theme/common';
 const thirdStyle = makeStyles((theme) => {
   return {
-    tooltip,
     cardHover: {
       '&:hover': {
         '& $cardHeaderHover': {

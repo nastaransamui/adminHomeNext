@@ -35,13 +35,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.cities.country': '$name',
               'states.cities.emoji': '$emoji',
               'states.cities.iso2': '$iso2',
-              'states.cities.country_id': '$id',
-              'states.cities.state_id': '$states.id',
+              'states.cities.countryId': '$id',
+              'states.cities.country_id': '$_id',
+              'states.cities.stateId': '$states.id',
               'states.cities.state_name': '$states.name',
+              'states.cities.state_id': '$states._id',
             },
           },
           { $group: { _id: null, city: { $push: '$states.cities' } } },
-          { $project: { _id: 0, city: '$city' } },
+          { $project: { _id: 1, city: '$city' } },
         ]);
         if (valuesList.length > 0) {
           const city = valuesList[0].city[0];
@@ -70,13 +72,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.cities.country': '$name',
                 'states.cities.emoji': '$emoji',
                 'states.cities.iso2': '$iso2',
-                'states.cities.country_id': '$id',
-                'states.cities.state_id': '$states.id',
+                'states.cities.countryId': '$id',
+                'states.cities.country_id': '$_id',
+                'states.cities.stateId': '$states.id',
                 'states.cities.state_name': '$states.name',
+                'states.cities.state_id': '$states._id',
               },
             },
             { $group: { _id: null, city: { $push: '$states.cities' } } },
-            { $project: { _id: 0, city: '$city' } },
+            { $project: { _id: 1, city: '$city' } },
           ]);
           if (valuesList.length > 0) {
             const city = valuesList[0].city[0];

@@ -10,6 +10,7 @@
 /public/videos
 /public/photos
 /public/features
+/public/agencies
 
 # testing
 /coverage

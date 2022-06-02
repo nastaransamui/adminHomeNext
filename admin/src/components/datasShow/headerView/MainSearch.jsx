@@ -14,7 +14,8 @@ import {
 
 import cardsShowStyles from '../cards-show-styles.js';
 import useDataSearch from '../../Hooks/useDataSearch.js';
-
+import { MuiTelInput } from 'mui-tel-input';
+import ReactPhoneInput from 'react-phone-input-material-ui';
 import { useHistory } from 'react-router-dom';
 
 import { Close } from '@mui/icons-material';
@@ -46,9 +47,8 @@ const MainSearch = forwardRef((props, ref) => {
     setFilterValue,
     setFieldValue,
     getLabels,
-    handleAutocomplete
+    handleAutocomplete,
   } = useDataSearch(modelName, state, dataGridColumns, setMainData);
-
 
   return (
     <Grid
@@ -57,7 +57,9 @@ const MainSearch = forwardRef((props, ref) => {
       <Grid container spacing={1}>
         <Grid item xs={12} sm={12} md={6} lg={2} xl={2}>
           <FormControl fullWidth>
-            <InputLabel className={classes.select}  id='search-fields'>{t('Field')}</InputLabel>
+            <InputLabel className={classes.select} id='search-fields'>
+              {t('Field')}
+            </InputLabel>
             <Select
               labelId='search-fields-label'
               className={classes.textfield}
@@ -73,6 +75,7 @@ const MainSearch = forwardRef((props, ref) => {
                       value={d.field}
                       onClick={(e) => {
                         setFieldValue(d.field);
+                        setFilterValue('');
                       }}>
                       {t(`${d.description}`)}
                     </MenuItem>
@@ -84,7 +87,7 @@ const MainSearch = forwardRef((props, ref) => {
         <Grid item xs={12} sm={12} md={6} lg={4} xl={4}>
           <Autocomplete
             id='data-select'
-            clearIcon=""
+            clearIcon=''
             options={dataOptions}
             loading={loadingField}
             loadingText={t('loadingField')}
@@ -109,11 +112,23 @@ const MainSearch = forwardRef((props, ref) => {
             filterOptions={(x, s) => {
               const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
               const filterdData = x.filter((row) => {
-                return Object.keys(row).some((field) => {
-                  if (row[field] !== null) {
-                    return searchRegex.test(row[field].toString());
-                  }
-                });
+                if (fieldValue !== 'phones') {
+                  return Object.keys(row).some((field) => {
+                    if (row[field] !== null) {
+                      return searchRegex.test(row[field].toString());
+                    }
+                  });
+                } else {
+                  return Object.keys(row).some((field) => {
+                    if (row[field] !== null) {
+                      if (field == 'phones') {
+                        return row[field].map((a, i) => {
+                          return searchRegex.test(a.number.toString());
+                        });
+                      }
+                    }
+                  });
+                }
               });
               return filterdData;
             }}
@@ -122,41 +137,87 @@ const MainSearch = forwardRef((props, ref) => {
                 {showValuesData(dataOptions)}
               </Box>
             )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={t('labelSearch')}
-                className={classes.textfield}
-                value={filterValue}
-                onChange={(e) => {
-                  setFilterValue(e.target.value);
-                }}
-                fullWidth
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <Fragment>
-                      {loadingField ? (
-                        <CircularProgress color='inherit' size={20} />
-                      ) : (
-                        filterValue !== '' && (
-                          <IconButton
-                            disableFocusRipple
-                            disableRipple
-                            disableTouchRipple
-                            onClick={() => {
-                              setFilterValue('');
-                            }}>
-                            <Close color='secondary' size={20} />
-                          </IconButton>
-                        )
-                      )}
-                      {params.InputProps.endAdornment}
-                    </Fragment>
-                  ),
-                }}
-              />
-            )}
+            renderInput={(params) => {
+              return (
+                <>
+                  {fieldValue !== 'phones' ? (
+                    <TextField
+                      {...params}
+                      label={t('labelSearch')}
+                      className={classes.textfield}
+                      value={filterValue}
+                      onChange={(e) => {
+                        setFilterValue(e.target.value);
+                      }}
+                      fullWidth
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <Fragment>
+                            {loadingField ? (
+                              <CircularProgress color='inherit' size={20} />
+                            ) : (
+                              filterValue !== '' && (
+                                <IconButton
+                                  disableFocusRipple
+                                  disableRipple
+                                  disableTouchRipple
+                                  onClick={() => {
+                                    setFilterValue('');
+                                  }}>
+                                  <Close color='secondary' size={20} />
+                                </IconButton>
+                              )
+                            )}
+                            {params.InputProps.endAdornment}
+                          </Fragment>
+                        ),
+                      }}
+                    />
+                  ) : (
+                    <MuiTelInput
+                      {...params}
+                      label={t('labelSearch')}
+                      className={classes.phone}
+                      // onlyCountries={['TH', 'IR', "US"]}
+                      MenuProps={{
+                        PaperProps: {
+                          className: classes.phoneMenu,
+                        },
+                      }}
+                      value={filterValue}
+                      onChange={(e) => {
+                        setFilterValue(e);
+                      }}
+                      fullWidth
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <Fragment>
+                            {loadingField ? (
+                              <CircularProgress color='primary' size={20} />
+                            ) : (
+                              filterValue !== '' && (
+                                <IconButton
+                                  disableFocusRipple
+                                  disableRipple
+                                  disableTouchRipple
+                                  onClick={() => {
+                                    setFilterValue('');
+                                  }}>
+                                  <Close color='secondary' size={20} />
+                                </IconButton>
+                              )
+                            )}
+                            {params.InputProps.endAdornment}
+                          </Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                </>
+              );
+            }}
           />
         </Grid>
       </Grid>
