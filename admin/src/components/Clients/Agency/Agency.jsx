@@ -983,7 +983,7 @@ export default function Agency(props) {
                                 justifyContent: 'center',
                                 mt: 2,
                               }}>
-                              <Tooltip title={t('addPhones')} arrow>
+                              <Tooltip title={index == 0 ? t('addPhones') : t('removePhones')} arrow>
                                 <Fab
                                   color={index == 0 ? 'secondary' : 'primary'}
                                   size='small'

@@ -238,7 +238,7 @@ const Body = forwardRef((props, ref) => {
         data.google.length == 0)
     ) {
       if (typeof data[label] == 'object') {
-        if (type == 'array') {
+        if (type == 'array' && modelName == 'Agencies') {
           return data[label].map((p, i) => {
             const keys = Object.keys(p);
             return (
