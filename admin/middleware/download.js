@@ -7,6 +7,8 @@ import {
 import hazelCast from '../helpers/hazelCast';
 import mongoose from 'mongoose';
 import Countries from '../models/Countries';
+import Agencies from '../models/Agencies';
+
 const fs = require('fs');
 const path = require('path');
 import moment from 'moment';
@@ -900,5 +902,186 @@ export const downloadCountryMiddleware = async (req, res, next) => {
         }
         break;
     }
+  }
+};
+
+export const downloadClientsMiddleware = async (req, res, next) => {
+  const isVercel = process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
+  const { modelName } = req.body;
+  const { hzErrorConnection, hz } = await hazelCast();
+  var collection = mongoose.model('Agencies');
+  try {
+    const valuesList = await collection.aggregate([
+      { $match: {} },
+      { $unwind: '$userCreated' },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userCreated',
+          pipeline: [
+            {
+              $project: {
+                userName: 1,
+              },
+            },
+          ],
+          foreignField: '_id',
+          as: 'userCreatedData',
+        },
+      },
+      { $unwind: '$userUpdated' },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userUpdated',
+          pipeline: [
+            {
+              $project: {
+                userName: 1,
+              },
+            },
+          ],
+          foreignField: '_id',
+          as: 'userUpdatedData',
+        },
+      },
+    ]);
+    var jsonContent = JSON.stringify(valuesList);
+    const fields = [
+      {
+        label: 'ID',
+        value: `agentId`,
+      },
+      {
+        label: 'Agent Name',
+        value: `agentName`,
+      },
+      {
+        label: 'Address',
+        value: `address`,
+      },
+      {
+        label: 'Phones',
+        value: (fields) =>
+          fields['phones']
+            .map((a) => `${a.tags[0]}: ${a.number} , remark: ${a.remark}`)
+            .toString(),
+      },
+      {
+        label: 'City',
+        value: `cityName`,
+      },
+      {
+        label: 'Province/State',
+        value: `provinceName`,
+      },
+      {
+        label: 'Country',
+        value: `countryName`,
+      },
+      {
+        label: 'Email',
+        value: `email`,
+      },
+      {
+        label: 'Currency',
+        value: `currencyCode`,
+      },
+      {
+        label: 'Credit Amount',
+        value: (fields) => `${fields['creditAmount']?.toLocaleString()}`,
+      },
+      {
+        label: 'Deposite Amount',
+        value: (fields) => `${fields['depositAmount']?.toLocaleString()}`,
+      },
+      {
+        label: 'Remain Credit Amount',
+        value: (fields) => `${fields['remainCreditAmount']?.toLocaleString()}`,
+      },
+      {
+        label: 'Remain Deposit Amount',
+        value: (fields) => `${fields['remainDepositAmount']?.toLocaleString()}`,
+      },
+      {
+        label: 'Account Manager',
+        value: `accountManager`,
+      },
+      {
+        label: 'Logo link',
+        value: `logoImage`,
+      },
+      {
+        label: 'Created date',
+        value: (fields) =>
+          moment(new Date(fields[`createdAt`].slice(0, -1))).format(
+            'MMMM Do YYYY, H:mm'
+          ),
+      },
+      {
+        label: 'Last update',
+        value: (fields) =>
+          moment(new Date(fields[`updatedAt`].slice(0, -1))).format(
+            'MMMM Do YYYY, H:mm'
+          ),
+      },
+      {
+        label: 'Active',
+        value: `isActive`,
+      },
+      {
+        label: 'User Created',
+        value: (fields) =>
+          fields['userCreatedData'].map((a) => `${a.userName}`).toString(),
+      },
+      {
+        label: 'User Updated',
+        value: (fields) =>
+          fields['userUpdatedData'].map((a) => `${a.userName}`).toString(),
+      },
+      {
+        label: 'Remark',
+        value: (fields) => fields['remark']?.replace(/[\r\n]+/g, ' '),
+      },
+    ];
+    const opts = { fields };
+    const transformOpts = { excelStrings: true, eol: ',' };
+    const input = Readable.from([jsonContent]);
+    const asyncParser = new AsyncParser(opts, transformOpts);
+    const parsingProcessor = asyncParser.fromInput(input);
+    parsingProcessor
+      .promise()
+      .then((csv) => {
+        fs.writeFile(
+          path.join('/tmp', 'Agencies.csv'),
+          csv,
+          'utf8',
+          async function (err) {
+            if (err) {
+              res.status(403).json({ success: false, Error: err.toString() });
+              console.log('An error occured while writing csv Object to File.');
+            }
+            res.setHeader('Content-Type', 'image/jpg');
+            req.body.isVercel = isVercel;
+            req.files = [
+              {
+                fileName: 'Agencies.csv',
+                path: '/tmp/Agencies.csv',
+                finalFolder: req.body.finalFolder,
+              },
+            ];
+            if (isVercel) {
+              await awsCreateSingle(req, res, next);
+            } else {
+              await fsCreateSingle(req, res, next);
+            }
+          }
+        );
+      })
+      .catch((err) => {
+        res.status(403).json({ success: false, Error: err.toString() });
+      });
+  } catch (error) {
+    res.status(403).json({ success: false, Error: err.toString() });
   }
 };

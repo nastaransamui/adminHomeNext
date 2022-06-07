@@ -18,7 +18,8 @@ import {
   GridToolbarDensitySelector,
   GridToolbarColumnsButton,
 } from '@mui/x-data-grid';
-import moment, { lang } from 'moment';
+import moment from 'moment';
+import { format } from 'date-fns';
 import { useTheme } from '@mui/styles';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
@@ -192,19 +193,44 @@ export const RenderCellBoolean = (params) => {
 };
 
 export const RenderCellDate = (params) => {
-  const theme = useTheme();
-  return (
-    <span
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        width: '100%',
-      }}>
-      {moment(params.formattedValue).format('MMMM Do YYYY, H:mm')}
-    </span>
-  );
+  let formatDate = params.formattedValue;
+  switch (params.modelName) {
+    case 'Agencies':
+      return (
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            width: '100%',
+          }}>
+          {moment(new Date(params.formattedValue.slice(0, -1))).format(
+            'MMMM Do YYYY, H:mm'
+          )}
+        </span>
+      );
+    default:
+      return (
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            width: '100%',
+          }}>
+          {params.field == 'updatedAt'
+            ? moment(params.formattedValue).format('MMMM Do YYYY, H:mm')
+            : moment(new Date(params.formattedValue.slice(0, -1))).format(
+                'MMMM Do YYYY, H:mm'
+              )}
+        </span>
+      );
+  }
+  // return (
+
+  // );
 };
 
 export const RenderCellAvatar = (params) => {

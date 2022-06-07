@@ -714,20 +714,6 @@ const agencyHook = () => {
     };
   }, [currencyFilter]);
 
-  // useEffect(() => {
-  //   let isMount = true;
-  //   let observerNumberRef = null;
-  //   if (isMount) {
-  //     observerNumberRef = numbersRef.current;
-  //     if (values.phones[0].number !== '')
-  //       observerNumberRef?.validate(values.phones[0].number);
-  //   }
-  //   return () => {
-  //     isMount = false;
-  //     observerNumberRef = null;
-  //   };
-  // }, [values]);
-
   const phoneTags = [
     {
       fa_name: 'شرکت',
