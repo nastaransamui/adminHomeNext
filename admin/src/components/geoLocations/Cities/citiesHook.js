@@ -7,6 +7,8 @@ import useAllResults from '../../Hooks/useAllResults';
 import { getAllUrl, exportCsvUrl } from './citiesStatic';
 import alertCall from '../../Hooks/useAlert';
 import { useTheme } from '@mui/material';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const citiesHook = () => {
   const theme = useTheme();
@@ -14,6 +16,7 @@ const citiesHook = () => {
   const { dataArray, dataArrayLengh, pageNumber, SortBy, PerPage } =
     citiesStore;
   const dispatch = useDispatch();
+  const router = useRouter();
   const { t, i18n } = useTranslation('geoLocations');
   const perRow = usePerRowHook(citiesStore);
   const { searchText, requestSearch, setSearchText, rows } =
@@ -65,7 +68,11 @@ const citiesHook = () => {
       });
       const { status, ok } = res;
       if (status !== 200 && !ok) {
-        alertCall(theme, 'error', res.Error, () => {});
+        alertCall(theme, 'error', res.Error, () => {
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
+        });
       }
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
       const { fileLink } = await res.json();
@@ -76,7 +83,11 @@ const citiesHook = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      alertCall(theme, 'error', error.toString(), () => {});
+      alertCall(theme, 'error', error.toString(), () => {
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
+      });
     }
   };
 

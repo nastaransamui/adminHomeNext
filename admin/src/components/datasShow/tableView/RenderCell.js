@@ -205,9 +205,11 @@ export const RenderCellDate = (params) => {
             flexDirection: 'column',
             width: '100%',
           }}>
-          {moment(new Date(params.formattedValue.slice(0, -1))).format(
-            'MMMM Do YYYY, H:mm'
-          )}
+          {params.field == 'updatedAt'
+            ? moment(params.formattedValue).format('MMMM Do YYYY, H:mm')
+            : moment(new Date(params.formattedValue.slice(0, -1))).format(
+                'MMMM Do YYYY, H:mm'
+              )}
         </span>
       );
     default:

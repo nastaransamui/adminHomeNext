@@ -7,12 +7,14 @@ import usePageSearch from '../../Hooks/usePageSearch';
 import { getAllUrl, exportCsvUrl } from './agenciesStatic';
 import alertCall from '../../Hooks/useAlert';
 import useAllResults from '../../Hooks/useAllResults';
-
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 const agenciesHook = () => {
+  const router = useRouter();
   const { Agencies, adminAccessToken } = useSelector((state) => state);
   const { dataArray, dataArrayLengh, pageNumber, SortBy,  PerPage } =
     Agencies;
@@ -70,7 +72,11 @@ const agenciesHook = () => {
       });
       const { status, ok } = res;
       if (status !== 200 && !ok) {
-        alertCall(theme, 'error', res.Error, () => {});
+        alertCall(theme, 'error', res.statusText, () => {
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
+        });
       }
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
       const { fileLink } = await res.json();
@@ -81,7 +87,11 @@ const agenciesHook = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      alertCall(theme, 'error', error.toString(), () => {});
+      alertCall(theme, 'error', error.toString(), () => {
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
+      });
     }
   };
 

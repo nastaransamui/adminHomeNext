@@ -11,11 +11,14 @@ import {
   GoogleMap,
   Marker,
 } from 'react-google-maps';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const countryHook = () => {
   const { t } = useTranslation('geoLocations');
   const theme = useTheme();
   const history = useHistory();
+  const router = useRouter();
   const dispatch = useDispatch();
   const { adminAccessToken } = useSelector((state) => state);
   const location = useLocation();
@@ -47,7 +50,11 @@ const countryHook = () => {
     // console.log(res);
     if (status !== 200 && !ok) {
       alertCall(theme, 'error', statusText, () => {
-        setExpanded(false);
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          setExpanded(false);
+        }
       });
     }
     const response = await res.json();
@@ -57,7 +64,11 @@ const countryHook = () => {
         : t(`${response?.ErrorCode}`);
     if (status !== 200 && !response.success) {
       alertCall(theme, 'error', errorText, () => {
-        setExpanded(false);
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          setExpanded(false);
+        }
       });
     } else {
       if (childArray == null) {
@@ -107,16 +118,26 @@ const countryHook = () => {
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', response.Error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(theme, 'success', t('countryEdited'), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          history.push(pushUrl);
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            history.push(pushUrl);
+          }
         });
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
       });
     }
   };
@@ -145,7 +166,11 @@ const countryHook = () => {
           if (status !== 200 && !ok) {
             alertCall(theme, 'error', statusText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           }
           const response = await res.json();
@@ -157,7 +182,11 @@ const countryHook = () => {
           if (status !== 200 && !response.success) {
             alertCall(theme, 'error', errorText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           } else {
             setValues({ ...response.data });

@@ -7,9 +7,12 @@ import useAllResults from '../../Hooks/useAllResults';
 import { getAllUrl, exportCsvUrl } from './provincesStatic';
 import alertCall from '../../Hooks/useAlert';
 import { useTheme } from '@mui/material';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const provincesHook = () => {
   const theme = useTheme();
+  const router = useRouter();
   const { provincesStore, adminAccessToken } = useSelector((state) => state);
   const { dataArray, dataArrayLengh, pageNumber, SortBy, PerPage } =
     provincesStore;
@@ -65,7 +68,11 @@ const provincesHook = () => {
       });
       const { status, ok } = res;
       if (status !== 200 && !ok) {
-        alertCall(theme, 'error', res.Error, () => {});
+        alertCall(theme, 'error', res.Error, () => {
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
+        });
       }
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
       const { fileLink } = await res.json();
@@ -76,7 +83,11 @@ const provincesHook = () => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      alertCall(theme, 'error', error.toString(), () => {});
+      alertCall(theme, 'error', error.toString(), () => {
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
+      });
     }
   };
 

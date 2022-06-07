@@ -11,12 +11,15 @@ import {
 } from 'react-google-maps';
 import { getUrl, pushUrl, getCitiesOfStates, editUrl } from './provinceStatic';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const provinceHook = () => {
   const { t } = useTranslation('geoLocations');
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const location = useLocation();
   const { search } = useLocation();
@@ -54,7 +57,11 @@ const provinceHook = () => {
     // console.log(res);
     if (status !== 200 && !ok) {
       alertCall(theme, 'error', statusText, () => {
-        setExpanded(false);
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          setExpanded(false);
+        }
       });
     }
     const response = await res.json();
@@ -64,7 +71,11 @@ const provinceHook = () => {
         : t(`${response?.ErrorCode}`);
     if (status !== 200 && !response.success) {
       alertCall(theme, 'error', errorText, () => {
-        setExpanded(false);
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          setExpanded(false);
+        }
       });
     } else {
       if (childArray == null) {
@@ -106,16 +117,26 @@ const provinceHook = () => {
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', response.Error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(theme, 'success', t('countryEdited'), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          history.push(pushUrl);
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            history.push(pushUrl);
+          }
         });
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
       });
     }
   };
@@ -143,7 +164,11 @@ const provinceHook = () => {
           if (status !== 200 && !ok) {
             alertCall(theme, 'error', statusText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           }
           const response = await res.json();
@@ -154,7 +179,11 @@ const provinceHook = () => {
           if (status !== 200 && !response.success) {
             alertCall(theme, 'error', errorText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           } else {
             setValues({ ...response.data });

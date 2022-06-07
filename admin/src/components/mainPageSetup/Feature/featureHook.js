@@ -4,6 +4,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 import { pushUrl, getUrl, createUrl, editUrl } from './featureStatic';
 
@@ -12,6 +14,7 @@ const featureHook = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const [featureLinkBlob, setFeatureLinkBlob] = useState('');
   const [featureThumbBlob, setFeatureThumbBlob] = useState('');
@@ -48,7 +51,11 @@ const featureHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
-          return false;
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            return false;
+          }
         });
       } else {
         let blob = file.slice(0, file.size, file.type);
@@ -93,16 +100,26 @@ const featureHook = () => {
         if (status !== 200 && !feature.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('featureCreated'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     } else {
@@ -123,16 +140,26 @@ const featureHook = () => {
         if (status !== 200 && !feature.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('featureEdited'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     }
@@ -168,7 +195,11 @@ const featureHook = () => {
             if (status !== 200 && !feature.success) {
               alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                history.push(pushUrl);
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                } else {
+                  history.push(pushUrl);
+                }
               });
             } else {
               delete feature.data.__v;

@@ -1,5 +1,5 @@
 import { useEffect, Fragment } from 'react';
-import { checkCookies, getCookies } from 'cookies-next';
+import { checkCookies, getCookies, removeCookies } from 'cookies-next';
 import { wrapper } from '../../src/redux/store';
 import { withTranslation, useTranslation } from 'react-i18next';
 import HeadComponent from '../../src/components/head';
@@ -47,9 +47,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
       (err, user) => {
         if (!err) {
           return user;
+        } else {
+          removeCookies('adminAccessToken', ctx);
         }
       }
     );
+
     if (checkCookies('adminAccessToken', ctx)) {
       return {
         props: {

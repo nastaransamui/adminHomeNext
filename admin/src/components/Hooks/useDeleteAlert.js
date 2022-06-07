@@ -2,11 +2,14 @@ import { useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import alertCall from './useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const useDeleteAlert = ({ state, modelName, t, deleteUrl, dispatchType }) => {
   const dispatch = useDispatch();
   const { adminAccessToken } = useSelector((state) => state);
   const theme = useTheme();
+  const router = useRouter();
   const sweetDeleteAlert = (data) => {
     data.modelName = modelName;
     Swal.fire({
@@ -47,6 +50,9 @@ const useDeleteAlert = ({ state, modelName, t, deleteUrl, dispatchType }) => {
           if (status !== 200 && !res.ok) {
             alertCall(theme, 'error', res.statusText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              }
             });
           } else {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });

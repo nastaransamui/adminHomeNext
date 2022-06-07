@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -11,6 +11,8 @@ import {
 } from 'react-google-maps';
 import { getUrl, pushUrl, editUrl } from './cityStatic';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const cityHook = () => {
   const { t } = useTranslation('geoLocations');
@@ -19,6 +21,7 @@ const cityHook = () => {
   const dispatch = useDispatch();
   const { adminAccessToken } = useSelector((state) => state);
   const location = useLocation();
+  const router = useRouter();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { city_id } = urlParams;
@@ -46,16 +49,26 @@ const cityHook = () => {
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', response.Error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(theme, 'success', t('countryEdited'), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          history.push(pushUrl);
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            history.push(pushUrl);
+          }
         });
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
       });
     }
   };
@@ -83,7 +96,11 @@ const cityHook = () => {
           if (status !== 200 && !ok) {
             alertCall(theme, 'error', t(`${statusText}`), () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           }
           const response = await res.json();
@@ -94,7 +111,11 @@ const cityHook = () => {
           if (status !== 200 && !response.success) {
             alertCall(theme, 'error', errorText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           } else {
             setValues({ ...response.data });

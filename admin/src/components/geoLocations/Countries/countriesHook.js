@@ -7,9 +7,12 @@ import useAllResults from '../../Hooks/useAllResults';
 import { getAllUrl, exportCsvUrl } from './countriesStatic';
 import alertCall from '../../Hooks/useAlert';
 import { useTheme } from '@mui/material';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const countriesHook = (componentView) => {
   const theme = useTheme();
+  const router = useRouter();
   const { countriesGStore, countriesAStore, adminAccessToken } = useSelector(
     (state) => state
   );
@@ -91,7 +94,11 @@ const countriesHook = (componentView) => {
       });
       const { status, ok } = res;
       if (status !== 200 && !ok) {
-        alertCall(theme, 'error', res.Error, () => {});
+        alertCall(theme, 'error', res.Error, () => {
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
+        });
       }
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
       const { fileLink } = await res.json();
@@ -105,7 +112,11 @@ const countriesHook = (componentView) => {
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      alertCall(theme, 'error', error.toString(), () => {});
+      alertCall(theme, 'error', error.toString(), () => {
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
+      });
     }
   };
 

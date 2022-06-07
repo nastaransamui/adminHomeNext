@@ -38,7 +38,6 @@ const SortBy = forwardRef((props, ref) => {
 
   return (
     <Fragment ref={ref}>
-      {cardView && (
         <>
           <Tooltip title={t('sortBy')} arrow placement='bottom'>
             <IconButton
@@ -240,7 +239,6 @@ const SortBy = forwardRef((props, ref) => {
             </Popover>
           )}
         </>
-      )}
     </Fragment>
   );
 });

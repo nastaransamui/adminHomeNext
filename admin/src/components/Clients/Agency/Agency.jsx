@@ -298,7 +298,7 @@ export default function Agency(props) {
                         id='user-select'
                         options={amOptions}
                         loading={loadingAm}
-                        loadingText={t('typeToSearch')}
+                        loadingText={t('loadingUsers')}
                         autoHighlight
                         inputValue={values.accountManager}
                         onChange={(event, newValue) => {

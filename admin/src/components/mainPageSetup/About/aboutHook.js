@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 import { getUrl, editUrl } from './aboutStatic';
 
@@ -12,6 +14,7 @@ const aboutHook = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const [firstThumbBlob, setFirstThumbBlob] = useState('');
   const [secondThumbBlob, setSecondThumbBlob] = useState('');
@@ -54,7 +57,11 @@ const aboutHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
-          return false;
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            return false;
+          }
         });
       } else {
         let blob = file.slice(0, file.size, file.type);
@@ -99,15 +106,24 @@ const aboutHook = () => {
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', response.Error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(theme, 'success', t('aboutEdited'), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
       });
     }
   };
@@ -134,6 +150,9 @@ const aboutHook = () => {
         if (status !== 200 && !response.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           delete response.data.__v;

@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef, createRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { getCookies, setCookies } from 'cookies-next';
+import { checkCookies } from 'cookies-next';
 import { useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
-import jwt from 'jsonwebtoken';
 import { useLocation } from 'react-router-dom';
 import alertCall from '../../Hooks/useAlert';
-
+import { useRouter } from 'next/router';
 import {
   getAgencyUrl,
   pushUrl,
@@ -25,6 +24,7 @@ const agencyHook = () => {
   const [countryPhoneCode, setCountryPhoneCode] = useState('th');
   const { adminAccessToken, profile } = useSelector((state) => state);
   const location = useLocation();
+  const router = useRouter();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { client_id } = urlParams;
@@ -207,6 +207,9 @@ const agencyHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
           return false;
         });
       } else {
@@ -250,6 +253,9 @@ const agencyHook = () => {
               : `${Object.keys(client?.keyPattern)[0]} ${t('isDuplicate')}`;
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(
@@ -258,13 +264,20 @@ const agencyHook = () => {
             `${client.data?.agentName} ${t('agentCreateSuccess')}`,
             () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             }
           );
         }
       } catch (error) {
         alertCall(theme, 'error', error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     } else {
@@ -295,6 +308,9 @@ const agencyHook = () => {
         if (status !== 200 && !agent.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(
@@ -303,13 +319,20 @@ const agencyHook = () => {
             `${agent.data.agentName} ${t('agentEditSuccess')}`,
             () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             }
           );
         }
       } catch (error) {
         alertCall(theme, 'error', error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     }
@@ -360,7 +383,11 @@ const agencyHook = () => {
             if (status !== 200 && !agent.success) {
               alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                history.push(pushUrl);
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                } else {
+                  history.push(pushUrl);
+                }
               });
             } else {
               setLogoImageBlob(agent.data.logoImage);
@@ -397,6 +424,45 @@ const agencyHook = () => {
     });
   };
 
+  const getUsers = async () => {
+    const abortController = new AbortController();
+    try {
+      const res = await fetch(userUrl, {
+        signal: abortController.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify({
+          modelName: 'Users',
+          filter: amFilter,
+        }),
+      });
+      const { status } = res;
+      const response = await res.json();
+      if (status !== 200 && !response.success) {
+        setAmOptions([
+          {
+            userName: response.Error,
+            emoji: '⚠️',
+            error: true,
+            _id: 0,
+          },
+        ]);
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
+      } else {
+        setAmOptions([...response.data]);
+      }
+    } catch (error) {
+      return undefined;
+    }
+  };
+
   const getCities = async () => {
     const abortController = new AbortController();
     try {
@@ -420,8 +486,15 @@ const agencyHook = () => {
             name: response.Error,
             emoji: '⚠️',
             error: true,
+            id: 0,
           },
         ]);
+
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
       } else {
         setCityOptions([...response.data]);
       }
@@ -455,6 +528,12 @@ const agencyHook = () => {
             error: true,
           },
         ]);
+
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
       } else {
         setCountryOptions([...response.data]);
       }
@@ -489,6 +568,11 @@ const agencyHook = () => {
             id: 0,
           },
         ]);
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
       } else {
         setProvinceOptions([...response.data]);
       }
@@ -501,39 +585,6 @@ const agencyHook = () => {
           id: 0,
         },
       ]);
-    }
-  };
-
-  const getUsers = async () => {
-    const abortController = new AbortController();
-    try {
-      const res = await fetch(userUrl, {
-        signal: abortController.signal,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify({
-          modelName: 'Users',
-          filter: amFilter,
-        }),
-      });
-      const { status } = res;
-      const response = await res.json();
-      if (status !== 200 && !response.success) {
-        setAmOptions([
-          {
-            name: response.Error,
-            emoji: '⚠️',
-            error: true,
-          },
-        ]);
-      } else {
-        setAmOptions([...response.data]);
-      }
-    } catch (error) {
-      return undefined;
     }
   };
 
@@ -557,11 +608,17 @@ const agencyHook = () => {
       if (status !== 200 && !response.success) {
         setCurrencyOptions([
           {
-            name: response.Error,
+            currency: response.Error,
             emoji: '⚠️',
             error: true,
+            id: 0,
           },
         ]);
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
       } else {
         setCurrencyOptions([...response.data]);
       }
@@ -660,7 +717,7 @@ const agencyHook = () => {
 
   useEffect(() => {
     let isMount = true;
-    if (!loadingCity) {
+    if (!loadingAm) {
       return undefined;
     }
 

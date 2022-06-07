@@ -2,6 +2,8 @@ import { useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import alertCall from './useAlert';
+import { checkCookies, setCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const useActiveAlert = ({
   state,
@@ -12,6 +14,7 @@ const useActiveAlert = ({
   dispatchType,
 }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const theme = useTheme();
   const sweetActiveAlert = (data) => {
@@ -62,6 +65,9 @@ const useActiveAlert = ({
             if (status !== 200 && !res.ok) {
               alertCall(theme, 'error', response.Error, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                }
               });
             } else {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -91,6 +97,9 @@ const useActiveAlert = ({
           } catch (error) {
             alertCall(theme, 'error', error.toString(), () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              }
             });
           }
         };
@@ -146,6 +155,9 @@ const useActiveAlert = ({
             if (status !== 200 && !res.ok) {
               alertCall(theme, 'error', response.Error, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                }
               });
             } else {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -176,6 +188,9 @@ const useActiveAlert = ({
           } catch (error) {
             alertCall(theme, 'error', error.toString(), () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              }
             });
           }
         };

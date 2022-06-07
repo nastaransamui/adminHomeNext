@@ -4,6 +4,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 import { pushUrl, getUrl, createUrl, editUrl } from './videoStatic';
 
@@ -12,6 +14,7 @@ const videoHook = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const [videoLinkBlob, setVideoLinkBlob] = useState('');
   const [imageMobileBlob, setImageMobileBlob] = useState('');
@@ -57,7 +60,11 @@ const videoHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
-          return false;
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            return false;
+          }
         });
       } else {
         let blob = file.slice(0, file.size, file.type);
@@ -104,16 +111,26 @@ const videoHook = () => {
         if (status !== 200 && !video.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('videoCreated'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     } else {
@@ -133,16 +150,26 @@ const videoHook = () => {
         if (status !== 200 && !video.success) {
           alertCall(theme, 'error', errorText, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('videoEdited'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     }
@@ -179,7 +206,11 @@ const videoHook = () => {
             if (status !== 200 && !video.success) {
               alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                history.push(pushUrl);
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                } else {
+                  history.push(pushUrl);
+                }
               });
             } else {
               delete video.data.__v;

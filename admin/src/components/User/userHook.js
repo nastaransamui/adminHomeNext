@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { getCookies, setCookies } from 'cookies-next';
+import { getCookies, setCookies, checkCookies } from 'cookies-next';
 import { useTheme } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
 import { useLocation } from 'react-router-dom';
 import alertCall from '../Hooks/useAlert';
+import { useRouter } from 'next/router';
 
 import {
   getUserUrl,
@@ -22,6 +23,7 @@ const userHook = () => {
   const [profileImageBlob, setProfileImageBlob] = useState('');
   const location = useLocation();
   const { search } = useLocation();
+  const router = useRouter();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { _id } = urlParams;
   const [values, setValues] = useState({
@@ -127,7 +129,11 @@ const userHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
-          return false;
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            return false;
+          }
         });
       } else {
         let blob = file.slice(0, file.size, file.type);
@@ -167,6 +173,9 @@ const userHook = () => {
       if (status !== 200 && !user.success) {
         alertCall(theme, 'error', errorText, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(
@@ -175,9 +184,16 @@ const userHook = () => {
           `${user.data.userName} ${t('userCreateSuccess')}`,
           () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            dispatch({ type: 'TOTAL_USERS', payload: user.totalValuesLength });
-            setCookies('totalUsers', user.totalValuesLength);
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              dispatch({
+                type: 'TOTAL_USERS',
+                payload: user.totalValuesLength,
+              });
+              setCookies('totalUsers', user.totalValuesLength);
+              history.push(pushUrl);
+            }
           }
         );
       }
@@ -198,6 +214,9 @@ const userHook = () => {
       if (status !== 200 && !user.success) {
         alertCall(theme, 'error', errorText, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         // Update profile
@@ -217,7 +236,11 @@ const userHook = () => {
           `${user.data.userName} ${t('userEditSuccess')}`,
           () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push('/admin/dashboard/user-page');
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push('/admin/dashboard/user-page');
+            }
           }
         );
       }
@@ -276,7 +299,11 @@ const userHook = () => {
             if (status !== 200 && !user.success) {
               alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                history.push(pushUrl);
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                } else {
+                  history.push(pushUrl);
+                }
               });
             } else {
               setProfileImageBlob(user.data.profileImage);

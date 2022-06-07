@@ -4,6 +4,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 import { pushUrl, getUrl, createUrl, editUrl } from './photoStatic';
 
@@ -12,6 +14,7 @@ const photoHook = () => {
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const [imageBlob, setImageBlob] = useState('');
   const [values, setValues] = useState({
@@ -49,7 +52,11 @@ const photoHook = () => {
       let file = e.currentTarget.files[0];
       if (isVercel && file.size > 4999999) {
         alertCall(theme, 'error', t('isVercelFileSize'), () => {
-          return false;
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            return false;
+          }
         });
       } else {
         let blob = file.slice(0, file.size, file.type);
@@ -86,16 +93,26 @@ const photoHook = () => {
         if (status !== 200 && !photo.success) {
           alertCall(theme, 'error', photo.Error, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('photoCreated'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     } else {
@@ -114,16 +131,26 @@ const photoHook = () => {
         if (status !== 200 && !photo.success) {
           alertCall(theme, 'error', photo.Error, () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
           });
         } else {
           alertCall(theme, 'success', t('photoEdited'), () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            history.push(pushUrl);
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
           });
         }
       } catch (error) {
         alertCall(theme, 'error', error.toString(), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       }
     }
@@ -158,7 +185,11 @@ const photoHook = () => {
             if (status !== 200 && !photo.success) {
               alertCall(theme, 'error', errorText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                history.push(pushUrl);
+                if (!checkCookies('adminAccessToken')) {
+                  router.push('/', undefined, { shallow: true });
+                } else {
+                  history.push(pushUrl);
+                }
               });
             } else {
               delete photo.data.__v;

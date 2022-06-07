@@ -9,6 +9,30 @@ export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
+function paginate(array, valuesPerPage, valuesPageNumber) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice(
+    (valuesPageNumber - 1) * valuesPerPage,
+    valuesPageNumber * valuesPerPage
+  );
+}
+
+const sort_by = (field, reverse, primer) => {
+  const key = primer
+    ? function (x) {
+        return primer(x[field]);
+      }
+    : function (x) {
+        return x[field];
+      };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function (a, b) {
+    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+  };
+};
+
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
     res
@@ -64,7 +88,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               });
             });
             if (filterdData.length > 0) {
-              res.status(200).json({ success: true, data: filterdData });
+              res.status(200).json({
+                success: true,
+                data: paginate(
+                  filterdData.sort(
+                    sort_by('userName', false, (a) => a.toUpperCase())
+                  ),
+                  50,
+                  1
+                ),
+              });
             } else {
               res.status(200).json({
                 success: true,

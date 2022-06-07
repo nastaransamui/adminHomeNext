@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import avatar from '../../../public/images/faces/avatar1.jpg';
 import customerAvatar from '../../../public/images/faces/Customer.png';
-
+import alertCall from '../../components/Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 const getDataUrl = '/admin/api/autocomplete/search';
+import { useTheme } from '@mui/material';
 
 const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
   const { adminAccessToken } = useSelector((state) => state);
+  const router = useRouter();
+  const theme = useTheme();
   const [openField, setOpenField] = useState(false);
   const [dataOptions, setDataOptions] = useState([]);
   const { i18n } = useTranslation();
@@ -36,15 +41,21 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       });
       const { status } = res;
       const response = await res.json();
-
       if (status !== 200 && !response.success) {
         setDataOptions([
           {
-            name: response.Error,
+            [`${fieldValue}`]: response.Error,
             emoji: '⚠️',
             error: true,
+            _id: 0,
           },
         ]);
+        console.log(!checkCookies('adminAccessToken'));
+        if (!checkCookies('adminAccessToken')) {
+          alertCall(theme, 'error', response.Error, () => {
+            router.push('/', undefined, { shallow: true });
+          });
+        }
       } else {
         setMainData([...response.data]);
         setDataOptions([...response.data]);

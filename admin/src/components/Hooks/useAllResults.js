@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from './useAlert';
 import { useTheme } from '@mui/material';
-import { setCookies } from 'cookies-next';
+import { checkCookies, setCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const useAllResults = ({
   state,
@@ -16,6 +17,7 @@ const useAllResults = ({
   const abortController = new AbortController();
   const dispatch = useDispatch();
   const theme = useTheme();
+  const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const { pageNumber, SortBy, PerPage } = state;
   const allResults = async () => {
@@ -48,6 +50,9 @@ const useAllResults = ({
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', errorText, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         //Fixe last page if after delete number of page is wrong

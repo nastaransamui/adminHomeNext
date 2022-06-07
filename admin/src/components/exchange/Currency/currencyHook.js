@@ -1,15 +1,18 @@
 import { useTheme } from '@mui/material';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { getUrl, pushUrl, editUrl } from './currencyStatic';
 import alertCall from '../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const currencyHook = () => {
   const { t } = useTranslation('exchange');
   const theme = useTheme();
   const history = useHistory();
+  const router = useRouter();
   const dispatch = useDispatch();
   const { adminAccessToken } = useSelector((state) => state);
   const location = useLocation();
@@ -40,16 +43,26 @@ const currencyHook = () => {
       if (status !== 200 && !response.success) {
         alertCall(theme, 'error', response.Error, () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          }
         });
       } else {
         alertCall(theme, 'success', t('currencyEdited'), () => {
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          history.push(pushUrl);
+          if (!checkCookies('adminAccessToken')) {
+            router.push('/', undefined, { shallow: true });
+          } else {
+            history.push(pushUrl);
+          }
         });
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
       });
     }
   };
@@ -77,7 +90,11 @@ const currencyHook = () => {
           if (status !== 200 && !ok) {
             alertCall(theme, 'error', statusText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           }
           const response = await res.json();
@@ -88,7 +105,11 @@ const currencyHook = () => {
           if (status !== 200 && !response.success) {
             alertCall(theme, 'error', errorText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              history.push(pushUrl);
+              if (!checkCookies('adminAccessToken')) {
+                router.push('/', undefined, { shallow: true });
+              } else {
+                history.push(pushUrl);
+              }
             });
           } else {
             setValues({ ...response.data });
