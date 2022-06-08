@@ -214,7 +214,7 @@ const provinceHook = () => {
             scrollwheel: true,
           }}>
           <KmlLayer
-            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_2.kmz`}
+            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_1.kmz`}
             options={{ preserveViewport: true }}
           />
           {/* <Marker
