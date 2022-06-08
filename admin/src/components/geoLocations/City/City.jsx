@@ -51,8 +51,6 @@ export default function City(props) {
     objIsEmpty,
     theme,
   } = cityHook();
-  console.log(values);
-  // console.log(childArray);
 
   return (
     <div style={{ minWidth: '100%' }}>

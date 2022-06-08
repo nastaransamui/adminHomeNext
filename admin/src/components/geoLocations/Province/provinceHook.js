@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -8,6 +8,7 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  KmlLayer,
 } from 'react-google-maps';
 import { getUrl, pushUrl, getCitiesOfStates, editUrl } from './provinceStatic';
 import alertCall from '../../Hooks/useAlert';
@@ -199,25 +200,29 @@ const provinceHook = () => {
       isMount = false;
     };
   }, [location]);
-
+  console.log(values);
   const RegularMap = useMemo(() => {
     return withScriptjs(
       withGoogleMap(() => (
         <GoogleMap
-          defaultZoom={8}
+          defaultZoom={7}
           defaultCenter={{
             lat: parseFloat(values.latitude),
             lng: parseFloat(values.longitude),
           }}
           defaultOptions={{
-            scrollwheel: false,
+            scrollwheel: true,
           }}>
-          <Marker
+          <KmlLayer
+            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_2.kmz`}
+            options={{ preserveViewport: true }}
+          />
+          {/* <Marker
             position={{
               lat: parseFloat(values.latitude),
               lng: parseFloat(values.longitude),
             }}
-          />
+          /> */}
         </GoogleMap>
       ))
     );

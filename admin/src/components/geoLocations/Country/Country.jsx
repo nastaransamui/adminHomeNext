@@ -62,7 +62,7 @@ export default function Country(props) {
     topRef,
     executeScroll,
   } = countryHook();
-  
+
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>
@@ -74,8 +74,11 @@ export default function Country(props) {
         </IconButton>
       </Tooltip>
       <Heading
-        title={!objIsEmpty(values) && 
-          rtlActive ? `${values.emoji} ${values.translations.fa} ` : `${values.name}  ${values.emoji}`}
+        title={
+          !objIsEmpty(values) ? rtlActive
+            ? `${values.emoji} ${values.translations.fa} `
+            : `${values.name}  ${values.emoji}` : ''
+        }
         textAlign='center'
       />
       <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -280,8 +283,10 @@ export default function Country(props) {
                         <TextValidator
                           fullWidth
                           className={classes.input}
-                          type="number"
-                          onKeyDown={(e) => e.keyCode === 69 && e.preventDefault()}
+                          type='number'
+                          onKeyDown={(e) =>
+                            e.keyCode === 69 && e.preventDefault()
+                          }
                           variant='standard'
                           label={t('latitude')}
                           name='latitude'
@@ -301,8 +306,10 @@ export default function Country(props) {
                           label={t('longitude')}
                           name='longitude'
                           value={values.longitude}
-                          type="number"
-                          onKeyDown={(e) => e.keyCode === 69 && e.preventDefault()}
+                          type='number'
+                          onKeyDown={(e) =>
+                            e.keyCode === 69 && e.preventDefault()
+                          }
                           onChange={(e) => {
                             formValueChanged(e);
                           }}
@@ -457,13 +464,13 @@ export default function Country(props) {
                 <Card>
                   <CardHeader color='rose' icon>
                     <CardIcon color='rose'>
-                      <LocationOn ref={topRef}/>
+                      <LocationOn ref={topRef} />
                     </CardIcon>
                     <h4 className={classes.cardIconTitle}>{t('countryMap')}</h4>
                   </CardHeader>
                   <CardBody>
                     <RegularMap
-                      googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAP_KEY}`}
+                      googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAP_KEY}&v=3.exp&libraries=geometry,drawing,places`}
                       loadingElement={<div style={{ height: `100%` }} />}
                       containerElement={<div className={classes.mapDiv} />}
                       mapElement={<div style={{ height: `100%` }} />}
@@ -527,7 +534,11 @@ export default function Country(props) {
                             }
                             loader={
                               <CircleToBlockLoading
-                                style={{ position: 'relative',  right: rtlActive ? '60%' : 0, left: rtlActive ? 0 : '40%' }}
+                                style={{
+                                  position: 'relative',
+                                  right: rtlActive ? '60%' : 0,
+                                  left: rtlActive ? 0 : '40%',
+                                }}
                                 color={theme.palette.secondary.main}
                               />
                             }
@@ -600,7 +611,11 @@ export default function Country(props) {
                                             variant='standard'
                                             label={t('type')}
                                             name='type'
-                                            value={state.type !== null ? state.type : t('notDefine')}
+                                            value={
+                                              state.type !== null
+                                                ? state.type
+                                                : t('notDefine')
+                                            }
                                           />
                                         </Grid>
                                         <Grid

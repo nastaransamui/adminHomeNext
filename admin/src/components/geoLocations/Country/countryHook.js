@@ -6,13 +6,20 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { getUrl, pushUrl, getStatesOfCountry, editUrl } from './countryStatic';
 import alertCall from '../../Hooks/useAlert';
 import {
+  GoogleMap,
+  Polygon,
   withScriptjs,
   withGoogleMap,
-  GoogleMap,
+  TrafficLayer,
   Marker,
+  KmlLayer,
 } from 'react-google-maps';
+const { InfoBox } = require('react-google-maps/lib/components/addons/InfoBox');
+import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
+import compose from 'recompose/compose';
+import withProps from 'recompose/withProps';
 
 const countryHook = () => {
   const { t } = useTranslation('geoLocations');
@@ -203,6 +210,7 @@ const countryHook = () => {
     };
   }, [location]);
 
+  console.log(values);
   const RegularMap = useMemo(() => {
     return withScriptjs(
       withGoogleMap(() => (
@@ -213,18 +221,16 @@ const countryHook = () => {
             lng: values.longitude !== '' ? parseFloat(values.longitude) : 0,
           }}
           defaultOptions={{
-            scrollwheel: false,
+            scrollwheel: true,
           }}>
-          <Marker
-            position={{
-              lat: values.latitude !== '' ? parseFloat(values.latitude) : 0,
-              lng: values.longitude !== '' ? parseFloat(values.longitude) : 0,
-            }}
+          <KmlLayer
+            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values?.iso3}_0.kmz`}
+            options={{ preserveViewport: true }}
           />
         </GoogleMap>
       ))
     );
-  }, [values.latitude, values.longitude]);
+  }, [values.latitude, values.longitude, theme]);
 
   const objIsEmpty = (obj) => {
     if (

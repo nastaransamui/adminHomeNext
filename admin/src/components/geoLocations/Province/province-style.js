@@ -2,6 +2,10 @@ import { makeStyles } from '@mui/styles';
 
 const provinceStyle = makeStyles((theme) => {
   return {
+    AppMap: {
+      height: '100%',
+      width: '100%',
+    },
     root: {
       '& .Mui-error': {
         '&:after': {
