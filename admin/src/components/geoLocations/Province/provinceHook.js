@@ -205,7 +205,7 @@ const provinceHook = () => {
     return withScriptjs(
       withGoogleMap(() => (
         <GoogleMap
-          defaultZoom={7}
+          defaultZoom={6}
           defaultCenter={{
             lat: parseFloat(values.latitude),
             lng: parseFloat(values.longitude),
@@ -214,7 +214,8 @@ const provinceHook = () => {
             scrollwheel: true,
           }}>
           <KmlLayer
-            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_2.kmz`}
+            // url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_1.kmz`}
+            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/${values.iso3}/${values.name}.kml`}
             options={{ preserveViewport: true }}
           />
           {/* <Marker

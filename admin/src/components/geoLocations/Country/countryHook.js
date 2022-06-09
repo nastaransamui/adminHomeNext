@@ -224,7 +224,8 @@ const countryHook = () => {
             scrollwheel: true,
           }}>
           <KmlLayer
-            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values?.iso3}_0.kmz`}
+            // url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values?.iso3}_0.kmz`}
+            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/countries/${values.iso3}.kml`}
             options={{ preserveViewport: true }}
           />
         </GoogleMap>
