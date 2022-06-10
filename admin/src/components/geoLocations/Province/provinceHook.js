@@ -215,7 +215,7 @@ const provinceHook = () => {
           }}>
           <KmlLayer
             // url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values.iso3}_1.kmz`}
-            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/${values.iso3}/${values.name}.kml`}
+            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/${values.iso3}/${values.id}.kml`}
             options={{ preserveViewport: true }}
           />
           {/* <Marker
