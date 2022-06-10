@@ -225,8 +225,8 @@ const countryHook = () => {
           }}>
           <KmlLayer
             // url={`https://sites.google.com/site/allaboutaustinzipcodeskml/zipcodes/zip78701.kml`}
-            // url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values?.iso3}_0.kmz`}
-            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/countries/gadm40_${values.iso3}_0.kml`}
+            url={`https://geodata.ucdavis.edu/gadm/gadm4.0/kmz/gadm40_${values?.iso3}_0.kmz`}
+            // url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/countries/gadm40_${values.iso3}_0.kml`}
             options={{ preserveViewport: true }}
           />
         </GoogleMap>
