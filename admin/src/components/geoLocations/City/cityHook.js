@@ -8,6 +8,7 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  KmlLayer,
 } from 'react-google-maps';
 import { getUrl, pushUrl, editUrl } from './cityStatic';
 import alertCall from '../../Hooks/useAlert';
@@ -149,6 +150,10 @@ const cityHook = () => {
               lat: parseFloat(values.latitude),
               lng: parseFloat(values.longitude),
             }}
+          />
+          <KmlLayer
+            url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/cities_country/${values.iso3}/${values.id}.kml`}
+            options={{ preserveViewport: true }}
           />
         </GoogleMap>
       ))
