@@ -10,6 +10,7 @@ import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
 
+var geoip = require('geoip-country');
 const { faker } = require('@faker-js/faker');
 //Username case to lower case
 
@@ -68,6 +69,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         : req.socket.remoteAddress;
 
     console.log(ip);
+
+    var geo = geoip.lookup(ip);
+
+    console.log(geo?.country);
     try {
       //Initiate catch HZ adn if Error continue with MONGO DB
       const { hzErrorConnection, hz } = await hazelCast();
