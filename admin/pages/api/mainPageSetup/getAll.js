@@ -60,6 +60,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const forwarded = req.headers['x-forwarded-for'];
+
+    const ip =
+      typeof forwarded === 'string'
+        ? forwarded.split(/, /)[0]
+        : req.socket.remoteAddress;
+
+    console.log(ip);
     try {
       //Initiate catch HZ adn if Error continue with MONGO DB
       const { hzErrorConnection, hz } = await hazelCast();

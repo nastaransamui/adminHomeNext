@@ -100,6 +100,12 @@ export const currenciesFields = [
     filterable: true,
   },
   {
+    Icon: CurrencyExchange,
+    label: 'currency',
+    type: 'string',
+    filterable: true,
+  },
+  {
     Icon: Public,
     label: 'name',
     type: 'string',

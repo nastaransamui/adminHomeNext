@@ -5,7 +5,6 @@ import cx from 'classnames';
 
 import { List, ListItem } from '@mui/material';
 import { withTranslation, useTranslation } from 'react-i18next';
-  
 
 export default function Footer(props) {
   const classes = footerStyle();
@@ -29,26 +28,24 @@ export default function Footer(props) {
 
   return (
     <footer className={classes.footer}>
-      <div >
+      <div>
         <div className={classes.left}>
-          <List className={classes.list}>
-            <ListItem className={classes.inlineBlock}>
-              <a
-                href={process.env.NEXT_PUBLIC_HOME_VERCEL}
-                className={classes.a}
-                target='_blank'>
-                {t("list")}
-              </a>
-            </ListItem>
-          </List>
+          <p className={classes.right}>
+            <a
+              href={process.env.NEXT_PUBLIC_HOME_VERCEL}
+              className={classes.a}
+              target='_blank'>
+              {t('list')}
+            </a>
+          </p>
         </div>
         <p className={classes.right}>
           &copy; {1900 + new Date().getYear()}{' '}
           <a
-            href="https://nastaransamui.github.io/"
+            href='https://nastaransamui.github.io/'
             className={classes.a}
             target='_blank'>
-            {t("creator")}
+            {t('creator')}
           </a>
         </p>
       </div>

@@ -510,7 +510,7 @@ const Body = forwardRef((props, ref) => {
           </ListItemButton>
           {expanded[index] && (
             <ClickAwayListener onClickAway={() => awayClicked(index, expanded)}>
-              <span>
+              <span >
                 {expanded[index] &&
                   dataFields.map((item, i) => {
                     const { Icon, label, type } = item;

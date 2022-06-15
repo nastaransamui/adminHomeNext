@@ -267,6 +267,7 @@ export default function Login(props) {
                 variant='contained'
                 fullWidth
                 type='submit'
+                style={{color: 'black'}}
                 color='secondary'
                 size='large'>
                 {t('continue')}
