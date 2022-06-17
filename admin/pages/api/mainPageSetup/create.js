@@ -8,11 +8,13 @@ import { multifileMiddlewareCreate } from '../../../middleware/multifileMiddlewa
 import { fsDeleteObjectsFolder } from '../../../helpers/aws';
 import mongoose from 'mongoose';
 import { hashPassword } from '../../../helpers/auth';
+var ObjectId = require('mongoose').Types.ObjectId;
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
+import Countries from '../../../models/Countries';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -42,6 +44,15 @@ apiRoute.post(
         if (modelName == 'Agencies') {
           req.body.phones = JSON.parse(req?.body?.phones);
         }
+        if (modelName == 'Users') {
+          let { city_id, country_id, province_id } = req.body;
+          let cityIdValid = ObjectId.isValid(city_id);
+          let provinceIdValid = ObjectId.isValid(province_id);
+          let countryIdValid = ObjectId.isValid(country_id);
+          !cityIdValid && delete req.body.city_id;
+          !provinceIdValid && delete req.body.province_id;
+          !countryIdValid && delete req.body.country_id;
+        }
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
           if (err) {
@@ -52,6 +63,7 @@ apiRoute.post(
               ErrorCode: err?.code,
             });
           } else {
+            await updateLocations(req, res, next, result);
             const totalValues = await collection.find();
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
@@ -74,6 +86,57 @@ apiRoute.post(
     }
   }
 );
+
+export async function updateLocations(req, res, next, result) {
+  const { modelName } = req.body;
+  switch (modelName) {
+    case 'Users':
+      if (result.country_id.length > 0) {
+        await Countries.updateOne(
+          { _id: { $in: result.country_id } },
+          {
+            $addToSet: {
+              users_id: result._id,
+            },
+          },
+          { multi: true }
+        );
+      }
+      if (result.province_id.length > 0) {
+        await Countries.updateOne(
+          { 'states._id': { $in: result.province_id } },
+          {
+            $addToSet: {
+              'states.$.users_id': result._id,
+            },
+          },
+          { multi: true }
+        );
+      }
+
+      if (result.city_id.length > 0) {
+        await Countries.updateOne(
+          { 'states.cities._id': { $in: result.city_id } },
+          {
+            $addToSet: {
+              'states.$[outer].cities.$[inner].users_id': result._id,
+            },
+          },
+          {
+            arrayFilters: [
+              { 'outer._id': result.province_id },
+              { 'inner._id': result.city_id },
+            ],
+            multi: true,
+          }
+        );
+      }
+      break;
+
+    default:
+      break;
+  }
+}
 
 export default apiRoute;
 export const config = {

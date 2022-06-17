@@ -45,19 +45,19 @@ export const userFields = [
   },
   {
     Icon: LocationCityIcon,
-    label: 'city',
+    label: 'cityName',
     type: 'string',
     filterable: true,
   },
   {
     Icon: LocationCityIcon,
-    label: 'province',
+    label: 'provinceName',
     type: 'string',
     filterable: true,
   },
   {
     Icon: FlagIcon,
-    label: 'country',
+    label: 'countryName',
     type: 'string',
     filterable: true,
   },
@@ -149,9 +149,9 @@ export const dataGridColumns = [
     searchAble: true,
   },
   {
-    field: 'city', // Db name
+    field: 'cityName', // Db name
     headerAlign: 'center', //
-    description: 'city', //Discription from translation
+    description: 'cityName', //Discription from translation
     width: 140,
     type: 'string',
     filterable: true,
@@ -160,9 +160,9 @@ export const dataGridColumns = [
     searchAble: true,
   },
   {
-    field: 'province', // Db name
+    field: 'provinceName', // Db name
     headerAlign: 'center', //
-    description: 'province', //Discription from translation
+    description: 'provinceName', //Discription from translation
     width: 140,
     type: 'string',
     filterable: true,
@@ -171,9 +171,9 @@ export const dataGridColumns = [
     searchAble: true,
   },
   {
-    field: 'country', // Db name
+    field: 'countryName', // Db name
     headerAlign: 'center', //
-    description: 'country', //Discription from translation
+    description: 'countryName', //Discription from translation
     width: 140,
     type: 'string',
     filterable: true,

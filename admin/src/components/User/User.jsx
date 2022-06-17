@@ -291,10 +291,10 @@ export default function User(props) {
                         loading={loadingCity}
                         loadingText={t('loadingCity')}
                         noOptionsText={t('cityNoOptions')}
-                        inputValue={values.city}
+                        inputValue={values.cityName}
                         autoHighlight
                         onChange={(event, newValue) => {
-                          handleAutocomplete('city', newValue);
+                          handleAutocomplete('cityName', newValue);
                         }}
                         open={openCity}
                         onOpen={() => {
@@ -310,7 +310,7 @@ export default function User(props) {
                         }}
                         filterOptions={(x, s) => {
                           const searchRegex = new RegExp(
-                            escapeRegExp(values.city),
+                            escapeRegExp(values.cityName),
                             'i'
                           );
                           const filterdData = x.filter((row) => {
@@ -331,16 +331,16 @@ export default function User(props) {
                         renderInput={(params) => (
                           <TextValidator
                             {...params}
-                            label={t('city')}
+                            label={t('cityName')}
                             variant='standard'
-                            value={values.city}
+                            value={values.cityName}
                             onBlur={()=>{
-                              if(cityOptions.map(a => a.name).indexOf(values.city) == -1){
-                                setValues({ ...values, city: '' });
+                              if(cityOptions.map(a => a.name).indexOf(values.cityName) == -1){
+                                setValues({ ...values, cityName: '', city_id: '' });
                               }
                             }}
                             onChange={(e) => {
-                              setValues({ ...values, city: e.target.value });
+                              setValues({ ...values, cityName: e.target.value });
                               (async () => {
                                 await sleep(1e3); // For demo purposes.
                                 setCityFilter(e.target.value);
@@ -373,10 +373,10 @@ export default function User(props) {
                         options={provinceOptions}
                         loading={loadingProvince}
                         loadingText={t('loadingProvince')}
-                        inputValue={values.province}
+                        inputValue={values.provinceName}
                         autoHighlight
                         onChange={(event, newValue) => {
-                          handleAutocomplete('province', newValue);
+                          handleAutocomplete('provinceName', newValue);
                         }}
                         open={openProvince}
                         onOpen={() => {
@@ -396,7 +396,7 @@ export default function User(props) {
                         }
                         filterOptions={(x) => {
                           const searchRegex = new RegExp(
-                            escapeRegExp(values.province),
+                            escapeRegExp(values.provinceName),
                             'i'
                           );
                           const filterdData = x.filter((row) => {
@@ -420,18 +420,18 @@ export default function User(props) {
                         renderInput={(params) => (
                           <TextValidator
                             {...params}
-                            label={t('province')}
+                            label={t('provinceName')}
                             variant='standard'
-                            value={values.province}
+                            value={values.provinceName}
                             onBlur={()=>{
-                              if(provinceOptions.map(a => a.name).indexOf(values.province) == -1){
-                                setValues({ ...values, province: '', });
+                              if(provinceOptions.map(a => a.name).indexOf(values.provinceName) == -1){
+                                setValues({ ...values, provinceName: '', province_id: ''});
                               }
                             }}
                             onChange={(e) => {
                               setValues({
                                 ...values,
-                                province: e.target.value,
+                                provinceName: e.target.value,
                               });
                               (async () => {
                                 await sleep(1e3); // For demo purposes.
@@ -465,9 +465,9 @@ export default function User(props) {
                         loading={loadingCountry}
                         loadingText={t('loadingCountry')}
                         autoHighlight
-                        inputValue={values.country}
+                        inputValue={values.countryName}
                         onChange={(event, newValue) => {
-                          handleAutocomplete('country', newValue);
+                          handleAutocomplete('countryName', newValue);
                         }}
                         open={openCountry}
                         onOpen={() => {
@@ -485,7 +485,7 @@ export default function User(props) {
                         }
                         filterOptions={(x) => {
                           const searchRegex = new RegExp(
-                            escapeRegExp(values.country),
+                            escapeRegExp(values.countryName),
                             'i'
                           );
                           const filterdData = x.filter((row) => {
@@ -509,16 +509,16 @@ export default function User(props) {
                         renderInput={(params) => (
                           <TextValidator
                             {...params}
-                            label={t('country')}
+                            label={t('countryName')}
                             variant='standard'
-                            value={values.country}
+                            value={values.countryName}
                             onBlur={()=>{
-                              if(countryOptions.map(a => a.name).indexOf(values.country) == -1){
-                                setValues({ ...values, country: '', });
+                              if(countryOptions.map(a => a.name).indexOf(values.countryName) == -1){
+                                setValues({ ...values, countryName: '', country_id: '' });
                               }
                             }}
                             onChange={(e) => {
-                              setValues({ ...values, country: e.target.value });
+                              setValues({ ...values, countryName: e.target.value });
                               (async () => {
                                 await sleep(1e3); // For demo purposes.
                                 setCountryFilter(e.target.value);

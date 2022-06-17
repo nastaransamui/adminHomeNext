@@ -9,6 +9,9 @@ import { setCookies } from 'cookies-next';
 import { editMiddleware } from '../../../middleware/userMiddleware';
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
+import { updateLocations } from '../mainPageSetup/create';
+import { deleteLocations } from '../mainPageSetup/delete';
+var ObjectId = require('mongoose').Types.ObjectId;
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -36,12 +39,39 @@ apiRoute.post(
         if (req.body.password == '') {
           delete req.body.password;
         }
+        const { city_id, country_id, province_id } = req.body;
+        const cityIdValid = ObjectId.isValid(city_id);
+        const provinceIdValid = ObjectId.isValid(province_id);
+        const countryIdValid = ObjectId.isValid(country_id);
+        !cityIdValid && delete req.body.city_id;
+        !provinceIdValid && delete req.body.province_id;
+        !countryIdValid && delete req.body.country_id;
+
         findUserById(_id).then(async (oldUser) => {
           for (var key in req.body) {
             if (
               typeof oldUser[key] !== 'function' &&
               req.body[key] !== undefined
             ) {
+              await deleteLocations(req, res, next, oldUser);
+              if (city_id) {
+                oldUser.city_id = [];
+                oldUser.city_id.push(city_id);
+              } else {
+                oldUser.city_id = [];
+              }
+              if (province_id) {
+                oldUser.province_id = [];
+                oldUser.province_id.push(province_id);
+              } else {
+                oldUser.province_id = [];
+              }
+              if (country_id) {
+                oldUser.country_id = [];
+                oldUser.country_id.push(country_id);
+              } else {
+                oldUser.country_id = [];
+              }
               oldUser[key] = req.body[key];
               if (selfProfileUpdate) {
                 const newAccessToken = await jwtSign(oldUser);
@@ -59,6 +89,7 @@ apiRoute.post(
                 ErrorCode: err?.code,
               });
             } else {
+              await updateLocations(req, res, next, result);
               const totalUser = await Users.find().select('-password');
               const { hzErrorConnection, hz } = await hazelCast();
               if (!hzErrorConnection) {

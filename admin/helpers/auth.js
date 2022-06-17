@@ -3,6 +3,20 @@ import Agencies from '../models/Agencies';
 import dbConnect from './dbConnect';
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
+var geoip = require('geoip-country');
+/**
+      const forwarded = req.headers['x-forwarded-for'];
+
+      const ip =
+        typeof forwarded === 'string'
+          ? forwarded.split(/, /)[0]
+          : req.socket.remoteAddress;
+
+      console.log(ip);
+
+      var geo = geoip.lookup(ip);
+
+      console.log(geo?.country); */
 
 export async function findUserByUsername({ username }) {
   const dbConnected = await dbConnect();
@@ -64,9 +78,12 @@ export async function jwtSign(user) {
       profileImageKey: user.profileImageKey,
       firstName: user.firstName,
       lastName: user.lastName,
-      city: user.city,
-      province: user.province,
-      country: user.country,
+      cityName: user.cityName,
+      city_id: user.city_id,
+      provinceName: user.provinceName,
+      province_id: user.province_id,
+      countryName: user.countryName,
+      country_id: user.country_id,
       position: user.position,
       aboutMe: user.aboutMe,
     },
@@ -128,9 +145,9 @@ export async function createUserIsEmpty(req, res, next) {
         folderId: (Math.random() + 1).toString(36).substring(7),
         lastName: '',
         firstName: '',
-        city: '',
-        province: '',
-        country: '',
+        cityName: '',
+        provinceName: '',
+        countryName: '',
         position: '',
         aboutMe: '',
         isAdmin: true,

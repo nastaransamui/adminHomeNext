@@ -42,6 +42,7 @@ const Countries = (props) => {
     t: t,
     Url: activeUrl,
     dispatchType: 'COUNTRIES_G_STORE',
+    activesId:activesId
   });
 
   const { sweetDiactiveAlert } = useActiveAlert({
@@ -55,6 +56,7 @@ const Countries = (props) => {
       componentView == 'global_countries'
         ? 'COUNTRIES_G_STORE'
         : 'COUNTRIES_A_STORE',
+        activesId:activesId
   });
 
   const {

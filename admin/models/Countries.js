@@ -4,6 +4,8 @@ const timeZone = require('mongoose-timezone');
 const CountriesSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true, index: true },
+    users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
+    agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
     name: { type: String, required: true },
     iso3: { type: String, required: true },
     iso2: { type: String, required: true },
@@ -53,12 +55,18 @@ const CountriesSchema = new mongoose.Schema(
         latitude: String,
         longitude: String,
         type: { type: String, default: null },
+        users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
+        agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
         cities: [
           {
             id: Number,
             name: String,
             latitude: String,
             longitude: String,
+            users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
+            agents_id: [
+              { type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' },
+            ],
           },
         ],
       },

@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import Videos from '../../../models/Videos';
 import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
+import Countries from '../../../models/Countries';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -33,6 +34,9 @@ apiRoute.post(
           if (err) {
             res.status(500).json({ success: false, Error: err.toString() });
           } else {
+            if (modelName == 'Users') {
+              await deleteLocations(req, res, next, docs);
+            }
             const totalValues = await collection.find();
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
@@ -53,5 +57,56 @@ apiRoute.post(
     }
   }
 );
+
+export async function deleteLocations(req, res, next, result) {
+  const { modelName } = req.body;
+  switch (modelName) {
+    case 'Users':
+      if (result?.country_id.length > 0) {
+        await Countries.updateOne(
+          { _id: { $in: result.country_id } },
+          {
+            $pull: {
+              users_id: result._id,
+            },
+          },
+          { new: true }
+        );
+      }
+      if (result?.province_id.length > 0) {
+        await Countries.updateOne(
+          { 'states._id': { $in: result.province_id } },
+          {
+            $pull: {
+              'states.$.users_id': result._id,
+            },
+          },
+          { multi: true }
+        );
+      }
+
+      if (result?.city_id.length > 0) {
+        await Countries.updateOne(
+          { 'states.cities._id': { $in: result.city_id } },
+          {
+            $pull: {
+              'states.$[outer].cities.$[inner].users_id': result._id,
+            },
+          },
+          {
+            arrayFilters: [
+              { 'outer._id': result.province_id },
+              { 'inner._id': result.city_id },
+            ],
+            multi: true,
+          }
+        );
+      }
+      break;
+
+    default:
+      break;
+  }
+}
 
 export default apiRoute;

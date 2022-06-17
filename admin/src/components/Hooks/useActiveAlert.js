@@ -12,6 +12,7 @@ const useActiveAlert = ({
   t,
   Url,
   dispatchType,
+  activesId,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -132,6 +133,10 @@ const useActiveAlert = ({
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+        const activeCountry_id =
+          activesId !== undefined
+            ? activesId.filter((s) => s.id == data.id)[0]._id
+            : data._id;
         const diActivate = async () => {
           try {
             const res = await fetch(Url, {
@@ -147,6 +152,7 @@ const useActiveAlert = ({
                 valuesPageNumber: state.pageNumber,
                 valuesSortByField: state.SortBy[`field`],
                 valuesSortBySorting: state.SortBy[`sorting`],
+                country_id: activeCountry_id,
                 data: data,
               }),
             });

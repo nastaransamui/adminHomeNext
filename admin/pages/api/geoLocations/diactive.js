@@ -15,20 +15,40 @@ function paginate(array, valuesPerPage, valuesPageNumber) {
   );
 }
 
-const sort_by = (field, reverse, primer) => {
-  const key = primer
-    ? function (x) {
-        return primer(x[field]);
-      }
-    : function (x) {
-        return x[field];
-      };
+const sort_by = (field, reverse, primer, activesIds) => {
+  if (activesIds !== undefined) {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  reverse = !reverse ? 1 : -1;
+    reverse = !reverse ? 1 : -1;
+    return function (a, b) {
+      if (
+        activesIds.findIndex((p) => p.id === b.id) == -1 ||
+        activesIds.findIndex((p) => p.id === a.id) == -1
+      )
+        return 1;
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  } else {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  return function (a, b) {
-    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
-  };
+    reverse = !reverse ? 1 : -1;
+
+    return function (a, b) {
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  }
 };
 
 const apiRoute = nextConnect({
@@ -48,6 +68,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     modelName,
     fileName,
     data,
+    country_id,
   } = req.body;
   const { success } = dbConnected;
   if (!success) {
@@ -56,19 +77,25 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     try {
       var collection = mongoose.model(modelName);
       const { hzErrorConnection, hz } = await hazelCast();
-      collection.find({ id: data.id }).remove(async (err, doc) => {
-        if (err) {
-          res.status(500).json({ success: false, Error: err.toString() });
+      collection.findById(country_id, async (err, docs) => {
+        const { Error, success } = involvedError(docs);
+        // if involved return from function send error to client
+        if (!success) {
+          res.status(500).json({ success: false, Error: Error });
         } else {
+          // Request come from all countries
+          await docs.remove();
           if (typeof data._id == 'number') {
-            // Request come from all countries
             const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
             let rawdata = fs.readFileSync(fileToRead);
             let data = JSON.parse(rawdata);
-            var activesIds = await collection.find(
-              {},
-              { _id: false, id: true }
-            );
+            var activesIds = await collection.find({}, { _id: true, id: true });
+            let orderCountryByActivation = data.sort((a, b) => {
+              return (
+                activesIds.findIndex((p) => p.id === b.id) -
+                activesIds.findIndex((p) => p.id === a.id)
+              );
+            });
             if (!hzErrorConnection) {
               const multiMap = await hz.getMultiMap(modelName);
               const multiMapPr = await hz.getMultiMap('Provinces');
@@ -85,16 +112,18 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               await multiMap.put(`all${modelName}`, valuesList);
               await hz.shutdown();
             }
+            console.log(activesIds);
             res.status(200).json({
               success: true,
-              totalValuesLength: data.length,
+              totalValuesLength: orderCountryByActivation.length,
               activesId: activesIds,
               data: paginate(
-                data.sort(
+                orderCountryByActivation.sort(
                   sort_by(
                     [req.body['valuesSortByField']],
                     valuesSortBySorting > 0 ? false : true,
-                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+                    activesIds
                   )
                 ),
                 valuesPerPage,
@@ -116,7 +145,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 success: true,
                 totalValuesLength: valuesList.length,
                 data: paginate(
-                  data.sort(
+                  valuesList.sort(
                     sort_by(
                       [req.body['valuesSortByField']],
                       valuesSortBySorting > 0 ? false : true,
@@ -168,6 +197,81 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     }
   }
 });
+
+function involvedError(result) {
+  //Check if country involve in user and agent
+  const isCountryInvolved =
+    result?.users_id?.length > 0 || result?.agents_id?.length > 0;
+  // Check if state involve in user and agent
+  const stateInvolved = result?.states.filter(
+    (a) => a.users_id?.length > 0 || a.agents_id?.length > 0
+  );
+  const isStateInvolved = stateInvolved.length > 0;
+  // Check if cities involve in user and agent
+  const statesThatCitiesInvolve = result?.states.filter((s) => {
+    let opt = s.cities.some(
+      (a) => a.users_id?.length > 0 || a.agents_id?.length > 0
+    );
+    return opt;
+  });
+  const citiesInvolved = statesThatCitiesInvolve
+    .map((a) =>
+      a.cities.filter((a) => a.users_id?.length > 0 || a.agents_id?.length > 0)
+    )
+    .flat(1);
+  const isCitiesInvolved = citiesInvolved.length > 0;
+  if (isCountryInvolved || isStateInvolved || isCitiesInvolved) {
+    return {
+      success: false,
+      Error: `${
+        result?.users_id?.length > 0
+          ? `${result?.users_id?.length} uer(s) is/are involved with ${
+              result?.name
+            } ${
+              isStateInvolved
+                ? `, ${stateInvolved.map(
+                    (a) =>
+                      `${a.name} state is involved with ${a.users_id?.length} user(s) `
+                  )}  `
+                : ``
+            } ${
+              isCitiesInvolved
+                ? ` ${citiesInvolved.map(
+                    (a) =>
+                      `${a.name} city is involved with ${a.users_id?.length} user(s)`
+                  )} `
+                : ``
+            }`
+          : ''
+      } ${
+        result?.agents_id?.length > 0
+          ? `${result?.agents_id?.length} uer(s) is/are involved with ${
+              result?.name
+            } ${
+              isStateInvolved
+                ? `, ${stateInvolved.map(
+                    (a) =>
+                      `${a.name} state is involved with ${a.agents_id?.length} agent(s) `
+                  )}  `
+                : ``
+            } ${
+              isCitiesInvolved
+                ? ` ${citiesInvolved.map(
+                    (a) =>
+                      `${a.name} city is involved with ${a.agents_id?.length} agent(s)`
+                  )} `
+                : ``
+            }`
+          : ''
+      }`,
+    };
+  } else {
+    return {
+      success: true,
+      Error: null,
+    };
+  }
+}
 
 export const config = {
   api: {

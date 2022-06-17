@@ -59,7 +59,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           let rawdata = fs.readFileSync(fileToRead);
           let data = JSON.parse(rawdata);
           var collection = mongoose.model(modelName);
-          var activesIds = await collection.find({}, { _id: false, id: true });
+          var activesIds = await collection.find({}, { _id: true, id: true });
           res.status(200).json({
             success: true,
             totalValuesLength: data.length,

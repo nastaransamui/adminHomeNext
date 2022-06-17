@@ -65,10 +65,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
             let rawdata = fs.readFileSync(fileToRead);
             let data = JSON.parse(rawdata);
-            var activesIds = await collection.find(
-              {},
-              { _id: false, id: true }
-            );
+            var activesIds = await collection.find({}, { _id: true, id: true });
             if (!hzErrorConnection) {
               const multiMap = await hz.getMultiMap(modelName);
               await multiMap.destroy();

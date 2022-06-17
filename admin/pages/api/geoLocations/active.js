@@ -15,20 +15,40 @@ function paginate(array, valuesPerPage, valuesPageNumber) {
   );
 }
 
-const sort_by = (field, reverse, primer) => {
-  const key = primer
-    ? function (x) {
-        return primer(x[field]);
-      }
-    : function (x) {
-        return x[field];
-      };
+const sort_by = (field, reverse, primer, activesIds) => {
+  if (activesIds !== undefined) {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  reverse = !reverse ? 1 : -1;
+    reverse = !reverse ? 1 : -1;
+    return function (a, b) {
+      if (
+        activesIds.findIndex((p) => p.id === b.id) == -1 ||
+        activesIds.findIndex((p) => p.id === a.id) == -1
+      )
+        return 1;
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  } else {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  return function (a, b) {
-    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
-  };
+    reverse = !reverse ? 1 : -1;
+
+    return function (a, b) {
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  }
 };
 
 const apiRoute = nextConnect({
@@ -74,7 +94,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
           let rawdata = fs.readFileSync(fileToRead);
           let data = JSON.parse(rawdata);
-          var activesIds = await collection.find({}, { _id: false, id: true });
+          var activesIds = await collection.find({}, { _id: true, id: true });
+          let orderCountryByActivation = data.sort((a, b) => {
+            return (
+              activesIds.findIndex((p) => p.id === b.id) -
+              activesIds.findIndex((p) => p.id === a.id)
+            );
+          });
           if (!hzErrorConnection) {
             const multiMap = await hz.getMultiMap(modelName);
             const multiMapPr = await hz.getMultiMap('Provinces');
@@ -93,14 +119,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
           res.status(200).json({
             success: true,
-            totalValuesLength: data.length,
+            totalValuesLength: orderCountryByActivation.length,
             activesId: activesIds,
             data: paginate(
-              data.sort(
+              orderCountryByActivation.sort(
                 sort_by(
                   [req.body['valuesSortByField']],
                   valuesSortBySorting > 0 ? false : true,
-                  (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                  (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+                  activesIds
                 )
               ),
               valuesPerPage,

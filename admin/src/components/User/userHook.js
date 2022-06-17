@@ -38,9 +38,12 @@ const userHook = () => {
     finalFolder: 'users',
     modelName: 'Users',
     folderId: (Math.random() + 1).toString(36).substring(7),
-    country: '',
-    province: '',
-    city: '',
+    countryName: '',
+    country_id: '',
+    provinceName: '',
+    province_id: '',
+    cityName: '',
+    city_id: '',
     position: '',
     aboutMe: '',
     _id: _id || '',
@@ -84,38 +87,59 @@ const userHook = () => {
 
   const handleAutocomplete = (name, newValue) => {
     if (newValue == null) {
-      if (name == 'city') {
-        setValues({ ...values, [name]: '', province: '', country: '' });
+      if (name == 'cityName') {
+        setValues({
+          ...values,
+          [name]: '',
+          city_id: '',
+          provinceName: '',
+          province_id: '',
+          countryName: '',
+          country_id: '',
+        });
       }
-      if (name == 'province') {
-        setValues({ ...values, [name]: '', city: '' });
+      if (name == 'provinceName') {
+        setValues({
+          ...values,
+          [name]: '',
+          province_id: '',
+          cityName: '',
+          city_id: '',
+        });
       }
-      if (name == 'country') {
-        setValues({ ...values, [name]: '' });
+      if (name == 'countryName') {
+        setValues({ ...values, [name]: '', country_id: '' });
       }
     } else {
-      if (name == 'city') {
+      if (name == 'cityName') {
         setValues({
           ...values,
           [name]: newValue.name,
-          province: newValue.state_name,
-          country: newValue.country,
+          city_id: newValue._id,
+          provinceName: newValue.state_name,
+          province_id: newValue.state_id,
+          countryName: newValue.country,
+          country_id: newValue.country_id,
         });
       }
-      if (name == 'province') {
+      if (name == 'provinceName') {
         setValues({
           ...values,
-          city: '',
-          province: newValue.name,
-          country: newValue.country,
+          cityName: '',
+          city_id: '',
+          provinceName: newValue.name,
+          province_id: newValue._id,
+          countryName: newValue.country,
+          country_id: newValue.country_id,
         });
       }
-      if (name == 'country') {
+      if (name == 'countryName') {
         setValues({
           ...values,
-          province: '',
-          city: '',
-          country: newValue.name,
+          provinceName: '',
+          cityName: '',
+          countryName: newValue.name,
+          country_id: newValue._id,
         });
       }
     }
