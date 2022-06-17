@@ -9,8 +9,8 @@ import { setCookies } from 'cookies-next';
 import { editMiddleware } from '../../../middleware/userMiddleware';
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
-import { updateLocations } from '../mainPageSetup/create';
-import { deleteLocations } from '../mainPageSetup/delete';
+import { updateObjectsId } from '../mainPageSetup/create';
+import { deleteObjectsId } from '../mainPageSetup/delete';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const apiRoute = nextConnect({
@@ -53,7 +53,7 @@ apiRoute.post(
               typeof oldUser[key] !== 'function' &&
               req.body[key] !== undefined
             ) {
-              await deleteLocations(req, res, next, oldUser);
+              await deleteObjectsId(req, res, next, oldUser);
               if (city_id) {
                 oldUser.city_id = [];
                 oldUser.city_id.push(city_id);
@@ -89,7 +89,7 @@ apiRoute.post(
                 ErrorCode: err?.code,
               });
             } else {
-              await updateLocations(req, res, next, result);
+              await updateObjectsId(req, res, next, result);
               const totalUser = await Users.find().select('-password');
               const { hzErrorConnection, hz } = await hazelCast();
               if (!hzErrorConnection) {

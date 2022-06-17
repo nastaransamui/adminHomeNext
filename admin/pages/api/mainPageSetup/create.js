@@ -15,6 +15,7 @@ import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
 import Countries from '../../../models/Countries';
+import Currencies from '../../../models/Currencies';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -63,7 +64,7 @@ apiRoute.post(
               ErrorCode: err?.code,
             });
           } else {
-            await updateLocations(req, res, next, result);
+            await updateObjectsId(req, res, next, result);
             const totalValues = await collection.find();
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
@@ -87,7 +88,7 @@ apiRoute.post(
   }
 );
 
-export async function updateLocations(req, res, next, result) {
+export async function updateObjectsId(req, res, next, result) {
   const { modelName } = req.body;
   switch (modelName) {
     case 'Users':
@@ -132,8 +133,41 @@ export async function updateLocations(req, res, next, result) {
         );
       }
       break;
-
-    default:
+    case 'Agencies':
+      await Countries.updateOne(
+        { _id: { $in: result.country_id } },
+        {
+          $addToSet: {
+            agents_id: result._id,
+            'states.$[outer].agents_id': result._id,
+            'states.$[outer].cities.$[inner].agents_id': result._id,
+          },
+        },
+        {
+          arrayFilters: [
+            { 'outer._id': result.province_id },
+            { 'inner._id': result.city_id },
+          ],
+        }
+      );
+      await Currencies.updateOne(
+        { _id: { $in: result.currencyCode_id } },
+        {
+          $addToSet: {
+            agents_id: result._id,
+          },
+        },
+        { multi: true }
+      );
+      await Users.updateOne(
+        { _id: { $in: result.accountManager_id } },
+        {
+          $addToSet: {
+            agents_id: result._id,
+          },
+        },
+        { multi: true }
+      );
       break;
   }
 }

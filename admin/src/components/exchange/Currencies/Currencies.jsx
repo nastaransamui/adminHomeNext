@@ -42,6 +42,7 @@ const Currencies = (props) => {
     t: t,
     Url: activeUrl,
     dispatchType: 'CURRENCIES_G_STORE',
+    activesId:activesId
   });
 
   const { sweetDiactiveAlert } = useActiveAlert({
@@ -55,6 +56,7 @@ const Currencies = (props) => {
       componentView == 'global_currencies'
         ? 'CURRENCIES_G_STORE'
         : 'CURRENCIES_A_STORE',
+        activesId:activesId
   });
 
   const {

@@ -9,6 +9,8 @@ import { editMiddleware } from '../../../middleware/userMiddleware';
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
 import { findAgentById } from '../../../helpers/auth';
+import { deleteObjectsId } from '../mainPageSetup/delete';
+import { updateObjectsId } from '../mainPageSetup/create';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -27,7 +29,14 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      const { _id } = req.body;
+      const {
+        _id,
+        city_id,
+        country_id,
+        province_id,
+        currencyCode_id,
+        accountManager_id,
+      } = req.body;
       delete req.body._id;
       req.body.phones = JSON.parse(req?.body?.phones);
       findAgentById(_id).then(async (oldAgent) => {
@@ -36,6 +45,17 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
             typeof oldAgent[key] !== 'function' &&
             req.body[key] !== undefined
           ) {
+            await deleteObjectsId(req, res, next, oldAgent);
+            oldAgent.city_id = [];
+            oldAgent.city_id.push(city_id);
+            oldAgent.province_id = [];
+            oldAgent.province_id.push(province_id);
+            oldAgent.country_id = [];
+            oldAgent.country_id.push(country_id);
+            oldAgent.currencyCode_id = [];
+            oldAgent.currencyCode_id.push(currencyCode_id);
+            oldAgent.accountManager_id = [];
+            oldAgent.accountManager_id.push(accountManager_id);
             oldAgent[key] = req.body[key];
           }
         }
@@ -48,6 +68,7 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
               ErrorCode: err?.code,
             });
           } else {
+            await updateObjectsId(req, res, next, result);
             const totalAgent = await Agencies.aggregate([{ $match: {} }]);
             res.status(200).json({
               success: true,

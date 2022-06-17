@@ -15,20 +15,40 @@ function paginate(array, valuesPerPage, valuesPageNumber) {
   );
 }
 
-const sort_by = (field, reverse, primer) => {
-  const key = primer
-    ? function (x) {
-        return primer(x[field]);
-      }
-    : function (x) {
-        return x[field];
-      };
+const sort_by = (field, reverse, primer, activesIds) => {
+  if (activesIds !== undefined) {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  reverse = !reverse ? 1 : -1;
+    reverse = !reverse ? 1 : -1;
+    return function (a, b) {
+      if (
+        activesIds.findIndex((p) => p.id === b.id) == -1 ||
+        activesIds.findIndex((p) => p.id === a.id) == -1
+      )
+        return 1;
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  } else {
+    const key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
 
-  return function (a, b) {
-    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
-  };
+    reverse = !reverse ? 1 : -1;
+
+    return function (a, b) {
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  }
 };
 
 const apiRoute = nextConnect({
@@ -48,6 +68,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     modelName,
     fileName,
     data,
+    country_id: currency_id,
   } = req.body;
   const { success } = dbConnected;
   if (!success) {
@@ -56,16 +77,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     try {
       var collection = mongoose.model(modelName);
       const { hzErrorConnection, hz } = await hazelCast();
-      collection.find({ id: data.id }).remove(async (err, doc) => {
-        if (err) {
-          res.status(500).json({ success: false, Error: err.toString() });
+      collection.findById(currency_id, async (err, docs) => {
+        const { Error, success } = involvedError(docs);
+        // if involved return from function send error to client
+        if (!success) {
+          res.status(403).json({ success: false, Error: Error });
         } else {
+          // Request come from all currencies
+          await docs.remove();
           if (typeof data._id == 'number') {
             // Request come from all Currencies
             const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
             let rawdata = fs.readFileSync(fileToRead);
             let data = JSON.parse(rawdata);
             var activesIds = await collection.find({}, { _id: true, id: true });
+            let orderCurrencyByActivation = data.sort((a, b) => {
+              return (
+                activesIds.findIndex((p) => p.id === b.id) -
+                activesIds.findIndex((p) => p.id === a.id)
+              );
+            });
             if (!hzErrorConnection) {
               const multiMap = await hz.getMultiMap(modelName);
               await multiMap.destroy();
@@ -75,14 +106,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             }
             res.status(200).json({
               success: true,
-              totalValuesLength: data.length,
+              totalValuesLength: orderCurrencyByActivation.length,
               activesId: activesIds,
               data: paginate(
-                data.sort(
+                orderCurrencyByActivation.sort(
                   sort_by(
                     [req.body['valuesSortByField']],
                     valuesSortBySorting > 0 ? false : true,
-                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+                    activesIds
                   )
                 ),
                 valuesPerPage,
@@ -140,6 +172,27 @@ apiRoute.post(verifyToken, async (req, res, next) => {
     }
   }
 });
+
+function involvedError(result) {
+  //Check if currency involve in user and agent
+  const isCurrencyInvolved = result?.agents_id?.length > 0;
+
+  if (isCurrencyInvolved) {
+    return {
+      success: false,
+      Error: `${
+        result?.agents_id?.length > 0
+          ? `${result?.agents_id?.length} agent(s) is/are involved with ${result?.currency_name} `
+          : ''
+      }`,
+    };
+  } else {
+    return {
+      success: true,
+      Error: null,
+    };
+  }
+}
 
 export const config = {
   api: {

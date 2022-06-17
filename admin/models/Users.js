@@ -12,6 +12,7 @@ const UsersSchema = new mongoose.Schema(
     firstName: { type: String },
     lastName: { type: String },
     cityName: { type: String },
+    agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
     city_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],
     province_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],
     provinceName: { type: String },

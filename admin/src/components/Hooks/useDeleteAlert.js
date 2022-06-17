@@ -48,7 +48,7 @@ const useDeleteAlert = ({ state, modelName, t, deleteUrl, dispatchType }) => {
           const { status } = res;
           const response = await res.json();
           if (status !== 200 && !res.ok) {
-            alertCall(theme, 'error', res.statusText, () => {
+            alertCall(theme, 'error', response.Error, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               if (!checkCookies('adminAccessToken')) {
                 router.push('/', undefined, { shallow: true });

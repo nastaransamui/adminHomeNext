@@ -112,7 +112,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               await multiMap.put(`all${modelName}`, valuesList);
               await hz.shutdown();
             }
-            console.log(activesIds);
             res.status(200).json({
               success: true,
               totalValuesLength: orderCountryByActivation.length,
@@ -229,36 +228,40 @@ function involvedError(result) {
               result?.name
             } ${
               isStateInvolved
-                ? `, ${stateInvolved.map(
-                    (a) =>
-                      `${a.name} state is involved with ${a.users_id?.length} user(s) `
+                ? `, ${stateInvolved.map((a) =>
+                    a.users_id?.length > 0
+                      ? `${a.name} state is involved with ${a.users_id?.length} user(s) `
+                      : ``
                   )}  `
                 : ``
             } ${
               isCitiesInvolved
-                ? ` ${citiesInvolved.map(
-                    (a) =>
-                      `${a.name} city is involved with ${a.users_id?.length} user(s)`
+                ? ` ${citiesInvolved.map((a) =>
+                    a.users_id?.length > 0
+                      ? `${a.name} city is involved with ${a.users_id?.length} user(s)`
+                      : ``
                   )} `
                 : ``
             }`
           : ''
       } ${
         result?.agents_id?.length > 0
-          ? `${result?.agents_id?.length} uer(s) is/are involved with ${
+          ? `${result?.agents_id?.length} agent(s) is/are involved with ${
               result?.name
             } ${
               isStateInvolved
-                ? `, ${stateInvolved.map(
-                    (a) =>
-                      `${a.name} state is involved with ${a.agents_id?.length} agent(s) `
+                ? `, ${stateInvolved.map((a) =>
+                    a.agents_id?.length > 0
+                      ? `${a.name} state is involved with ${a.agents_id?.length} agent(s) `
+                      : ``
                   )}  `
                 : ``
             } ${
               isCitiesInvolved
-                ? ` ${citiesInvolved.map(
-                    (a) =>
-                      `${a.name} city is involved with ${a.agents_id?.length} agent(s)`
+                ? ` ${citiesInvolved.map((a) =>
+                    a.agents_id?.length > 0
+                      ? `${a.name} city is involved with ${a.agents_id?.length} agent(s)`
+                      : ``
                   )} `
                 : ``
             }`

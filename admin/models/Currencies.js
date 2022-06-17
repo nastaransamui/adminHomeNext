@@ -7,6 +7,7 @@ const CurrenciesSchema = new mongoose.Schema(
     name: { type: String, required: true },
     iso3: { type: String, required: true },
     iso2: { type: String, required: true },
+    agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
     numeric_code: { type: String, required: true },
     currency: { type: String, required: true },
     currency_name: { type: String, required: true },
