@@ -70,16 +70,6 @@ const agencyStyle = makeStyles((theme) => {
       '& .MuiInput-underline:hover:before': {
         border: 'none',
       },
-      // '& .Mui-error': {
-      //   '&:after': {
-      //     // position: 'absolute',
-      //     // bottom: -1,
-      //     // width: '100%',
-      //   },
-      //   '&:before': {
-      //     // border: 'none',
-      //   },
-      // },
     },
   };
 });

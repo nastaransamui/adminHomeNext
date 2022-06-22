@@ -9,6 +9,7 @@ import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
+import Roles from '../../../models/Roles';
 
 const { faker } = require('@faker-js/faker');
 //Username case to lower case

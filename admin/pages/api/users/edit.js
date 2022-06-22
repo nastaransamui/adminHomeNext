@@ -39,13 +39,15 @@ apiRoute.post(
         if (req.body.password == '') {
           delete req.body.password;
         }
-        const { city_id, country_id, province_id } = req.body;
+        const { city_id, country_id, province_id, agents_id } = req.body;
         const cityIdValid = ObjectId.isValid(city_id);
         const provinceIdValid = ObjectId.isValid(province_id);
         const countryIdValid = ObjectId.isValid(country_id);
+        const agentIdValid = ObjectId.isValid(agents_id);
         !cityIdValid && delete req.body.city_id;
         !provinceIdValid && delete req.body.province_id;
         !countryIdValid && delete req.body.country_id;
+        !agentIdValid && delete req.body.agents_id;
 
         findUserById(_id).then(async (oldUser) => {
           for (var key in req.body) {
@@ -71,6 +73,12 @@ apiRoute.post(
                 oldUser.country_id.push(country_id);
               } else {
                 oldUser.country_id = [];
+              }
+              if (agents_id) {
+                oldUser.agents_id = [];
+                oldUser.agents_id.push(agents_id);
+              } else {
+                oldUser.agents_id = [];
               }
               oldUser[key] = req.body[key];
               if (selfProfileUpdate) {

@@ -9,6 +9,7 @@ import {
   SouthAmerica,
   Badge,
 } from '@mui/icons-material/';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 var dashRoutes = [
   {
@@ -44,6 +45,35 @@ var dashRoutes = [
         'mini_en-US': 'CU',
         mini_fa: 'ا ک',
         state: 'userMultiCollapse',
+        layout: '/admin',
+      },
+    ],
+  },
+  {
+    path: '/dashboard/rbac-data',
+    collapse: true,
+    'name_en-US': 'Roles',
+    name_fa: 'نقش ها',
+    icon: ManageAccountsIcon,
+    state: 'roleCollapse',
+    layout: '/admin',
+    views: [
+      {
+        path: '/dashboard/rbac-data',
+        'name_en-US': 'Roles List',
+        name_fa: 'لیست نقش ها',
+        'mini_en-US': 'RL',
+        mini_fa: 'ل ن',
+        state: 'rolesMultiCollapse',
+        layout: '/admin',
+      },
+      {
+        path: '/dashboard/rbac-data/role',
+        'name_en-US': 'Create role',
+        name_fa: 'ایجاد نقش ',
+        'mini_en-US': 'CR',
+        mini_fa: 'ا ن',
+        state: 'roleMultiCollapse',
         layout: '/admin',
       },
     ],

@@ -11,6 +11,8 @@ import footer_en from '../public/locales/en/footer.json';
 import footer_fa from '../public/locales/fa/footer.json';
 import users_en from '../public/locales/en/users.json';
 import users_fa from '../public/locales/fa/users.json';
+import roles_en from '../public/locales/en/roles.json';
+import roles_fa from '../public/locales/fa/roles.json';
 import video_en from '../public/locales/en/video.json';
 import video_fa from '../public/locales/fa/video.json';
 import photos_en from '../public/locales/en/photos.json';
@@ -84,6 +86,7 @@ i18next
         404: error_en,
         footer: footer_en,
         users: users_en,
+        roles: roles_en,
         video: video_en,
         feature: feature_en,
         photos: photos_en,
@@ -99,6 +102,7 @@ i18next
         404: error_fa,
         footer: footer_fa,
         users: users_fa,
+        roles: roles_fa,
         video: video_fa,
         feature: feature_fa,
         about: about_fa,

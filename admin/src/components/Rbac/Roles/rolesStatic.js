@@ -1,0 +1,42 @@
+export const editUrl = '/admin/dashboard/rbac-data';
+export const createUrl = '/admin/dashboard/rbac-data/role';
+export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
+export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const exportCsvUrl = `/admin/api/rbac/export`;
+import HomeWork from '@mui/icons-material/HomeWork';
+
+export const rolesFields = [
+  {
+    Icon: HomeWork,
+    label: 'roleName',
+    type: 'string',
+    filterable: true,
+  },
+];
+
+export const dataGridColumns = [
+  {
+    field: 'roleName',
+    headerAlign: 'center', //
+    description: 'roleName', //Discription from translation
+    width: 300,
+    type: 'string',
+    filterable: true,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: true,
+  },
+];
+
+export const Roles = {
+  dataArray: [],
+  dataArrayLengh: 0,
+  pageNumber: 1,
+  SortBy: {
+    field: 'createdAt',
+    sorting: -1,
+  },
+  CardView: true,
+  PerPage: 48,
+  GridView: 4,
+};

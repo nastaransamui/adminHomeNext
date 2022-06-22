@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import agencyStyle from './agency-style';
 import customerAvatar from '../../../../public/images/faces/Customer.png';
 import avatar from '../../../../public/images/faces/avatar1.jpg';
@@ -15,13 +15,9 @@ import CardBody from '../../Card/CardBody';
 import CardHeader from '../../Card/CardHeader';
 import CardIcon from '../../Card/CardIcon';
 import CardAvatar from '../../Card/CardAvatar';
-
-import { isRegex } from '../../auth/functions';
-
 import {
   Container,
   Grid,
-  InputAdornment,
   Fab,
   IconButton,
   Button,
@@ -103,13 +99,6 @@ export default function Agency(props) {
     phoneNumberError,
     setPhoneNumberError,
   } = agencyHook();
-
-  useEffect(() => {
-    ValidatorForm.addValidationRule(isRegex(values.password));
-    return () => {
-      ValidatorForm.removeValidationRule('isRegex');
-    };
-  });
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>

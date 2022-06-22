@@ -23,6 +23,8 @@ import CurrencyPage from '../currency-page/CurrencyPage';
 import Currency from '../../components/exchange/Currency/Currency';
 import AgencyPage from '../agencies-page/AgencyPage';
 import Agency from '../../components/Clients/Agency/Agency';
+import RbackPage from '../rbac-page/RbackPage'
+import Role from '../../components/Rbac/Role/Role'
 
 export function NotFoundPage() {
   return null;
@@ -88,6 +90,14 @@ export default function ReactRouter(props) {
         </Route>
         <Route exact path='/admin/dashboard/user-page/user'>
           <User {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/rbac-data'>
+          <RbackPage {...props} />
+          <ThemeUser {...props} />
+        </Route>
+        <Route exact path='/admin/dashboard/rbac-data/role'>
+          <Role {...props} />
           <ThemeUser {...props} />
         </Route>
         <Route exact path='/admin/dashboard/main-page-setup/videos'>

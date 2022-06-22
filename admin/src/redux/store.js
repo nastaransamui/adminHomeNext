@@ -15,6 +15,7 @@ import {
   currenciesAStore,
 } from '../components/exchange/Currencies/currenciesStatic';
 import { Agencies } from '../components/Clients/Agencies/agenciesStatic';
+import { Roles } from '../components/Rbac/Roles/rolesStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -36,6 +37,7 @@ const initialState = {
   currenciesGStore: { ...currenciesGStore },
   currenciesAStore: { ...currenciesAStore },
   Agencies: { ...Agencies },
+  Roles: { ...Roles },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -62,6 +64,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         Users: { ...payload },
+      };
+    case 'ROLES':
+      return {
+        ...state,
+        Roles: { ...payload },
       };
     case 'SLIDER_VIDEO':
       return {

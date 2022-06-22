@@ -228,6 +228,12 @@ const linkStyle = makeStyles((theme) => {
       },
     },
     white: {
+      '& div': {
+        color: theme.palette.primary.contrastText,
+      },
+      '& span': {
+        color: theme.palette.primary.contrastText,
+      },
       '&,&:hover,&:focus': {
         color: grayColor[2],
         backgroundColor: theme.palette.primary.main,
