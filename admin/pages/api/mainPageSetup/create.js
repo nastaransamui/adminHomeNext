@@ -16,6 +16,7 @@ import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
 import Countries from '../../../models/Countries';
 import Currencies from '../../../models/Currencies';
+import Roles from '../../../models/Roles';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -45,17 +46,19 @@ apiRoute.post(
         if (modelName == 'Agencies') {
           req.body.phones = JSON.parse(req?.body?.phones);
         }
-        if (modelName == 'Users') {
-          let { city_id, country_id, province_id } = req.body;
-          let cityIdValid = ObjectId.isValid(city_id);
-          let provinceIdValid = ObjectId.isValid(province_id);
-          let countryIdValid = ObjectId.isValid(country_id);
-          !cityIdValid && delete req.body.city_id;
-          !provinceIdValid && delete req.body.province_id;
-          !countryIdValid && delete req.body.country_id;
+        if (modelName == 'Roles') {
+          req.body.routes = JSON.parse(req?.body?.routes);
         }
+        if (modelName == 'Users') {
+          // req.body.agents_id = JSON.parse(req?.body?.agents_id);
+          req.body.country_id = JSON.parse(req?.body?.country_id);
+          req.body.province_id = JSON.parse(req?.body?.province_id);
+          req.body.city_id = JSON.parse(req?.body?.city_id);
+        }
+        console.log(req.body);
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
+          // console.log(err);
           if (err) {
             res.status(403).json({
               success: false,

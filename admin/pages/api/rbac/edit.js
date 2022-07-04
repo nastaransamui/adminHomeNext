@@ -3,13 +3,11 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import middleware from '../../../middleware/multiparty';
-import Agencies from '../../../models/Agencies';
-import { editMiddleware } from '../../../middleware/userMiddleware';
+var ObjectId = require('mongoose').Types.ObjectId;
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
-import { findAgentById } from '../../../helpers/auth';
-import { deleteObjectsId } from '../mainPageSetup/delete';
-import { updateObjectsId } from '../mainPageSetup/create';
+import { findRoleById } from '../../../helpers/auth';
+import Roles from '../../../models/Roles';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -21,44 +19,34 @@ const apiRoute = nextConnect({
 
 apiRoute.use(middleware);
 
-apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
+apiRoute.post(verifyToken, async (req, res, next) => {
   const dbConnected = await dbConnect();
   const { success } = dbConnected;
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      const {
-        _id,
-        city_id,
-        country_id,
-        province_id,
-        currencyCode_id,
-        accountManager_id,
-      } = req.body;
+      const { _id, users_id } = req.body;
       delete req.body._id;
-      req.body.phones = JSON.parse(req?.body?.phones);
-      findAgentById(_id).then(async (oldAgent) => {
+      const usersIdValid = ObjectId.isValid(users_id);
+      !usersIdValid && delete req.body.users_id;
+      req.body.routes = JSON.parse(req?.body?.routes);
+      findRoleById(_id).then(async (oldRole) => {
         for (var key in req.body) {
           if (
-            typeof oldAgent[key] !== 'function' &&
+            typeof oldRole[key] !== 'function' &&
             req.body[key] !== undefined
           ) {
-            await deleteObjectsId(req, res, next, oldAgent);
-            oldAgent.city_id = [];
-            oldAgent.city_id.push(city_id);
-            oldAgent.province_id = [];
-            oldAgent.province_id.push(province_id);
-            oldAgent.country_id = [];
-            oldAgent.country_id.push(country_id);
-            oldAgent.currencyCode_id = [];
-            oldAgent.currencyCode_id.push(currencyCode_id);
-            oldAgent.accountManager_id = [];
-            oldAgent.accountManager_id.push(accountManager_id);
-            oldAgent[key] = req.body[key];
+            if (users_id) {
+              oldRole.users_id = [];
+              oldRole.users_id.push(users_id);
+            } else {
+              oldRole.users_id = [];
+            }
+            oldRole[key] = req.body[key];
           }
         }
-        oldAgent.save(async (err, result) => {
+        oldRole.save(async (err, result) => {
           if (err) {
             res.status(403).json({
               success: false,
@@ -67,18 +55,17 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
               ErrorCode: err?.code,
             });
           } else {
-            await updateObjectsId(req, res, next, result);
-            const totalAgent = await Agencies.aggregate([{ $match: {} }]);
+            const totalRoles = await Roles.aggregate([{ $match: {} }]);
             res.status(200).json({
               success: true,
-              totalAgentLength: totalAgent.length,
+              totalRolesLength: totalRoles.length,
               data: result,
             });
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
               const multiMap = await hz.getMultiMap('Agencies');
               await multiMap.destroy();
-              await multiMap.put('allAgencies', totalAgent);
+              await multiMap.put('allAgencies', totalRoles);
               await hz.shutdown();
             }
           }

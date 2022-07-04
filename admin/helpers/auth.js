@@ -3,6 +3,7 @@ import Agencies from '../models/Agencies';
 import dbConnect from './dbConnect';
 import CryptoJS from 'crypto-js';
 import jwt from 'jsonwebtoken';
+import Roles from '../models/Roles';
 var geoip = require('geoip-country');
 /**
       const forwarded = req.headers['x-forwarded-for'];
@@ -48,6 +49,17 @@ export async function findAgentById(_id) {
   } else {
     let agent = await Agencies.findById(_id);
     return agent;
+  }
+}
+
+export async function findRoleById(_id) {
+  const dbConnected = await dbConnect();
+  const { success } = dbConnected;
+  if (!success) {
+    res.status(500).json({ success: false, Error: dbConnected.error });
+  } else {
+    let role = await Roles.findById(_id);
+    return role;
   }
 }
 

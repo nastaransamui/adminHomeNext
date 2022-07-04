@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createRef } from 'react';
+import { useState, useEffect, createRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { checkCookies } from 'cookies-next';
@@ -377,7 +377,7 @@ const agencyHook = () => {
             const errorText =
               agent?.ErrorCode == undefined && agent.Error == 'Notfind'
                 ? t('Notfind')
-                : agent.Error
+                : agent?.ErrorCode !== undefined
                 ? t(`${agent?.ErrorCode}`)
                 : agent.Error;
             if (status !== 200 && !agent.success) {

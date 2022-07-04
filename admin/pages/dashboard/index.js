@@ -23,6 +23,7 @@ import {
   currenciesAStore,
 } from '../../src/components/exchange/Currencies/currenciesStatic';
 import { Agencies } from '../../src/components/Clients/Agencies/agenciesStatic';
+import { Roles } from '../../src/components/Rbac/Roles/rolesStatic';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
@@ -136,6 +137,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('agencies', ctx)
               ? JSON.parse(getCookies(ctx).agencies)
               : { ...Agencies },
+          })),
+          ...(await store.dispatch({
+            type: 'ROLES',
+            payload: checkCookies('roles', ctx)
+              ? JSON.parse(getCookies(ctx).roles)
+              : { ...Roles },
           })),
         },
       };

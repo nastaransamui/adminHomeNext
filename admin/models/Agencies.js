@@ -35,7 +35,7 @@ const AgenciesSchema = new mongoose.Schema(
     userCreated: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
     userUpdated: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
     accountManager_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
-    accountManager: { type: String, required: true },
+    accountManager: { type: String },
     isActive: { type: Boolean, default: true },
     isVercel: { type: Boolean },
     remark: { type: String },

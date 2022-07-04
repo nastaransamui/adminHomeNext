@@ -1,7 +1,9 @@
 import { makeStyles } from '@mui/styles';
+import { cardTitle } from '../../../theme/common';
 
 const cardsShowStyles = makeStyles((theme) => {
   return {
+    cardTitle,
     filterToolbar: {
       display: 'flex',
       [theme.breakpoints.down('md')]: {
@@ -136,6 +138,58 @@ const cardsShowStyles = makeStyles((theme) => {
           background: theme.palette.primary.main,
         },
       },
+    },
+    cardCategory: {
+      color: theme.palette.text.color,
+      marginTop: '10px',
+    },
+    marginTop30: {
+      marginTop: '30px',
+      cursor: 'pointer',
+    },
+    icon: {
+      color: '#333333',
+      margin: '10px auto 0',
+      width: '130px',
+      height: '130px',
+      border: `1px solid ${theme.palette.secondary.main}`,
+      borderRadius: '50%',
+      lineHeight: '174px',
+      '& svg': {
+        width: '55px',
+        height: '55px',
+      },
+      '& .fab,& .fas,& .far,& .fal,& .material-icons': {
+        width: '55px',
+        fontSize: '55px',
+      },
+    },
+    iconPrimary: {
+      ...cardTitle,
+      color: theme.palette.primary.main,
+    },
+    btnClasses: {
+      color: theme.palette.primary.contrastText,
+      minHeight: 'auto',
+      minWidth: 'auto',
+      border: 'none',
+      borderRadius: '3px',
+      position: 'relative',
+      padding: '12px 30px',
+      margin: '.3125rem 1px',
+      fontSize: '12px',
+      fontWeight: '400',
+      textTransform: 'uppercase',
+      letterSpacing: '0',
+      willChange: 'box-shadow, transform',
+      transition:
+        'box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      lineHeight: '1.42857143',
+      textAlign: 'center',
+      whiteSpace: 'nowrap',
+      verticalAlign: 'middle',
+      touchAction: 'manipulation',
+      borderRadius: '30px',
     },
   };
 });

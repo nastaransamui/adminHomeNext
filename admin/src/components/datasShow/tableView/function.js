@@ -12,6 +12,7 @@ import {
   DateFilters,
   RenderArrayTotal,
   RenderArray,
+  RenderIcon,
 } from './RenderCell';
 
 export const createColumns = (dataGridColumns, props, t) => {
@@ -31,7 +32,14 @@ export const createColumns = (dataGridColumns, props, t) => {
       renderCell: (params) => {
         return (
           <>
-            {element.type == 'boolean' ? (
+            {element?.hasIcon !== undefined && element?.hasIcon[0] ? (
+              <RenderIcon
+                dataGridColumns={dataGridColumns}
+                modelName={props.modelName}
+                rtlActive={props.rtlActive}
+                {...params}
+              />
+            ) : element.type == 'boolean' ? (
               <RenderCellBoolean modelName={props.modelName} {...params} />
             ) : element.type == 'dateTime' ? (
               <RenderCellDate modelName={props.modelName} {...params} />

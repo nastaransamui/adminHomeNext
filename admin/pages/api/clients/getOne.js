@@ -26,10 +26,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       const { _id, modelName } = req.body;
       const collection = mongoose.model(modelName);
       const { hzErrorConnection, hz } = await hazelCast();
+
       if (hzErrorConnection) {
         const agentValue = await collection.aggregate([
           { $match: { _id: ObjectId(_id) } },
-          { $unwind: '$accountManager_id' },
+          {
+            $unwind: {
+              path: '$accountManager_id',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'users',
@@ -47,7 +53,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               as: 'accountManagerData',
             },
           },
-          { $unwind: '$currencyCode_id' },
+          {
+            $unwind: {
+              path: '$currencyCode_id',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'currencies',
@@ -67,7 +78,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               as: 'currencyCodeData',
             },
           },
-          { $unwind: '$userCreated' },
+          {
+            $unwind: {
+              path: '$userCreated',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'users',
@@ -85,7 +101,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               as: 'userCreatedData',
             },
           },
-          { $unwind: '$userUpdated' },
+          {
+            $unwind: {
+              path: '$userUpdated',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'users',
@@ -103,7 +124,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               as: 'userUpdatedData',
             },
           },
-          { $unwind: '$country_id' },
+          {
+            $unwind: {
+              path: '$country_id',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'countries',
@@ -121,7 +147,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               as: 'countryData',
             },
           },
-          { $unwind: '$province_id' },
+          {
+            $unwind: {
+              path: '$province_id',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'countries',
@@ -173,7 +204,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
             },
           },
-          { $unwind: '$city_id' },
+          {
+            $unwind: {
+              path: '$city_id',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
           {
             $lookup: {
               from: 'countries',
@@ -237,6 +273,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             },
           },
         ]);
+
         if (agentValue.length > 0) {
           res.status(200).json({
             success: true,

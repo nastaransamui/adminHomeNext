@@ -19,6 +19,7 @@ const Wizard = (props) => {
     finishButtonClick,
     rtlActive,
   } = props;
+
   const classes = wizardStyle();
   const wizard = useRef();
   const [width, setWidth] = useState('');
@@ -209,20 +210,11 @@ const Wizard = (props) => {
               <div
                 className={
                   stepContentClasses +
-                  ` animate__animated ${
-                    rtlActive ? 'animate__fadeInRight' : 'animate__fadeInLeft'
-                  }`
+                  ` animate__animated animate__zoomIn`
                 }
                 key={key}>
                 <prop.stepComponent
-                  innerRef={(node) => (this[prop.stepId] = node)}
-                  allStates={allState}
-                  handleChange={steps[currentStep].handleChange}
-                  values={steps[currentStep].values}
-                  setValues= {steps[currentStep].setValues}
-                  roleNameError={steps[currentStep].roleNameError}
-                  handleAddRoutes={steps[currentStep].handleAddRoutes}
-                  handleRemoveRoutes={steps[currentStep].handleRemoveRoutes}
+                  {...steps[0]}
                 />
               </div>
             );

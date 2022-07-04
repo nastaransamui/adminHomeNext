@@ -531,10 +531,44 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           var collection = mongoose.model(modelName);
           if (fieldValue !== 'phones') {
             if (hzErrorConnection) {
+              //Initiate match
+              var match = {
+                $match: { [fieldValue]: searchRegex },
+              };
+              //Initiate add field
+              var addFields = {
+                $addFields: {},
+              };
+              //Unset string value of numbers
+              var unset = {
+                $unset: `agentsData.converted${fieldValue}`,
+              };
+              //Set match expresion base on type of fieldValue
+              switch (fieldValue) {
+                case 'creditAmount':
+                case 'depositAmount':
+                case 'remainCreditAmount':
+                case 'remainDepositAmount':
+                  addFields = {
+                    $addFields: {
+                      [`${`converted${fieldValue}`}`]: {
+                        $toString: `$${fieldValue}`,
+                      },
+                    },
+                  };
+                  match = {
+                    $match: {
+                      [`${`converted${fieldValue}`}`]: searchRegex,
+                    },
+                  };
+                  break;
+              }
               const valuesList = await collection.aggregate([
                 { $sort: { agentName: 1 } },
-                { $match: { [fieldValue]: searchRegex } },
+                { ...addFields },
+                { ...match },
                 { $limit: 50 },
+                { ...unset },
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
@@ -578,10 +612,44 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   }
                 }
               } else {
+                //Initiate match
+                var match = {
+                  $match: { [fieldValue]: searchRegex },
+                };
+                //Initiate add field
+                var addFields = {
+                  $addFields: {},
+                };
+                //Unset string value of numbers
+                var unset = {
+                  $unset: `agentsData.converted${fieldValue}`,
+                };
+                //Set match expresion base on type of fieldValue
+                switch (fieldValue) {
+                  case 'creditAmount':
+                  case 'depositAmount':
+                  case 'remainCreditAmount':
+                  case 'remainDepositAmount':
+                    addFields = {
+                      $addFields: {
+                        [`${`converted${fieldValue}`}`]: {
+                          $toString: `$${fieldValue}`,
+                        },
+                      },
+                    };
+                    match = {
+                      $match: {
+                        [`${`converted${fieldValue}`}`]: searchRegex,
+                      },
+                    };
+                    break;
+                }
                 const valuesList = await collection.aggregate([
                   { $sort: { agentName: 1 } },
-                  { $match: { [fieldValue]: searchRegex } },
+                  { ...addFields },
+                  { ...match },
                   { $limit: 50 },
+                  { ...unset },
                 ]);
                 if (valuesList.length > 0) {
                   res.status(200).json({ success: true, data: valuesList });

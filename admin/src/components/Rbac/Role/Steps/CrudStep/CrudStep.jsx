@@ -205,7 +205,7 @@ const CrudStep = (props) => {
                 tabIndex={-1}
                 disableRipple
                 inputProps={{
-                  'aria-labeled': 'labelId',
+                  'aria-labelledby': 'labelId',
                 }}
               />
             }>

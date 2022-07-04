@@ -38,6 +38,7 @@ const initialState = {
   currenciesAStore: { ...currenciesAStore },
   Agencies: { ...Agencies },
   Roles: { ...Roles },
+  dataAgentPageNumber: 0,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -120,6 +121,8 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         Agencies: { ...payload },
       };
+    case 'DATA_AGENT_PAGENUMBER':
+      return { ...state, dataAgentPageNumber: payload };
     default:
       return state;
   }

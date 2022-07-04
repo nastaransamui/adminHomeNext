@@ -42,6 +42,7 @@ export default function Roles(props){
     cookieName: 'roles',
   });
 
+
   return(
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
       <Fragment>
@@ -59,7 +60,7 @@ export default function Roles(props){
           total={dataArrayLengh}
           perPage={PerPage}
           mainData={roles}
-          profile
+          Icon
           modelName='Roles'
           deleteAlert={sweetDeleteAlert}
           dataGridColumns={dataGridColumns}

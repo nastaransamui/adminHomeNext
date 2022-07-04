@@ -338,8 +338,6 @@ export default function Agency(props) {
                             label={t('accountManager')}
                             variant='standard'
                             value={values.accountManager}
-                            validators={['required']}
-                            errorMessages={[t('required')]}
                             onBlur={() => {
                               if (
                                 amOptions
@@ -1002,7 +1000,7 @@ export default function Agency(props) {
                                       ]);
                                     }
                                   }}
-                                  style={{ alignItems: 'center' }}>
+                                  style={{ alignItems: 'center', zIndex: 1 }}>
                                   {index == 0 ? <Add /> : <Remove />}
                                 </Fab>
                               </Tooltip>

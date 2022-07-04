@@ -58,6 +58,8 @@ const TableBody = forwardRef((props, ref) => {
             ? true
             : modelName == 'Agencies'
             ? false
+            : modelName == 'Roles'
+            ? false
             : modelName == 'Users'
             ? params.id == profile._id
             : params.row.isActive;
@@ -180,6 +182,12 @@ const TableBody = forwardRef((props, ref) => {
         history.push({
           pathname: editUrl,
           search: `?client_id=${params?.row?._id}`,
+          state: params.row,
+        });
+      } else if (modelName == 'Roles') {
+        history.push({
+          pathname: editUrl,
+          search: `?role_id=${params?.row?._id}`,
           state: params.row,
         });
       } else {

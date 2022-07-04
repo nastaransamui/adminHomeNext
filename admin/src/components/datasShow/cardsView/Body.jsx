@@ -16,6 +16,8 @@ import {
   ToggleOn,
 } from '@mui/icons-material';
 
+import SvgIcon from '@mui/material/SvgIcon';
+
 import {
   Button,
   ClickAwayListener,
@@ -49,9 +51,9 @@ const Body = forwardRef((props, ref) => {
     diactiveAlert,
     gridNumber,
     activesId,
+    icon,
   } = props;
   const { stringLimit, profile } = useSelector((state) => state);
-
   const { i18n } = useTranslation();
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
   const theme = useTheme();
@@ -160,11 +162,16 @@ const Body = forwardRef((props, ref) => {
           search: `?city_id=${data?.id}`,
           state: data,
         });
-        client_id;
       } else if (modelName == 'Agencies') {
         history.push({
           pathname: editUrl,
           search: `?client_id=${_id}`,
+          state: data,
+        });
+      } else if (modelName == 'Roles') {
+        history.push({
+          pathname: editUrl,
+          search: `?role_id=${_id}`,
           state: data,
         });
       } else {
@@ -186,9 +193,17 @@ const Body = forwardRef((props, ref) => {
     ) {
       if (typeof data[label] == 'object') {
         if (type == 'array') {
-          return `${data[label][0].number}`;
+          if(modelName !== 'Roles'){
+            return `${data[label][0].number}`
+          }else{
+            return `${data[label]?.length}`;
+          }
         } else {
-          return `${label}: ${data[label]?.length}`;
+          if(modelName !== 'Roles'){
+            return `${label}: ${data[label]?.length}`;
+          }else{
+            return `${data[label]?.length}`;
+          }
         }
       } else if (typeof data[label] !== 'boolean') {
         if (typeof data[label] !== 'number' && data[label] == '') {
@@ -202,10 +217,10 @@ const Body = forwardRef((props, ref) => {
             const formatedDate =
               modelName == 'Agencies'
                 ? label == 'updatedAt'
-                ? moment(data[label]).format('MMMM Do YYYY, H:mm')
-                : moment(new Date(data[label].slice(0, -1))).format(
-                    'MMMM Do YYYY, H:mm'
-                  )
+                  ? moment(data[label]).format('MMMM Do YYYY, H:mm')
+                  : moment(new Date(data[label].slice(0, -1))).format(
+                      'MMMM Do YYYY, H:mm'
+                    )
                 : label == 'updatedAt'
                 ? moment(data[label]).format('MMMM Do YYYY, H:mm')
                 : moment(new Date(data[label].slice(0, -1))).format(
@@ -224,8 +239,8 @@ const Body = forwardRef((props, ref) => {
                 ? data[label] == null
                   ? `${t('notDefine')}`
                   : rtlActive
-                  ? `... ${data[label].slice(0, stringLimit)}`
-                  : `${data[label].slice(0, stringLimit)} ...`
+                  ? `... ${data[label].slice(0, 10)}`
+                  : `${data[label].slice(0, 10)} ...`
                 : null;
             }
           }
@@ -361,196 +376,255 @@ const Body = forwardRef((props, ref) => {
       }
     }
   };
-  
+
   return (
-    <CardBody ref={ref}>
-      <div className={classes.cardHoverUnder}>
-        {activesId !== undefined ? (
-          activesId.filter((e) => e.id == data.id).length > 0 ? (
-            <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
-              <Button
-                color='primary'
-                onClick={() => {
-                  diactiveAlert(data);
-                }}>
-                <ToggleOff style={{ color: theme.palette.success.main }} />
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
-              <Button
-                color='primary'
-                onClick={() => {
-                  activeAlert(data);
-                }}>
-                <ToggleOn style={{ color: theme.palette.error.main }} />
-              </Button>
-            </Tooltip>
-          )
-        ) : (
-          editUrl !== '' && (
-            <Tooltip title={t('editTooltip')} placement='bottom' arrow>
-              <Button color='primary' onClick={() => gotToEdit(data._id)}>
-                <ArtTrack className={classes.underChartIcons} />
-              </Button>
-            </Tooltip>
-          )
-        )}
-        {modelName == 'Countries' || modelName == 'Currencies' ? (
-          <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
-            <Button
-              color='primary'
-              onClick={() => {
-                diactiveAlert(data);
-              }}>
-              <ToggleOff style={{ color: theme.palette.success.main }} />
-            </Button>
-          </Tooltip>
-        ) : (modelName == 'Users' &&
-            data._id !== profile._id &&
-            editUrl !== '') ||
-          modelName == 'Agencies' ? (
-          <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
-            <Button
-              color='error'
-              onClick={() => {
-                deleteAlert(data);
-              }}>
-              <DeleteForeverOutlined />
-            </Button>
-          </Tooltip>
-        ) : activesId !== undefined ? null : modelName !== 'Users' &&
-          !data.isActive &&
-          deleteAlert !== undefined ? (
-          <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
-            <Button
-              color='error'
-              onClick={() => {
-                deleteAlert(data);
-              }}>
-              <DeleteForeverOutlined />
-            </Button>
-          </Tooltip>
-        ) : null}
-      </div>
-      <span
-        style={{
-          display: 'flex',
-          flexDirection:
-            rtlActive && modelName == 'Users' ? 'row-reverse' : 'row',
-          marginBottom: 20,
-        }}>
-        <h4 className={classes.cardProductTitle}>
+    <>
+      {typeof icon !== 'undefined' ? (
+        <CardBody pricing plain ref={ref}>
+          <h6 className={classes.cardCategory}>{modelName}</h6>
+          <div className={classes.icon} style={{marginBottom: 10}}>
+            <SvgIcon className={classes.iconPrimary}>
+              <path d={`${data.icon}`} />
+            </SvgIcon>
+          </div>
+          <Divider style={{marginBottom: 20}}/>
+          {dataFields.map((item, i) => {
+            const {  label, type } = item;
+            return (
+              <div
+              key={i}
+            className={`${classes.cardTitle} `}
+            style={{
+              position: 'relative',
+              display: 'flex',
+            }}>
+              <div style={{ flex: 1, justifyContent: 'flex-start' }}>
+              {t(`${label}`)} :{' '}
+            </div>
+            <Tooltip title={label == 'remark' && data.remark.length > 10 ? data.remark : ''} placement='bottom' arrow>
+            <div style={{ flex: 1, justifyContent: 'flex-start' }}>
+              {primaryTextData(data, label, type)}
+            </div>
+              </Tooltip>
+            </div>
+            )
+          })}
+          <Button
+            color='primary'
+            fullWidth
+            variant='contained'
+            className={classes.btnClasses}
+            onClick={() => gotToEdit(data._id)}>
+            {t('edit')}
+          </Button>
+          <Button
+            color='secondary'
+            fullWidth
+            onClick={() => deleteAlert(data)}
+            variant='contained'
+            className={classes.btnClasses}>
+            {t('delete')}
+          </Button>
+        </CardBody>
+      ) : (
+        <CardBody ref={ref}>
+          <div className={classes.cardHoverUnder}>
+            {activesId !== undefined ? (
+              activesId.filter((e) => e.id == data.id).length > 0 ? (
+                <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+                  <Button
+                    color='primary'
+                    onClick={() => {
+                      diactiveAlert(data);
+                    }}>
+                    <ToggleOff style={{ color: theme.palette.success.main }} />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                  <Button
+                    color='primary'
+                    onClick={() => {
+                      activeAlert(data);
+                    }}>
+                    <ToggleOn style={{ color: theme.palette.error.main }} />
+                  </Button>
+                </Tooltip>
+              )
+            ) : (
+              editUrl !== '' && (
+                <Tooltip title={t('editTooltip')} placement='bottom' arrow>
+                  <Button color='primary' onClick={() => gotToEdit(data._id)}>
+                    <ArtTrack className={classes.underChartIcons} />
+                  </Button>
+                </Tooltip>
+              )
+            )}
+            {modelName == 'Countries' || modelName == 'Currencies' ? (
+              <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+                <Button
+                  color='primary'
+                  onClick={() => {
+                    diactiveAlert(data);
+                  }}>
+                  <ToggleOff style={{ color: theme.palette.success.main }} />
+                </Button>
+              </Tooltip>
+            ) : (modelName == 'Users' &&
+                data._id !== profile._id &&
+                editUrl !== '') ||
+              modelName == 'Agencies' ? (
+              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+                <Button
+                  color='error'
+                  onClick={() => {
+                    deleteAlert(data);
+                  }}>
+                  <DeleteForeverOutlined />
+                </Button>
+              </Tooltip>
+            ) : activesId !== undefined ? null : modelName !== 'Users' &&
+              !data.isActive &&
+              deleteAlert !== undefined ? (
+              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+                <Button
+                  color='error'
+                  onClick={() => {
+                    deleteAlert(data);
+                  }}>
+                  <DeleteForeverOutlined />
+                </Button>
+              </Tooltip>
+            ) : null}
+          </div>
+          <span
+            style={{
+              display: 'flex',
+              flexDirection:
+                rtlActive && modelName == 'Users' ? 'row-reverse' : 'row',
+              marginBottom: 20,
+            }}>
+            <h4 className={classes.cardProductTitle}>
+              <Tooltip
+                title={
+                  modelName == 'Users'
+                    ? data.userName
+                    : modelName == 'global_countries' ||
+                      modelName == 'Countries'
+                    ? rtlActive
+                      ? data?.translations?.fa
+                      : data?.name
+                    : modelName == 'global_currencies' ||
+                      modelName == 'Currencies'
+                    ? data?.currency_name
+                    : modelName == 'Provinces' || modelName == 'Cities'
+                    ? data?.name
+                    : modelName == 'Agencies'
+                    ? data?.agentName
+                    : modelName == 'Roles'
+                    ? data?.roleName
+                    : data[`title_${lang}`]
+                }
+                placement='top'
+                arrow>
+                <a
+                  href=''
+                  onClick={(e) => {
+                    e.preventDefault();
+                    gotToEdit(data._id);
+                  }}>
+                  {modelName == 'Users'
+                    ? data.userName.length <= stringLimit
+                      ? data.userName
+                      : rtlActive
+                      ? `... ${data.userName.slice(0, stringLimit)}`
+                      : `${data.userName.slice(0, stringLimit)} ...`
+                    : modelName == 'global_countries' ||
+                      modelName == 'Countries' ||
+                      modelName == 'Provinces' ||
+                      modelName == 'Cities'
+                    ? rtlActive
+                      ? data?.translations?.fa || data?.name || t('information')
+                      : data?.name
+                    : modelName == 'Agencies'
+                    ? data?.agentName
+                    : data[`title_${lang}`]}
+                </a>
+              </Tooltip>
+            </h4>
+          </span>
+          <Divider />
           <Tooltip
-            title={
-              modelName == 'Users'
-                ? data.userName
-                : modelName == 'global_countries' || modelName == 'Countries'
-                ? rtlActive
-                  ? data?.translations?.fa
-                  : data?.name
-                : modelName == 'global_currencies' || modelName == 'Currencies'
-                ? data?.currency_name
-                : modelName == 'Provinces' || modelName == 'Cities'
-                ? data?.name
-                : modelName == 'Agencies'
-                ? data?.agentName
-                : data[`title_${lang}`]
-            }
+            title={expanded[index] ? '' : t('expand')}
             placement='top'
             arrow>
-            <a
-              href=''
-              onClick={(e) => {
-                e.preventDefault();
-                gotToEdit(data._id);
-              }}>
-              {modelName == 'Users'
-                ? data.userName.length <= stringLimit
-                  ? data.userName
-                  : rtlActive
-                  ? `... ${data.userName.slice(0, stringLimit)}`
-                  : `${data.userName.slice(0, stringLimit)} ...`
-                : modelName == 'global_countries' ||
-                  modelName == 'Countries' ||
-                  modelName == 'Provinces' ||
-                  modelName == 'Cities'
-                ? rtlActive
-                  ? data?.translations?.fa || data?.name || t('information')
-                  : data?.name
-                : modelName == 'Agencies'
-                ? data?.agentName
-                : data[`title_${lang}`]}
-            </a>
+            <Box sx={setBoxStyle(index, expanded)}>
+              <ListItemButton
+                alignItems='flex-start'
+                onClick={() => expandClicked(index)}
+                sx={setItemButtonStyle(index, expanded)}>
+                <ListItemText
+                  primary={
+                    rtlActive
+                      ? data?.translations?.fa || data?.name || t('information')
+                      : modelName == 'global_currencies' ||
+                        modelName == 'Currencies'
+                      ? data?.currency_name
+                      : data.name || t('information')
+                  }
+                  primaryTypographyProps={primaryProps}
+                  secondary={dataFields.map((e) => t(`${e.label}`)).join(', ')}
+                  secondaryTypographyProps={secondaryProps}
+                  sx={{ my: 0, textAlign: rtlActive ? 'right' : 'left' }}
+                />
+                <KeyboardArrowDown sx={keyboardSx(index, expanded)} />
+              </ListItemButton>
+              {expanded[index] && (
+                <ClickAwayListener
+                  onClickAway={() => awayClicked(index, expanded)}>
+                  <span>
+                    {expanded[index] &&
+                      dataFields.map((item, i) => {
+                        const { Icon, label, type } = item;
+                        return (
+                          <Tooltip
+                            title={primaryTooltipData(data, label, type)}
+                            placement='top'
+                            key={label}
+                            arrow>
+                            <ListItemButton
+                              onClick={() => gotToEdit(data._id)}
+                              sx={dataFieldsSX}>
+                              <ListItemIcon sx={{ color: 'inherit' }}>
+                                {/* <Icon style={iconStyle(i)} /> */}
+                                {listIcons(data, Icon, label, type, i)}
+                              </ListItemIcon>
+                              <ListItemText
+                                primaryTypographyProps={{
+                                  fontSize: 14,
+                                  fontWeight: 'medium',
+                                  lineHeight: 3.5,
+                                  noWrap: true,
+                                }}
+                                primary={primaryTextData(data, label, type)}
+                                style={{
+                                  textAlign: rtlActive ? 'right' : 'left',
+                                  borderBottom: `1px solid ${theme.palette.primary.main}`,
+                                  minHeight: 50,
+                                }}
+                              />
+                            </ListItemButton>
+                          </Tooltip>
+                        );
+                      })}
+                  </span>
+                </ClickAwayListener>
+              )}
+            </Box>
           </Tooltip>
-        </h4>
-      </span>
-      <Divider />
-      <Tooltip title={expanded[index] ? '' : t('expand')} placement='top' arrow>
-        <Box sx={setBoxStyle(index, expanded)}>
-          <ListItemButton
-            alignItems='flex-start'
-            onClick={() => expandClicked(index)}
-            sx={setItemButtonStyle(index, expanded)}>
-            <ListItemText
-              primary={
-                rtlActive
-                  ? data?.translations?.fa || data?.name || t('information')
-                  : modelName == 'global_currencies' ||
-                    modelName == 'Currencies'
-                  ? data?.currency_name
-                  : data.name || t('information')
-              }
-              primaryTypographyProps={primaryProps}
-              secondary={dataFields.map((e) => t(`${e.label}`)).join(', ')}
-              secondaryTypographyProps={secondaryProps}
-              sx={{ my: 0, textAlign: rtlActive ? 'right' : 'left' }}
-            />
-            <KeyboardArrowDown sx={keyboardSx(index, expanded)} />
-          </ListItemButton>
-          {expanded[index] && (
-            <ClickAwayListener onClickAway={() => awayClicked(index, expanded)}>
-              <span >
-                {expanded[index] &&
-                  dataFields.map((item, i) => {
-                    const { Icon, label, type } = item;
-                    return (
-                      <Tooltip
-                        title={primaryTooltipData(data, label, type)}
-                        placement='top'
-                        key={label}
-                        arrow>
-                        <ListItemButton
-                          onClick={() => gotToEdit(data._id)}
-                          sx={dataFieldsSX}>
-                          <ListItemIcon sx={{ color: 'inherit' }}>
-                            {/* <Icon style={iconStyle(i)} /> */}
-                            {listIcons(data, Icon, label, type, i)}
-                          </ListItemIcon>
-                          <ListItemText
-                            primaryTypographyProps={{
-                              fontSize: 14,
-                              fontWeight: 'medium',
-                              lineHeight: 3.5,
-                              noWrap: true,
-                            }}
-                            primary={primaryTextData(data, label, type)}
-                            style={{
-                              textAlign: rtlActive ? 'right' : 'left',
-                              borderBottom: `1px solid ${theme.palette.primary.main}`,
-                              minHeight: 50,
-                            }}
-                          />
-                        </ListItemButton>
-                      </Tooltip>
-                    );
-                  })}
-              </span>
-            </ClickAwayListener>
-          )}
-        </Box>
-      </Tooltip>
-    </CardBody>
+        </CardBody>
+      )}
+    </>
   );
 });
 

@@ -8,14 +8,15 @@ import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
 const getDataUrl = '/admin/api/autocomplete/search';
 import { useTheme } from '@mui/material';
+import SvgIcon from '@mui/material/SvgIcon';
 
 const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
-  const { adminAccessToken } = useSelector((state) => state);
+  const { adminAccessToken, stringLimit } = useSelector((state) => state);
   const router = useRouter();
   const theme = useTheme();
   const [openField, setOpenField] = useState(false);
   const [dataOptions, setDataOptions] = useState([]);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation('common');
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
   let loadingField = openField && dataOptions.length === 0;
   const [filterValue, setFilterValue] = useState('');
@@ -113,6 +114,11 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             newValue !== null ? newValue[`${fieldValue}`][0].number || '' : ''
           );
         }
+        break;
+      case 'Roles':
+        setFilterValue(
+          newValue !== null ? newValue[`${fieldValue}`] || '' : ''
+        );
         break;
     }
   };
@@ -239,6 +245,23 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             </>
           );
         }
+      case 'Roles':
+        console.log(dataOptions);
+        return (
+          <>
+            <SvgIcon>
+              <path d={`${dataOptions.icon}`} />
+            </SvgIcon>
+            &nbsp;&nbsp;&nbsp;
+            {`${dataOptions.roleName} - ${dataOptions.routes.length} - ${t(
+              'routes'
+            )} - ${
+              dataOptions.remark.length > 0
+                ? `${dataOptions.remark.slice(0, stringLimit)}...`
+                : ''
+            }`}
+          </>
+        );
     }
   };
 
@@ -260,6 +283,8 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         return dataOptions.userName;
       case 'Agencies':
         return dataOptions.agentName;
+      case 'Roles':
+        return dataOptions.roleName;
     }
   };
 

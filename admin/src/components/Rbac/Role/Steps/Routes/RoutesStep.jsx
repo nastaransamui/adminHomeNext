@@ -1,5 +1,5 @@
-import {useState} from 'react'
-import {useTheme } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import routes from '../../../../../../routes';
@@ -26,14 +26,21 @@ function intersection(a, b) {
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
+function copy(arr1, arr2) {
+  for (var i = 0; i < arr1.length; i++) {
+    arr2[i] = arr1[i];
+  }
+}
 
 const RoutesStep = (props) => {
-  const { values, handleAddRoutes, handleRemoveRoutes } = props;
+  const { values, handleAddRoutes, handleRemoveRoutes, role_id } = props;
   const [checked, setChecked] = useState([]);
+  var copyRoute = [];
+  copy(routes, copyRoute);
   const [left, setLeft] = useState(
-    routes.slice(1).filter((val) => !values.routes.includes(val))
+    copyRoute.slice(1).filter((val) => !values.routes.includes(val))
   );
-  const theme = useTheme()
+  const theme = useTheme();
   const [right, setRight] = useState(values.routes);
   const { t, i18n } = useTranslation('roles');
   const leftChecked = intersection(checked, left);
@@ -75,6 +82,28 @@ const RoutesStep = (props) => {
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount && role_id !== undefined) {
+      setRight(values.routes);
+      const notIncluded = copyRoute.filter((a) => {
+        if (
+          !values.routes
+            .map((a) => a[`name_${i18n.language}`])
+            .includes(a[`name_${i18n.language}`])
+        ) {
+          return a;
+        }
+      });
+      setLeft(
+        notIncluded.slice(1).filter((val) => !values.routes.includes(val))
+      );
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [values]);
 
   const customList = (title, items) => (
     <Card>
@@ -149,7 +178,7 @@ const RoutesStep = (props) => {
           <Button
             sx={{ my: 0.5 }}
             variant='outlined'
-            style={{border: `solid 1px ${theme.palette.secondary.main}`}}
+            style={{ border: `solid 1px ${theme.palette.secondary.main}` }}
             size='small'
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
@@ -160,7 +189,7 @@ const RoutesStep = (props) => {
             sx={{ my: 0.5 }}
             variant='outlined'
             size='small'
-            style={{border: `solid 1px ${theme.palette.secondary.main}`}}
+            style={{ border: `solid 1px ${theme.palette.secondary.main}` }}
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}
             aria-label='move selected left'>

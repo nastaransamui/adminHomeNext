@@ -19,6 +19,8 @@ import {
   provinceUrl,
 } from './userStatic';
 
+let reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+
 const userHook = () => {
   const [profileImageBlob, setProfileImageBlob] = useState('');
   const location = useLocation();
@@ -39,15 +41,17 @@ const userHook = () => {
     modelName: 'Users',
     folderId: (Math.random() + 1).toString(36).substring(7),
     countryName: '',
-    country_id: '',
+    country_id: [],
     provinceName: '',
-    province_id: '',
+    province_id: [],
     cityName: '',
-    city_id: '',
+    city_id: [],
     position: '',
     aboutMe: '',
     _id: _id || '',
   });
+
+  const [totalAgents, setTotalAgents] = useState(0);
   const [openCity, setOpenCity] = useState(false);
   const [cityOptions, setCityOptions] = useState([]);
   let loadingCity = openCity && cityOptions.length === 0;
@@ -63,7 +67,9 @@ const userHook = () => {
   const loadingCountry = openCountry && countryOptions.length === 0;
   const [countryFilter, setCountryFilter] = useState('');
 
-  const { adminAccessToken, profile } = useSelector((state) => state);
+  const { adminAccessToken, profile, dataAgentPageNumber } = useSelector(
+    (state) => state
+  );
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation('users');
@@ -84,63 +90,64 @@ const userHook = () => {
       setValues({ ...values, [name]: event.target.value });
     }
   };
-
   const handleAutocomplete = (name, newValue) => {
     if (newValue == null) {
       if (name == 'cityName') {
         setValues({
           ...values,
           [name]: '',
-          city_id: '',
+          city_id: [],
           provinceName: '',
-          province_id: '',
+          province_id: [],
           countryName: '',
-          country_id: '',
+          country_id: [],
         });
       }
       if (name == 'provinceName') {
         setValues({
           ...values,
           [name]: '',
-          province_id: '',
+          province_id: [],
           cityName: '',
-          city_id: '',
+          city_id: [],
         });
       }
       if (name == 'countryName') {
-        setValues({ ...values, [name]: '', country_id: '' });
+        setValues({ ...values, [name]: '', country_id: [] });
       }
     } else {
       if (name == 'cityName') {
-        setValues({
-          ...values,
-          [name]: newValue.name,
-          city_id: newValue._id,
-          provinceName: newValue.state_name,
-          province_id: newValue.state_id,
-          countryName: newValue.country,
-          country_id: newValue.country_id,
-        });
+        values.city_id.push(newValue._id);
+        values[name] = newValue.name;
+        values.province_id = [];
+        values.province_id.push(newValue.state_id);
+        values.provinceName = newValue.state_name;
+        values.country_id = [];
+        values.country_id.push(newValue.country_id);
+        values.countryName = newValue.country;
+        setValues({ ...values });
       }
       if (name == 'provinceName') {
-        setValues({
-          ...values,
-          cityName: '',
-          city_id: '',
-          provinceName: newValue.name,
-          province_id: newValue._id,
-          countryName: newValue.country,
-          country_id: newValue.country_id,
-        });
+        values.cityName = '';
+        values.city_id = [];
+        values.province_id = [];
+        values.province_id.push(newValue._id);
+        values.provinceName = newValue.name;
+        values.country_id = [];
+        values.country_id.push(newValue.country_id);
+        values.countryName = newValue.country;
+        setValues({ ...values });
       }
       if (name == 'countryName') {
-        setValues({
-          ...values,
-          provinceName: '',
-          cityName: '',
-          countryName: newValue.name,
-          country_id: newValue._id,
-        });
+        console.log(newValue);
+        values.cityName = '';
+        values.city_id = [];
+        values.provinceName = '';
+        values.province_id = [];
+        values.country_id = [];
+        values.country_id.push(newValue._id);
+        values.countryName = newValue.name;
+        setValues({ ...values });
       }
     }
   };
@@ -176,6 +183,29 @@ const userHook = () => {
     values.profileImage = '';
     values.profileImageKey = '';
     setValues((oldValue) => ({ ...oldValue }));
+  };
+
+  const isValidated = () => {
+    if (values.password == '') {
+      if (values?.agentsData !== undefined) {
+        return true;
+      } else {
+        getUser();
+        return true;
+      }
+    } else {
+      if (values.password.match(reg)) {
+        if (values?.agentsData !== undefined) {
+          return true;
+        } else {
+          getUser();
+
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
   };
 
   const formSubmit = async () => {
@@ -223,6 +253,7 @@ const userHook = () => {
       }
     } else {
       // Edit user
+      // delete values.agentsData;
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
       const res = await fetch(editUrl, {
         method: 'POST',
@@ -302,49 +333,6 @@ const userHook = () => {
           }));
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         } else {
-          //set api to get user information
-          const getUser = async () => {
-            const res = await fetch(getUserUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                token: `Brearer ${adminAccessToken}`,
-              },
-              body: JSON.stringify(values),
-            });
-            const { status } = res;
-            const user = await res.json();
-            const errorText =
-              user?.ErrorCode == undefined && user.Error == 'Notfind'
-                ? t('Notfind')
-                : user.Error
-                ? t(`${user?.ErrorCode}`)
-                : user.Error;
-            if (status !== 200 && !user.success) {
-              alertCall(theme, 'error', errorText, () => {
-                dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                if (!checkCookies('adminAccessToken')) {
-                  router.push('/', undefined, { shallow: true });
-                } else {
-                  history.push(pushUrl);
-                }
-              });
-            } else {
-              setProfileImageBlob(user.data.profileImage);
-              //Todo remove social media fro now
-              delete user.data.facebook;
-              delete user.data.google;
-              delete user.data.twitter;
-              delete user.data.__v;
-              user.data.selfProfileUpdate = user.data._id == profile._id;
-              setValues((oldValues) => ({
-                ...oldValues,
-                ...user.data,
-              }));
-              dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            }
-          };
-
           getUser();
         }
       }
@@ -353,6 +341,68 @@ const userHook = () => {
       isMount = false;
     };
   }, [location]);
+
+  //set api to get user information
+  const getUser = async () => {
+    const res = await fetch(
+      `${getUserUrl}?page=${dataAgentPageNumber}&rowsPerPage=${
+        JSON.parse(localStorage.getItem('agentDataRowsPerPage')) || 5
+      }&order=${localStorage.getItem('agentDataOrder') || 'asc'}&orderBy=${
+        localStorage.getItem('agentDataOrderBy') || 'agentName'
+      }`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify(values),
+      }
+    );
+    const { status } = res;
+    const user = await res.json();
+    const errorText =
+      user?.ErrorCode == undefined && user.Error == 'Notfind'
+        ? t('Notfind')
+        : user.Error
+        ? t(`${user?.ErrorCode}`)
+        : user.Error;
+    if (status !== 200 && !user.success) {
+      alertCall(theme, 'error', errorText, () => {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          history.push(pushUrl);
+        }
+      });
+    } else {
+      setProfileImageBlob(user.data.profileImage);
+      setTotalAgents(user.totalAgents);
+      //Todo remove social media fro now<Fragment key={i}></Fragment>
+      delete user.data.facebook;
+      delete user.data.google;
+      delete user.data.twitter;
+      delete user.data.__v;
+      user.data.selfProfileUpdate = user.data._id == profile._id;
+      setValues((oldValues) => {
+        if (oldValues.userName == '') {
+          //page refresh
+          return {
+            ...oldValues,
+            ...user.data,
+          };
+        } else {
+          //Page update
+          return {
+            ...oldValues,
+            agentsData: user.data.agentsData,
+          };
+        }
+      });
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+    }
+  };
 
   const sleep = (delay = 0) => {
     return new Promise((resolve) => {
@@ -581,14 +631,28 @@ const userHook = () => {
     setProvinceFilter,
     setCityFilter,
     getCities,
+    isValidated,
+    totalAgents,
+    getUser,
   };
 };
 
 function toFormData(o) {
-  return Object.entries(o).reduce(
-    (d, e) => (d.append(...e), d),
-    new FormData()
-  );
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'agents_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'city_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'province_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'country_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
 }
 
 export default userHook;

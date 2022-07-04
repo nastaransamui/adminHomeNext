@@ -31,6 +31,9 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Stack, InputLabel, TextField } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
+import SvgIcon from '@mui/material/SvgIcon';
+import IconButton from '@mui/material/IconButton';
+
 function isOverflown(element) {
   return (
     element?.scrollHeight > element?.clientHeight ||
@@ -233,6 +236,42 @@ export const RenderCellDate = (params) => {
   // return (
 
   // );
+};
+
+export const RenderIcon = (params) => {
+  const theme = useTheme();
+  const { row, formattedValue } = params;
+  return (
+    <span
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        width: '100%',
+      }}>
+      <div
+        style={{
+          border: `1px solid ${theme.palette.secondary.main}`,
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <SvgIcon
+          style={{
+            color: theme.palette.primary.main,
+            // paddingBottom: 1,
+            width: 30,
+            height: 30,
+            borderRadius: '50%',
+          }}>
+          <path d={`${row.icon}`} />
+        </SvgIcon>
+      </div>
+      {formattedValue}
+    </span>
+  );
 };
 
 export const RenderCellAvatar = (params) => {

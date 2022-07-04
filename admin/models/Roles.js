@@ -12,7 +12,6 @@ const RolesSchema = new mongoose.Schema(
         path: String,
         'name_en-US': String,
         name_fa: String,
-        icon: String,
         crud: [
           {
             name: String,

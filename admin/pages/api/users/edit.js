@@ -11,6 +11,7 @@ import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
 import { updateObjectsId } from '../mainPageSetup/create';
 import { deleteObjectsId } from '../mainPageSetup/delete';
+import Agencies from '../../../models/Agencies';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const apiRoute = nextConnect({
@@ -39,47 +40,28 @@ apiRoute.post(
         if (req.body.password == '') {
           delete req.body.password;
         }
-        const { city_id, country_id, province_id, agents_id } = req.body;
-        const cityIdValid = ObjectId.isValid(city_id);
-        const provinceIdValid = ObjectId.isValid(province_id);
-        const countryIdValid = ObjectId.isValid(country_id);
-        const agentIdValid = ObjectId.isValid(agents_id);
-        !cityIdValid && delete req.body.city_id;
-        !provinceIdValid && delete req.body.province_id;
-        !countryIdValid && delete req.body.country_id;
-        !agentIdValid && delete req.body.agents_id;
+        req.body.agents_id = JSON.parse(req?.body?.agents_id);
+        req.body.country_id = JSON.parse(req?.body?.country_id);
+        req.body.province_id = JSON.parse(req?.body?.province_id);
+        req.body.city_id = JSON.parse(req?.body?.city_id);
 
         findUserById(_id).then(async (oldUser) => {
+          if (oldUser.agents_id.length !== req.body.agents_id.length) {
+            let agentsDeleteIds = oldUser.agents_id.filter(
+              (x) => !req.body.agents_id.includes(x.toString())
+            );
+            console.log(agentsDeleteIds);
+            await Agencies.updateMany(
+              { _id: { $in: agentsDeleteIds } },
+              { $set: { accountManager_id: [], accountManager: '' } },
+              { multi: true }
+            );
+          }
           for (var key in req.body) {
             if (
               typeof oldUser[key] !== 'function' &&
               req.body[key] !== undefined
             ) {
-              await deleteObjectsId(req, res, next, oldUser);
-              if (city_id) {
-                oldUser.city_id = [];
-                oldUser.city_id.push(city_id);
-              } else {
-                oldUser.city_id = [];
-              }
-              if (province_id) {
-                oldUser.province_id = [];
-                oldUser.province_id.push(province_id);
-              } else {
-                oldUser.province_id = [];
-              }
-              if (country_id) {
-                oldUser.country_id = [];
-                oldUser.country_id.push(country_id);
-              } else {
-                oldUser.country_id = [];
-              }
-              if (agents_id) {
-                oldUser.agents_id = [];
-                oldUser.agents_id.push(agents_id);
-              } else {
-                oldUser.agents_id = [];
-              }
               oldUser[key] = req.body[key];
               if (selfProfileUpdate) {
                 const newAccessToken = await jwtSign(oldUser);

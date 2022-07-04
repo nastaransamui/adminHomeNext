@@ -40,11 +40,12 @@ const nameStyle = makeStyles((theme) => {
     },
     icon: {
       color: theme.palette.primary.main,
-      paddingBottom: 1,
+      // paddingBottom: 1,
       marginTop: 5,
-      width: 90,
-      height: 90,
+      // width: 90,
+      // height: 90,
       borderRadius: '50%',
+      fontSize: 90,
     },
     input: {
       color: theme.palette.text.color,

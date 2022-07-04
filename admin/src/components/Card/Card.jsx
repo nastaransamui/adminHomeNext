@@ -52,6 +52,7 @@ CustomCard.propTypes = {
   className: PropTypes.string,
   plain: PropTypes.bool,
   profile: PropTypes.bool,
+  icon: PropTypes.bool,
   blog: PropTypes.bool,
   raised: PropTypes.bool,
   background: PropTypes.bool,

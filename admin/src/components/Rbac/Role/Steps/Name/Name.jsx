@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '../../../../../pages/dashboard/ReactRouter';
 import Grid from '@mui/material/Grid';
 import SelectValidator from 'react-material-ui-form-validator/lib/SelectValidator';
-import TextValidator from 'react-material-ui-form-validator/lib/TextValidator'
+import TextValidator from 'react-material-ui-form-validator/lib/TextValidator';
 import IconDialog from './IconDialog';
-import MenuItem from '@mui/material/MenuItem'
+import MenuItem from '@mui/material/MenuItem';
+import SvgIcon from '@mui/material/SvgIcon';
 
 const Name = (props) => {
   const { values, handleChange, roleNameError, setValues } = props;
@@ -44,7 +45,10 @@ const Name = (props) => {
           <Grid item xs={12} sm={12}>
             <div className={classes.pictureContainer}>
               <div className={classes.picture}>
-                <values.icon className={classes.icon} />
+                {/* <values.icon className={classes.icon} /> */}
+                <SvgIcon className={classes.icon}>
+                  <path d={`${values.icon}`} />
+                </SvgIcon>
                 <input onClick={handleClickOpen} />
               </div>
               <h6 className={classes.description}>{t('chooseIcon')}</h6>

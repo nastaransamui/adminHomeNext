@@ -3,6 +3,11 @@ import { cardTitle, grayColor } from '../../../theme/common';
 
 const userStyle = makeStyles((theme) => {
   return {
+    table: {
+      '& .MuiTableCell-root': {
+        borderLeft: '1px solid rgba(81, 81, 81, 1)',
+      },
+    },
     cardTitle,
     cardIconTitle: {
       ...cardTitle,

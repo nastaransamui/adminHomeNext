@@ -1,11 +1,11 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Public from '@mui/icons-material/Public';
@@ -24,14 +24,21 @@ import Badge from '@mui/icons-material/Badge';
 import Home from '@mui/icons-material/Home';
 import Airlines from '@mui/icons-material/Airlines';
 import AssignmentInd from '@mui/icons-material/AssignmentInd';
-
+import SvgIcon from '@mui/material/SvgIcon';
 
 const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide className='animate__animated animate__zoomInDown' direction='up' ref={ref} {...props} />;
+  return (
+    <Slide
+      className='animate__animated animate__zoomInDown'
+      direction='up'
+      ref={ref}
+      {...props}
+    />
+  );
 });
 
 const IconDialog = (props) => {
-  const { open,  handleClose } = props;
+  const { open, handleClose } = props;
   const theme = useTheme();
   const { t, i18n } = useTranslation('roles');
   const Icons = useMemo(() => {
@@ -59,15 +66,16 @@ const IconDialog = (props) => {
       <Dialog
         open={open}
         TransitionComponent={Transition}
-        onClose={()=>handleClose()}
+        onClose={() => handleClose()}
         aria-describedby='alert-dialog-slide-description'>
         <DialogTitle>{t('chooseIcon')}</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-slide-description' >
+          <DialogContentText id='alert-dialog-slide-description'>
             {Icons.map((Icon, i) => {
+              const svgRoute = Icon?.type?.render().props.children.props.d
               return (
                 <IconButton
-                onClick={()=>handleClose(Icon)}
+                  onClick={() => handleClose(svgRoute)}
                   key={i}
                   disableFocusRipple
                   disableRipple
@@ -77,9 +85,9 @@ const IconDialog = (props) => {
                         ? theme.palette.primary.main
                         : theme.palette.secondary.main
                     }`,
-                    margin: 5
+                    margin: 5,
                   }}>
-                  <Icon
+                  <SvgIcon
                     style={{
                       color:
                         i % 2 == 0
@@ -89,8 +97,11 @@ const IconDialog = (props) => {
                       width: 40,
                       height: 40,
                       borderRadius: '50%',
-                    }}
-                  />
+                    }}>
+                    <path
+                      d={`${svgRoute}`}
+                    />
+                  </SvgIcon>
                 </IconButton>
               );
             })}
@@ -102,4 +113,4 @@ const IconDialog = (props) => {
   );
 };
 
-export default  IconDialog
+export default IconDialog;

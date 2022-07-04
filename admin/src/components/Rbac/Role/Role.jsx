@@ -31,6 +31,7 @@ const Role = (props) => {
     roleNameError,
     handleAddRoutes,
     handleRemoveRoutes,
+    role_id
   } = roleHook();
 
   return (
@@ -59,7 +60,8 @@ const Role = (props) => {
                     handleChange: handleChange,
                     values: values,
                     roleNameError: roleNameError,
-                    setValues: setValues
+                    setValues: setValues,
+                    role_id: role_id
                   },
                   {
                     stepName: t('routes'),
@@ -71,6 +73,7 @@ const Role = (props) => {
                     handleChange: handleChange,
                     values: values,
                     roleNameError: roleNameError,
+                    role_id: role_id
                   },
                   {
                     stepName: t('curd'),
@@ -81,6 +84,7 @@ const Role = (props) => {
                     values: values,
                     setValues: setValues,
                     roleNameError: roleNameError,
+                    role_id: role_id
                   },
                 ]}
                 title={t('createRouteTitle')}

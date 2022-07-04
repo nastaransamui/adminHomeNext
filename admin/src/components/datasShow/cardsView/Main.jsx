@@ -13,10 +13,9 @@ import Body from './Body';
 
 const Main = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
-  const { cardView, mainData, total, gridNumber } = props;
+  const { cardView, mainData, total, gridNumber, profile, icon } = props;
   const [expanded, setExpanded] = useState({});
   const [elRefs, setElRefs] = useState([]);
-
   useEffect(() => {
     // add  refs
     setElRefs((elRefs) =>
@@ -28,7 +27,7 @@ const Main = forwardRef((props, ref) => {
 
   const setCardStyle = (index, expanded) => {
     return {
-      height: '80%',
+      // height: '80%',
       opacity:
         Object.keys(expanded).length === 0 &&
         Object.keys(expanded)[0] == undefined
@@ -58,20 +57,40 @@ const Main = forwardRef((props, ref) => {
                   lg={gridNumber}
                   xl={gridNumber}
                   key={index}>
-                  <Card
-                    style={setCardStyle(index, expanded)}
-                    profile
-                    className={classes.cardHover}
-                    ref={elRefs[index]}>
-                    <Header data={data} {...props} />
-                    <Body
-                      data={data}
-                      index={index}
-                      setExpanded={setExpanded}
-                      expanded={expanded}
-                      {...props}
-                    />
-                  </Card>
+                  {profile !== undefined ? (
+                    <Card
+                      style={setCardStyle(index, expanded)}
+                      profile={profile}
+                      className={classes.cardHover}
+                      ref={elRefs[index]}>
+                      <Header data={data} {...props} />
+                      <Body
+                        data={data}
+                        index={index}
+                        profile={profile}
+                        setExpanded={setExpanded}
+                        expanded={expanded}
+                        {...props}
+                      />
+                    </Card>
+                  ) : (
+                    <Card
+                      style={setCardStyle(index, expanded)}
+                      pricing
+                      profile={profile}
+                      className={classes.cardHover}
+                      ref={elRefs[index]}>
+                      <Body
+                        data={data}
+                        index={index}
+                        profile={profile}
+                        icon={`${icon}`}
+                        setExpanded={setExpanded}
+                        expanded={expanded}
+                        {...props}
+                      />
+                    </Card>
+                  )}
                 </Grid>
               );
             })}

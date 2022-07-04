@@ -10,6 +10,8 @@ import Users from '../../../models/Users';
 import Photos from '../../../models/Photos';
 import Countries from '../../../models/Countries';
 import Currencies from '../../../models/Currencies';
+import Agencies from '../../../models/Agencies';
+import Roles from '../../../models/Roles';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -34,7 +36,30 @@ apiRoute.post(
         switch (modelName) {
           case 'Users':
             collection.findById(req.body._id, async (err, docs) => {
-              const { Error, success } = involvedError(docs);
+              const { Error, success } = userInvolvedError(docs);
+              if (!success) {
+                res.status(403).json({ success: false, Error: Error });
+              } else {
+                await deleteObjectsId(req, res, next, docs);
+                await docs.remove();
+                const totalValues = await collection.find();
+                const { hzErrorConnection, hz } = await hazelCast();
+                if (!hzErrorConnection) {
+                  const multiMap = await hz.getMultiMap(modelName);
+                  await multiMap.destroy();
+                  await multiMap.put(`all${modelName}`, totalValues);
+                  await hz.shutdown();
+                }
+                res.status(200).json({
+                  success: true,
+                  totalValuesLength: totalValues.length,
+                });
+              }
+            });
+            break;
+          case 'Roles':
+            collection.findById(req.body._id, async (err, docs) => {
+              const { Error, success } = roleInvolvedError(docs);
               if (!success) {
                 res.status(403).json({ success: false, Error: Error });
               } else {
@@ -86,7 +111,7 @@ apiRoute.post(
   }
 );
 
-function involvedError(result) {
+function userInvolvedError(result) {
   //Check if user involved with agent
   const isUserInvolved = result?.agents_id?.length > 0;
   console.log(isUserInvolved);
@@ -96,6 +121,27 @@ function involvedError(result) {
       Error: `${
         result?.agents_id?.length > 0
           ? `${result?.agents_id?.length} agent(s) is/are involved with ${result?.userName} `
+          : ''
+      }`,
+    };
+  } else {
+    return {
+      success: true,
+      Error: null,
+    };
+  }
+}
+
+function roleInvolvedError(result) {
+  //Check if user involved with agent
+  const isRoleInvolved = result?.users_id?.length > 0;
+  console.log(isRoleInvolved);
+  if (isRoleInvolved) {
+    return {
+      success: false,
+      Error: `${
+        result?.users_id?.length > 0
+          ? `${result?.users_id?.length} users(s) is/are involved with ${result?.roleName} `
           : ''
       }`,
     };
