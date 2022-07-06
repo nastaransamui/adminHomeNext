@@ -76,7 +76,7 @@ const cardsShowStyles = makeStyles((theme) => {
     },
     select: {
       position: 'absolute',
-      left: theme.direction == 'ltr' ? -6 : 25,
+      left: theme.direction == 'ltr' ? 0 : 25,
     },
     textfield: {
       '& fieldset': {

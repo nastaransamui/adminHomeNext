@@ -25,5 +25,6 @@
   "csvExport": "Export data in csv format",
   "Field": "Field",
   "labelSearch": "Search label",
-  "roleName": "Role name"
+  "roleName": "Role name",
+  "routesEmpty": "Routes access can't be empty."
 }

@@ -31,6 +31,7 @@ const roleHook = () => {
     modelName: 'Roles',
   });
   const [roleNameError, setRoleNameError] = useState(false);
+  const [routeValidate, setRouteValidate] = useState(false);
 
   useEffect(() => {
     let isMount = true;
@@ -207,6 +208,16 @@ const roleHook = () => {
     }
   };
 
+  const isRouteValidate = () => {
+    if (values.routes.length > 0) {
+      setRouteValidate(false);
+      return true;
+    } else {
+      setRouteValidate(true);
+      return false;
+    }
+  };
+
   const handleAddRoutes = (route) => {
     let crudArray = [
       {
@@ -254,22 +265,34 @@ const roleHook = () => {
     setValues((oldvalue) => ({ ...oldvalue }));
   };
 
+  useEffect(() => {
+    let isMount = true;
+    if (isMount) {
+      setRouteValidate(values.routes.length == 0);
+    }
+  }, [values.routes]);
+
   return {
     formSubmit,
     handleChange,
     values,
     setValues,
     isValidated,
+    isRouteValidate,
     roleNameError,
     handleAddRoutes,
     handleRemoveRoutes,
     role_id,
+    routeValidate,
   };
 };
 
 function toFormData(o) {
   return Object.entries(o).reduce((d, e) => {
     if (e[0] == 'routes') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'users_id') {
       e[1] = JSON.stringify(e[1]);
     }
     return d.append(...e), d;

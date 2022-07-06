@@ -23,17 +23,25 @@ import { useTheme } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import SvgIcon from '@mui/material/SvgIcon';
 import Card from '../Card/Card';
 import CardBody from '../Card/CardBody';
 import CardHeader from '../Card/CardHeader';
 import CardIcon from '../Card/CardIcon';
 import CardAvatar from '../Card/CardAvatar';
+import Close from '@mui/icons-material/Close';
+import Done from '@mui/icons-material/Done';
 
 import { isRegex } from '../auth/functions';
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
+function copy(arr1, arr2) {
+  for (var i = 0; i < arr1.length; i++) {
+    arr2[i] = arr1[i];
+  }
 }
 
 const CreateUser = (props) => {
@@ -51,23 +59,29 @@ const CreateUser = (props) => {
     deleteImage,
     formSubmit,
     handleAutocomplete,
+    openRole,
+    setOpenRole,
     openCity,
     setOpenCity,
     openProvince,
     setOpenProvince,
     openCountry,
     setOpenCountry,
+    loadingRole,
     loadingCity,
     loadingProvince,
     loadingCountry,
+    roleOptions,
     cityOptions,
     provinceOptions,
     countryOptions,
     sleep,
+    setRoleFilter,
     setCountryFilter,
     setProvinceFilter,
     setCityFilter,
-    // passwordErrorEdit
+    roleNameError,
+    updateRoleName,
   } = props;
 
   useEffect(() => {
@@ -220,7 +234,7 @@ const CreateUser = (props) => {
               </Grid>
             </Grid>
             <Grid container spacing={1} style={{ marginTop: 10 }}>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <TextValidator
                   className={classes.input}
                   InputProps={{
@@ -236,7 +250,7 @@ const CreateUser = (props) => {
                   variant='standard'
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6}>
+              <Grid item xs={12} sm={12} md={4}>
                 <TextValidator
                   className={classes.input}
                   fullWidth
@@ -250,6 +264,123 @@ const CreateUser = (props) => {
                   value={values.lastName}
                   name='lastName'
                   variant='standard'
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={4}>
+                <Autocomplete
+                  id='role-select'
+                  options={roleOptions}
+                  loading={loadingRole}
+                  loadingText={t('loadingRole')}
+                  noOptionsText={t('roleNoOptions')}
+                  inputValue={values.roleName}
+                  autoHighlight
+                  onChange={(event, newValue) => {
+                    handleAutocomplete('roleName', newValue);
+                  }}
+                  open={openRole}
+                  onOpen={() => {
+                    setOpenRole(true);
+                  }}
+                  onClose={() => {
+                    setOpenRole(false);
+                  }}
+                  getOptionLabel={(roleOptions) => roleOptions.roleName}
+                  getOptionDisabled={(roleOptions) => {
+                    console.log();
+                    return !roleOptions.isActive;
+                  }}
+                  isOptionEqualToValue={(roleOptions, value) => {
+                    return roleOptions.roleName === value.roleName;
+                  }}
+                  filterOptions={(options, state) => {
+                    const searchRegex = new RegExp(
+                      escapeRegExp(values.roleName),
+                      'i'
+                    );
+                    const filterdData = options.filter((row) => {
+                      return Object.keys(row).some((field) => {
+                        if (row[field] !== null) {
+                          return searchRegex.test(row[field].toString());
+                        }
+                      });
+                    });
+                    return filterdData;
+                  }}
+                  renderOption={(props, roleOptions) => (
+                    <Box component='li' {...props} key={roleOptions._id}>
+                      <SvgIcon
+                        style={{ color: theme.palette.secondary.main }}
+                        sx={{ mr: 2 }}>
+                        <path d={`${roleOptions.icon}`} />
+                      </SvgIcon>
+                      {'  '}
+                      {roleOptions.roleName}{' '}
+                      {roleOptions.isActive ? (
+                        <Done className={classes.autocompleteIconDone} />
+                      ) : (
+                        <Close className={classes.autocompleteIconClose} />
+                      )}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextValidator
+                      {...params}
+                      label={t('roleName')}
+                      variant='standard'
+                      error={
+                        roleNameError ||
+                        (updateRoleName.changed &&
+                          updateRoleName.roleName !== values.roleName)
+                      }
+                      helperText={
+                        roleNameError
+                          ? t('required')
+                          : (updateRoleName.changed &&
+                            updateRoleName.roleName !== values.roleName)
+                          ? t('routeChanged')
+                          : ' '
+                      }
+                      validators={
+                        values.role_id.length == 0
+                          ? ['required']
+                          : _id == null
+                          ? ['required']
+                          : []
+                      }
+                      errorMessages={[t('required')]}
+                      value={values.roleName}
+                      onBlur={() => {
+                        if (
+                          roleOptions
+                            .map((a) => a.roleName)
+                            .indexOf(values.roleName) == -1
+                        ) {
+                          setValues({ ...values, roleName: '', role_id: [] });
+                        }
+                      }}
+                      onChange={(e) => {
+                        setValues({ ...values, roleName: e.target.value });
+                        (async () => {
+                          await sleep(1e3);
+                          setRoleFilter(e.target.value);
+                        })();
+                      }}
+                      className={classes.inputAutocomplete}
+                      fullWidth
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <Fragment>
+                            {loadingRole ? (
+                              <CircularProgress color='inherit' size={20} />
+                            ) : null}
+                            {params.InputProps.endAdornment}
+                          </Fragment>
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Grid>
             </Grid>

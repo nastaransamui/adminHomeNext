@@ -63,7 +63,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 localField: 'agents_id',
                 foreignField: '_id',
                 as: 'agentsData',
-                // pipeline: [{ $limit: 5 }],
+              },
+            },
+            {
+              $lookup: {
+                from: 'roles',
+                localField: 'role_id',
+                foreignField: '_id',
+                as: 'roleData',
               },
             },
           ]);

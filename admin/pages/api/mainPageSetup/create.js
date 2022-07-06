@@ -54,8 +54,8 @@ apiRoute.post(
           req.body.country_id = JSON.parse(req?.body?.country_id);
           req.body.province_id = JSON.parse(req?.body?.province_id);
           req.body.city_id = JSON.parse(req?.body?.city_id);
+          req.body.role_id = JSON.parse(req?.body?.role_id);
         }
-        console.log(req.body);
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
           // console.log(err);
@@ -95,6 +95,17 @@ export async function updateObjectsId(req, res, next, result) {
   const { modelName } = req.body;
   switch (modelName) {
     case 'Users':
+      if (result.role_id.length > 0) {
+        await Roles.updateOne(
+          { _id: { $in: result.role_id } },
+          {
+            $addToSet: {
+              users_id: result._id,
+            },
+          },
+          { multi: true }
+        );
+      }
       if (result.country_id.length > 0) {
         await Countries.updateOne(
           { _id: { $in: result.country_id } },

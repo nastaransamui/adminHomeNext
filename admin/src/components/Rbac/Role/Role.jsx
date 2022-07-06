@@ -28,10 +28,12 @@ const Role = (props) => {
     values,
     setValues,
     isValidated,
+    isRouteValidate,
     roleNameError,
     handleAddRoutes,
     handleRemoveRoutes,
-    role_id
+    role_id,
+    routeValidate
   } = roleHook();
 
   return (
@@ -57,34 +59,42 @@ const Role = (props) => {
                     stepComponent: Name,
                     stepId: 'name',
                     isValidated: isValidated,
-                    handleChange: handleChange,
-                    values: values,
-                    roleNameError: roleNameError,
-                    setValues: setValues,
-                    role_id: role_id
-                  },
-                  {
-                    stepName: t('routes'),
-                    stepComponent: RoutesStep,
-                    stepId: 'routes',
-                    isValidated: isValidated,
                     handleAddRoutes: handleAddRoutes,
                     handleRemoveRoutes: handleRemoveRoutes,
                     handleChange: handleChange,
                     values: values,
                     roleNameError: roleNameError,
-                    role_id: role_id
+                    setValues: setValues,
+                    role_id: role_id,
+                    routeValidate: routeValidate
+                  },
+                  {
+                    stepName: t('routes'),
+                    stepComponent: RoutesStep,
+                    stepId: 'routes',
+                    isValidated: isRouteValidate,
+                    handleAddRoutes: handleAddRoutes,
+                    handleRemoveRoutes: handleRemoveRoutes,
+                    handleChange: handleChange,
+                    values: values,
+                    roleNameError: roleNameError,
+                    setValues: setValues,
+                    role_id: role_id,
+                    routeValidate: routeValidate
                   },
                   {
                     stepName: t('curd'),
                     stepComponent: CrudStep,
                     stepId: 'curd',
                     isValidated: isValidated,
+                    handleAddRoutes: handleAddRoutes,
+                    handleRemoveRoutes: handleRemoveRoutes,
                     handleChange: handleChange,
                     values: values,
-                    setValues: setValues,
                     roleNameError: roleNameError,
-                    role_id: role_id
+                    setValues: setValues,
+                    role_id: role_id,
+                    routeValidate: routeValidate
                   },
                 ]}
                 title={t('createRouteTitle')}

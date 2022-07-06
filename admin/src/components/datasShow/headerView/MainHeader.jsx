@@ -9,7 +9,7 @@ import FilterIcons from './FilterIcons.jsx';
 import CreateNew from './CreateNew.jsx';
 import MainSearch from './MainSearch';
 
-const StyledBox = styled(Container)((props) => {
+export const StyledBox = styled(Container)((props) => {
   const { theme, viewpanel, showsearch } = props;
 
   return {

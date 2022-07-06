@@ -12,6 +12,7 @@ import hazelCast from '../../../helpers/hazelCast';
 import { updateObjectsId } from '../mainPageSetup/create';
 import { deleteObjectsId } from '../mainPageSetup/delete';
 import Agencies from '../../../models/Agencies';
+import Roles from '../../../models/Roles';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const apiRoute = nextConnect({
@@ -44,19 +45,34 @@ apiRoute.post(
         req.body.country_id = JSON.parse(req?.body?.country_id);
         req.body.province_id = JSON.parse(req?.body?.province_id);
         req.body.city_id = JSON.parse(req?.body?.city_id);
-
+        req.body.role_id = JSON.parse(req?.body?.role_id);
+        console.log(req.body.role_id);
         findUserById(_id).then(async (oldUser) => {
+          console.log(req.body.role_id[0] !== oldUser.role_id[0]?.toString());
+          if (req.body.role_id[0] !== oldUser.role_id[0]?.toString()) {
+            await Roles.updateOne(
+              { _id: { $in: oldUser?.role_id } },
+              { $pull: { users_id: _id } },
+              { multi: true }
+            );
+            await Roles.updateOne(
+              { _id: { $in: req.body.role_id } },
+              { $push: { users_id: _id } },
+              { multi: true }
+            );
+          }
+          // res.status(500).json({ success: false, Error: ' error.toString()' });
           if (oldUser.agents_id.length !== req.body.agents_id.length) {
             let agentsDeleteIds = oldUser.agents_id.filter(
               (x) => !req.body.agents_id.includes(x.toString())
             );
-            console.log(agentsDeleteIds);
             await Agencies.updateMany(
               { _id: { $in: agentsDeleteIds } },
               { $set: { accountManager_id: [], accountManager: '' } },
               { multi: true }
             );
           }
+
           for (var key in req.body) {
             if (
               typeof oldUser[key] !== 'function' &&

@@ -210,14 +210,14 @@ const CrudStep = (props) => {
               />
             }>
             {values.routes.map((route, index) => {
-              if (route.collapse) {
+              if (route?.views && route.views.length > 0) {
                 return (
                   <CustomTreeItem
                     nodeId={`${route[`name_${i18n.language}`]}`}
                     label={`${route[`name_${i18n.language}`]}`}
                     key={`${route[`name_${i18n.language}`]}`}>
                     {route?.views.map((firstView, i) => {
-                      if (firstView.collapse) {
+                      if (firstView?.views?.length > 0) {
                         return (
                           <CustomTreeItem
                             nodeId={`${

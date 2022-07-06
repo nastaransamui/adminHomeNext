@@ -19,6 +19,7 @@ import CreateUser from './CreateUser';
 import userHook from './userHook';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import EditUser from './EditUser';
+import { useDispatch } from 'react-redux';
 
 export default function User(props) {
   const { rtlActive } = props;
@@ -29,6 +30,7 @@ export default function User(props) {
 
   const history = useHistory();
   const hookes = userHook();
+  const dispatch = useDispatch();
 
   // console.log(_id);
 
@@ -39,6 +41,11 @@ export default function User(props) {
         <Tooltip title={t('goBack')} arrow placement='bottom'>
           <IconButton
             onClick={() => {
+              //Reset pagenumber of agents
+              dispatch({
+                type: 'DATA_AGENT_PAGENUMBER',
+                payload: 0,
+              });
               history.push(pushUrl);
             }}>
             {rtlActive ? <ArrowForward /> : <ArrowBack />}
@@ -48,7 +55,13 @@ export default function User(props) {
           {_id == null ? (
             <CreateUser {...hookes} classes={classes} t={t} _id={_id} />
           ) : (
-            <EditUser {...hookes} classes={classes} t={t} _id={_id} rtlActive={rtlActive} />
+            <EditUser
+              {...hookes}
+              classes={classes}
+              t={t}
+              _id={_id}
+              rtlActive={rtlActive}
+            />
           )}
         </ValidatorForm>
       </Fragment>

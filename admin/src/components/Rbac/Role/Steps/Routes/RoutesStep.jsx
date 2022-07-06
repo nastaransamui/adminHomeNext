@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import routes from '../../../../../../routes';
@@ -33,7 +33,8 @@ function copy(arr1, arr2) {
 }
 
 const RoutesStep = (props) => {
-  const { values, handleAddRoutes, handleRemoveRoutes, role_id } = props;
+  const { values, handleAddRoutes, handleRemoveRoutes, role_id,routeValidate } = props;
+
   const [checked, setChecked] = useState([]);
   var copyRoute = [];
   copy(routes, copyRoute);
@@ -195,9 +196,18 @@ const RoutesStep = (props) => {
             aria-label='move selected left'>
             &lt;
           </Button>
+
+          {routeValidate && (
+            <Typography
+              variant='caption'
+              color={theme.palette.error.main}
+              style={{ width: 90 }}>
+              {t('routesEmpty')}
+            </Typography>
+          )}
         </Grid>
       </Grid>
-      <Grid item>{customList(t('access'), right)}</Grid>
+      <Grid item>{customList(t('access'), right)} </Grid>
     </Grid>
   );
 };

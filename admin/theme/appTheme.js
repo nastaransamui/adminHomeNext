@@ -96,6 +96,29 @@ const appTheme = (color, mode, dir) => {
           ],
     //override
     components: {
+      MuiInput: {
+        styleOverrides: {
+          root: {
+            '&&:hover:not(.Mui-disabled):not(.Mui-error):before': {
+              borderColor: mode === 'dark' ? '#177ddc' : '#40a9ff',
+            },
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderRadius: 10,
+              borderColor: mode === 'dark' ? '#177ddc' : '#40a9ff',
+            },
+            '&:focus .MuiOutlinedInput-notchedOutline': {
+              borderRadius: 10,
+              borderColor: mode === 'dark' ? '#177ddc' : '#40a9ff',
+            },
+          },
+        },
+      },
       MuiInputLabel: {
         styleOverrides: {
           root: {

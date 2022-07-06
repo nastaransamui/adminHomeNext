@@ -130,24 +130,41 @@ const Wizard = (props) => {
           }
         }
       }
+
       if (validationState) {
-        setCurrentStep(key);
-        setNextButton(steps.length > key + 1 ? true : false);
-        setPreviousButton(key > 0 ? true : false);
-        setFinishButton(steps.length === key + 1 ? true : false);
-        refreshAnimation(key);
+        if (
+          steps[currentStep]?.updateRoleName !== undefined &&
+          (steps[currentStep]?.updateRoleName.changed &&
+          steps[currentStep]?.updateRoleName.roleName !== steps[currentStep]?.values?.roleName)
+        ) {
+          finishButtonClick()
+        } else {
+          setCurrentStep(key);
+          setNextButton(steps.length > key + 1 ? true : false);
+          setPreviousButton(key > 0 ? true : false);
+          setFinishButton(steps.length === key + 1 ? true : false);
+          refreshAnimation(key);
+        }
       }
     }
   };
 
   const nextButtonClick = () => {
     if (steps[currentStep].isValidated()) {
-      var key = currentStep + 1;
-      setCurrentStep(key);
-      setNextButton(steps.length > key + 1 ? true : false);
-      setPreviousButton(key > 0 ? true : false);
-      setFinishButton(steps.length === key + 1 ? true : false);
-      refreshAnimation(key);
+      if (
+        steps[currentStep]?.updateRoleName !== undefined &&
+          (steps[currentStep]?.updateRoleName.changed &&
+          steps[currentStep]?.updateRoleName.roleName !== steps[currentStep]?.values?.roleName)
+      ) {
+        finishButtonClick()
+      } else {
+        var key = currentStep + 1;
+        setCurrentStep(key);
+        setNextButton(steps.length > key + 1 ? true : false);
+        setPreviousButton(key > 0 ? true : false);
+        setFinishButton(steps.length === key + 1 ? true : false);
+        refreshAnimation(key);
+      }
     }
   };
 
@@ -209,13 +226,10 @@ const Wizard = (props) => {
             return (
               <div
                 className={
-                  stepContentClasses +
-                  ` animate__animated animate__zoomIn`
+                  stepContentClasses + ` animate__animated animate__zoomIn`
                 }
                 key={key}>
-                <prop.stepComponent
-                  {...steps[0]}
-                />
+                <prop.stepComponent {...steps[0]} />
               </div>
             );
           })}
@@ -274,7 +288,6 @@ Wizard.propTypes = {
       isValidated: PropTypes.func.isRequired,
       handleChange: PropTypes.func.isRequired,
       values: PropTypes.object.isRequired,
-
     })
   ).isRequired,
   title: PropTypes.string,

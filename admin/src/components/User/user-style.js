@@ -60,6 +60,14 @@ const userStyle = makeStyles((theme) => {
       alignItems: 'center',
       textAlign: 'center',
     },
+    autocompleteIconDone: {
+      color: theme.palette.success.main,
+      marginLeft: 'auto',
+    },
+    autocompleteIconClose: {
+      color: theme.palette.error.main,
+      marginLeft: 'auto',
+    },
   };
 });
 

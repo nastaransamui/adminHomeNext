@@ -114,7 +114,6 @@ apiRoute.post(
 function userInvolvedError(result) {
   //Check if user involved with agent
   const isUserInvolved = result?.agents_id?.length > 0;
-  console.log(isUserInvolved);
   if (isUserInvolved) {
     return {
       success: false,
@@ -132,7 +131,7 @@ function userInvolvedError(result) {
   }
 }
 
-function roleInvolvedError(result) {
+export function roleInvolvedError(result) {
   //Check if user involved with agent
   const isRoleInvolved = result?.users_id?.length > 0;
   console.log(isRoleInvolved);
@@ -157,6 +156,19 @@ export async function deleteObjectsId(req, res, next, result) {
   const { modelName } = req.body;
   switch (modelName) {
     case 'Users':
+      console.log(result._id);
+      console.log(result.role_id);
+      if (result?.role_id.length > 0) {
+        await Roles.updateOne(
+          { _id: { $in: result.role_id } },
+          {
+            $pull: {
+              users_id: result._id,
+            },
+          },
+          { new: true }
+        );
+      }
       if (result?.country_id.length > 0) {
         await Countries.updateOne(
           { _id: { $in: result.country_id } },

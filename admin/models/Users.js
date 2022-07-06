@@ -12,6 +12,10 @@ const UsersSchema = new mongoose.Schema(
     firstName: { type: String },
     lastName: { type: String },
     cityName: { type: String },
+    role_id: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Roles', required: true },
+    ],
+    roleName: { type: String, required: true },
     agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
     city_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],
     province_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],

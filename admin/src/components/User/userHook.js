@@ -14,6 +14,7 @@ import {
   pushUrl,
   createUrl,
   editUrl,
+  roleUrl,
   cityUrl,
   countryUrl,
   provinceUrl,
@@ -40,6 +41,8 @@ const userHook = () => {
     finalFolder: 'users',
     modelName: 'Users',
     folderId: (Math.random() + 1).toString(36).substring(7),
+    roleName: '',
+    role_id: [],
     countryName: '',
     country_id: [],
     provinceName: '',
@@ -51,7 +54,19 @@ const userHook = () => {
     _id: _id || '',
   });
 
+  const [roleNameError, setRoleNameError] = useState(false);
+  const [updateRoleName, setUpdateRoleName] = useState({
+    changed: false,
+    roleName: values.roleName,
+  });
+
   const [totalAgents, setTotalAgents] = useState(0);
+
+  const [openRole, setOpenRole] = useState(false);
+  const [roleOptions, setRoleOptions] = useState([]);
+  let loadingRole = openRole && roleOptions.length === 0;
+  const [roleFilter, setRoleFilter] = useState('');
+
   const [openCity, setOpenCity] = useState(false);
   const [cityOptions, setCityOptions] = useState([]);
   let loadingCity = openCity && cityOptions.length === 0;
@@ -90,8 +105,16 @@ const userHook = () => {
       setValues({ ...values, [name]: event.target.value });
     }
   };
+
   const handleAutocomplete = (name, newValue) => {
     if (newValue == null) {
+      if (_id !== undefined) {
+        setUpdateRoleName((oldValue) => ({ ...oldValue, changed: false }));
+        setRoleNameError(true);
+      }
+      if (name == 'roleName') {
+        setValues({ ...values, [name]: '', role_id: [] });
+      }
       if (name == 'cityName') {
         setValues({
           ...values,
@@ -116,6 +139,20 @@ const userHook = () => {
         setValues({ ...values, [name]: '', country_id: [] });
       }
     } else {
+      if (name == 'roleName') {
+        //update role then submit first
+        if (_id !== undefined) {
+          setUpdateRoleName((oldValue) => ({
+            ...oldValue,
+            changed: true,
+          }));
+        }
+        values.role_id = [];
+        values.role_id.push(newValue._id);
+        values.roleName = newValue.roleName;
+        setRoleNameError(false);
+        setValues({ ...values });
+      }
       if (name == 'cityName') {
         values.city_id.push(newValue._id);
         values[name] = newValue.name;
@@ -139,7 +176,6 @@ const userHook = () => {
         setValues({ ...values });
       }
       if (name == 'countryName') {
-        console.log(newValue);
         values.cityName = '';
         values.city_id = [];
         values.provinceName = '';
@@ -184,18 +220,21 @@ const userHook = () => {
     values.profileImageKey = '';
     setValues((oldValue) => ({ ...oldValue }));
   };
-
+  // console.log(values);
   const isValidated = () => {
-    if (values.password == '') {
-      if (values?.agentsData !== undefined) {
+    if (values.password == '' && values.role_id.length !== 0) {
+      if (values?.agentsData !== undefined || values?.roleData !== undefined) {
         return true;
       } else {
         getUser();
         return true;
       }
-    } else {
+    } else if (values.password !== '' && values.role_id.length !== 0) {
       if (values.password.match(reg)) {
-        if (values?.agentsData !== undefined) {
+        if (
+          values?.agentsData !== undefined ||
+          values?.roleData !== undefined
+        ) {
           return true;
         } else {
           getUser();
@@ -205,6 +244,16 @@ const userHook = () => {
       } else {
         return false;
       }
+    } else if (
+      ((values.password !== '' && values.password !== '') ||
+        values.password == '') &&
+      values.role_id.length == 0
+    ) {
+      setRoleNameError(true);
+      return false;
+    } else {
+      setRoleNameError(false);
+      return true;
     }
   };
 
@@ -291,10 +340,16 @@ const userHook = () => {
           `${user.data.userName} ${t('userEditSuccess')}`,
           () => {
             dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            //Reset pagenumber of agents
+            dispatch({
+              type: 'DATA_AGENT_PAGENUMBER',
+              payload: 0,
+            });
             if (!checkCookies('adminAccessToken')) {
               router.push('/', undefined, { shallow: true });
             } else {
-              history.push('/admin/dashboard/user-page');
+              // history.push('/admin/dashboard/user-page');
+              getUser();
             }
           }
         );
@@ -325,7 +380,10 @@ const userHook = () => {
           delete location.state.google;
           delete location.state.twitter;
           delete location.state.__v;
-
+          setUpdateRoleName((oldValue) => ({
+            ...oldValue,
+            roleName: location.state.roleName,
+          }));
           location.state.selfProfileUpdate = location.state._id == profile._id;
           setValues((oldValues) => ({
             ...oldValues,
@@ -385,6 +443,10 @@ const userHook = () => {
       delete user.data.twitter;
       delete user.data.__v;
       user.data.selfProfileUpdate = user.data._id == profile._id;
+      setUpdateRoleName((oldValue) => ({
+        ...oldValue,
+        roleName: user.data.roleName,
+      }));
       setValues((oldValues) => {
         if (oldValues.userName == '') {
           //page refresh
@@ -397,6 +459,7 @@ const userHook = () => {
           return {
             ...oldValues,
             agentsData: user.data.agentsData,
+            roleData: user.data.roleData,
           };
         }
       });
@@ -408,6 +471,39 @@ const userHook = () => {
     return new Promise((resolve) => {
       setTimeout(resolve, delay);
     });
+  };
+
+  const getRoles = async () => {
+    const abortController = new AbortController();
+    try {
+      const res = await fetch(roleUrl, {
+        signal: abortController.signal,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify({
+          modelName: 'Roles',
+          filter: roleFilter,
+        }),
+      });
+      const { status } = res;
+      const response = await res.json();
+      if (status !== 200 && !response.success) {
+        setRoleOptions([
+          {
+            roleName: response.Error,
+            icon: '⚠️',
+            error: true,
+          },
+        ]);
+      } else {
+        setRoleOptions([...response.data]);
+      }
+    } catch (error) {
+      return undefined;
+    }
   };
 
   const getCities = async () => {
@@ -519,6 +615,34 @@ const userHook = () => {
 
   useEffect(() => {
     let isMount = true;
+    if (!loadingRole) {
+      return undefined;
+    }
+
+    (async () => {
+      await sleep(1e3);
+      if (isMount) {
+        getRoles();
+      }
+    })();
+
+    return () => {
+      isMount = false;
+    };
+  }, [loadingRole, roleFilter]);
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount && roleFilter !== '') {
+      getRoles();
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [roleFilter]);
+
+  useEffect(() => {
+    let isMount = true;
     if (!loadingCity) {
       return undefined;
     }
@@ -614,19 +738,24 @@ const userHook = () => {
     deleteImage,
     formSubmit,
     handleAutocomplete,
+    openRole,
+    setOpenRole,
     openCity,
     setOpenCity,
     openProvince,
     setOpenProvince,
     openCountry,
     setOpenCountry,
+    loadingRole,
     loadingCity,
     loadingProvince,
     loadingCountry,
+    roleOptions,
     cityOptions,
     provinceOptions,
     countryOptions,
     sleep,
+    setRoleFilter,
     setCountryFilter,
     setProvinceFilter,
     setCityFilter,
@@ -634,6 +763,8 @@ const userHook = () => {
     isValidated,
     totalAgents,
     getUser,
+    roleNameError,
+    updateRoleName,
   };
 };
 
@@ -649,6 +780,9 @@ function toFormData(o) {
       e[1] = JSON.stringify(e[1]);
     }
     if (e[0] == 'country_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'role_id') {
       e[1] = JSON.stringify(e[1]);
     }
     return d.append(...e), d;
