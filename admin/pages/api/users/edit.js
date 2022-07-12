@@ -46,9 +46,7 @@ apiRoute.post(
         req.body.province_id = JSON.parse(req?.body?.province_id);
         req.body.city_id = JSON.parse(req?.body?.city_id);
         req.body.role_id = JSON.parse(req?.body?.role_id);
-        console.log(req.body.role_id);
         findUserById(_id).then(async (oldUser) => {
-          console.log(req.body.role_id[0] !== oldUser.role_id[0]?.toString());
           if (req.body.role_id[0] !== oldUser.role_id[0]?.toString()) {
             await Roles.updateOne(
               { _id: { $in: oldUser?.role_id } },

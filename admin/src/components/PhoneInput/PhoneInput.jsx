@@ -64,7 +64,6 @@ function PhoneInput(props) {
     error,
     id,
   } = props;
-  // console.log(props)
   return (
     <Fragment>
       <ReactPhoneInput

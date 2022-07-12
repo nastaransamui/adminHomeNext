@@ -91,8 +91,8 @@ export default function Login(props) {
 
     if (status == 200) {
       const user = await res.json();
-      if (user.success) {
-        const { accessToken } = user;
+      const { accessToken,accessRole } = user;
+      if (user.success && accessToken && accessRole) {
         const profile = jwt.verify(
           accessToken,
           process.env.NEXT_PUBLIC_SECRET_KEY,
@@ -107,6 +107,7 @@ export default function Login(props) {
           dispatch({ type: 'ADMIN_ACCESS_TOKEN', payload: accessToken });
           dispatch({type: 'ADMIN_PROFILE', profile})
           setCookies('adminAccessToken', accessToken);
+          localStorage.setItem('accessRole', accessRole)
           router.push('/dashboard');
         } else {
           Alert.error('', {

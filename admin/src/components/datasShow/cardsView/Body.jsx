@@ -52,6 +52,8 @@ const Body = forwardRef((props, ref) => {
     gridNumber,
     activesId,
     icon,
+    deleteButtonDisabled,
+    updateButtonDisabled,
   } = props;
   const { stringLimit, profile } = useSelector((state) => state);
   const { i18n } = useTranslation();
@@ -105,6 +107,10 @@ const Body = forwardRef((props, ref) => {
     minHeight: 32,
     color: theme.palette.text.color,
   };
+
+  const labelSx = {
+    lineHeight: 1.80
+  }
 
   const keyboardSx = (index, expanded) => {
     return {
@@ -193,15 +199,22 @@ const Body = forwardRef((props, ref) => {
     ) {
       if (typeof data[label] == 'object') {
         if (type == 'array') {
-          if(modelName !== 'Roles'){
-            return `${data[label][0].number}`
-          }else{
+          if (modelName !== 'Roles') {
+            if (modelName == 'Countries') {
+              return `${data[label].map(
+                (e) => `${e?.gmtOffsetName}
+                ${e?.tzName}`
+              )}`;
+            } else {
+              return `${data[label][0].number}`;
+            }
+          } else {
             return `${data[label]?.length}`;
           }
         } else {
-          if(modelName !== 'Roles'){
+          if (modelName !== 'Roles') {
             return `${label}: ${data[label]?.length}`;
-          }else{
+          } else {
             return `${data[label]?.length}`;
           }
         }
@@ -282,6 +295,11 @@ const Body = forwardRef((props, ref) => {
               </Typography>
             );
           });
+        } else if (type == 'array' && modelName == 'Countries') {
+          return `${data[label].map(
+            (e) => `${e?.gmtOffsetName}
+            ${e?.tzName}`
+          )}`;
         } else {
           return `${label}: ${data[label]?.length}`;
         }
@@ -346,7 +364,7 @@ const Body = forwardRef((props, ref) => {
       return (
         <Box className={classes.expandIconBox}>
           <Icon style={iconStyle(i)} />
-          <Typography variant='caption' display='block' gutterBottom>
+          <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
             {t(`${showLabel}`)}
             {' :'}
           </Typography>
@@ -357,7 +375,7 @@ const Body = forwardRef((props, ref) => {
         return (
           <Box className={classes.expandIconBox}>
             <CheckBox style={iconStyle(i)} />
-            <Typography variant='caption' display='block' gutterBottom>
+            <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
               {t(`${showLabel}`)}
               {' :'}
             </Typography>
@@ -367,7 +385,7 @@ const Body = forwardRef((props, ref) => {
         return (
           <Box className={classes.expandIconBox}>
             <CheckBoxOutlineBlank style={iconStyle(i)} />
-            <Typography variant='caption' display='block' gutterBottom>
+            <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
               {t(`${showLabel}`)}
               {' :'}
             </Typography>
@@ -382,37 +400,45 @@ const Body = forwardRef((props, ref) => {
       {typeof icon !== 'undefined' ? (
         <CardBody pricing plain ref={ref}>
           <h6 className={classes.cardCategory}>{modelName}</h6>
-          <div className={classes.icon} style={{marginBottom: 10}}>
+          <div className={classes.icon} style={{ marginBottom: 10 }}>
             <SvgIcon className={classes.iconPrimary}>
               <path d={`${data.icon}`} />
             </SvgIcon>
           </div>
-          <Divider style={{marginBottom: 20}}/>
+          <Divider style={{ marginBottom: 20 }} />
           {dataFields.map((item, i) => {
-            const {  label, type } = item;
+            const { label, type } = item;
             return (
               <div
-              key={i}
-            className={`${classes.cardTitle} `}
-            style={{
-              position: 'relative',
-              display: 'flex',
-            }}>
-              <div style={{ flex: 1, justifyContent: 'flex-start' }}>
-              {t(`${label}`)} :{' '}
-            </div>
-            <Tooltip title={label == 'remark' && data.remark.length > 10 ? data.remark : ''} placement='bottom' arrow>
-            <div style={{ flex: 1, justifyContent: 'flex-start' }}>
-              {primaryTextData(data, label, type)}
-            </div>
-              </Tooltip>
-            </div>
-            )
+                key={i}
+                className={`${classes.cardTitle} `}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                }}>
+                <div style={{ flex: 1, justifyContent: 'flex-start' }}>
+                  {t(`${label}`)} :{' '}
+                </div>
+                <Tooltip
+                  title={
+                    label == 'remark' && data.remark.length > 10
+                      ? data.remark
+                      : ''
+                  }
+                  placement='bottom'
+                  arrow>
+                  <div style={{ flex: 1, justifyContent: 'flex-start' }}>
+                    {primaryTextData(data, label, type)}
+                  </div>
+                </Tooltip>
+              </div>
+            );
           })}
           <Button
             color='primary'
             fullWidth
             variant='contained'
+            disabled={updateButtonDisabled}
             className={classes.btnClasses}
             onClick={() => gotToEdit(data._id)}>
             {t('edit')}
@@ -420,6 +446,7 @@ const Body = forwardRef((props, ref) => {
           <Button
             color='secondary'
             fullWidth
+            disabled={deleteButtonDisabled}
             onClick={() => deleteAlert(data)}
             variant='contained'
             className={classes.btnClasses}>
@@ -432,68 +459,106 @@ const Body = forwardRef((props, ref) => {
             {activesId !== undefined ? (
               activesId.filter((e) => e.id == data.id).length > 0 ? (
                 <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
-                  <Button
-                    color='primary'
-                    onClick={() => {
-                      diactiveAlert(data);
-                    }}>
-                    <ToggleOff style={{ color: theme.palette.success.main }} />
-                  </Button>
+                  <span>
+                    <Button
+                      color='primary'
+                      disabled={deleteButtonDisabled}
+                      onClick={() => {
+                        diactiveAlert(data);
+                      }}>
+                      <ToggleOff
+                        style={{
+                          color: deleteButtonDisabled
+                            ? theme.palette.text.disabled
+                            : theme.palette.success.main,
+                        }}
+                      />
+                    </Button>
+                  </span>
                 </Tooltip>
               ) : (
                 <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
-                  <Button
-                    color='primary'
-                    onClick={() => {
-                      activeAlert(data);
-                    }}>
-                    <ToggleOn style={{ color: theme.palette.error.main }} />
-                  </Button>
+                  <span>
+                    <Button
+                      disabled={deleteButtonDisabled}
+                      color='primary'
+                      onClick={() => {
+                        activeAlert(data);
+                      }}>
+                      <ToggleOn
+                        style={{
+                          color: deleteButtonDisabled
+                            ? theme.palette.text.disabled
+                            : theme.palette.error.main,
+                        }}
+                      />
+                    </Button>
+                  </span>
                 </Tooltip>
               )
             ) : (
               editUrl !== '' && (
                 <Tooltip title={t('editTooltip')} placement='bottom' arrow>
-                  <Button color='primary' onClick={() => gotToEdit(data._id)}>
-                    <ArtTrack className={classes.underChartIcons} />
-                  </Button>
+                  <span>
+                    <Button
+                      color='primary'
+                      onClick={() => gotToEdit(data._id)}
+                      disabled={updateButtonDisabled}>
+                      <ArtTrack className={classes.underChartIcons} />
+                    </Button>
+                  </span>
                 </Tooltip>
               )
             )}
             {modelName == 'Countries' || modelName == 'Currencies' ? (
               <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
-                <Button
-                  color='primary'
-                  onClick={() => {
-                    diactiveAlert(data);
-                  }}>
-                  <ToggleOff style={{ color: theme.palette.success.main }} />
-                </Button>
+                <span>
+                  <Button
+                    color='primary'
+                    disabled={deleteButtonDisabled}
+                    onClick={() => {
+                      diactiveAlert(data);
+                    }}>
+                    <ToggleOff
+                      style={{
+                        color: deleteButtonDisabled
+                          ? theme.palette.text.disabled
+                          : theme.palette.success.main,
+                      }}
+                    />
+                  </Button>
+                </span>
               </Tooltip>
             ) : (modelName == 'Users' &&
                 data._id !== profile._id &&
                 editUrl !== '') ||
               modelName == 'Agencies' ? (
               <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
-                <Button
-                  color='error'
-                  onClick={() => {
-                    deleteAlert(data);
-                  }}>
-                  <DeleteForeverOutlined />
-                </Button>
+                <span>
+                  <Button
+                    color='error'
+                    disabled={deleteButtonDisabled}
+                    onClick={() => {
+                      deleteAlert(data);
+                    }}>
+                    <DeleteForeverOutlined />
+                  </Button>
+                </span>
               </Tooltip>
             ) : activesId !== undefined ? null : modelName !== 'Users' &&
               !data.isActive &&
               deleteAlert !== undefined ? (
               <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
-                <Button
-                  color='error'
-                  onClick={() => {
-                    deleteAlert(data);
-                  }}>
-                  <DeleteForeverOutlined />
-                </Button>
+                <span>
+                  <Button
+                    disabled={deleteButtonDisabled}
+                    color='error'
+                    onClick={() => {
+                      deleteAlert(data);
+                    }}>
+                    <DeleteForeverOutlined />
+                  </Button>
+                </span>
               </Tooltip>
             ) : null}
           </div>

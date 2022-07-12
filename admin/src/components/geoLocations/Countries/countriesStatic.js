@@ -1,7 +1,7 @@
 export const getAllUrl = '/admin/api/geoLocations/getAll';
 export const activeUrl = '/admin/api/geoLocations/active';
 export const diActiveUrl = '/admin/api/geoLocations/diactive';
-export const editUrl = '/admin/dashboard/a-locations/countries/country';
+export const editUrl = '/admin/dashboard/a-locations/countries';
 export const exportCsvUrl = `/admin/api/geoLocations/export`;
 import {
   Info,

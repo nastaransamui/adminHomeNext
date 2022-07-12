@@ -8,7 +8,7 @@ import { Add } from '@mui/icons-material';
 
 const CreateNew = forwardRef((props, ref) => {
   const { usersCardView } = useSelector((state) => state);
-  const { t, createUrl } = props;
+  const { t, createUrl, createButtonDisabled } = props;
   const history = useHistory();
 
   return (
@@ -17,6 +17,7 @@ const CreateNew = forwardRef((props, ref) => {
             <IconButton
               disableFocusRipple
               disableRipple
+              disabled={createButtonDisabled}
               onClick={(e) => {
                 e.preventDefault();
                 history.push({

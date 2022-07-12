@@ -40,7 +40,6 @@ async function dbConnect() {
         const database = mongoose.connection;
         database.on('error', (err) => {
           cached.success = false;
-          console.log(err);
         });
         database.once('open', () => {
           cached.success = true;

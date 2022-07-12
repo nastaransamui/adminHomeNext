@@ -32,9 +32,6 @@ export default function User(props) {
   const hookes = userHook();
   const dispatch = useDispatch();
 
-  // console.log(_id);
-
-  // console.log(values);
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
       <Fragment>

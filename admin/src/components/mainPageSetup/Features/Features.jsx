@@ -14,12 +14,17 @@ import {
 } from './featuresStatic';
 import useDeleteAlert from '../../Hooks/useDeleteAlert';
 import useDataHeaders from '../../Hooks/useDataHeaders';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Features = (props) => {
   const { t } = useTranslation('feature');
+  const { reactRoutes } = props;
   const { requestSearch, searchText, rows: features } = featuresHook();
   const { Features } = useSelector((state) => state);
+  const featureRoute = reactRoutes.filter((a) => a.componentName == "Features")[0];
 
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(featureRoute);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Features;
 
@@ -80,6 +85,9 @@ const Features = (props) => {
             plain: true,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

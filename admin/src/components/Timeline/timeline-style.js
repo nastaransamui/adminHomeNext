@@ -14,7 +14,7 @@ import {
 const timelineStyle = makeStyles((theme) => {
   return {
     timeline: {
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         '&:before': {
           left: '5% !important',
         },
@@ -65,7 +65,7 @@ const timelineStyle = makeStyles((theme) => {
       },
     },
     timelineBadge: {
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         left: '5% !important',
       },
       color: theme.palette.background.paper,
@@ -147,7 +147,7 @@ const timelineStyle = makeStyles((theme) => {
       cursor: 'pointer',
     },
     timelinePanel: {
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         float: 'right !important',
         width: '86% !important',
         '&:before': {

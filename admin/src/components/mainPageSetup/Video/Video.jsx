@@ -18,10 +18,15 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { useHistory } from 'react-router-dom';
 import videoHook from './videoHook';
 import { Stories } from './videoStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Video(props) {
   const classes = videoStyles();
   const history = useHistory();
+  const { t, i18n } = useTranslation('video');
+  const lang = i18n.language == 'fa' ? 'fa' : 'en';
+  const { rtlActive, reactRoutes } = props;
+
   const {
     values,
     setValues,
@@ -33,10 +38,13 @@ export default function Video(props) {
     videoPosterBlob,
     submitForm,
     pushUrl,
-  } = videoHook();
+    _id,
+    videoRoute,
+  } = videoHook(reactRoutes);
 
-  const { t } = useTranslation('video');
-  const { rtlActive } = props;
+  const { createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(videoRoute);
+    console.log(values)
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>
@@ -47,7 +55,7 @@ export default function Video(props) {
           {rtlActive ? <ArrowForward /> : <ArrowBack />}
         </IconButton>
       </Tooltip>
-      <Heading title={t('VideoTitle')} textAlign='center' />
+      <Heading title={values[`title_${lang}`] == '' ? t('VideoTitle') :values[`title_${lang}`]  } textAlign='center' />
       <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
         <Grid container>
           <Grid item xs={12}>
@@ -91,8 +99,16 @@ export default function Video(props) {
                     </Tooltip>
                   </Grid>
                   <Grid container justifyContent='center'>
-                    <Button type='submit' variant='contained' color='primary'>
-                      {t('submit')}
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      color='primary'
+                      disabled={
+                        _id == undefined
+                          ? createButtonDisabled
+                          : updateButtonDisabled
+                      }>
+                      {_id == undefined ? t('submit') : t('edit')}
                     </Button>
                   </Grid>
                 </ValidatorForm>

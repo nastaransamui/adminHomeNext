@@ -14,8 +14,9 @@ import { getUrl, pushUrl, editUrl } from './cityStatic';
 import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
-const cityHook = () => {
+const cityHook = (reactRoutes) => {
   const { t } = useTranslation('geoLocations');
   const theme = useTheme();
   const history = useHistory();
@@ -25,6 +26,13 @@ const cityHook = () => {
   const router = useRouter();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
+
+  const countriesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Cities') {
+      return true;
+    }
+  })[0];
+  const { updateButtonDisabled } = useButtonActivation(countriesRoute);
   const { city_id } = urlParams;
   const [values, setValues] = useState({});
 
@@ -37,32 +45,34 @@ const cityHook = () => {
     values.modelName = 'Countries';
     values.dataType = 'Cities';
     try {
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-      const res = await fetch(editUrl, {
-        method: 'POST',
-        headers: {
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify(values),
-      });
-      const { status } = res;
-      const response = await res.json();
-      if (status !== 200 && !response.success) {
-        alertCall(theme, 'error', response.Error, () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          }
+      if (!updateButtonDisabled) {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+        const res = await fetch(editUrl, {
+          method: 'POST',
+          headers: {
+            token: `Brearer ${adminAccessToken}`,
+          },
+          body: JSON.stringify(values),
         });
-      } else {
-        alertCall(theme, 'success', t('countryEdited'), () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          } else {
-            history.push(pushUrl);
-          }
-        });
+        const { status } = res;
+        const response = await res.json();
+        if (status !== 200 && !response.success) {
+          alertCall(theme, 'error', response.Error, () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
+          });
+        } else {
+          alertCall(theme, 'success', t('countryEdited'), () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
+          });
+        }
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
@@ -179,6 +189,7 @@ const cityHook = () => {
     RegularMap,
     objIsEmpty,
     theme,
+    updateButtonDisabled,
   };
 };
 

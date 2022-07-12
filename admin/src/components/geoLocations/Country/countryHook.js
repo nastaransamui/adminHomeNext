@@ -7,21 +7,15 @@ import { getUrl, pushUrl, getStatesOfCountry, editUrl } from './countryStatic';
 import alertCall from '../../Hooks/useAlert';
 import {
   GoogleMap,
-  Polygon,
   withScriptjs,
   withGoogleMap,
-  TrafficLayer,
-  Marker,
   KmlLayer,
 } from 'react-google-maps';
-const { InfoBox } = require('react-google-maps/lib/components/addons/InfoBox');
-import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
-import compose from 'recompose/compose';
-import withProps from 'recompose/withProps';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
-const countryHook = () => {
+const countryHook = (reactRoutes) => {
   const { t } = useTranslation('geoLocations');
   const theme = useTheme();
   const history = useHistory();
@@ -31,6 +25,13 @@ const countryHook = () => {
   const location = useLocation();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
+  const countriesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Countries' && a.componentView == 'view') {
+      return true;
+    }
+  })[0];
+  const { updateButtonDisabled } = useButtonActivation(countriesRoute);
+
   const { country_id } = urlParams;
   const [values, setValues] = useState({});
   const [expanded, setExpanded] = useState(false);
@@ -54,7 +55,6 @@ const countryHook = () => {
       }),
     });
     const { status, ok, statusText } = res;
-    // console.log(res);
     if (status !== 200 && !ok) {
       alertCall(theme, 'error', statusText, () => {
         if (!checkCookies('adminAccessToken')) {
@@ -112,32 +112,34 @@ const countryHook = () => {
     values.modelName = 'Countries';
     values.dataType = 'Countries';
     try {
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-      const res = await fetch(editUrl, {
-        method: 'POST',
-        headers: {
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify(values),
-      });
-      const { status } = res;
-      const response = await res.json();
-      if (status !== 200 && !response.success) {
-        alertCall(theme, 'error', response.Error, () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          }
+      if (!updateButtonDisabled) {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+        const res = await fetch(editUrl, {
+          method: 'POST',
+          headers: {
+            token: `Brearer ${adminAccessToken}`,
+          },
+          body: JSON.stringify(values),
         });
-      } else {
-        alertCall(theme, 'success', t('countryEdited'), () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          } else {
-            history.push(pushUrl);
-          }
-        });
+        const { status } = res;
+        const response = await res.json();
+        if (status !== 200 && !response.success) {
+          alertCall(theme, 'error', response.Error, () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
+          });
+        } else {
+          alertCall(theme, 'success', t('countryEdited'), () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
+          });
+        }
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
@@ -169,7 +171,6 @@ const countryHook = () => {
             }),
           });
           const { status, ok, statusText } = res;
-          // console.log(res);
           if (status !== 200 && !ok) {
             alertCall(theme, 'error', statusText, () => {
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -181,7 +182,6 @@ const countryHook = () => {
             });
           }
           const response = await res.json();
-          // console.log(response);
           const errorText =
             response?.ErrorCode == undefined
               ? t(`${response.Error}`)
@@ -210,7 +210,6 @@ const countryHook = () => {
     };
   }, [location]);
 
-  console.log(values);
   const RegularMap = useMemo(() => {
     return withScriptjs(
       withGoogleMap(() => (
@@ -265,6 +264,7 @@ const countryHook = () => {
     handleChildExpand,
     topRef,
     executeScroll,
+    updateButtonDisabled,
   };
 };
 

@@ -14,15 +14,23 @@ import {
   editUrl,
 } from './currenciesStatic';
 import useActiveAlert from '../../Hooks/useActiveAlert';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Currencies = (props) => {
-  const { componentView } = props;
+  const { componentView, reactRoutes } = props;
   const { t } = useTranslation('exchange');
+  const currenciesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Currencies' && a.componentView == componentView) {
+      return true;
+    }
+  })[0];
+  const { deleteButtonDisabled, createButtonDisabled } =
+    useButtonActivation(currenciesRoute);
   const {
     requestSearch,
     searchText,
     rows: currencies,
-    exportCsv
+    exportCsv,
   } = currenciesHook(componentView);
   const { currenciesGStore, currenciesAStore } = useSelector((state) => state);
   const {
@@ -33,7 +41,8 @@ const Currencies = (props) => {
     PerPage,
     GridView,
     activesId,
-  } = componentView == 'global_currencies' ? currenciesGStore : currenciesAStore;
+  } =
+    componentView == 'global_currencies' ? currenciesGStore : currenciesAStore;
 
   const { sweetActiveAlert } = useActiveAlert({
     state: currenciesGStore,
@@ -42,12 +51,14 @@ const Currencies = (props) => {
     t: t,
     Url: activeUrl,
     dispatchType: 'CURRENCIES_G_STORE',
-    activesId:activesId
+    activesId: activesId,
   });
 
   const { sweetDiactiveAlert } = useActiveAlert({
     state:
-      componentView == 'global_currencies' ? currenciesGStore : currenciesAStore,
+      componentView == 'global_currencies'
+        ? currenciesGStore
+        : currenciesAStore,
     modelName: 'Currencies',
     fileName: 'currencies.json',
     t: t,
@@ -56,7 +67,7 @@ const Currencies = (props) => {
       componentView == 'global_currencies'
         ? 'CURRENCIES_G_STORE'
         : 'CURRENCIES_A_STORE',
-        activesId:activesId
+    activesId: activesId,
   });
 
   const {
@@ -67,7 +78,9 @@ const Currencies = (props) => {
     sortByFunc,
   } = useDataHeaders({
     state:
-      componentView == 'global_currencies' ? currenciesGStore : currenciesAStore,
+      componentView == 'global_currencies'
+        ? currenciesGStore
+        : currenciesAStore,
     dispatchType:
       componentView == 'global_currencies'
         ? 'CURRENCIES_G_STORE'
@@ -86,7 +99,11 @@ const Currencies = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={currenciesFields}
-          state = {componentView == 'global_currencies' ? currenciesGStore : currenciesAStore}
+          state={
+            componentView == 'global_currencies'
+              ? currenciesGStore
+              : currenciesAStore
+          }
           createUrl=''
           editUrl={componentView == 'global_currencies' ? '' : editUrl}
           cardView={CardView}
@@ -119,6 +136,10 @@ const Currencies = (props) => {
           activeAlert={sweetActiveAlert}
           diactiveAlert={sweetDiactiveAlert}
           exportCsv={exportCsv}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          //Pass False here but disble inputs and submit in currency page
+          updateButtonDisabled={false}
         />
       </Fragment>
     </Container>

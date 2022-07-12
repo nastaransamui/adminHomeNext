@@ -1,13 +1,12 @@
 import aboutStyles from './about-styles';
-import {
-  Container,
-  Slider,
-  Button,
-  Grid,
-  Tooltip,
-  IconButton,
-  Hidden,
-} from '@mui/material';
+import Container from '@mui/material/Container';
+import Slider from '@mui/material/Slider';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Hidden from '@mui/material/Hidden';
+import { useTheme } from '@mui/styles';
 import { Delete } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
@@ -15,9 +14,12 @@ import Heading from '../../Heading/Heading';
 import aboutHook from './aboutHook';
 import clsx from 'clsx';
 import imageAvatar from '../../../../public/images/faces/avatar1.jpg';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Feature(props) {
+  const { rtlActive, reactRoutes } = props;
+  const theme = useTheme();
   const classes = aboutStyles();
   const {
     values,
@@ -28,10 +30,10 @@ export default function Feature(props) {
     secondThumbBlob,
     thirdThumbBlob,
     submitForm,
-  } = aboutHook();
-
+    aboutRoute,
+  } = aboutHook(reactRoutes);
+  const { updateButtonDisabled } = useButtonActivation(aboutRoute);
   const { t } = useTranslation('about');
-  const { rtlActive } = props;
   const firstThumbRef = useRef(null);
   const secondThumbRef = useRef(null);
   const thirdThumbRef = useRef(null);
@@ -70,39 +72,47 @@ export default function Feature(props) {
                 {values.firstThumb !== '' && (
                   <>
                     <Tooltip title={t('photoHorizen')} arrow>
-                      <Slider
-                        sx={{ height: 210 }}
-                        aria-label='firstTop'
-                        defaultValue={values.firstTop}
-                        name='firstTop'
-                        size='small'
-                        value={values.firstTop}
-                        orientation='vertical'
-                        color='secondary'
-                        min={-100}
-                        max={50}
-                        className={classes.firstTop}
-                        onChange={(e) => {
-                          formValueChanged(e);
-                        }}
-                      />
+                      <span>
+                        <Slider
+                          sx={{ height: 210 }}
+                          aria-label='firstTop'
+                          defaultValue={values.firstTop}
+                          disabled={updateButtonDisabled}
+                          name='firstTop'
+                          size='small'
+                          value={values.firstTop}
+                          orientation='vertical'
+                          color='secondary'
+                          min={-100}
+                          max={50}
+                          className={classes.firstTop}
+                          onChange={(e) => {
+                            formValueChanged(e);
+                          }}
+                        />
+                      </span>
                     </Tooltip>
                     <Tooltip title={t('thumbDelete')} arrow>
+                      <span>
                       <IconButton
                         disableFocusRipple
                         disableRipple
+                        disabled={updateButtonDisabled}
                         onClick={() => {
                           document.getElementById('firstThumb').value = '';
                           deleteFile('firstThumb');
                         }}
                         className={classes.firstDelete}>
-                        <Delete color='error' />
+                        <Delete style={{ color: updateButtonDisabled ? theme.palette.text.disabled : theme.palette.error.main }}  />
                       </IconButton>
+                      </span>
                     </Tooltip>
                     <Tooltip title={t('photoVertical')} arrow>
+                      <span>
                       <Slider
                         sx={{ width: 210 }}
                         aria-label='firstRight'
+                        disabled={updateButtonDisabled}
                         defaultValue={values.firstRight}
                         size='small'
                         value={values.firstRight}
@@ -115,6 +125,7 @@ export default function Feature(props) {
                           formValueChanged(e);
                         }}
                       />
+                      </span>
                     </Tooltip>
                   </>
                 )}
@@ -152,6 +163,7 @@ export default function Feature(props) {
                     type='file'
                     id='firstThumb'
                     name='firstThumb'
+                    disabled={updateButtonDisabled}
                     hidden
                     onChange={(e) => {
                       uploadFile(e);
@@ -172,11 +184,13 @@ export default function Feature(props) {
                 {values.secondThumb !== '' && (
                   <>
                     <Tooltip title={t('photoHorizen')} arrow>
+                      <span>
                       <Slider
                         sx={{ height: 180 }}
                         aria-label='secondTop'
                         defaultValue={values.secondTop}
                         size='small'
+                        disabled={updateButtonDisabled}
                         value={values.secondTop}
                         name='secondTop'
                         orientation='vertical'
@@ -188,6 +202,7 @@ export default function Feature(props) {
                           formValueChanged(e);
                         }}
                       />
+                      </span>
                     </Tooltip>
                     <Tooltip title={t('thumbDelete')} arrow>
                       <IconButton
@@ -198,15 +213,17 @@ export default function Feature(props) {
                           deleteFile('secondThumb');
                         }}
                         className={classes.secondDelete}>
-                        <Delete color='error' />
+                        <Delete style={{ color: updateButtonDisabled ? theme.palette.text.disabled : theme.palette.error.main }}  />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title={t('photoVertical')} arrow>
+                      <span>
                       <Slider
                         sx={{ width: 150 }}
                         aria-label='secondRight'
                         defaultValue={values.secondRight}
                         size='small'
+                        disabled={updateButtonDisabled}
                         name='secondRight'
                         value={values.secondRight}
                         color='secondary'
@@ -217,6 +234,7 @@ export default function Feature(props) {
                           formValueChanged(e);
                         }}
                       />
+                      </span>
                     </Tooltip>
                   </>
                 )}
@@ -254,6 +272,7 @@ export default function Feature(props) {
                     type='file'
                     id='secondThumb'
                     name='secondThumb'
+                    disabled={updateButtonDisabled}
                     hidden
                     onChange={(e) => {
                       uploadFile(e);
@@ -274,10 +293,12 @@ export default function Feature(props) {
                 {values.thirdThumb !== '' && (
                   <>
                     <Tooltip title={t('photoHorizen')} arrow>
+                      <span>
                       <Slider
                         sx={{ height: 210 }}
                         aria-label='thirdTop'
                         defaultValue={values.thirdTop}
+                        disabled={updateButtonDisabled}
                         size='small'
                         name='thirdTop'
                         value={values.thirdTop}
@@ -290,24 +311,30 @@ export default function Feature(props) {
                           formValueChanged(e);
                         }}
                       />
+                      </span>
                     </Tooltip>
                     <Tooltip title={t('thumbDelete')} arrow>
+                      <span>
                       <IconButton
                         disableFocusRipple
+                        disabled={updateButtonDisabled}
                         disableRipple
                         onClick={() => {
                           document.getElementById('thirdThumb').value = '';
                           deleteFile('thirdThumb');
                         }}
                         className={classes.thirdDelete}>
-                        <Delete color='error' />
+                         <Delete style={{ color: updateButtonDisabled ? theme.palette.text.disabled : theme.palette.error.main }}  />
                       </IconButton>
+                      </span>
                     </Tooltip>
                     <Tooltip title={t('photoVertical')} arrow>
+                      <span>
                       <Slider
                         sx={{ width: 210 }}
                         aria-label='thirdRight'
                         defaultValue={values.thirdRight}
+                        disabled={updateButtonDisabled}
                         name='thirdRight'
                         size='small'
                         value={values.thirdRight}
@@ -319,6 +346,7 @@ export default function Feature(props) {
                           formValueChanged(e);
                         }}
                       />
+                      </span>
                     </Tooltip>
                   </>
                 )}
@@ -356,6 +384,7 @@ export default function Feature(props) {
                     type='file'
                     id='thirdThumb'
                     name='thirdThumb'
+                    disabled={updateButtonDisabled}
                     hidden
                     onChange={(e) => {
                       uploadFile(e);
@@ -389,6 +418,7 @@ export default function Feature(props) {
                     <TextValidator
                       fullWidth
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       variant='standard'
                       label={t('title_en')}
                       name='title_en'
@@ -404,6 +434,7 @@ export default function Feature(props) {
                     <TextValidator
                       fullWidth
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       variant='standard'
                       label={t('title_fa')}
                       name='title_fa'
@@ -418,6 +449,7 @@ export default function Feature(props) {
                   <Grid item lg={12} md={12} sm={12} xs={12}>
                     <TextValidator
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       multiline
                       rows={4}
                       fullWidth
@@ -435,6 +467,7 @@ export default function Feature(props) {
                   <Grid item lg={12} md={12} sm={12} xs={12}>
                     <TextValidator
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       multiline
                       rows={4}
                       fullWidth
@@ -452,6 +485,7 @@ export default function Feature(props) {
                   <Grid item lg={6} md={6} sm={12} xs={12}>
                     <TextValidator
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       fullWidth
                       variant='standard'
                       label={t('button_en')}
@@ -467,6 +501,7 @@ export default function Feature(props) {
                   <Grid item lg={6} md={6} sm={12} xs={12}>
                     <TextValidator
                       className={classes.input}
+                      disabled={updateButtonDisabled}
                       fullWidth
                       variant='standard'
                       label={t('button_fa')}
@@ -489,6 +524,7 @@ export default function Feature(props) {
           type='submit'
           variant='contained'
           color='secondary'
+          disabled={updateButtonDisabled}
           style={{ marginBottom: 30 }}>
           {t('submit')}
         </Button>

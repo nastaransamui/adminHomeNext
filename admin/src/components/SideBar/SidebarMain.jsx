@@ -22,7 +22,7 @@ const SidebarMain = (props) => {
     color,
     routes,
     router,
-    adminAccessToken,
+    reactRoutes
   } = props;
   const classes = mainStyles();
   const location = useLocation();
@@ -40,7 +40,7 @@ const SidebarMain = (props) => {
   };
     // this creates the intial state of this component based on the collapse routes
   // that it gets through this.props.routes
-
+ 
   const getCollapseStates = (routes) => {
     let initialState = {};
     routes.map((prop) => {
@@ -82,6 +82,7 @@ const SidebarMain = (props) => {
     setState((oldState) => ({ ...oldState, ...st }));
   };
 
+  
   return (
     <div ref={mainPanel}>
       <Hidden mdUp implementation='css'>
@@ -125,6 +126,7 @@ const SidebarMain = (props) => {
                 rtlActive={rtlActive}
                 handleDrawerToggle={handleDrawerToggle}
                 getCollapseInitialState={getCollapseInitialState}
+                reactRoutes={reactRoutes}
               />
             }
             headerLinks={
@@ -184,6 +186,7 @@ const SidebarMain = (props) => {
                 color={color}
                 rtlActive={rtlActive}
                 getCollapseInitialState={getCollapseInitialState}
+                reactRoutes={reactRoutes}
               />
             }
           />

@@ -16,15 +16,18 @@ import {
 } from './usersStatic';
 import useDeleteAlert from '../Hooks/useDeleteAlert';
 import useDataHeaders from '../Hooks/useDataHeaders';
+import useButtonActivation from '../Hooks/useButtonActivation';
 
 export default function Users(props) {
   const { t } = useTranslation('users');
-
+  const {reactRoutes} = props;
   const { requestSearch, searchText, rows: users, exportCsv } = usersHook();
   const { Users } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Users;
-
+  const usersRoute = reactRoutes.filter((a)=> a.componentName == "UserPage")[0]
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(usersRoute);
   const sweetDeleteAlert = useDeleteAlert({
     state: Users,
     modelName: 'Users',
@@ -82,6 +85,9 @@ export default function Users(props) {
             plain: false,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

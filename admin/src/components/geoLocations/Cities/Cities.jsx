@@ -6,30 +6,20 @@ import { useSelector } from 'react-redux';
 import citiesHook from './citiesHook';
 import DataShow from '../../datasShow/DataShow';
 import useDataHeaders from '../../Hooks/useDataHeaders';
-import {
-  citiesFields,
-  dataGridColumns,
-  editUrl
-} from './citiesStatic';
+import { citiesFields, dataGridColumns, editUrl } from './citiesStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Cities = (props) => {
   const { t } = useTranslation('geoLocations');
-  const {
-    requestSearch,
-    searchText,
-    rows: cities,
-    exportCsv
-  } = citiesHook();
-  const { citiesStore } = useSelector((state) => state);
-  const {
-    dataArrayLengh,
-    pageNumber,
-    SortBy,
-    CardView,
-    PerPage,
-    GridView,
-  } = citiesStore;
+  const { reactRoutes } = props;
+  const citiesRoute = reactRoutes.filter((a) => a.componentName == 'Cities')[0];
 
+  const { deleteButtonDisabled, createButtonDisabled } =
+    useButtonActivation(citiesRoute);
+  const { requestSearch, searchText, rows: cities, exportCsv } = citiesHook();
+  const { citiesStore } = useSelector((state) => state);
+  const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
+    citiesStore;
 
   const {
     gridNumberFunc,
@@ -38,9 +28,9 @@ const Cities = (props) => {
     perPageFunc,
     sortByFunc,
   } = useDataHeaders({
-    state:citiesStore,
+    state: citiesStore,
     dispatchType: 'CITIES_STORE',
-    cookieName:'citiesStore',
+    cookieName: 'citiesStore',
   });
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -79,6 +69,10 @@ const Cities = (props) => {
           }}
           cardViewsFunc={cardViewsFunc}
           exportCsv={exportCsv}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          //Pass False here but disble inputs and submit in city page
+          updateButtonDisabled={false}
         />
       </Fragment>
     </Container>

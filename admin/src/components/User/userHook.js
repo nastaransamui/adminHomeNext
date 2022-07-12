@@ -32,7 +32,7 @@ const userHook = () => {
   const [values, setValues] = useState({
     userName: '',
     password: '',
-    isAdmin: false,
+    isAdmin: true,
     showPassword: false,
     firstName: '',
     lastName: '',
@@ -220,7 +220,7 @@ const userHook = () => {
     values.profileImageKey = '';
     setValues((oldValue) => ({ ...oldValue }));
   };
-  // console.log(values);
+
   const isValidated = () => {
     if (values.password == '' && values.role_id.length !== 0) {
       if (values?.agentsData !== undefined || values?.roleData !== undefined) {
@@ -730,6 +730,7 @@ const userHook = () => {
   }, [loadingCountry]);
 
   return {
+    profile,
     values,
     setValues,
     handleChange,

@@ -7,14 +7,17 @@ import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
 
-import { pushUrl, getUrl, createUrl, editUrl } from './videoStatic';
+import { getUrl, createUrl, editUrl } from './videoStatic';
+export var pushUrl = '/admin/dashboard/main-page-setup/videos';
 
-const videoHook = () => {
+const videoHook = (reactRoutes) => {
   const { t } = useTranslation('video');
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
   const router = useRouter();
+  const videoRoute = reactRoutes.filter((a) => a.componentName == 'Video')[0];
+  const videosRoute = reactRoutes.filter((a) => a.componentName == 'Videos')[0];
   const { adminAccessToken } = useSelector((state) => state);
   const [videoLinkBlob, setVideoLinkBlob] = useState('');
   const [imageMobileBlob, setImageMobileBlob] = useState('');
@@ -46,6 +49,10 @@ const videoHook = () => {
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { _id } = urlParams;
+
+  if (!videosRoute.crud[0]?.active) {
+    pushUrl = '/admin/dashboard';
+  }
 
   const formValueChanged = (e) => {
     values[e.target.name] = e.target.value;
@@ -242,6 +249,8 @@ const videoHook = () => {
     videoPosterBlob,
     submitForm,
     pushUrl,
+    _id,
+    videoRoute,
   };
 };
 

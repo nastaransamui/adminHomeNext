@@ -1,30 +1,37 @@
-import { useEffect, useMemo } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Switch,
+  Route,
+  useHistory,
+  useLocation,
+  Redirect,
+} from 'react-router-dom';
 import NotFound from './NotFound';
 import MainDashboard from '../../components/mainDashboard/MainDashboard';
 import ThemeUser from '../../components/ThemeUser/ThemeUser';
 import { useRouter } from 'next/router';
-import UsersPage from '../user-page/UsersPage';
+import UserPage from '../user-page/UsersPage';
 import User from '../../components/User/User';
-import VideosPage from '../video-page/VideosPage';
+import Videos from '../video-page/VideosPage';
 import Video from '../../components/mainPageSetup/Video/Video';
-import PhotosPage from '../photo-page/PhotosPage';
+import Photos from '../photo-page/PhotosPage';
 import Photo from '../../components/mainPageSetup/Photo/Photo';
-import FeaturePage from '../feature-page/FeaturePage';
+import Features from '../feature-page/FeaturePage';
 import Feature from '../../components/mainPageSetup/Feature/Feature';
 import About from '../../components/mainPageSetup/About/About';
-import CountriesPage from '../countries-page/CountriesPage';
+import Countries from '../countries-page/CountriesPage';
 import Country from '../../components/geoLocations/Country/Country';
-import ProvincesPage from '../provinces-page/ProvincesPage';
+import Provinces from '../provinces-page/ProvincesPage';
 import Province from '../../components/geoLocations/Province/Province';
-import CitiesPage from '../cities-page/CitiesPage';
+import Cities from '../cities-page/CitiesPage';
 import City from '../../components/geoLocations/City/City';
-import CurrencyPage from '../currency-page/CurrencyPage';
+import Currencies from '../currency-page/CurrencyPage';
 import Currency from '../../components/exchange/Currency/Currency';
-import AgencyPage from '../agencies-page/AgencyPage';
-import Agency from '../../components/Clients/Agency/Agency';
-import RbackPage from '../rbac-page/RbackPage'
-import Role from '../../components/Rbac/Role/Role'
+import Clients from '../agencies-page/AgencyPage';
+import Client from '../../components/Clients/Agency/Agency';
+import RbacData from '../rbac-page/RbackPage';
+import Role from '../../components/Rbac/Role/Role';
+import { useSelector } from 'react-redux';
 
 export function NotFoundPage() {
   return null;
@@ -37,19 +44,37 @@ export function useQuery() {
 }
 
 export function CustomSwitch(props) {
-  const { children } = props;
+  const { children, profile } = props;
   const history = useHistory();
   const router = useRouter();
   let reactPath = [];
   // get all registerd path from react router without id's
   if (Object.keys(children.props).length !== 0) {
-    for (let index = 0; index < children.props.children.length; index++) {
-      const element = children.props.children[index];
-      let paths = element.props.path;
-      if (paths.indexOf('=') !== -1) {
-        paths = paths.substring(0, paths.indexOf('='));
+    //Spread between dashboard, routes and error link
+    const mixAllRoutesOfReact = [];
+    children.props.children.map((a, i) => {
+      if (Array.isArray(a)) {
+        a = a.filter(function (element) {
+          return element !== undefined;
+        });
+        a.map((b) => {
+          mixAllRoutesOfReact.push(b);
+        });
+      } else {
+        if (a) {
+          mixAllRoutesOfReact.push(a);
+        }
       }
-      reactPath.push(paths);
+    });
+    for (let index = 0; index < mixAllRoutesOfReact.length; index++) {
+      const element = mixAllRoutesOfReact[index];
+      if (element !== undefined) {
+        let paths = element.props.path;
+        if (paths.indexOf('=') !== -1) {
+          paths = paths.substring(0, paths.indexOf('='));
+        }
+        reactPath.push(paths);
+      }
     }
   }
 
@@ -57,14 +82,16 @@ export function CustomSwitch(props) {
   let query = useQuery();
   // check if current path has query or not and compare with react Route
   let { pathname, search } = location;
-
   let fullPath = query.toString().length == 0 ? pathname : pathname;
-  // //Mix pathname with search param and remove the '=' and '?' sign
-  // pathname.concat('/', search.replace('?', '')).substring(0, pathname.concat('/', search.replace('?', '')).indexOf('='))
-
-  // console.log(pathname)
-  // console.log(pathname.concat('/', search.replace('?', '')).substring(0, pathname.concat('/', search.replace('?', '')).indexOf('=')))
   let showErrorPage = !reactPath.includes(fullPath);
+  //dont show error page if all users not active but user at profile page and refresh
+  if (
+    pathname == '/admin/dashboard/user-page' &&
+    query.get('_id') == profile._id
+  ) {
+    showErrorPage = false;
+  }
+
   useEffect(() => {
     if (showErrorPage) history.push('/admin/dashboard/notfoundpage');
   }, [router, location, query, showErrorPage, search]);
@@ -77,106 +104,123 @@ export function CustomSwitch(props) {
 }
 
 export default function ReactRouter(props) {
+  const { reactRoutes } = props;
+  const [addUserProfile, setAddUserProfile] = useState(false);
+  const [userHasUpdateAccess, setUserHasUpdateAccess] = useState(true);
+  const { profile } = useSelector((state) => state);
+  let query = useQuery();
+  let location = useLocation();
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount) {
+      const indexOfUserList = reactRoutes.findIndex((object) => {
+        return object[`name_en-US`] === 'Users List';
+      });
+      if (indexOfUserList == -1) {
+        setAddUserProfile(true);
+      } else {
+        const usersList = reactRoutes[indexOfUserList];
+        let cruds = [...usersList.crud];
+        let readStatus =
+          cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
+        if (!readStatus) {
+          setAddUserProfile(true);
+        }
+      }
+      const indexOfCurrentRoute = reactRoutes.findIndex((obj)=>{
+        return obj.path == location.pathname
+      })
+      if(indexOfCurrentRoute !== -1){
+        const r = reactRoutes[indexOfCurrentRoute]
+        if (location.search !== '' ) {
+          let updateStatus =
+            r.crud[r.crud.findIndex((obj) => obj.name == 'update')]
+              .active;
+          setUserHasUpdateAccess(updateStatus);
+        }else{
+          setUserHasUpdateAccess(true);
+        }
+      }else{
+        setUserHasUpdateAccess(true);
+      }
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [reactRoutes, location]);
+
+  const componentsMap = useMemo(() => {
+    return {
+      UserPage,
+      User,
+      RbacData,
+      Role,
+      Videos,
+      Video,
+      Photos,
+      Photo,
+      Features,
+      Feature,
+      About,
+      Countries,
+      Country,
+      Provinces,
+      Province,
+      Cities,
+      City,
+      Currencies,
+      Currency,
+      Clients,
+      Client,
+    };
+  });
+
   return (
-    <CustomSwitch>
+    <CustomSwitch profile={profile}>
       <>
-        <Route exact path='/admin/dashboard'>
+        <Route exact path='/admin/dashboard' key={0}>
           <MainDashboard {...props} />
           <ThemeUser {...props} />
         </Route>
-        <Route exact path='/admin/dashboard/user-page'>
-          <UsersPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/user-page/user'>
-          <User {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/rbac-data'>
-          <RbackPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/rbac-data/role'>
-          <Role {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/videos'>
-          <VideosPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/videos/video'>
-          <Video {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/photos'>
-          <PhotosPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/photos/photo'>
-          <Photo {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/features'>
-          <FeaturePage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/features/feature'>
-          <Feature {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/main-page-setup/about'>
-          <About {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/g-locations/countries'>
-          <CountriesPage {...props} componentView='global_countries' />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/countries'>
-          <CountriesPage {...props} componentView='active' />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/countries/country'>
-          <Country {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/provinces'>
-          <ProvincesPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/provinces/province'>
-          <Province {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/cities'>
-          <CitiesPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-locations/cities/city'>
-          <City {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/g-currencies/currencies'>
-          <CurrencyPage {...props} componentView='global_currencies' />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-currencies/currencies'>
-          <CurrencyPage {...props} componentView='active' />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/a-currencies/currencies/currency'>
-          <Currency {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/client-data/clients'>
-          <AgencyPage {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route exact path='/admin/dashboard/client-data/clients/client'>
-          <Agency {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        <Route path='/admin/dashboard/notfoundpage'>
+        {addUserProfile && (
+          <Route key={1} exact path='/admin/dashboard/user-page'>
+            {(addUserProfile && query.get('_id') == null) ||
+            query.get('_id') !== profile._id ? (
+              <Redirect to='/admin/dashboard' {...props} />
+            ) : (
+              <UserPage {...props} />
+            )}
+            <ThemeUser {...props} />
+          </Route>
+        )}
+        {reactRoutes.map((r, i) => {
+          const DynamicComponent = componentsMap[r.componentName];
+          if (DynamicComponent !== undefined) {
+            if (r.crud[0].active) {
+              return (
+                <Route exact path={r.path} key={i + 2}>
+                  {/* {userHasUpdateAccess ? (
+                    <DynamicComponent
+                      {...props}
+                      componentView={r.componentView}
+                    />
+                  ) : (
+                    <Redirect to='/admin/dashboard' {...props} />
+                  )} */}
+                  <DynamicComponent
+                    {...props}
+                    componentView={r.componentView}
+                  />
+                  <ThemeUser {...props} />
+                </Route>
+              );
+            }
+          }
+        })}
+        <Route
+          path='/admin/dashboard/notfoundpage'
+          key={reactRoutes.length + 3}>
           <NotFound {...props} />
           <ThemeUser {...props} />
         </Route>

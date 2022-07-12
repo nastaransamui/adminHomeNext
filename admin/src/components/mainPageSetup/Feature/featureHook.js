@@ -7,9 +7,11 @@ import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
 
-import { pushUrl, getUrl, createUrl, editUrl } from './featureStatic';
+import { getUrl, createUrl, editUrl } from './featureStatic';
 
-const featureHook = () => {
+export var pushUrl = '/admin/dashboard/main-page-setup/features';
+
+const featureHook = (reactRoutes) => {
   const { t } = useTranslation('feature');
   const theme = useTheme();
   const history = useHistory();
@@ -18,6 +20,14 @@ const featureHook = () => {
   const { adminAccessToken } = useSelector((state) => state);
   const [featureLinkBlob, setFeatureLinkBlob] = useState('');
   const [featureThumbBlob, setFeatureThumbBlob] = useState('');
+
+  const featureRoute = reactRoutes.filter(
+    (a) => a.componentName == 'Feature'
+  )[0];
+  const featuresRoute = reactRoutes.filter(
+    (a) => a.componentName == 'Features'
+  )[0];
+
   const [values, setValues] = useState({
     title_en: '',
     title_fa: '',
@@ -37,6 +47,10 @@ const featureHook = () => {
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { _id } = urlParams;
+
+  if (!featuresRoute.crud[0]?.active) {
+    pushUrl = '/admin/dashboard';
+  }
 
   const formValueChanged = (e) => {
     values[e.target.name] = e.target.value;
@@ -229,6 +243,8 @@ const featureHook = () => {
     featureThumbBlob,
     submitForm,
     pushUrl,
+    _id,
+    featureRoute,
   };
 };
 

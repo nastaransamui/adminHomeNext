@@ -9,7 +9,6 @@ import alertCall from '../../Hooks/useAlert';
 import { useRouter } from 'next/router';
 import {
   getAgencyUrl,
-  pushUrl,
   createUrl,
   editUrl,
   cityUrl,
@@ -19,7 +18,9 @@ import {
   currencyUrl,
 } from './agencyStatic';
 
-const agencyHook = () => {
+export var pushUrl = '/admin/dashboard/client-data/clients';
+
+const agencyHook = (reactRoutes) => {
   const [logoImageBlob, setLogoImageBlob] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('th');
   const { adminAccessToken, profile } = useSelector((state) => state);
@@ -29,6 +30,13 @@ const agencyHook = () => {
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { client_id } = urlParams;
   const isVercel = process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
+  const clientRoute = reactRoutes.filter((a) => a.componentName == 'Client')[0];
+  const clientsRoute = reactRoutes.filter(
+    (a) => a.componentName == 'Clients'
+  )[0];
+  if (!clientsRoute.crud[0]?.active) {
+    pushUrl = '/admin/dashboard';
+  }
   const [values, setValues] = useState({
     agentId: '',
     agentName: '',
@@ -831,6 +839,8 @@ const agencyHook = () => {
     phoneTags,
     phoneNumberError,
     setPhoneNumberError,
+    pushUrl,
+    clientRoute,
   };
 };
 

@@ -33,6 +33,8 @@ const TableBody = forwardRef((props, ref) => {
     activesId,
     activeAlert,
     diactiveAlert,
+    deleteButtonDisabled,
+    updateButtonDisabled,
   } = props;
 
   const columns = [
@@ -75,13 +77,20 @@ const TableBody = forwardRef((props, ref) => {
           <GridActionsCellItem
             icon={
               <Tooltip arrow title={t('editTooltip')}>
-                <Edit style={{ color: theme.palette.primary.main }} />
+                <Edit
+                  style={{
+                    color: updateButtonDisabled
+                      ? theme.palette.text.disabled
+                      : theme.palette.primary.main,
+                  }}
+                />
               </Tooltip>
             }
             label={t('Edit')}
+            disabled={updateButtonDisabled}
             className='textPrimary'
             onClick={() => {
-              doubleClickFunc(params);
+              !updateButtonDisabled && doubleClickFunc(params);
             }}
             style={{
               display: hideEdit ? 'none' : 'block',
@@ -94,15 +103,33 @@ const TableBody = forwardRef((props, ref) => {
             icon={
               activesId == undefined ? (
                 <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
-                  <ToggleOn style={{ color: theme.palette.success.main }} />
+                  <ToggleOn
+                    style={{
+                      color: deleteButtonDisabled
+                        ? theme.palette.text.disabled
+                        : theme.palette.success.main,
+                    }}
+                  />
                 </Tooltip>
               ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
                 <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
-                  <ToggleOff style={{ color: theme.palette.success.main }} />
+                  <ToggleOff
+                    style={{
+                      color: deleteButtonDisabled
+                        ? theme.palette.text.disabled
+                        : theme.palette.success.main,
+                    }}
+                  />
                 </Tooltip>
               ) : (
                 <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
-                  <ToggleOn style={{ color: theme.palette.error.main }} />
+                  <ToggleOn
+                    style={{
+                      color: deleteButtonDisabled
+                        ? theme.palette.text.disabled
+                        : theme.palette.error.main,
+                    }}
+                  />
                 </Tooltip>
               )
             }
@@ -110,12 +137,12 @@ const TableBody = forwardRef((props, ref) => {
             className='textPrimary'
             onClick={() => {
               if (activesId == undefined) {
-                diactiveAlert(params.row);
+                !deleteButtonDisabled && diactiveAlert(params.row);
               } else {
                 if (activesId?.filter((e) => e.id == params.id).length > 0) {
-                  diactiveAlert(params.row);
+                  !deleteButtonDisabled && diactiveAlert(params.row);
                 } else {
-                  activeAlert(params.row);
+                  !deleteButtonDisabled && activeAlert(params.row);
                 }
               }
             }}
@@ -124,14 +151,22 @@ const TableBody = forwardRef((props, ref) => {
               display: hideToggle ? 'none' : 'block',
             }}
             disableRipple
+            disabled={deleteButtonDisabled}
             disableFocusRipple
           />,
           <GridActionsCellItem
             icon={
               <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
-                <Delete style={{ color: theme.palette.error.main }} />
+                <Delete
+                  style={{
+                    color: deleteButtonDisabled
+                      ? theme.palette.text.disabled
+                      : theme.palette.error.main,
+                  }}
+                />
               </Tooltip>
             }
+            disabled={deleteButtonDisabled}
             label={t('Delete')}
             onClick={() => {
               deleteAlert(params.row);
@@ -155,43 +190,43 @@ const TableBody = forwardRef((props, ref) => {
   const doubleClickFunc = (params) => {
     if (editUrl !== '') {
       if (modelName == 'Provinces') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?state_id=${params?.row?.id}`,
           state: params.row,
         });
       } else if (modelName == 'Countries') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?country_id=${params?.row?.id}`,
           state: params.row,
         });
       } else if (modelName == 'Cities') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?city_id=${params?.row?.id}`,
           state: params.row,
         });
       } else if (modelName == 'Currencies') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?currency_id=${params?.row?._id}`,
           state: params.row,
         });
       } else if (modelName == 'Agencies') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?client_id=${params?.row?._id}`,
           state: params.row,
         });
       } else if (modelName == 'Roles') {
-        history.push({
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?role_id=${params?.row?._id}`,
           state: params.row,
         });
-      } else {
-        history.push({
+      } else if (!updateButtonDisabled) {
+        !updateButtonDisabled && history.push({
           pathname: editUrl,
           search: `?_id=${params.id}`,
           state: params.row,
@@ -199,12 +234,12 @@ const TableBody = forwardRef((props, ref) => {
       }
     } else {
       if (activesId == undefined) {
-        diactiveAlert(params.row);
+        !deleteButtonDisabled && diactiveAlert(params.row);
       } else {
         if (activesId?.filter((e) => e.id == params.id).length > 0) {
-          diactiveAlert(params.row);
+          !deleteButtonDisabled && diactiveAlert(params.row);
         } else {
-          activeAlert(params.row);
+          !deleteButtonDisabled && activeAlert(params.row);
         }
       }
     }

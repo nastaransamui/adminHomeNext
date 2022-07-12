@@ -24,16 +24,16 @@ const DataShow = forwardRef((props, ref) => {
     setWidth(widthRef.current.offsetWidth);
   });
 
-const [mainData, setMainData] = useState(props.mainData)
-useEffect(() => {
-  let isMount = true;
-  if(isMount){
-    setMainData(props.mainData)
-  }
-  return () => {
-    isMount = false;
-  };
-}, [props.mainData]);
+  const [mainData, setMainData] = useState(props.mainData);
+  useEffect(() => {
+    let isMount = true;
+    if (isMount) {
+      setMainData(props.mainData);
+    }
+    return () => {
+      isMount = false;
+    };
+  }, [props.mainData]);
   return (
     <div ref={ref}>
       <MainHeader
@@ -44,8 +44,15 @@ useEffect(() => {
         mainData={mainData}
         setMainData={setMainData}
       />
-      <BodyBox maxWidth='xl' ref={widthRef} className="animate__animated animate__zoomIn">
-        {cardView ? <Main {...props} mainData={mainData}/> : <TableBody {...props} mainData={mainData}/>}
+      <BodyBox
+        maxWidth='xl'
+        ref={widthRef}
+        className='animate__animated animate__zoomIn'>
+        {cardView ? (
+          <Main {...props} mainData={mainData} />
+        ) : (
+          <TableBody {...props} mainData={mainData} />
+        )}
       </BodyBox>
     </div>
   );
@@ -90,6 +97,9 @@ DataShow.propTypes = {
   gridNumberFunc: PropTypes.func.isRequired,
   gridNumber: PropTypes.number.isRequired,
   activesId: PropTypes.array,
+  deleteButtonDisabled: PropTypes.bool.isRequired,
+  createButtonDisabled: PropTypes.bool.isRequired,
+  updateButtonDisabled: PropTypes.bool.isRequired,
 };
 
 export default DataShow;

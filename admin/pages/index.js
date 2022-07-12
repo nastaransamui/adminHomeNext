@@ -36,7 +36,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_THEMETYPE',
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
-              : 'light',
+              : 'dark',
           })),
           ...(await store.dispatch({
             type: 'USERS',
@@ -75,7 +75,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_THEMETYPE',
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
-              : 'light',
+              : 'dark',
           })),
         },
       };

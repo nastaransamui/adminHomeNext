@@ -75,7 +75,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         ]);
         if (valuesList.length > 0) {
           const provinces = valuesList[0].provinces;
-          console.log(provinces);
           res.status(200).json({
             success: true,
             totalValuesLength: provinces.length,

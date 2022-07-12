@@ -1,19 +1,12 @@
-import {
-  AddLocation,
-  ArrowBack,
-  ArrowForward,
-  Apartment,
-  LocationOn,
-} from '@mui/icons-material';
-import {
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  MenuItem,
-  Tooltip,
-} from '@mui/material';
-import React from 'react';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import Apartment from '@mui/icons-material/Apartment';
+import LocationOn from '@mui/icons-material/LocationOn';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { useHistory } from 'react-router-dom';
 import Heading from '../../Heading/Heading';
 import { useTranslation } from 'react-i18next';
@@ -22,11 +15,7 @@ import countryHook from './countryHook';
 import Card from '../../Card/Card';
 import CardHeader from '../../Card/CardHeader';
 import CardIcon from '../../Card/CardIcon';
-import {
-  TextValidator,
-  ValidatorForm,
-  SelectValidator,
-} from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import CardBody from '../../Card/CardBody';
 import countryStyle from './country-style';
 import Accordion from '@mui/material/Accordion';
@@ -37,12 +26,15 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CircleToBlockLoading from 'react-loadingg/lib/CircleToBlockLoading';
 
+
 export default function Country(props) {
   const history = useHistory();
   const classes = countryStyle();
   const { t, i18n } = useTranslation('geoLocations');
   const languagesArray = Object.keys(i18n.options.resources);
-  const { rtlActive } = props;
+  const { rtlActive, reactRoutes } = props;
+
+
   const {
     values,
     formSubmit,
@@ -61,7 +53,9 @@ export default function Country(props) {
     handleChildExpand,
     topRef,
     executeScroll,
-  } = countryHook();
+    updateButtonDisabled
+  } = countryHook(reactRoutes);
+
 
   return (
     <div style={{ minWidth: '100%' }}>
@@ -75,9 +69,11 @@ export default function Country(props) {
       </Tooltip>
       <Heading
         title={
-          !objIsEmpty(values) ? rtlActive
-            ? `${values.emoji} ${values.translations.fa} `
-            : `${values.name}  ${values.emoji}` : ''
+          !objIsEmpty(values)
+            ? rtlActive
+              ? `${values.emoji} ${values.translations.fa} `
+              : `${values.name}  ${values.emoji}`
+            : ''
         }
         textAlign='center'
       />
@@ -95,7 +91,7 @@ export default function Country(props) {
                   </CardHeader>
                   <CardBody>
                     <Grid container spacing={4} style={{ marginTop: 10 }}>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
@@ -111,7 +107,7 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
@@ -127,7 +123,7 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
@@ -143,7 +139,7 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
@@ -159,10 +155,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('phone_code')}
                           name='phone_code'
                           fullWidth
@@ -174,10 +171,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('tld')}
                           name='tld'
                           fullWidth
@@ -189,10 +187,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
+                          disabled={updateButtonDisabled}
                           variant='standard'
                           label={t('currency')}
                           name='currency'
@@ -204,11 +203,12 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={4} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           fullWidth
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('currency_name')}
                           name='currency_name'
                           value={values.currency_name}
@@ -223,6 +223,7 @@ export default function Country(props) {
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('region')}
                           name='region'
                           fullWidth
@@ -238,6 +239,7 @@ export default function Country(props) {
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('subregion')}
                           name='subregion'
                           fullWidth
@@ -249,10 +251,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={2} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('currency_symbol')}
                           name='currency_symbol'
                           fullWidth
@@ -264,11 +267,12 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={4} md={6}>
+                      <Grid item xs={12} sm={12} lg={3} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('capital')}
                           name='capital'
                           value={values.capital}
@@ -279,10 +283,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={3} md={6}>
+                      <Grid item xs={12} sm={12} lg={4} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
+                          disabled={updateButtonDisabled}
                           type='number'
                           onKeyDown={(e) =>
                             e.keyCode === 69 && e.preventDefault()
@@ -298,11 +303,12 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={3} md={6}>
+                      <Grid item xs={12} sm={12} lg={4} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('longitude')}
                           name='longitude'
                           value={values.longitude}
@@ -325,6 +331,7 @@ export default function Country(props) {
                                 fullWidth
                                 className={classes.input}
                                 variant='standard'
+                                disabled={updateButtonDisabled}
                                 label={t(`${key}`)}
                                 name={`${key}`}
                                 value={values.translations[key]}
@@ -339,11 +346,12 @@ export default function Country(props) {
                           );
                         }
                       })}
-                      <Grid item xs={12} sm={12} lg={4} md={6}>
+                      <Grid item xs={12} sm={12} lg={6} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t(`name`)}
                           name='name'
                           value={values.name}
@@ -354,10 +362,11 @@ export default function Country(props) {
                           errorMessages={[t('required')]}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} lg={4} md={6}>
+                      <Grid item xs={12} sm={12} lg={6} md={6}>
                         <TextValidator
                           fullWidth
                           className={classes.input}
+                          disabled={updateButtonDisabled}
                           variant='standard'
                           label={t(`native`)}
                           name='native'
@@ -483,6 +492,7 @@ export default function Country(props) {
             <Button
               fullWidth
               variant='contained'
+              disabled={updateButtonDisabled}
               color='secondary'
               type='submit'
               sx={{ mb: 5 }}>
@@ -513,7 +523,7 @@ export default function Country(props) {
                       </AccordionSummary>
                       <AccordionDetails>
                         {childArray == null && expanded !== false ? (
-                          <CircleToBlockLoading 
+                          <CircleToBlockLoading
                             color={theme.palette.secondary.main}
                           />
                         ) : (

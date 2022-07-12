@@ -8,9 +8,11 @@ import { useLocation } from 'react-router-dom';
 import alertCall from '../../Hooks/useAlert';
 import { useRouter } from 'next/router';
 import Home from '@mui/icons-material/Home';
-import { getRoleUrl, createUrl, pushUrl, editUrl } from './roleStatic';
+import { getRoleUrl, createUrl, editUrl } from './roleStatic';
 
-const roleHook = () => {
+export var pushUrl = '/admin/dashboard/rbac-data';
+
+const roleHook = (reactRoutes) => {
   const { adminAccessToken } = useSelector((state) => state);
   const location = useLocation();
   const router = useRouter();
@@ -21,6 +23,11 @@ const roleHook = () => {
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { role_id } = urlParams;
+  // console.log(reactRoutes);
+  const roleRoute = reactRoutes.filter((a) => a.componentName == 'Role')[0];
+  const rolesRoute = reactRoutes.filter(
+    (a) => a.componentName == 'RbacData'
+  )[0];
   const [values, setValues] = useState({
     roleName: '',
     isActive: true,
@@ -32,6 +39,10 @@ const roleHook = () => {
   });
   const [roleNameError, setRoleNameError] = useState(false);
   const [routeValidate, setRouteValidate] = useState(false);
+
+  if (!rolesRoute.crud[0]?.active) {
+    pushUrl = '/admin/dashboard';
+  }
 
   useEffect(() => {
     let isMount = true;
@@ -283,6 +294,8 @@ const roleHook = () => {
     handleAddRoutes,
     handleRemoveRoutes,
     role_id,
+    pushUrl,
+    roleRoute,
     routeValidate,
   };
 };

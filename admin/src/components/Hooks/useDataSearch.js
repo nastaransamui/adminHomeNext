@@ -51,7 +51,6 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             _id: 0,
           },
         ]);
-        console.log(!checkCookies('adminAccessToken'));
         if (!checkCookies('adminAccessToken')) {
           alertCall(theme, 'error', response.Error, () => {
             router.push('/', undefined, { shallow: true });
@@ -246,7 +245,6 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
           );
         }
       case 'Roles':
-        console.log(dataOptions);
         return (
           <>
             <SvgIcon>

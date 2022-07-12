@@ -6,6 +6,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import EventIcon from '@mui/icons-material/Event';
 import InfoIcon from '@mui/icons-material/Info';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 
 export const editUrl = '/admin/dashboard/user-page';
 export const createUrl = '/admin/dashboard/user-page/user';
@@ -28,6 +29,12 @@ export const userFields = [
   {
     Icon: EventIcon,
     label: 'updatedAt',
+    type: 'string',
+    filterable: true,
+  },
+  {
+    Icon: DisplaySettingsIcon,
+    label: 'roleName',
     type: 'string',
     filterable: true,
   },
@@ -125,6 +132,17 @@ export const dataGridColumns = [
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
     searchAble: false,
+  },
+  {
+    field: 'roleName', // Db name
+    headerAlign: 'center', //
+    description: 'roleName', //Discription from translation
+    width: 140,
+    type: 'string',
+    filterable: true,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: true,
   },
   {
     field: 'firstName', // Db name

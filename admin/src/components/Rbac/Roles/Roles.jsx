@@ -14,14 +14,20 @@ import {
   rolesFields,
   deleteUrl,
 } from './rolesStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Roles(props){
   const { t } = useTranslation('roles');
+  const { reactRoutes } = props;
   const { requestSearch, searchText, rows: roles, exportCsv } = rolesHook();
   const { Roles } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Roles;
-
+  
+  const rolesRoute = reactRoutes.filter(a => a.componentName == 'RbacData')[0]
+  
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(rolesRoute);
   const sweetDeleteAlert = useDeleteAlert({
     state: Roles,
     modelName: 'Roles',
@@ -80,6 +86,9 @@ export default function Roles(props){
             plain: false,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

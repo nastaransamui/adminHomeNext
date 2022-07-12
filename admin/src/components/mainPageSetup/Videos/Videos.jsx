@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 
 import { Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import videosHook from './videosHook';
 import { useSelector } from 'react-redux';
-// import VideoStyles from './video-styles';
+import usePerRowHook from '../../Hooks/usePerRowHook';
 import DataShow from '../../datasShow/DataShow';
 import useDeleteAlert from '../../Hooks/useDeleteAlert';
 import useDataHeaders from '../../Hooks/useDataHeaders';
@@ -16,14 +16,17 @@ import {
   videosFields,
   deleteUrl,
 } from './videosStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Videos = (props) => {
   const { t } = useTranslation('video');
-  const {
-    requestSearch,
-    searchText,
-    rows: videos,
-  } = videosHook();
+  const { reactRoutes } = props;
+  const { requestSearch, searchText, rows: videos } = videosHook();
+  const videosRoute = reactRoutes.filter((a) => a.componentName == 'Videos')[0];
+
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(videosRoute);
+
 
   const { sliderVideo } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
@@ -48,6 +51,18 @@ const Videos = (props) => {
     dispatchType: 'SLIDER_VIDEO',
     cookieName: 'sliderVideo',
   });
+
+  const perRow = usePerRowHook(sliderVideo);
+
+  useEffect(() => {
+    if (perRow !== undefined) {
+      gridNumberFunc(perRow)
+      // dispatch({
+      //   type: 'SLIDER_VIDEO',
+      //   payload: { ...sliderVideo, GridView: perRow },
+      // });
+    }
+  }, [perRow]);
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -86,6 +101,9 @@ const Videos = (props) => {
             plain: true,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import photoStyle from './photo-styles';
 
 export const createUrl = `/admin/api/mainPageSetup/create`;
-export const pushUrl = '/admin/dashboard/main-page-setup/photos';
+
 export const getUrl = `/admin/api/mainPageSetup/getOne`;
 export const editUrl = `/admin/api/mainPageSetup/edit`;
 

@@ -1,15 +1,14 @@
 import photoStyles from './photo-styles';
 import Heading from '../../Heading/Heading';
-import {
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
-import { ArrowForward, ArrowBack } from '@mui/icons-material';
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import Container from '@mui/material/Container'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import ArrowForward from '@mui/icons-material';
+import ArrowBack from '@mui/icons-material/ArrowBack'
 import { useTranslation } from 'react-i18next';
 import Card from '../../Card/Card';
 import CardBody from '../../Card/CardBody';
@@ -18,10 +17,11 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { useHistory } from 'react-router-dom';
 import photoHook from './photoHook';
 import { Stories } from './photoStatic';
-
+import useButtonActivation from '../../Hooks/useButtonActivation';
 export default function Photo(props) {
   const classes = photoStyles();
   const history = useHistory();
+  const { rtlActive, reactRoutes } = props;
   const {
     values,
     setValues,
@@ -31,10 +31,15 @@ export default function Photo(props) {
     imageBlob,
     submitForm,
     pushUrl,
-  } = photoHook();
+    _id,
+    photoRoute,
+  } = photoHook(reactRoutes);
+
+  const { createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(photoRoute);
 
   const { t } = useTranslation('photos');
-  const { rtlActive } = props;
+ 
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>
@@ -87,8 +92,16 @@ export default function Photo(props) {
                     </Tooltip>
                   </Grid>
                   <Grid container justifyContent='center'>
-                    <Button type='submit' variant='contained' color='primary'>
-                      {t('submit')}
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      color='primary'
+                      disabled={
+                        _id == undefined
+                          ? createButtonDisabled
+                          : updateButtonDisabled
+                      }>
+                      {_id == undefined ? t('submit') : t('edit')}
                     </Button>
                   </Grid>
                 </ValidatorForm>

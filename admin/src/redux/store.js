@@ -20,7 +20,7 @@ import { Roles } from '../components/Rbac/Roles/rolesStatic';
 const initialState = {
   adminAccessToken: null,
   adminThemeName: 'cloud',
-  adminThemeType: 'light',
+  adminThemeType: 'dark',
   adminLoadingBar: 0,
   adminFormSubmit: false,
   stringLimit: 40,

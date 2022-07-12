@@ -82,6 +82,7 @@ const cardHeaderStyle = makeStyles((theme) => {
       zIndex: '1',
       '& img': {
         width: '100%',
+        height: 240,
         borderRadius: '6px',
         pointerEvents: 'none',
         boxShadow:

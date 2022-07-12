@@ -26,10 +26,21 @@ import {
 } from '../../../../src/components/exchange/Currencies/currenciesStatic';
 import { Agencies } from '../../../../src/components/Clients/Agencies/agenciesStatic';
 import { Roles } from '../../../../src/components/Rbac/Roles/rolesStatic';
+import routes from '../../../../routes';
 
 function index(props) {
   const { t, ready, i18n } = useTranslation('dashboard');
-
+  const accessRole = jwt.verify(
+    localStorage.getItem('accessRole'),
+    process.env.NEXT_PUBLIC_SECRET_KEY,
+    (err, routes) => {
+      if (!err) {
+        return routes;
+      } else {
+        removeCookies('adminAccessToken', ctx);
+      }
+    }
+  );
   const router = useRouter();
   // Rplace next router with current react router
   useEffect(() => {
@@ -42,11 +53,95 @@ function index(props) {
     };
   }, [router]);
 
+  var copyRoutes = JSON.parse(JSON.stringify(routes));
+
+  //Iritate in all routes
+  let allRoutes = [];
+  copyRoutes.map(function iter(a) {
+    allRoutes.push(a);
+    Array.isArray(a.views) && a.views.map(iter);
+  });
+  //iritate in all access role
+  let allAccess = [];
+  accessRole?.routes.map(function iter(a) {
+    allAccess.push(a);
+    Array.isArray(a.views) && a.views.map(iter);
+  });
+  //Add crud from accessrole to routes
+  allRoutes.map((r) => {
+    r.crud = [];
+    allAccess.map((a) => {
+      if (r['name_en-US'] === a['name_en-US']) {
+        r.crud.push(...a.crud);
+      }
+    });
+  });
+
+  let reactRoutes = [];
+  accessRole?.routes.map(function iter(a) {
+    a.path =
+      a.path !== undefined && a.path.startsWith('/admin')
+        ? a.path
+        : `/admin${a.path}`;
+    const lastPartOfPath = a.path.substring(a.path.lastIndexOf('/') + 1);
+    const pathArray = a.path.split('/');
+    //remove dashboard(/admin/dashboard) and errorpage(/adminundefined)
+    const purePathArray = pathArray.slice(3);
+
+    if (purePathArray.length !== 0) {
+      switch (lastPartOfPath) {
+        case 'user-page':
+        case 'rbac-data':
+          var index = lastPartOfPath.indexOf('-');
+          var n = lastPartOfPath.replace(
+            '-',
+            lastPartOfPath[index + 1].toUpperCase()
+          );
+          var d = n.charAt(0).toUpperCase() + n.slice(1);
+          var last = d.slice(0, index + 1) + d.slice(index + 2);
+          a.componentName = last;
+          a.componentView = undefined;
+          break;
+        case 'currencies':
+        case 'countries':
+          if (purePathArray[0].includes('g-')) {
+            a.componentView = `global_${lastPartOfPath}`;
+            a.componentName =
+              lastPartOfPath.charAt(0).toUpperCase() + lastPartOfPath.slice(1);
+          }
+          if (purePathArray[0].includes('a-')) {
+            a.componentView = 'view';
+            a.componentName =
+              lastPartOfPath.charAt(0).toUpperCase() + lastPartOfPath.slice(1);
+          }
+          break;
+        default:
+          // add single page component name
+          a.componentName =
+            lastPartOfPath.charAt(0).toUpperCase() + lastPartOfPath.slice(1);
+          a.componentView = undefined;
+          break;
+      }
+    }
+
+    if (a.views == undefined || a?.views?.length == 0) {
+      reactRoutes.push(a);
+    }
+
+    Array.isArray(a.views) && a.views.map(iter);
+  });
+
   return (
     <Fragment>
       <Alert contentTemplate={CustomAlert} />
       <HeadComponent title={ready && t('title')} />
-      <Dashboard {...props} i18n={i18n} />
+      <Dashboard
+        routes={routes}
+        reactRoutes={reactRoutes}
+        accessRole={accessRole?.routes}
+        {...props}
+        i18n={i18n}
+      />
     </Fragment>
   );
 }
@@ -80,7 +175,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_THEMETYPE',
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
-              : 'light',
+              : 'dark',
           })),
           ...(await store.dispatch({
             type: 'ADMIN_PROFILE',
@@ -172,7 +267,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
             type: 'ADMIN_THEMETYPE',
             payload: checkCookies('adminThemeType', ctx)
               ? getCookies(ctx).adminThemeType
-              : 'light',
+              : 'dark',
           })),
         },
         redirect: {

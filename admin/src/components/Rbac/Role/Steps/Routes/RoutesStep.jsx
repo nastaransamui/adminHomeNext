@@ -26,18 +26,11 @@ function intersection(a, b) {
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
-function copy(arr1, arr2) {
-  for (var i = 0; i < arr1.length; i++) {
-    arr2[i] = arr1[i];
-  }
-}
 
 const RoutesStep = (props) => {
   const { values, handleAddRoutes, handleRemoveRoutes, role_id,routeValidate } = props;
-
+  var copyRoute = JSON.parse(JSON.stringify(routes));
   const [checked, setChecked] = useState([]);
-  var copyRoute = [];
-  copy(routes, copyRoute);
   const [left, setLeft] = useState(
     copyRoute.slice(1).filter((val) => !values.routes.includes(val))
   );

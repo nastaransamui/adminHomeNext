@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import alertCall from '../../Hooks/useAlert';
@@ -9,10 +9,12 @@ import { useRouter } from 'next/router';
 
 import { getUrl, editUrl } from './aboutStatic';
 
-const aboutHook = () => {
+const aboutHook = (reactRoutes) => {
   const { t } = useTranslation('about');
   const theme = useTheme();
-  const history = useHistory();
+
+  const aboutRoute = reactRoutes.filter((a) => a.componentName == 'About')[0];
+
   const dispatch = useDispatch();
   const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
@@ -181,6 +183,7 @@ const aboutHook = () => {
     secondThumbBlob,
     thirdThumbBlob,
     submitForm,
+    aboutRoute,
   };
 };
 

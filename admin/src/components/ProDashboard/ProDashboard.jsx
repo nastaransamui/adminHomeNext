@@ -9,7 +9,7 @@ import LoadingOverlay from 'react-loading-overlay';
 import { CircleToBlockLoading } from 'react-loadingg';
 import { useTheme } from '@mui/styles';
 import { useSelector } from 'react-redux';
-
+// import routes from '../../../routes'
 export default function ProDashboard(props) {
   const {
     t,
@@ -19,6 +19,8 @@ export default function ProDashboard(props) {
     routes,
     handleDrawerToggle,
     sidebarMinimizeFunc,
+    accessRole,
+    reactRoutes,
   } = props;
   const location = useLocation();
   const { adminFormSubmit } = useSelector((state) => state);
@@ -32,18 +34,36 @@ export default function ProDashboard(props) {
       [classes.mainPageHandlemainOpen]: propsMiniActive,
       [classes.mainPageHandlemainClose]: !propsMiniActive,
     });
-
+  var copyRoutes = JSON.parse(JSON.stringify(routes));
+  var copyAccessRole = JSON.parse(JSON.stringify(accessRole));
+  const activeNamesArray = [];
+  copyAccessRole.map(function iter(b) {
+    let cruds = [...b.crud];
+    let readStatus = cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
+    if (readStatus) {
+      activeNamesArray.push(b[`name_${i18n.language}`]);
+    }
+    Array.isArray(b.views) && b.views.map(iter);
+  });
+  let filter = copyRoutes.filter(function f(a) {
+    if (activeNamesArray.indexOf(a[`name_${i18n.language}`]) !== -1) {
+      Array.isArray(a.views) && (a.views = a.views.filter(f));
+      return a;
+    }
+    Array.isArray(a.views) && (a.views = a.views.filter(f));
+  });
+  filter.unshift(routes[0]);
   return (
     <>
       <div>
-        <SidebarMain {...props} rtlActive={rtlActive} />
+        <SidebarMain {...props} rtlActive={rtlActive} routes={filter} />
         <NavbarMain
           {...props}
           propsMiniActive={propsMiniActive}
           color={color}
           location={location}
           i18n={i18n}
-          routes={routes}
+          routes={filter}
           handleDrawerToggle={handleDrawerToggle}
           sidebarMinimizeFunc={sidebarMinimizeFunc}
         />
@@ -66,8 +86,9 @@ export default function ProDashboard(props) {
           active={adminFormSubmit}
           spinner={
             <CircleToBlockLoading color={theme.palette.secondary.main} />
-          } />
-          <ReactRouter rtlActive={rtlActive} {...props} />
+          }
+        />
+        <ReactRouter rtlActive={rtlActive} {...props} />
       </span>
 
       <span

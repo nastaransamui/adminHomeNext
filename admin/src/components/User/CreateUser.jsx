@@ -48,6 +48,7 @@ const CreateUser = (props) => {
   const theme = useTheme();
 
   const {
+    profile,
     values,
     classes,
     t,
@@ -269,6 +270,7 @@ const CreateUser = (props) => {
               <Grid item xs={12} sm={12} md={4}>
                 <Autocomplete
                   id='role-select'
+                  disabled={profile._id ==values._id}
                   options={roleOptions}
                   loading={loadingRole}
                   loadingText={t('loadingRole')}
@@ -287,7 +289,6 @@ const CreateUser = (props) => {
                   }}
                   getOptionLabel={(roleOptions) => roleOptions.roleName}
                   getOptionDisabled={(roleOptions) => {
-                    console.log();
                     return !roleOptions.isActive;
                   }}
                   isOptionEqualToValue={(roleOptions, value) => {

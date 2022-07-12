@@ -1,19 +1,12 @@
-import {
-  AddLocation,
-  ArrowBack,
-  ArrowForward,
-  Apartment,
-  LocationOn,
-} from '@mui/icons-material';
-import {
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  MenuItem,
-  Tooltip,
-} from '@mui/material';
-import React from 'react';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import LocationOn from '@mui/icons-material/LocationOn';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+
 import { useHistory } from 'react-router-dom';
 import Heading from '../../Heading/Heading';
 import { useTranslation } from 'react-i18next';
@@ -22,36 +15,23 @@ import cityHook from './cityHook';
 import Card from '../../Card/Card';
 import CardHeader from '../../Card/CardHeader';
 import CardIcon from '../../Card/CardIcon';
-import {
-  TextValidator,
-  ValidatorForm,
-  SelectValidator,
-} from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import CardBody from '../../Card/CardBody';
 import cityStyle from './city-style';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import CircleToBlockLoading from 'react-loadingg/lib/CircleToBlockLoading';
 
 export default function City(props) {
   const history = useHistory();
   const classes = cityStyle();
   const { t } = useTranslation('geoLocations');
-  const { rtlActive } = props;
+  const { rtlActive, reactRoutes } = props;
   const {
     values,
     formSubmit,
     formValueChanged,
-    setValues,
     RegularMap,
     objIsEmpty,
-    theme,
-  } = cityHook();
-
+    updateButtonDisabled
+  } = cityHook(reactRoutes);
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>
@@ -164,6 +144,7 @@ export default function City(props) {
                         <TextValidator
                           fullWidth
                           className={classes.input}
+                          disabled={updateButtonDisabled}
                           variant='standard'
                           label={t('cityName')}
                           name='name'
@@ -180,6 +161,7 @@ export default function City(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           type='number'
                           onKeyDown={(e) =>
                             e.keyCode === 69 && e.preventDefault()
@@ -199,6 +181,7 @@ export default function City(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           type='number'
                           onKeyDown={(e) =>
                             e.keyCode === 69 && e.preventDefault()
@@ -240,6 +223,7 @@ export default function City(props) {
             <Button
               fullWidth
               variant='contained'
+              disabled={updateButtonDisabled}
               color='secondary'
               type='submit'
               sx={{ mb: 5 }}>

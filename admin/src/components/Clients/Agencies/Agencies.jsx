@@ -16,11 +16,23 @@ import {
 } from './agenciesStatic';
 import useDeleteAlert from '../../Hooks/useDeleteAlert';
 import useDataHeaders from '../../Hooks/useDataHeaders';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Agencies(props) {
   const { t } = useTranslation('agencies');
+  const { reactRoutes } = props;
+  const agenciesRoute = reactRoutes.filter(
+    (a) => a.componentName == 'Clients'
+  )[0];
 
-  const { requestSearch, searchText, rows: agencies, exportCsv } = agenciesHook();
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(agenciesRoute);
+  const {
+    requestSearch,
+    searchText,
+    rows: agencies,
+    exportCsv,
+  } = agenciesHook();
   const { Agencies } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Agencies;
@@ -82,6 +94,9 @@ export default function Agencies(props) {
             plain: false,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

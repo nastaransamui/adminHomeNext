@@ -15,14 +15,20 @@ import {
 } from './photosStatic';
 import useDeleteAlert from '../../Hooks/useDeleteAlert';
 import useDataHeaders from '../../Hooks/useDataHeaders';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Photos = (props) => {
   const { t } = useTranslation('photos');
+  const { reactRoutes } = props;
   const { requestSearch, searchText, rows: photos } = photosHook();
   const { sliderImage } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     sliderImage;
 
+  const photosRoute = reactRoutes.filter((a) => a.componentName == 'Photos')[0];
+
+  const { deleteButtonDisabled, createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(photosRoute);
   const sweetDeleteAlert = useDeleteAlert({
     state: sliderImage,
     modelName: 'Photos',
@@ -79,6 +85,9 @@ const Photos = (props) => {
             plain: true,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          updateButtonDisabled={updateButtonDisabled}
         />
       </Fragment>
     </Container>

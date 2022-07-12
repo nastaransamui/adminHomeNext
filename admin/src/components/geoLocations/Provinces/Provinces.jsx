@@ -7,9 +7,14 @@ import provincesHook from './provincesHook';
 import DataShow from '../../datasShow/DataShow';
 import useDataHeaders from '../../Hooks/useDataHeaders';
 import { provincesFields, dataGridColumns, editUrl } from './provincesStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Provinces = (props) => {
   const { t } = useTranslation('geoLocations');
+  const {reactRoutes} = props;
+  const provinceRoute = reactRoutes.filter((a) => a.componentName == "Provinces")[0];
+  const { deleteButtonDisabled, createButtonDisabled } =
+    useButtonActivation(provinceRoute);
   const {
     requestSearch,
     searchText,
@@ -68,6 +73,10 @@ const Provinces = (props) => {
             square: true,
           }}
           cardViewsFunc={cardViewsFunc}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          //Pass False here but disble inputs and submit in province page
+          updateButtonDisabled={false}
         />
       </Fragment>
     </Container>

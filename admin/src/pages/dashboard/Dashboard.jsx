@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import ProDashboard from '../../components/ProDashboard/ProDashboard';
-import routes from '../../../routes';
+// import routes from '../../../routes';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useRouter } from 'next/router';
 export default function Dashboard(props) {
+  const {routes, accessRole} = props
   const [propsMiniActive, setPropsMiniActive] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bgColor, setBgColor] = useState('black');

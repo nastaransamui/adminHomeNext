@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { checkCookies, getCookies } from 'cookies-next';
-import { useSelector } from 'react-redux';
 
 const usePerRowHook = (storeName) => {
   const [perRow, setPerRow] = useState();

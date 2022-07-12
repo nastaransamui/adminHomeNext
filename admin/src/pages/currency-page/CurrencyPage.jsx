@@ -10,6 +10,7 @@ export default function CurrencyPage(props) {
 
   let query = useQuery();
   let { search } = location;
+
   return (
     <Fragment>
       {search !== '' ? (

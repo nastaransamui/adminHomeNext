@@ -293,7 +293,7 @@ export default function NavbarLinks(props) {
                           isMobile && handleDrawerToggle();
                           history.push({
                             pathname: '/admin/dashboard/user-page',
-                            search: `?_id=${profile.id}`,
+                            search: `?_id=${profile._id}`,
                             profile: profile,
                           });
                         }}>

@@ -27,8 +27,17 @@ apiRoute
       try {
         const user = await authenticate(strategy, req, res);
         if (!user.message) {
-          const accessToken = await updateAccessToken(user, res);
-          res.status(200).send({ success: true, accessToken: accessToken });
+          const { accessToken, accessRole, errorMessage } =
+            await updateAccessToken(user, res);
+          if (errorMessage !== null) {
+            res.status(401).send(errorMessage);
+          } else {
+            res.status(200).send({
+              success: true,
+              accessToken: accessToken,
+              accessRole: accessRole,
+            });
+          }
         } else {
           res.send({ success: false, user });
         }

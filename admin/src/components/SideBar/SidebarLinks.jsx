@@ -12,67 +12,68 @@ import linkStyle from './links-style';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
 import PropTypes from 'prop-types';
+import SvgIcon from '@mui/material/SvgIcon';
 
-const createClasses = (
-  classes,
-  getCollapseInitialState,
-  route,
-  propsMiniActive,
-  stateMiniActive,
-  rtlActive,
-  activeRoute,
-  color
-) => {
-  const navLinkClasses =
-    classes.itemLink +
-    ' ' +
-    cx({
-      [' ' + classes.collapseActive]:
-        route.views !== undefined && getCollapseInitialState(route.views),
-    });
-  const itemText =
-    classes.itemText +
-    ' ' +
-    cx({
-      [classes.itemTextMini]: !propsMiniActive && stateMiniActive,
-      [classes.itemTextMiniRTL]:
-        rtlActive && !propsMiniActive && stateMiniActive,
-      [classes.itemTextRTL]: rtlActive,
-    });
+// const createClasses = (
+//   classes,
+//   getCollapseInitialState,
+//   route,
+//   propsMiniActive,
+//   stateMiniActive,
+//   rtlActive,
+//   activeRoute,
+//   color
+// ) => {
+//   const navLinkClasses =
+//     classes.itemLink +
+//     ' ' +
+//     cx({
+//       [' ' + classes.collapseActive]:
+//         route.views !== undefined && getCollapseInitialState(route.views),
+//     });
+//   const itemText =
+//     classes.itemText +
+//     ' ' +
+//     cx({
+//       [classes.itemTextMini]: !propsMiniActive && stateMiniActive,
+//       [classes.itemTextMiniRTL]:
+//         rtlActive && !propsMiniActive && stateMiniActive,
+//       [classes.itemTextRTL]: rtlActive,
+//     });
 
-  const collapseItemText =
-    classes.collapseItemText +
-    ' ' +
-    cx({
-      [classes.collapseItemTextMini]: !propsMiniActive && stateMiniActive,
-      [classes.collapseItemTextMiniRTL]:
-        rtlActive && !propsMiniActive && stateMiniActive,
-      [classes.collapseItemTextRTL]: rtlActive,
-    });
+//   const collapseItemText =
+//     classes.collapseItemText +
+//     ' ' +
+//     cx({
+//       [classes.collapseItemTextMini]: !propsMiniActive && stateMiniActive,
+//       [classes.collapseItemTextMiniRTL]:
+//         rtlActive && !propsMiniActive && stateMiniActive,
+//       [classes.collapseItemTextRTL]: rtlActive,
+//     });
 
-  const itemIcon =
-    classes.itemIcon + ' ' + cx({ [classes.itemIconRTL]: rtlActive });
-  const caret = classes.caret + ' ' + cx({ [classes.caretRTL]: rtlActive });
-  const collapseItemMini =
-    classes.collapseItemMini +
-    ' ' +
-    cx({ [classes.collapseItemMiniRTL]: rtlActive });
+//   const itemIcon =
+//     classes.itemIcon + ' ' + cx({ [classes.itemIconRTL]: rtlActive });
+//   const caret = classes.caret + ' ' + cx({ [classes.caretRTL]: rtlActive });
+//   const collapseItemMini =
+//     classes.collapseItemMini +
+//     ' ' +
+//     cx({ [classes.collapseItemMiniRTL]: rtlActive });
 
-  const innerNavLinkClasses =
-    classes.collapseItemLink +
-    ' ' +
-    cx({ [' ' + classes[color]]: activeRoute(route.path) });
+//   const innerNavLinkClasses =
+//     classes.collapseItemLink +
+//     ' ' +
+//     cx({ [' ' + classes[color]]: activeRoute(route.path) });
 
-  return {
-    navLinkClasses,
-    itemText,
-    collapseItemText,
-    itemIcon,
-    caret,
-    collapseItemMini,
-    innerNavLinkClasses,
-  };
-};
+//   return {
+//     navLinkClasses,
+//     itemText,
+//     collapseItemText,
+//     itemIcon,
+//     caret,
+//     collapseItemMini,
+//     innerNavLinkClasses,
+//   };
+// };
 
 export default function SidebarLinks(props) {
   const {
@@ -205,7 +206,15 @@ export default function SidebarLinks(props) {
               }}>
               {route.icon !== undefined ? (
                 typeof route.icon == 'string' ? (
-                  <Icon className={itemIcon}>{route.icon}</Icon>
+                  <SvgIcon
+                    className={itemIcon}
+                    style={{
+                      position: rtlActive ? 'absolute' : 'unset',
+                      right: rtlActive ? -18 : 0,
+                      top: rtlActive ? 15 : 0,
+                    }}>
+                    <path d={`${route.icon}`} />
+                  </SvgIcon>
                 ) : (
                   <route.icon
                     className={itemIcon}
@@ -221,7 +230,8 @@ export default function SidebarLinks(props) {
                   className={collapseItemMini}
                   style={{
                     display:
-                      (rtlActive && propsMiniActive) || (rtlActive &&!stateMiniActive)
+                      (rtlActive && propsMiniActive) ||
+                      (rtlActive && !stateMiniActive)
                         ? 'none'
                         : 'block',
                   }}>
@@ -324,7 +334,15 @@ export default function SidebarLinks(props) {
               )}>
               {route.icon !== undefined ? (
                 typeof route.icon === 'string' ? (
-                  <Icon className={itemIcon}>{route.icon}</Icon>
+                  <SvgIcon
+                    className={itemIcon}
+                    style={{
+                      position: rtlActive ? 'absolute' : 'unset',
+                      right: rtlActive ? -18 : 0,
+                      top: rtlActive ? 15 : 0,
+                    }}>
+                    <path d={`${route.icon}`} />
+                  </SvgIcon>
                 ) : (
                   <route.icon
                     className={itemIcon}
@@ -340,7 +358,8 @@ export default function SidebarLinks(props) {
                   className={collapseItemMini}
                   style={{
                     display:
-                      rtlActive && (propsMiniActive) || (rtlActive &&!stateMiniActive)
+                      (rtlActive && propsMiniActive) ||
+                      (rtlActive && !stateMiniActive)
                         ? 'none'
                         : 'block',
                   }}>

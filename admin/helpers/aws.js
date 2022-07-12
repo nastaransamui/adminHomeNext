@@ -47,7 +47,6 @@ export const awsCreateSingle = async (req, res, next) => {
       }
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, Error: error.toString() });
   }
 };

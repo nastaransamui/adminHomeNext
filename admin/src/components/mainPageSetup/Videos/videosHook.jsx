@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import usePerRowHook from '../../Hooks/usePerRowHook';
+
 import usePageSearch from '../../Hooks/usePageSearch';
 import { getAllUrl } from './videosStatic';
 import useAllResults from '../../Hooks/useAllResults';
@@ -13,7 +13,7 @@ const videosHook = () => {
 
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation('video');
-  const perRow = usePerRowHook(sliderVideo);
+
   const { searchText, requestSearch, setSearchText, rows } =
     usePageSearch(dataArray);
 
@@ -37,14 +37,6 @@ const videosHook = () => {
     };
   }, [dataArrayLengh, PerPage, pageNumber, SortBy]);
 
-  useEffect(() => {
-    if (perRow !== undefined) {
-      dispatch({
-        type: 'SLIDER_VIDEO',
-        payload: { ...sliderVideo, GridView: perRow },
-      });
-    }
-  }, [perRow]);
 
 
   return {

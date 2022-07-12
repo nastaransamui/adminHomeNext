@@ -19,6 +19,7 @@ const Wizard = (props) => {
     finishButtonClick,
     rtlActive,
   } = props;
+  const { createButtonDisabled, updateButtonDisabled, role_id } = steps[0];
 
   const classes = wizardStyle();
   const wizard = useRef();
@@ -134,10 +135,11 @@ const Wizard = (props) => {
       if (validationState) {
         if (
           steps[currentStep]?.updateRoleName !== undefined &&
-          (steps[currentStep]?.updateRoleName.changed &&
-          steps[currentStep]?.updateRoleName.roleName !== steps[currentStep]?.values?.roleName)
+          steps[currentStep]?.updateRoleName.changed &&
+          steps[currentStep]?.updateRoleName.roleName !==
+            steps[currentStep]?.values?.roleName
         ) {
-          finishButtonClick()
+          finishButtonClick();
         } else {
           setCurrentStep(key);
           setNextButton(steps.length > key + 1 ? true : false);
@@ -153,10 +155,11 @@ const Wizard = (props) => {
     if (steps[currentStep].isValidated()) {
       if (
         steps[currentStep]?.updateRoleName !== undefined &&
-          (steps[currentStep]?.updateRoleName.changed &&
-          steps[currentStep]?.updateRoleName.roleName !== steps[currentStep]?.values?.roleName)
+        steps[currentStep]?.updateRoleName.changed &&
+        steps[currentStep]?.updateRoleName.roleName !==
+          steps[currentStep]?.values?.roleName
       ) {
-        finishButtonClick()
+        finishButtonClick();
       } else {
         var key = currentStep + 1;
         setCurrentStep(key);
@@ -267,7 +270,12 @@ const Wizard = (props) => {
                 size='large'
                 color='secondary'
                 className={finishButtonClasses}
-                onClick={() => finishButtonClick()}>
+                onClick={() => finishButtonClick()}
+                disabled={
+                  role_id == undefined
+                    ? createButtonDisabled
+                    : updateButtonDisabled
+                }>
                 {finishButtonText}
               </Button>
             ) : null}

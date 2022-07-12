@@ -7,8 +7,9 @@ import { getUrl, pushUrl, editUrl } from './currencyStatic';
 import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
-const currencyHook = () => {
+const currencyHook = (reactRoutes) => {
   const { t } = useTranslation('exchange');
   const theme = useTheme();
   const history = useHistory();
@@ -18,6 +19,12 @@ const currencyHook = () => {
   const location = useLocation();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
+  const currenciesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Currencies' && a.componentView == 'view') {
+      return true;
+    }
+  })[0];
+  const { updateButtonDisabled } = useButtonActivation(currenciesRoute);
   const { currency_id } = urlParams;
   const [values, setValues] = useState({});
 
@@ -30,32 +37,34 @@ const currencyHook = () => {
     values.modelName = 'Currencies';
     values.dataType = 'Currencies';
     try {
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-      const res = await fetch(editUrl, {
-        method: 'POST',
-        headers: {
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify(values),
-      });
-      const { status } = res;
-      const response = await res.json();
-      if (status !== 200 && !response.success) {
-        alertCall(theme, 'error', response.Error, () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          }
+      if (!updateButtonDisabled) {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+        const res = await fetch(editUrl, {
+          method: 'POST',
+          headers: {
+            token: `Brearer ${adminAccessToken}`,
+          },
+          body: JSON.stringify(values),
         });
-      } else {
-        alertCall(theme, 'success', t('currencyEdited'), () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          } else {
-            history.push(pushUrl);
-          }
-        });
+        const { status } = res;
+        const response = await res.json();
+        if (status !== 200 && !response.success) {
+          alertCall(theme, 'error', response.Error, () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
+          });
+        } else {
+          alertCall(theme, 'success', t('currencyEdited'), () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
+          });
+        }
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
@@ -144,6 +153,7 @@ const currencyHook = () => {
     setValues,
     objIsEmpty,
     theme,
+    updateButtonDisabled,
   };
 };
 

@@ -41,7 +41,7 @@ export default function Province(props) {
   const history = useHistory();
   const classes = provinceStyle();
   const { t } = useTranslation('geoLocations');
-  const { rtlActive } = props;
+  const { rtlActive, reactRoutes } = props;
   const {
     values,
     formSubmit,
@@ -58,9 +58,8 @@ export default function Province(props) {
     handleChildExpand,
     topRef,
     executeScroll,
-  } = provinceHook();
-  // console.log(values);
-  // console.log(childArray);
+    updateButtonDisabled
+  } = provinceHook(reactRoutes);
 
   return (
     <div style={{ minWidth: '100%' }}>
@@ -127,6 +126,7 @@ export default function Province(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('provinceName')}
                           name='name'
                           value={values.name}
@@ -141,6 +141,7 @@ export default function Province(props) {
                         <SelectValidator
                           className={classes.input}
                           autoComplete='off'
+                          disabled={updateButtonDisabled}
                           label={t('type')}
                           value={
                             values.type !== null
@@ -213,6 +214,7 @@ export default function Province(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           type='number'
                           onKeyDown={(e) =>
                             e.keyCode === 69 && e.preventDefault()
@@ -232,6 +234,7 @@ export default function Province(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           type='number'
                           onKeyDown={(e) =>
                             e.keyCode === 69 && e.preventDefault()
@@ -273,6 +276,7 @@ export default function Province(props) {
             <Button
               fullWidth
               variant='contained'
+              disabled={updateButtonDisabled}
               color='secondary'
               type='submit'
               sx={{ mb: 5 }}>

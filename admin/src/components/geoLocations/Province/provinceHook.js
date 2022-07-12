@@ -14,8 +14,9 @@ import { getUrl, pushUrl, getCitiesOfStates, editUrl } from './provinceStatic';
 import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
-const provinceHook = () => {
+const provinceHook = (reactRoutes) => {
   const { t } = useTranslation('geoLocations');
   const theme = useTheme();
   const history = useHistory();
@@ -25,6 +26,14 @@ const provinceHook = () => {
   const location = useLocation();
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
+
+  const countriesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Provinces') {
+      return true;
+    }
+  })[0];
+  const { updateButtonDisabled } = useButtonActivation(countriesRoute);
+
   const { state_id } = urlParams;
   const [values, setValues] = useState({});
   const [expanded, setExpanded] = useState(false);
@@ -105,32 +114,34 @@ const provinceHook = () => {
     values.modelName = 'Countries';
     values.dataType = 'Provinces';
     try {
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-      const res = await fetch(editUrl, {
-        method: 'POST',
-        headers: {
-          token: `Brearer ${adminAccessToken}`,
-        },
-        body: JSON.stringify(values),
-      });
-      const { status } = res;
-      const response = await res.json();
-      if (status !== 200 && !response.success) {
-        alertCall(theme, 'error', response.Error, () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          }
+      if (!updateButtonDisabled) {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
+        const res = await fetch(editUrl, {
+          method: 'POST',
+          headers: {
+            token: `Brearer ${adminAccessToken}`,
+          },
+          body: JSON.stringify(values),
         });
-      } else {
-        alertCall(theme, 'success', t('countryEdited'), () => {
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-          if (!checkCookies('adminAccessToken')) {
-            router.push('/', undefined, { shallow: true });
-          } else {
-            history.push(pushUrl);
-          }
-        });
+        const { status } = res;
+        const response = await res.json();
+        if (status !== 200 && !response.success) {
+          alertCall(theme, 'error', response.Error, () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            }
+          });
+        } else {
+          alertCall(theme, 'success', t('countryEdited'), () => {
+            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+            if (!checkCookies('adminAccessToken')) {
+              router.push('/', undefined, { shallow: true });
+            } else {
+              history.push(pushUrl);
+            }
+          });
+        }
       }
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
@@ -200,7 +211,7 @@ const provinceHook = () => {
       isMount = false;
     };
   }, [location]);
-  console.log(values);
+
   const RegularMap = useMemo(() => {
     return withScriptjs(
       withGoogleMap(() => (
@@ -218,12 +229,6 @@ const provinceHook = () => {
             url={`https://admin-home-next-git-admin-nastaransamui.vercel.app/admin/kmz/${values.iso3}/${values.id}.kml`}
             options={{ preserveViewport: true }}
           />
-          {/* <Marker
-            position={{
-              lat: parseFloat(values.latitude),
-              lng: parseFloat(values.longitude),
-            }}
-          /> */}
         </GoogleMap>
       ))
     );
@@ -260,6 +265,7 @@ const provinceHook = () => {
     handleChildExpand,
     topRef,
     executeScroll,
+    updateButtonDisabled,
   };
 };
 

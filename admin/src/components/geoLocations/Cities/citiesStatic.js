@@ -1,5 +1,5 @@
 export const getAllUrl = '/admin/api/geoLocations/getAllCities';
-export const editUrl = '/admin/dashboard/a-locations/cities/city';
+export const editUrl = '/admin/dashboard/a-locations/cities';
 export const exportCsvUrl = `/admin/api/geoLocations/export`;
 import { Info, Flag, Title, Map, Domain } from '@mui/icons-material';
 

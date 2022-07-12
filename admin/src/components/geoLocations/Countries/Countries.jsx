@@ -14,15 +14,23 @@ import {
   editUrl,
 } from './countriesStatic';
 import useActiveAlert from '../../Hooks/useActiveAlert';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 const Countries = (props) => {
-  const { componentView } = props;
+  const { componentView, reactRoutes } = props;
   const { t } = useTranslation('geoLocations');
+  const countriesRoute = reactRoutes.filter((a) => {
+    if (a.componentName == 'Countries' && a.componentView == componentView) {
+      return true;
+    }
+  })[0];
+  const { deleteButtonDisabled, createButtonDisabled } =
+    useButtonActivation(countriesRoute);
   const {
     requestSearch,
     searchText,
     rows: countries,
-    exportCsv
+    exportCsv,
   } = countriesHook(componentView);
   const { countriesGStore, countriesAStore } = useSelector((state) => state);
   const {
@@ -42,7 +50,7 @@ const Countries = (props) => {
     t: t,
     Url: activeUrl,
     dispatchType: 'COUNTRIES_G_STORE',
-    activesId:activesId
+    activesId: activesId,
   });
 
   const { sweetDiactiveAlert } = useActiveAlert({
@@ -56,7 +64,7 @@ const Countries = (props) => {
       componentView == 'global_countries'
         ? 'COUNTRIES_G_STORE'
         : 'COUNTRIES_A_STORE',
-        activesId:activesId
+    activesId: activesId,
   });
 
   const {
@@ -86,7 +94,11 @@ const Countries = (props) => {
           requestSearch={requestSearch}
           searchText={searchText}
           dataFields={countriesFields}
-          state = {componentView == 'global_countries' ? countriesGStore : countriesAStore}
+          state={
+            componentView == 'global_countries'
+              ? countriesGStore
+              : countriesAStore
+          }
           createUrl=''
           editUrl={componentView == 'global_countries' ? '' : editUrl}
           cardView={CardView}
@@ -119,6 +131,10 @@ const Countries = (props) => {
           activeAlert={sweetActiveAlert}
           diactiveAlert={sweetDiactiveAlert}
           exportCsv={exportCsv}
+          deleteButtonDisabled={deleteButtonDisabled}
+          createButtonDisabled={createButtonDisabled}
+          //Pass False here but disble inputs and submit in country page
+          updateButtonDisabled={false}
         />
       </Fragment>
     </Container>

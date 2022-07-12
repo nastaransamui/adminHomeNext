@@ -8,6 +8,7 @@ import {
   Apartment,
   SouthAmerica,
   Badge,
+  AccountTree,
 } from '@mui/icons-material/';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
@@ -16,7 +17,7 @@ var dashRoutes = [
     path: '/dashboard',
     'name_en-US': 'Dashboard',
     name_fa: 'داشبورد',
-    icon: Dashboard,
+    icon: Dashboard.type?.render().props.children.props.d,
 
     layout: '/admin',
   },
@@ -25,7 +26,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Users',
     name_fa: 'کاربران',
-    icon: Badge,
+    icon: Badge.type?.render().props.children.props.d,
     state: 'userCollapse',
     layout: '/admin',
     views: [
@@ -54,7 +55,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Roles',
     name_fa: 'نقش ها',
-    icon: ManageAccountsIcon,
+    icon: AccountTree.type?.render().props.children.props.d,
     state: 'roleCollapse',
     layout: '/admin',
     views: [
@@ -83,7 +84,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Main page setup',
     name_fa: 'صفحه اصلی',
-    icon: Apps,
+    icon: Apps.type?.render().props.children.props.d,
     state: 'mainPageCollapse',
     views: [
       {
@@ -190,7 +191,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Main Data Activation',
     name_fa: 'فعال سازی داده های اصلی',
-    icon: DataThresholding,
+    icon: DataThresholding.type?.render().props.children.props.d,
     state: 'mainDataCollapse',
     layout: '/admin',
     views: [
@@ -238,7 +239,7 @@ var dashRoutes = [
             mini_fa: 'ک',
             state: 'aCountriesCollapse',
             layout: '/admin',
-            icon: Public,
+            icon: Public.type?.render().props.children.props.d,
           },
           {
             path: '/dashboard/a-locations/provinces',
@@ -248,7 +249,7 @@ var dashRoutes = [
             mini_fa: ' ا',
             state: 'aProvincesCollapse',
             layout: '/admin',
-            icon: SouthAmerica,
+            icon: SouthAmerica.type?.render().props.children.props.d,
           },
           {
             path: '/dashboard/a-locations/cities',
@@ -258,7 +259,7 @@ var dashRoutes = [
             mini_fa: 'ش',
             state: 'aCitiesCollapse',
             layout: '/admin',
-            icon: Apartment,
+            icon: Apartment.type?.render().props.children.props.d,
           },
           {
             path: '/dashboard/a-currencies/currencies',
@@ -268,7 +269,7 @@ var dashRoutes = [
             mini_fa: 'ک',
             state: 'aCurrenciesMultiCollapse',
             layout: '/admin',
-            icon: AttachMoney,
+            icon: AttachMoney.type?.render().props.children.props.d,
           },
         ],
       },
@@ -279,7 +280,7 @@ var dashRoutes = [
     collapse: true,
     'name_en-US': 'Agency/Client Data',
     name_fa: 'اطلاعات آژانس/مشتری',
-    icon: AccountBox,
+    icon: AccountBox.type?.render().props.children.props.d,
     state: 'agencyDataCollapse',
     views: [
       {

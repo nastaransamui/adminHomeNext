@@ -1,26 +1,27 @@
-import { useEffect, useRef } from 'react';
-import {
-  VideoLibrary,
-  AddPhotoAlternate,
-  YouTube as YoutubeIcon,
-  TextFormat,
-  Delete,
-} from '@mui/icons-material';
-import { Grid, IconButton, Tooltip } from '@mui/material';
+import { useEffect, useRef, useLayoutEffect, useState } from 'react';
+import VideoLibrary from '@mui/icons-material/VideoLibrary';
+import AddPhotoAlternate from '@mui/icons-material/AddPhotoAlternate';
+import { YouTube as YoutubeIcon } from '@mui/icons-material/YouTube';
+import TextFormat from '@mui/icons-material/TextFormat';
+import Delete from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 import { TextValidator } from 'react-material-ui-form-validator';
 import CardHeader from '../../Card/CardHeader';
 import CardAvatar from '../../Card/CardAvatar';
 import movieAvatar from '../../../../public/images/faces/movie.jpg';
 import imageAvatar from '../../../../public/images/faces/avatar1.jpg';
-import videoHook from './videoHook';
 import { Player } from 'video-react';
 import { Android12Switch } from '../../datasShow/headerView/FilterSwitch';
 import YouTube from 'react-youtube';
 import { useTranslation } from 'react-i18next';
 import videoStyles from './video-styles';
 
-export const pushUrl = '/admin/dashboard/main-page-setup/videos';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 export const getUrl = `/admin/api/mainPageSetup/getOne`;
 export const createUrl = `/admin/api/mainPageSetup/create`;
 export const editUrl = `/admin/api/mainPageSetup/edit`;
@@ -41,13 +42,20 @@ export const Stories = (
   imageMobileBlob,
   videoPosterBlob
 ) => {
+  const theme = useTheme();
   const { t, i18n } = useTranslation('video');
-
+  const xl = useMediaQuery(theme.breakpoints.only('xl'));
+  const lg = useMediaQuery(theme.breakpoints.only('lg'));
+  const md = useMediaQuery(theme.breakpoints.only('md'));
+  const sm = useMediaQuery(theme.breakpoints.only('sm'));
+  const xs = useMediaQuery(theme.breakpoints.only('xs'));
   const classes = videoStyles();
   const languagesArray = Object.keys(i18n.options.resources);
   const fileInput = useRef(null);
   const mobileImageRef = useRef(null);
   const videoPosterRef = useRef(null);
+  const span = useRef(null);
+  const [videoWidth, setVideoWidth] = useState(0);
   // addValidator to text Validator
   useEffect(() => {
     let isMount = true;
@@ -73,6 +81,10 @@ export const Stories = (
     };
   }, [values]);
 
+  useLayoutEffect(() => {
+    setVideoWidth(span?.current?.offsetWidth);
+  });
+
   return [
     {
       // First story
@@ -83,7 +95,7 @@ export const Stories = (
       badgeTooltip: t('UploadVideo'),
       titleColor: 'primary',
       body: (
-        <CardHeader color='rose' icon>
+        <CardHeader color='rose' icon ref={span}>
           {values.videoLink !== '' && (
             <Tooltip title={t('videoDelete')} arrow>
               <IconButton
@@ -96,6 +108,7 @@ export const Stories = (
                 style={{
                   float: rtlActive ? 'left' : 'right',
                   position: 'relative',
+                  zIndex: 10,
                 }}>
                 <Delete color='error' />
               </IconButton>
@@ -122,8 +135,8 @@ export const Stories = (
                   ref={(player) => {
                     // console.log(player);
                   }}
-                  width={480}
-                  height={272}
+                  width={videoWidth}
+                  height={228}
                   fluid={false}
                   preload='auto'
                   muted
@@ -187,7 +200,7 @@ export const Stories = (
               </IconButton>
             </Tooltip>
           )}
-          <CardAvatar profile style={{ cursor: 'pointer' }}>
+          <CardAvatar profile style={{ cursor: 'pointer', marginTop: 10 }}>
             {values.imageMobileShow == '' ? (
               <label htmlFor='imageMobileShow'>
                 <Tooltip title={t('imageMobileShow')} arrow>
@@ -265,7 +278,7 @@ export const Stories = (
               </IconButton>
             </Tooltip>
           )}
-          <CardAvatar profile style={{ cursor: 'pointer' }}>
+          <CardAvatar profile style={{ cursor: 'pointer', marginTop: 10 }}>
             {values.videoPoster == '' ? (
               <label htmlFor='videoPoster'>
                 <Tooltip title={t('videoPoster')}>

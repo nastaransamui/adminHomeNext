@@ -18,9 +18,11 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { useHistory } from 'react-router-dom';
 import featureHook from './featureHook';
 import { Stories } from './featureStatic';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Feature(props) {
   const classes = featureStyles();
+  const { rtlActive, reactRoutes } = props;
   const history = useHistory();
   const {
     values,
@@ -32,10 +34,14 @@ export default function Feature(props) {
     featureThumbBlob,
     submitForm,
     pushUrl,
-  } = featureHook();
+    _id,
+    featureRoute,
+  } = featureHook(reactRoutes);
+
+  const { createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(featureRoute);
 
   const { t } = useTranslation('feature');
-  const { rtlActive } = props;
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>
@@ -89,8 +95,16 @@ export default function Feature(props) {
                     </Tooltip>
                   </Grid>
                   <Grid container justifyContent='center'>
-                    <Button type='submit' variant='contained' color='primary'>
-                      {t('submit')}
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      color='primary'
+                      disabled={
+                        _id == undefined
+                          ? createButtonDisabled
+                          : updateButtonDisabled
+                      }>
+                      {_id == undefined ? t('submit') : t('edit')}
                     </Button>
                   </Grid>
                 </ValidatorForm>

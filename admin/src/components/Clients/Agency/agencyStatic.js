@@ -1,5 +1,5 @@
 export const getAgencyUrl = `/admin/api/clients/getOne`;
-export const pushUrl = '/admin/dashboard/client-data/clients';
+
 export const createUrl = `/admin/api/mainPageSetup/create`;
 export const editUrl = `/admin/api/clients/edit`;
 export const countryUrl = '/admin/api/autocomplete/country';

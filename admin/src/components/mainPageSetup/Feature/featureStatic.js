@@ -19,7 +19,6 @@ import YouTube from 'react-youtube';
 import { useTranslation } from 'react-i18next';
 import featureStyles from './feature-styles';
 
-export const pushUrl = '/admin/dashboard/main-page-setup/features';
 export const getUrl = `/admin/api/mainPageSetup/getOne`;
 export const createUrl = `/admin/api/mainPageSetup/create`;
 export const editUrl = `/admin/api/mainPageSetup/edit`;

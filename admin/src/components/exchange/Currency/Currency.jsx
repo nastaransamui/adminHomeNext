@@ -1,19 +1,10 @@
-import {
-  AddLocation,
-  ArrowBack,
-  ArrowForward,
-  Apartment,
-  LocationOn,
-} from '@mui/icons-material';
-import {
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  MenuItem,
-  Tooltip,
-} from '@mui/material';
-import React from 'react';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { useHistory } from 'react-router-dom';
 import Heading from '../../Heading/Heading';
 import { useTranslation } from 'react-i18next';
@@ -28,17 +19,21 @@ import {
 } from 'react-material-ui-form-validator';
 import CardBody from '../../Card/CardBody';
 import currencyStyle from './currency-style';
+
+
 export default function Currency(props) {
   const history = useHistory();
   const classes = currencyStyle();
-  const { t, i18n } = useTranslation('exchange');
-  const { rtlActive } = props;
+  const { t } = useTranslation('exchange');
+  const { rtlActive,reactRoutes } = props;
   const {
     values,
     formSubmit,
     formValueChanged,
     objIsEmpty,
-  } = currencyHook();
+    updateButtonDisabled
+  } = currencyHook(reactRoutes);
+
   
   return (
     <div style={{ minWidth: '100%' }}>
@@ -137,6 +132,7 @@ export default function Currency(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('currency')}
                           name='currency'
                           value={values.currency}
@@ -152,6 +148,7 @@ export default function Currency(props) {
                           className={classes.input}
                           fullWidth
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('currency_name')}
                           name='currency_name'
                           value={values.currency_name}
@@ -166,6 +163,7 @@ export default function Currency(props) {
                         <TextValidator
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t('currency_symbol')}
                           name='currency_symbol'
                           fullWidth
@@ -182,6 +180,7 @@ export default function Currency(props) {
                           fullWidth
                           className={classes.input}
                           variant='standard'
+                          disabled={updateButtonDisabled}
                           label={t(`country_name`)}
                           name='name'
                           value={values.name}
@@ -201,6 +200,7 @@ export default function Currency(props) {
             <Button
               fullWidth
               variant='contained'
+              disabled={updateButtonDisabled}
               color='secondary'
               type='submit'
               sx={{ mb: 5 }}>

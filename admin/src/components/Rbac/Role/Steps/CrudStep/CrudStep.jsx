@@ -1,4 +1,4 @@
-import { forwardRef,  } from 'react';
+import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material';
@@ -9,6 +9,8 @@ import TreeItem, { useTreeItem } from '@mui/lab/TreeItem';
 import Checkbox from '@mui/material/Checkbox';
 import clsx from 'clsx';
 import Typography from '@mui/material/Typography';
+import alertCall from '../../../../Hooks/useAlert';
+import { checkCookies } from 'cookies-next';
 
 function MinusSquare(props) {
   return (
@@ -27,6 +29,7 @@ function PlusSquare(props) {
     </SvgIcon>
   );
 }
+
 const CustomContent = forwardRef(function CustomContent(props, ref) {
   const {
     classes,
@@ -105,86 +108,199 @@ const CrudStep = (props) => {
         break;
       }
     }
-    let subRouteClickedName = idsArray[idsArray.length - 2];
-    let crudNameClicked = idsArray[idsArray.length - 4];
-    const updateCrud = (cruds, type, readStatus) => {
-      let crudIndex = cruds.findIndex((obj) => obj.name == subRouteClickedName);
-      switch (type) {
-        case 'read|main':
-          if (readStatus) {
-            [0, 1, 2, 3].map((b) => {
-              let crudCalled = { ...cruds[b] };
-              crudCalled.active = false;
-              cruds[b] = crudCalled;
-            });
-          } else {
-            [0, 1, 2, 3].map((b) => {
-              let crudCalled = { ...cruds[b] };
-              crudCalled.active = true;
-              cruds[b] = crudCalled;
-            });
-          }
-          break;
-        case 'single':
-          let crudCalled = { ...cruds[crudIndex] };
-          crudCalled.active = crudCalled.active ? false : true;
-          cruds[crudIndex] = crudCalled;
-          break;
-      }
-      return cruds;
-    };
 
-    if (isCrudClicked) {
-      // one of crud clicked and iterate for all views
-      values.routes.forEach(function iter(a) {
-        if (a[`name_${i18n.language}`] == crudNameClicked) {
-          let cruds = [...a.crud];
+    switch (idsArray.length) {
+      case 4:
+        var copyOfValue = JSON.parse(
+          JSON.stringify(values.routes[idsArray[1]]?.views[[idsArray[3]]])
+        );
+        let cruds = [...copyOfValue.crud];
+        let readStatus =
+          cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
+        if (copyOfValue?.views?.length > 0) {
+          if (readStatus) {
+            copyOfValue.crud.map((a) => (a.active = false));
+            copyOfValue.views.map((c) => c.crud.map((d) => (d.active = false)));
+          } else {
+            copyOfValue.crud.map((a) => (a.active = true));
+            copyOfValue.views.map((c) => c.crud.map((d) => (d.active = true)));
+          }
+        } else {
+          if (readStatus) {
+            copyOfValue.crud.map((a) => (a.active = false));
+          } else {
+            copyOfValue.crud.map((a) => (a.active = true));
+          }
+        }
+        Object.assign(
+          values.routes[idsArray[1]]?.views[[idsArray[3]]],
+          copyOfValue
+        );
+        setValues((oldValues) => ({ ...oldValues }));
+        break;
+      case 6:
+        if (isCrudClicked) {
+          var copyOfValue = JSON.parse(
+            JSON.stringify(values.routes[idsArray[1]]?.views[[idsArray[3]]])
+          );
+          let cruds = [...copyOfValue.crud];
           let readStatus =
             cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
-          if (subRouteClickedName == 'read') {
-            //Read crud clicked and should update whole crud
-            a.crud = [...updateCrud(cruds, 'read|main', readStatus)];
-          } else {
-            if (readStatus) {
-              a.crud = [...updateCrud(cruds, 'single')];
+          if (readStatus) {
+            if (idsArray[4] == 'read') {
+              copyOfValue.crud.map((c) => (c.active = false));
             } else {
-              //Read is not active therefor others can't
-              alertCall(theme, 'error', t('firstRead'), () => {
-                if (!checkCookies('adminAccessToken')) {
-                  router.push('/', undefined, { shallow: true });
+              copyOfValue.crud.map((c) => {
+                if (c.name == idsArray[4]) {
+                  c.active = !c.active;
                 }
+                return c;
               });
             }
+          } else {
+            if (idsArray[4] == 'read') {
+              copyOfValue.crud.map((c) => (c.active = true));
+            } else {
+              if (readStatus) {
+                copyOfValue.crud.map((c) => {
+                  if (c.name == idsArray[4]) {
+                    c.active = !c.active;
+                  }
+                  return c;
+                });
+              } else {
+                alertCall(theme, 'error', t('firstRead'), () => {
+                  if (!checkCookies('adminAccessToken')) {
+                    router.push('/', undefined, { shallow: true });
+                  }
+                });
+              }
+            }
           }
-        }
-        Array.isArray(a.views) && a.views.forEach(iter);
-      });
-    } else {
-      //One of route clicked and iterate for all views
-      values.routes.forEach(function iter(a) {
-        if (a[`name_${i18n.language}`] == subRouteClickedName) {
-          let cruds = [...a.crud];
+          Object.assign(
+            values.routes[idsArray[1]]?.views[[idsArray[3]]],
+            copyOfValue
+          );
+          setValues((oldValues) => ({ ...oldValues }));
+        } else {
+          var copyOfParentsValue =
+            values.routes[idsArray[1]]?.views[[idsArray[3]]];
+          let parentsCruds = [...copyOfParentsValue.crud];
+          let parentsReadStatus =
+            parentsCruds[parentsCruds.findIndex((obj) => obj.name == 'read')]
+              .active;
+          var copyOfValue = JSON.parse(
+            JSON.stringify(
+              values.routes[idsArray[1]]?.views[[idsArray[3]]]?.views[
+                [idsArray[5]]
+              ]
+            )
+          );
+          let cruds = [...copyOfValue.crud];
           let readStatus =
             cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
-          a.crud = [...updateCrud(cruds, 'read|main', readStatus)];
-          Array.isArray(a.views) &&
-            a.views.forEach(
-              (aa) =>
-                (a.crud = [
-                  ...updateCrud(
-                    [...aa.crud],
-                    'read|main',
-                    aa.crud[cruds.findIndex((obj) => obj.name == 'read')].active
-                  ),
-                ])
-            );
+          if (copyOfValue?.views?.length > 0) {
+            if (readStatus) {
+              copyOfValue.crud.map((a) => (a.active = false));
+              copyOfValue.views.map((c) =>
+                c.crud.map((d) => (d.active = false))
+              );
+            } else {
+              copyOfValue.crud.map((a) => (a.active = true));
+              copyOfValue.views.map((c) =>
+                c.crud.map((d) => (d.active = true))
+              );
+            }
+          } else {
+            if (readStatus) {
+              copyOfValue.crud.map((a) => (a.active = false));
+            } else {
+              if (!parentsReadStatus)
+                copyOfParentsValue.crud.map((a) => (a.active = true));
+              copyOfValue.crud.map((a) => (a.active = true));
+            }
+          }
+          Object.assign(
+            values.routes[idsArray[1]]?.views[[idsArray[3]]]?.views[
+              [idsArray[5]]
+            ],
+            copyOfValue
+          );
+          Object.assign(
+            values.routes[idsArray[1]]?.views[[idsArray[3]]],
+            copyOfParentsValue
+          );
+          setValues((oldValues) => ({ ...oldValues }));
         }
-        Array.isArray(a.views) && a.views.forEach(iter);
-      });
+        break;
+      case 8:
+        if (isCrudClicked) {
+          var copyOfValue = JSON.parse(
+            JSON.stringify(
+              values.routes[idsArray[1]]?.views[[idsArray[3]]]?.views[
+                [idsArray[5]]
+              ]
+            )
+          );
+          var copyOfParentsValue =
+            values.routes[idsArray[1]]?.views[[idsArray[3]]];
+          let parentsCruds = [...copyOfParentsValue.crud];
+          let parentsReadStatus =
+            parentsCruds[parentsCruds.findIndex((obj) => obj.name == 'read')]
+              .active;
+          let cruds = [...copyOfValue.crud];
+          let readStatus =
+            cruds[cruds.findIndex((obj) => obj.name == 'read')].active;
+          if (readStatus) {
+            if (idsArray[6] == 'read') {
+              copyOfValue.crud.map((c) => (c.active = false));
+            } else {
+              copyOfValue.crud.map((c) => {
+                if (c.name == idsArray[6]) {
+                  c.active = !c.active;
+                }
+                return c;
+              });
+            }
+          } else {
+            if (idsArray[6] == 'read') {
+              copyOfValue.crud.map((c) => (c.active = true));
+              if (!parentsReadStatus)
+                copyOfParentsValue.crud.map((a) => (a.active = true));
+            } else {
+              if (readStatus) {
+                copyOfValue.crud.map((c) => {
+                  if (c.name == idsArray[6]) {
+                    c.active = !c.active;
+                  }
+                  return c;
+                });
+              } else {
+                alertCall(theme, 'error', t('firstRead'), () => {
+                  if (!checkCookies('adminAccessToken')) {
+                    router.push('/', undefined, { shallow: true });
+                  }
+                });
+              }
+            }
+          }
+          Object.assign(
+            values.routes[idsArray[1]]?.views[[idsArray[3]]]?.views[
+              [idsArray[5]]
+            ],
+            copyOfValue
+          );
+          Object.assign(
+            values.routes[idsArray[1]]?.views[[idsArray[3]]],
+            copyOfParentsValue
+          );
+          setValues((oldValues) => ({ ...oldValues }));
+        } else {
+          /**If depth of routes grow */
+        }
+        break;
     }
-    setValues((oldvalue) => ({ ...oldvalue }));
   };
-
   return (
     <Grid container justifyContent='center'>
       <TreeView
@@ -197,7 +313,9 @@ const CrudStep = (props) => {
           <TreeView
             defaultCollapseIcon={<MinusSquare />}
             defaultExpandIcon={<PlusSquare />}
-            onNodeSelect={(e, id) => selectClicked(e, id)}
+            onNodeSelect={(e, id) => {
+              selectClicked(e, id);
+            }}
             defaultEndIcon={
               <Checkbox
                 checked={true}

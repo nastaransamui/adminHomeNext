@@ -39,16 +39,18 @@ import {
 
 import { useQuery } from '../../../pages/dashboard/ReactRouter';
 import agencyHook from './agencyHook';
-import { pushUrl } from './agencyStatic';
+
 import PhoneInput from '../../PhoneInput/PhoneInput';
 import NumberInput from '../../NumberInput/NumberInput';
+
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 export default function Agency(props) {
-  const { rtlActive } = props;
+  const { rtlActive, reactRoutes } = props;
   let query = useQuery();
   const client_id = query.get('client_id');
   const classes = agencyStyle();
@@ -91,15 +93,18 @@ export default function Agency(props) {
     setCityFilter,
     setAmFilter,
     setCurrencyFilter,
-    getCities,
     countryPhoneCode,
-    setCountryPhoneCode,
     numbersRef,
     phoneTags,
     phoneNumberError,
     setPhoneNumberError,
-  } = agencyHook();
+    pushUrl,
+    clientRoute,
+  } = agencyHook(reactRoutes);
 
+  const { createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(clientRoute);
+  console.log({ createButtonDisabled, updateButtonDisabled });
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
       <Fragment>
@@ -953,7 +958,8 @@ export default function Agency(props) {
                               label={t('phoneRemark')}
                               fullWidth
                               onChange={(e) => {
-                                values.phones[index][e.target.name] = e.target.value;
+                                values.phones[index][e.target.name] =
+                                  e.target.value;
                                 setValues({ ...values });
                               }}
                               value={value.remark}
@@ -970,7 +976,13 @@ export default function Agency(props) {
                                 justifyContent: 'center',
                                 mt: 2,
                               }}>
-                              <Tooltip title={index == 0 ? t('addPhones') : t('removePhones')} arrow>
+                              <Tooltip
+                                title={
+                                  index == 0
+                                    ? t('addPhones')
+                                    : t('removePhones')
+                                }
+                                arrow>
                                 <Fab
                                   color={index == 0 ? 'secondary' : 'primary'}
                                   size='small'
@@ -1030,6 +1042,11 @@ export default function Agency(props) {
                     variant='contained'
                     type='submit'
                     fullWidth
+                    disabled={
+                      client_id == null
+                        ? createButtonDisabled
+                        : updateButtonDisabled
+                    }
                     className={classes.updateProfileButton}>
                     {client_id == null
                       ? t('createAgencyProfile')

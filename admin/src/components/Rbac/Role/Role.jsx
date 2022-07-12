@@ -7,7 +7,7 @@ import ArrowForward from '@mui/icons-material/ArrowForward';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { pushUrl } from './roleStatic';
+
 import Wizard from '../../Wizard/Wizard';
 import roleHook from './roleHook';
 import {
@@ -16,10 +16,11 @@ import {
 import Name from './Steps/Name/Name';
 import RoutesStep from './Steps/Routes/RoutesStep';
 import CrudStep from './Steps/CrudStep/CrudStep';
+import useButtonActivation from '../../Hooks/useButtonActivation';
 
 
 const Role = (props) => {
-  const { rtlActive } = props;
+  const { rtlActive, reactRoutes } = props;
   const { t } = useTranslation('roles');
   const history = useHistory();
   const {
@@ -33,8 +34,13 @@ const Role = (props) => {
     handleAddRoutes,
     handleRemoveRoutes,
     role_id,
+    pushUrl,
+    roleRoute,
     routeValidate
-  } = roleHook();
+  } = roleHook(reactRoutes);
+
+  const { createButtonDisabled, updateButtonDisabled } =
+    useButtonActivation(roleRoute);
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -66,7 +72,9 @@ const Role = (props) => {
                     roleNameError: roleNameError,
                     setValues: setValues,
                     role_id: role_id,
-                    routeValidate: routeValidate
+                    routeValidate: routeValidate,
+                    createButtonDisabled: createButtonDisabled,
+                    updateButtonDisabled: updateButtonDisabled
                   },
                   {
                     stepName: t('routes'),
@@ -80,7 +88,9 @@ const Role = (props) => {
                     roleNameError: roleNameError,
                     setValues: setValues,
                     role_id: role_id,
-                    routeValidate: routeValidate
+                    routeValidate: routeValidate,
+                    createButtonDisabled: createButtonDisabled,
+                    updateButtonDisabled: updateButtonDisabled
                   },
                   {
                     stepName: t('curd'),
@@ -94,15 +104,17 @@ const Role = (props) => {
                     roleNameError: roleNameError,
                     setValues: setValues,
                     role_id: role_id,
-                    routeValidate: routeValidate
+                    routeValidate: routeValidate,
+                    createButtonDisabled: createButtonDisabled,
+                    updateButtonDisabled: updateButtonDisabled
                   },
                 ]}
-                title={t('createRouteTitle')}
+                title={values.roleName}
                 subtitle={t('createRouteSubTitle')}
                 finishButtonClick={(e) => formSubmit()}
                 previousButtonText={t('previous')}
                 nextButtonText={t('next')}
-                finishButtonText={t('finish')}
+                finishButtonText={role_id == undefined ? t('finish') : t('edit')}
               />
             </ValidatorForm>
           </Grid>

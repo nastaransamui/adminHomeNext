@@ -1,7 +1,7 @@
 export const getAllUrl = '/admin/api/exchange/getAll';
 export const activeUrl = '/admin/api/exchange/active';
 export const diActiveUrl = '/admin/api/exchange/diactive';
-export const editUrl = '/admin/dashboard/a-currencies/currencies/currency';
+export const editUrl = '/admin/dashboard/a-currencies/currencies';
 export const exportCsvUrl = `/admin/api/exchange/export`;
 import {
   Info,

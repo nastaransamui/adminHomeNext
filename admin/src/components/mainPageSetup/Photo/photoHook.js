@@ -7,9 +7,11 @@ import alertCall from '../../Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
 
-import { pushUrl, getUrl, createUrl, editUrl } from './photoStatic';
+import { getUrl, createUrl, editUrl } from './photoStatic';
 
-const photoHook = () => {
+export var pushUrl = '/admin/dashboard/main-page-setup/photos';
+
+const photoHook = (reactRoutes) => {
   const { t } = useTranslation('photos');
   const theme = useTheme();
   const history = useHistory();
@@ -17,6 +19,9 @@ const photoHook = () => {
   const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
   const [imageBlob, setImageBlob] = useState('');
+  const photoRoute = reactRoutes.filter((a) => a.componentName == 'Photo')[0];
+  const photosRoute = reactRoutes.filter((a) => a.componentName == 'Photos')[0];
+
   const [values, setValues] = useState({
     title_en: '',
     title_fa: '',
@@ -38,6 +43,10 @@ const photoHook = () => {
   const { search } = useLocation();
   const urlParams = Object.fromEntries([...new URLSearchParams(search)]);
   const { _id } = urlParams;
+
+  if (!photosRoute.crud[0]?.active) {
+    pushUrl = '/admin/dashboard';
+  }
 
   const formValueChanged = (e) => {
     values[e.target.name] = e.target.value;
@@ -201,6 +210,24 @@ const photoHook = () => {
 
           getPhoto();
         }
+      } else {
+        setValues({
+          title_en: '',
+          title_fa: '',
+          topTitle_en: '',
+          topTitle_fa: '',
+          subTitle_en: '',
+          subTitle_fa: '',
+          button_en: '',
+          button_fa: '',
+          imageShow: '',
+          imageShowKey: '',
+          finalFolder: 'photos',
+          modelName: 'Photos',
+          folderId: (Math.random() + 1).toString(36).substring(7),
+          isActive: true,
+          _id: '',
+        });
       }
     }
     return () => {
@@ -217,6 +244,8 @@ const photoHook = () => {
     imageBlob,
     submitForm,
     pushUrl,
+    _id,
+    photoRoute,
   };
 };
 

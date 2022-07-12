@@ -168,7 +168,9 @@ export const RenderCellExpand = (params) => {
           }}>
           {params.type !== 'number'
             ? params.value
-            : params?.row?.currencyCode + ' ' + params.value.toLocaleString()}
+            : params.modelName == 'Agencies'
+            ? params?.row?.currencyCode + ' ' + params.value.toLocaleString()
+            : params.value.toLocaleString()}
         </span>
       )}
     </>
