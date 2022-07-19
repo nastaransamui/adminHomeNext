@@ -17,9 +17,9 @@ import {
 import useButtonActivation from '../../Hooks/useButtonActivation';
 
 export default function Roles(props){
-  const { t } = useTranslation('roles');
+  const { t } = useTranslation(['roles', 'common']);
   const { reactRoutes } = props;
-  const { requestSearch, searchText, rows: roles, exportCsv } = rolesHook();
+  const { requestSearch, searchText, rows: roles } = rolesHook();
   const { Roles } = useSelector((state) => state);
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Roles;
@@ -76,7 +76,6 @@ export default function Roles(props){
           perPageFunc={perPageFunc}
           sortByFunc={sortByFunc}
           sortByValues={SortBy}
-          exportCsv={exportCsv}
           cardHeaderType={{
             icon: true,
             image: false,

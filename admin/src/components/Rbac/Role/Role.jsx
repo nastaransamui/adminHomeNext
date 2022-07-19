@@ -1,4 +1,4 @@
-import { Fragment  } from 'react';
+import { Fragment } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
@@ -10,14 +10,11 @@ import { useHistory } from 'react-router-dom';
 
 import Wizard from '../../Wizard/Wizard';
 import roleHook from './roleHook';
-import {
-  ValidatorForm,
-} from 'react-material-ui-form-validator';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 import Name from './Steps/Name/Name';
 import RoutesStep from './Steps/Routes/RoutesStep';
 import CrudStep from './Steps/CrudStep/CrudStep';
 import useButtonActivation from '../../Hooks/useButtonActivation';
-
 
 const Role = (props) => {
   const { rtlActive, reactRoutes } = props;
@@ -36,11 +33,12 @@ const Role = (props) => {
     role_id,
     pushUrl,
     roleRoute,
-    routeValidate
+    routeValidate,
   } = roleHook(reactRoutes);
 
   const { createButtonDisabled, updateButtonDisabled } =
     useButtonActivation(roleRoute);
+
 
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
@@ -54,7 +52,7 @@ const Role = (props) => {
           </IconButton>
         </Tooltip>
         <Grid container justifyContent='center'>
-          <Grid item xs={12} sm={8}>
+          <Grid item lg={11} xl={10} xs={12} sm={8}>
             <ValidatorForm onSubmit={formSubmit}>
               <Wizard
                 rtlActive={rtlActive}
@@ -74,7 +72,7 @@ const Role = (props) => {
                     role_id: role_id,
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
-                    updateButtonDisabled: updateButtonDisabled
+                    updateButtonDisabled: updateButtonDisabled,
                   },
                   {
                     stepName: t('routes'),
@@ -90,13 +88,13 @@ const Role = (props) => {
                     role_id: role_id,
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
-                    updateButtonDisabled: updateButtonDisabled
+                    updateButtonDisabled: updateButtonDisabled,
                   },
                   {
-                    stepName: t('curd'),
+                    stepName: t('crud'),
                     stepComponent: CrudStep,
-                    stepId: 'curd',
-                    isValidated: isValidated,
+                    stepId: 'crud',
+                    isValidated: isRouteValidate,
                     handleAddRoutes: handleAddRoutes,
                     handleRemoveRoutes: handleRemoveRoutes,
                     handleChange: handleChange,
@@ -106,15 +104,32 @@ const Role = (props) => {
                     role_id: role_id,
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
-                    updateButtonDisabled: updateButtonDisabled
-                  },
-                ]}
+                    updateButtonDisabled: updateButtonDisabled,
+                  },values.users_id !== undefined && {
+                    stepName: t('users'),
+                    stepComponent: CrudStep,
+                    stepId: 'users',
+                    isValidated: isRouteValidate,
+                    handleAddRoutes: handleAddRoutes,
+                    handleRemoveRoutes: handleRemoveRoutes,
+                    handleChange: handleChange,
+                    values: values,
+                    roleNameError: roleNameError,
+                    setValues: setValues,
+                    role_id: role_id,
+                    routeValidate: routeValidate,
+                    createButtonDisabled: createButtonDisabled,
+                    updateButtonDisabled: updateButtonDisabled,
+                  }
+                ].filter(Boolean)}
                 title={values.roleName}
                 subtitle={t('createRouteSubTitle')}
                 finishButtonClick={(e) => formSubmit()}
                 previousButtonText={t('previous')}
                 nextButtonText={t('next')}
-                finishButtonText={role_id == undefined ? t('finish') : t('edit')}
+                finishButtonText={
+                  role_id == undefined ? t('finish') : t('edit')
+                }
               />
             </ValidatorForm>
           </Grid>

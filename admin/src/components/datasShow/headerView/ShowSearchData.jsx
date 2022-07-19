@@ -15,7 +15,7 @@ const ShowSearchData = forwardRef((props, ref) => {
   return (
     <Fragment ref={ref}>
       <>
-        <Tooltip title={t('searchData')} arrow placement='bottom'>
+        <Tooltip title={t('searchData', { ns: 'common' })} arrow placement='bottom'>
           <IconButton
             disableRipple
             disableFocusRipple

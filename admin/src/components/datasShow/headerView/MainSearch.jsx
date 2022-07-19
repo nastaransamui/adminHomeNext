@@ -58,14 +58,14 @@ const MainSearch = forwardRef((props, ref) => {
         <Grid item xs={12} sm={12} md={6} lg={2} xl={2}>
           <FormControl fullWidth>
             <InputLabel className={classes.select} id='search-fields'>
-              {t('Field')}
+              {t('Field', { ns: 'common' })}
             </InputLabel>
             <Select
               labelId='search-fields-label'
               className={classes.textfield}
               id='search-fields'
               value={fieldValue}
-              label={t('Field')}>
+              label={t('Field', { ns: 'common' })}>
               {dataGridColumns
                 .filter((a) => a.searchAble)
                 .map((d, i) => {
@@ -90,8 +90,8 @@ const MainSearch = forwardRef((props, ref) => {
             clearIcon=''
             options={dataOptions}
             loading={loadingField}
-            loadingText={t('loadingField')}
-            noOptionsText={t('fieldNoOptions')}
+            loadingText={t('loadingField', { ns: 'common' })}
+            noOptionsText={t('fieldNoOptions', { ns: 'common' })}
             inputValue={filterValue}
             autoHighlight
             onChange={(event, newValue) => {
@@ -143,7 +143,7 @@ const MainSearch = forwardRef((props, ref) => {
                   {fieldValue !== 'phones' ? (
                     <TextField
                       {...params}
-                      label={t('labelSearch')}
+                      label={t('labelSearch', { ns: 'common' })}
                       className={classes.textfield}
                       value={filterValue}
                       onChange={(e) => {

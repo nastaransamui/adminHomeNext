@@ -91,10 +91,10 @@ const wizardStyle = makeStyles((theme) => {
       padding: '0 15px',
     },
     left: {
-      float: 'left!important',
+      float: theme.direction == 'ltr' ? 'left!important' : 'right!important',
     },
     right: {
-      float: 'right!important',
+      float: theme.direction == 'ltr' ? 'right!important' : 'left!important',
     },
     clearfix: {
       '&:after,&:before': {

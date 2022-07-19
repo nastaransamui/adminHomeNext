@@ -29,7 +29,7 @@ const PerRowFilter = forwardRef((props, ref) => {
     <Fragment ref={ref}>
       {cardView && (
         <>
-          <Tooltip title={t('perRow')} arrow placement='bottom'>
+          <Tooltip title={t('perRow', { ns: 'common' })} arrow placement='bottom'>
             <IconButton
               disableFocusRipple
               disableRipple
@@ -63,14 +63,14 @@ const PerRowFilter = forwardRef((props, ref) => {
               {[2, 3, 4, 6, 12].map((list, index) => {
                 const text =
                   list == 2
-                    ? t('Six')
+                    ? t('Six', { ns: 'common' })
                     : list == 3
-                    ? t('Four')
+                    ? t('Four', { ns: 'common' })
                     : list == 4
-                    ? t('Three')
+                    ? t('Three', { ns: 'common' })
                     : list == 6
-                    ? t('Two')
-                    : t('One');
+                    ? t('Two', { ns: 'common' })
+                    : t('One', { ns: 'common' });
                 return (
                   <Fragment key={index}>
                     <ListItem
@@ -85,7 +85,7 @@ const PerRowFilter = forwardRef((props, ref) => {
                         </ListItemIcon>
                         <ListItemText
                           primary={text}
-                          secondary={`${t('result')}`}
+                          secondary={`${t('result', { ns: 'common' })}`}
                         />
                       </ListItemButton>
                     </ListItem>

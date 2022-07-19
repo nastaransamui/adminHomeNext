@@ -33,7 +33,7 @@ const PerPageFilter = forwardRef((props, ref) => {
     <Fragment ref={ref}>
       
         <>
-          <Tooltip title={t('perPage')} arrow placement='bottom'>
+          <Tooltip title={t('perPage', { ns: 'common' })} arrow placement='bottom'>
             <IconButton
               disableRipple
               disableFocusRipple
@@ -68,14 +68,14 @@ const PerPageFilter = forwardRef((props, ref) => {
               {perPageArray.map((list, index) => {
                 const text =
                   list == 6
-                    ? t('Six')
+                    ? t('Six', { ns: 'common' })
                     : list == 12
-                    ? t('Twelve')
+                    ? t('Twelve', { ns: 'common' })
                     : list == 24
-                    ? t('TwentyFour')
+                    ? t('TwentyFour', { ns: 'common' })
                     : list == 48
-                    ? t('FortyEight')
-                    : t('NinetySix');
+                    ? t('FortyEight', { ns: 'common' })
+                    : t('NinetySix', { ns: 'common' });
                 return (
                   <Fragment key={index}>
                     <ListItem
@@ -89,7 +89,7 @@ const PerPageFilter = forwardRef((props, ref) => {
                         <ListItemIcon>
                           {list == perPage && <Check color='primary' />}
                         </ListItemIcon>
-                        <ListItemText primary={`${text}`} secondary={`${t('result')}`}/>
+                        <ListItemText primary={`${text}`} secondary={`${t('result', { ns: 'common' })}`}/>
                       </ListItemButton>
                     </ListItem>
                     {index !== 4 && <Divider />}

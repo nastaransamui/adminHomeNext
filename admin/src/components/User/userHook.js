@@ -421,7 +421,7 @@ const userHook = () => {
     const user = await res.json();
     const errorText =
       user?.ErrorCode == undefined && user.Error == 'Notfind'
-        ? t('Notfind')
+        ? t('Notfind', { ns: 'common' })
         : user.Error
         ? t(`${user?.ErrorCode}`)
         : user.Error;

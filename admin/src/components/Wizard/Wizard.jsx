@@ -51,6 +51,7 @@ const Wizard = (props) => {
           if (steps.length === 2) {
             setWidth('50%');
           } else {
+            console.log()
             setWidth(100 / 3 + '%');
           }
         }
@@ -62,7 +63,7 @@ const Wizard = (props) => {
       isMount = false;
       window.removeEventListener('resize', updateWidth);
     };
-  }, [rtlActive]);
+  }, [rtlActive,steps.length]);
 
   const updateWidth = () => {
     refreshAnimation(currentStep);
@@ -122,6 +123,7 @@ const Wizard = (props) => {
               [steps[i].stepId]: [steps[i].stepId].sendState(),
             });
           }
+
           if (
             [steps[i].stepId].isValidated !== undefined &&
             [steps[i].stepId].isValidated() === false
@@ -141,11 +143,28 @@ const Wizard = (props) => {
         ) {
           finishButtonClick();
         } else {
-          setCurrentStep(key);
-          setNextButton(steps.length > key + 1 ? true : false);
-          setPreviousButton(key > 0 ? true : false);
-          setFinishButton(steps.length === key + 1 ? true : false);
-          refreshAnimation(key);
+          if (key == steps.length - 1) {
+            let allValidate = steps.every((a) => a.isValidated());
+            if (allValidate) {
+              setCurrentStep(key);
+              setNextButton(steps.length > key + 1 ? true : false);
+              setPreviousButton(key > 0 ? true : false);
+              setFinishButton(steps.length === key + 1 ? true : false);
+              refreshAnimation(key);
+            } else {
+              setCurrentStep(currentStep + 1);
+              setNextButton(steps.length > currentStep + 1 + 1 ? true : false);
+              setPreviousButton(currentStep + 1 > 0 ? true : false);
+              setFinishButton(steps.length === currentStep + 1 + 1 ? true : false);
+              refreshAnimation(currentStep + 1);
+            }
+          } else {
+            setCurrentStep(key);
+            setNextButton(steps.length > key + 1 ? true : false);
+            setPreviousButton(key > 0 ? true : false);
+            setFinishButton(steps.length === key + 1 ? true : false);
+            refreshAnimation(key);
+          }
         }
       }
     }

@@ -384,7 +384,7 @@ const agencyHook = (reactRoutes) => {
             const agent = await res.json();
             const errorText =
               agent?.ErrorCode == undefined && agent.Error == 'Notfind'
-                ? t('Notfind')
+                ? t('Notfind', { ns: 'common' })
                 : agent?.ErrorCode !== undefined
                 ? t(`${agent?.ErrorCode}`)
                 : agent.Error;

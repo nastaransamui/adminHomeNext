@@ -69,7 +69,7 @@ const roleHook = (reactRoutes) => {
             const role = await res.json();
             const errorText =
               role?.ErrorCode == undefined && role.Error == 'Notfind'
-                ? t('Notfind')
+                ? t('Notfind', { ns: 'common' })
                 : role.Error
                 ? t(`${role?.ErrorCode}`)
                 : role.Error;

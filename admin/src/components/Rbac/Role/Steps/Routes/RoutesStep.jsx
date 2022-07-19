@@ -120,7 +120,7 @@ const RoutesStep = (props) => {
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={`${numberOfChecked(items)}/${items.length} ${t('selected')}`}
       />
       <Divider />
       <List

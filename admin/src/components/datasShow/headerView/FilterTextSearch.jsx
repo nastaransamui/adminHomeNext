@@ -21,7 +21,7 @@ const FilterTextSearch = forwardRef((props, ref) => {
             variant='standard'
             value={searchText}
             onChange={(event) => requestSearch(event.target.value)}
-            placeholder={`${t('search')}`}
+            placeholder={`${t('search', { ns: 'common' })}`}
             fullWidth
             sx={{
               m: (theme) => theme.spacing(1, 0.5, 1.5),

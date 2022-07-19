@@ -29,24 +29,24 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       if (hzErrorConnection) {
         const roleValue = await collection.aggregate([
           { $match: { _id: ObjectId(_id) } },
-          { $unwind: { path: '$users_id', preserveNullAndEmptyArrays: true } },
-          {
-            $lookup: {
-              from: 'users',
-              localField: 'users_id',
-              pipeline: [
-                {
-                  $project: {
-                    _id: 1,
-                    profileImage: 1,
-                    userName: 1,
-                  },
-                },
-              ],
-              foreignField: '_id',
-              as: 'usersData',
-            },
-          },
+          // { $unwind: { path: '$users_id', preserveNullAndEmptyArrays: true } },
+          // {
+          //   $lookup: {
+          //     from: 'users',
+          //     localField: 'users_id',
+          //     pipeline: [
+          //       {
+          //         $project: {
+          //           _id: 1,
+          //           profileImage: 1,
+          //           userName: 1,
+          //         },
+          //       },
+          //     ],
+          //     foreignField: '_id',
+          //     as: 'usersData',
+          //   },
+          // },
         ]);
         if (roleValue.length > 0) {
           res.status(200).json({

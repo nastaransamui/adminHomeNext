@@ -73,7 +73,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         });
       }
       if (dataType == 'Provinces') {
-        await collection.findOne({ id: country_id }).then(async (oldData) => {
+        await collection.findOne({ _id: country_id }).then(async (oldData) => {
           oldData.states.filter((a) => {
             if (a.id == body.id) {
               a.name = body.name;
@@ -133,8 +133,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         });
       }
       if (dataType == 'Cities') {
-        await collection.findOne({ id: country_id }).then(async (oldData) => {
-          const state = oldData.states.filter((a) => a.id == state_id);
+        console.log(body);
+
+        await collection.findOne({ _id: country_id }).then(async (oldData) => {
+          const state = oldData.states.filter((a) => a._id == state_id);
           state[0].cities.filter((a) => {
             if (a.id == body.id) {
               a.name = body.name;

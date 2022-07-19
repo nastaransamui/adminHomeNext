@@ -39,7 +39,7 @@ const SortBy = forwardRef((props, ref) => {
   return (
     <Fragment ref={ref}>
         <>
-          <Tooltip title={t('sortBy')} arrow placement='bottom'>
+          <Tooltip title={t('sortBy', { ns: 'common' })} arrow placement='bottom'>
             <IconButton
               disableRipple
               disableFocusRipple
@@ -85,7 +85,7 @@ const SortBy = forwardRef((props, ref) => {
                             }));
                           }}>
                           <ListItemIcon>
-                            <Tooltip title={t('filterType')}>
+                            <Tooltip title={t('filterType', { ns: 'common' })}>
                               <IconButton
                                 size='large'
                                 disableFocusRipple
@@ -227,7 +227,7 @@ const SortBy = forwardRef((props, ref) => {
                                 ? t('cityid')
                                 : t(`${anchorSTl[`filed`]}`)
                             }
-                            secondary={t(`${list}`)}
+                            secondary={t(`${list}`, { ns: 'common' })}
                           />
                         </ListItemButton>
                       </ListItem>

@@ -26,7 +26,6 @@ const usersHook = () => {
   const perRow = usePerRowHook(Users);
   const { searchText, requestSearch, setSearchText, rows } =
     usePageSearch(dataArray);
-
   const allResults = useAllResults({
     state: Users,
     modelName: 'Users',

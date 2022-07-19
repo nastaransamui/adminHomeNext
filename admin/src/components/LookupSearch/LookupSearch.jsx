@@ -204,8 +204,8 @@ const LookupSearch = (props) => {
             clearIcon=''
             options={dataOptions}
             loading={loadingField}
-            loadingText={t('loadingField')}
-            noOptionsText={t('fieldNoOptions')}
+            loadingText={t('loadingField', { ns: 'common' })}
+            noOptionsText={t('fieldNoOptions', { ns: 'common' })}
             inputValue={filterValue}
             autoHighlight
             onChange={(event, newValue) => {

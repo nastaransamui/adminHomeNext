@@ -113,7 +113,7 @@ export const dataGridColumns = [
   {
     field: 'users_id', // Db name
     headerAlign: 'center', //
-    description: 'usersData', //Discription from translation
+    description: 'users_id', //Discription from translation
     width: 140,
     type: 'array',
     arrayTotal: true,
@@ -125,7 +125,7 @@ export const dataGridColumns = [
   {
     field: 'routes', // Db name
     headerAlign: 'center', //
-    description: 'routesData', //Discription from translation
+    description: 'routes', //Discription from translation
     width: 140,
     type: 'array',
     arrayTotal: true,

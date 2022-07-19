@@ -26,7 +26,7 @@ const Pagination = forwardRef((props, ref) => {
       sx={{ pb: 2, pt: 2 }}>
       <Grid item>
         <Typography>
-          {t('Page')}: {pageNumber}
+          {t('Page', { ns: 'common' })}: {pageNumber}
         </Typography>
       </Grid>
       {adminFormSubmit ? (

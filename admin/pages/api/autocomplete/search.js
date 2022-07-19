@@ -79,8 +79,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   'states.cities.country': '$name',
                   'states.cities.emoji': '$emoji',
                   'states.cities.iso2': '$iso2',
-                  'states.cities.country_id': '$id',
+                  'states.cities.country_id': '$_id',
                   'states.cities.state_name': '$states.name',
+                  'states.cities.state_id': '$states._id',
+                  'states.cities.stateId': '$states.id',
+                  'states.cities.countryId': '$id',
                 },
               },
               { $sort: { 'states.cities.name': 1 } },
@@ -165,7 +168,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               : `states.${fieldValue}`;
           if (hzErrorConnection) {
             const valuesList = await collection.aggregate([
-              { $project: { _id: 0 } },
               { $unwind: '$states' },
               { $match: { [fieldSearch]: searchRegex } },
               {
@@ -173,6 +175,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   'states.country': '$name',
                   'states.emoji': '$emoji',
                   'states.iso2': '$iso2',
+                  'states.country_id': '$_id',
+                  'states.countryId': '$id',
                 },
               },
               { $sort: { 'states.name': 1 } },
@@ -229,6 +233,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     'states.country': '$name',
                     'states.emoji': '$emoji',
                     'states.iso2': '$iso2',
+                    'states.country_id': '$_id',
+                    'states.countryId': '$id',
                   },
                 },
                 { $sort: { 'states.name': 1 } },

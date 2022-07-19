@@ -399,7 +399,7 @@ const Body = forwardRef((props, ref) => {
     <>
       {typeof icon !== 'undefined' ? (
         <CardBody pricing plain ref={ref}>
-          <h6 className={classes.cardCategory}>{modelName}</h6>
+          <h6 className={classes.cardCategory}>{t(`${modelName}`)}</h6>
           <div className={classes.icon} style={{ marginBottom: 10 }}>
             <SvgIcon className={classes.iconPrimary}>
               <path d={`${data.icon}`} />

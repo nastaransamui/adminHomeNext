@@ -15,7 +15,7 @@ const CsvExport = forwardRef((props, ref) => {
   return (
     <Fragment ref={ref}>
         <>
-          <Tooltip title={t('csvExport')} arrow placement='bottom'>
+          <Tooltip title={t('csvExport', { ns: 'common' })} arrow placement='bottom'>
             <IconButton
               disableRipple
               disableFocusRipple

@@ -54,7 +54,7 @@ const FilterSwitch = forwardRef((props, ref) => {
       component='label'
       container
       className={classes.toolbarSwitch}>
-      <Grid item>{t('tableview')}</Grid>
+      <Grid item>{t('tableview', { ns: 'common' })}</Grid>
       <Grid item>
         <Android12Switch
           color={cardView ? 'secondary' : 'primary'}
@@ -64,11 +64,11 @@ const FilterSwitch = forwardRef((props, ref) => {
           onChange={() => {
             cardViewsFunc()
           }}
-          value={t('tableview')}
+          value={t('tableview', { ns: 'common' })}
           inputProps={{ 'aria-label': 'checkbox' }}
         />
       </Grid>
-      <Grid item>{t('cardview')}</Grid>
+      <Grid item>{t('cardview', { ns: 'common' })}</Grid>
     </Grid>
   );
 });
