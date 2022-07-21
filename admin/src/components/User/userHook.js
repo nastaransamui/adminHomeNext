@@ -399,7 +399,6 @@ const userHook = () => {
       isMount = false;
     };
   }, [location]);
-
   //set api to get user information
   const getUser = async () => {
     const res = await fetch(
@@ -420,11 +419,11 @@ const userHook = () => {
     const { status } = res;
     const user = await res.json();
     const errorText =
-      user?.ErrorCode == undefined && user.Error == 'Notfind'
+      user.Error !== 'Notfind' && user?.ErrorCode == undefined
+        ? user.Error
+        : user.Error == 'Notfind'
         ? t('Notfind', { ns: 'common' })
-        : user.Error
-        ? t(`${user?.ErrorCode}`)
-        : user.Error;
+        : t(`${user?.ErrorCode}`);
     if (status !== 200 && !user.success) {
       alertCall(theme, 'error', errorText, () => {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });

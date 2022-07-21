@@ -1,6 +1,4 @@
 {
-  "editTooltip": "این نماینده را ویرایش کنید",
-  "deleteTooltip": "این نماینده را پاک کنید",
   "loadingField": "برای جستجو تایپ کنید...",
   "agentId": "شناسه نماینده",
   "agentName": "نام نماینده",
@@ -31,5 +29,7 @@
   "editAgent": "اطلاعات آژانس",
   "completeAgent": "داده ها را کامل کنید",
   "phones": "تلفن",
-  "email": "ایمیل"
+  "email": "ایمیل",
+  "agentEditSuccess": "عامل با موفقیت ویرایش شد.",
+  "agentCreateSuccess": "عامل با موفقیت ایجاد شد."
 }

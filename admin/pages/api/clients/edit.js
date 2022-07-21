@@ -76,9 +76,19 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
             });
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
-              const multiMap = await hz.getMultiMap('Agencies');
-              await multiMap.destroy();
-              await multiMap.put('allAgencies', totalAgent);
+              const multiMapu = await hz.getMultiMap('Users');
+              const multiMapc = await hz.getMultiMap('Countries');
+              const multiMapPr = await hz.getMultiMap('Provinces');
+              const multiMapCt = await hz.getMultiMap('Cities');
+              const multiMapCu = await hz.getMultiMap('Currencies');
+              const multiMapAg = await hz.getMultiMap('Agencies');
+              await multiMapu.destroy();
+              await multiMapc.destroy();
+              await multiMapPr.destroy();
+              await multiMapCt.destroy();
+              await multiMapCu.destroy();
+              await multiMapAg.destroy();
+              await multiMapAg.put('allAgencies', totalAgent);
               await hz.shutdown();
             }
           }

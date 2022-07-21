@@ -1,6 +1,4 @@
 {
-  "editTooltip": "Edit this agent",
-  "deleteTooltip": "Delete this agent",
   "loadingField": "Type for search...",
   "agentId": "Agent ID",
   "agentName": "Agent name",
@@ -30,5 +28,7 @@
   "editAgent": "Agency information",
   "completeAgent": "Complete data",
   "email": "Email",
-  "phones": "Phones"
+  "phones": "Phones",
+  "agentEditSuccess": "Agent was successfully edited.",
+  "agentCreateSuccess": "Agent was successfully created."
 }

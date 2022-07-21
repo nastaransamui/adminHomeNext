@@ -39,6 +39,7 @@ const initialState = {
   Agencies: { ...Agencies },
   Roles: { ...Roles },
   dataAgentPageNumber: 0,
+  rolesUserDataPageNumber: 0,
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -123,6 +124,8 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case 'DATA_AGENT_PAGENUMBER':
       return { ...state, dataAgentPageNumber: payload };
+    case 'ROLES_USER_DATA_PAGENUMBER':
+      return { ...state, rolesUserDataPageNumber: payload };
     default:
       return state;
   }

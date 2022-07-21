@@ -2,7 +2,8 @@ import { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import lookupSearchStyle from './lookup-search-style';
-
+import customerAvatar from '../../../public/images/faces/Customer.png';
+import avatar from '../../../public/images/faces/avatar1.jpg';
 import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -24,7 +25,8 @@ export function escapeRegExp(value) {
 const getDataUrl = '/admin/api/autocomplete/lookup';
 
 const LookupSearch = (props) => {
-  const { columns, setMainData, originalData, _id } = props;
+  const { columns, setMainData, originalData, _id, modelName, lookupFrom } =
+    props;
   const classes = lookupSearchStyle();
   const { t } = useTranslation('common');
   const { adminAccessToken } = useSelector((state) => state);
@@ -43,7 +45,12 @@ const LookupSearch = (props) => {
     }
   };
   const getLabels = (dataOptions) => {
-    return dataOptions.agentName;
+    switch (lookupFrom) {
+      case 'agencies':
+        return dataOptions.agentName;
+      case 'users':
+        return dataOptions.userName;
+    }
   };
 
   const getData = async () => {
@@ -57,8 +64,8 @@ const LookupSearch = (props) => {
           token: `Brearer ${adminAccessToken}`,
         },
         body: JSON.stringify({
-          modelName: 'Users',
-          lookupFrom: 'agencies',
+          modelName: modelName,
+          lookupFrom: lookupFrom,
           fieldValue: fieldValue,
           filterValue: filterValue,
           _id: _id,
@@ -89,6 +96,12 @@ const LookupSearch = (props) => {
     }
   };
 
+  const sleep = (delay = 0) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay);
+    });
+  };
+
   useEffect(() => {
     let isMount = true;
     if (isMount && filterValue !== '') {
@@ -104,54 +117,71 @@ const LookupSearch = (props) => {
   }, [filterValue]);
 
   const showValuesData = (dataOptions) => {
-    if (typeof dataOptions[fieldValue] == 'number') {
-      return (
-        <>
-          <img
-            height={30}
-            width={30}
-            style={{ borderRadius: '50%' }}
-            src={`${dataOptions.logoImage || customerAvatar.src}`}
-            alt=''
-          />
-          &nbsp;&nbsp;&nbsp;
-          {`${dataOptions.agentName} ${dataOptions[
-            fieldValue
-          ].toLocaleString()} ${dataOptions?.currencyCode}`}
-        </>
-      );
-    }
-    if (fieldValue !== 'phones') {
-      return (
-        <>
-          <img
-            height={30}
-            width={30}
-            style={{ borderRadius: '50%' }}
-            src={`${dataOptions.logoImage || customerAvatar.src}`}
-            alt=''
-          />
-          &nbsp;&nbsp;&nbsp;
-          {`${dataOptions.agentName} ${dataOptions[fieldValue]}`}
-        </>
-      );
-    } else {
-      const phoneValue = dataOptions[fieldValue].map((a, i) => {
-        return `${dataOptions.agentName} ${a.number} ${a.tags[0]} ${a.remark} \n`;
-      });
-      return (
-        <>
-          <img
-            height={30}
-            width={30}
-            style={{ borderRadius: '50%' }}
-            src={`${dataOptions.logoImage || customerAvatar.src}`}
-            alt=''
-          />
-          &nbsp;&nbsp;&nbsp;
-          {phoneValue}
-        </>
-      );
+    switch (lookupFrom) {
+      case 'agencies':
+        if (typeof dataOptions[fieldValue] == 'number') {
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {`${dataOptions.agentName} ${dataOptions[
+                fieldValue
+              ].toLocaleString()} ${dataOptions?.currencyCode}`}
+            </>
+          );
+        }
+        if (fieldValue !== 'phones') {
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {`${dataOptions.agentName} ${dataOptions[fieldValue]}`}
+            </>
+          );
+        } else {
+          const phoneValue = dataOptions[fieldValue].map((a, i) => {
+            return `${dataOptions.agentName} ${a.number} ${a.tags[0]} ${a.remark} \n`;
+          });
+          return (
+            <>
+              <img
+                height={30}
+                width={30}
+                style={{ borderRadius: '50%' }}
+                src={`${dataOptions.logoImage || customerAvatar.src}`}
+                alt=''
+              />
+              &nbsp;&nbsp;&nbsp;
+              {phoneValue}
+            </>
+          );
+        }
+      case 'users':
+        return (
+          <>
+            <img
+              height={30}
+              width={30}
+              style={{ borderRadius: '50%' }}
+              src={`${dataOptions.profileImage || avatar.src}`}
+              alt=''
+            />
+            &nbsp;&nbsp;&nbsp;
+            {`${dataOptions[fieldValue]}`}
+          </>
+        );
     }
   };
 
@@ -258,6 +288,7 @@ const LookupSearch = (props) => {
                     <TextField
                       {...params}
                       label={t('labelSearch')}
+                      size="small"
                       className={classes.textfield}
                       value={filterValue}
                       onChange={(e) => {
@@ -271,12 +302,13 @@ const LookupSearch = (props) => {
                             {loadingField ? (
                               <CircularProgress
                                 color='primary'
-                                size={20}
-                                sx={{ mr: 4 }}
+                                size={10}
+                                sx={{ mr: 4,p:0 }}
                               />
                             ) : (
                               filterValue !== '' && (
                                 <IconButton
+                                size='small'
                                   disableFocusRipple
                                   disableRipple
                                   disableTouchRipple
@@ -285,8 +317,8 @@ const LookupSearch = (props) => {
                                   }}>
                                   <Close
                                     color='secondary'
-                                    size={20}
-                                    sx={{ mr: 2 }}
+                                    size={10}
+                                    sx={{ mr: 2, p: 0 }}
                                   />
                                 </IconButton>
                               )
@@ -368,5 +400,7 @@ LookupSearch.propTypes = {
   setMainData: PropTypes.func.isRequired,
   originalData: PropTypes.array.isRequired,
   _id: PropTypes.string.isRequired,
+  modelName: PropTypes.string.isRequired,
+  lookupFrom: PropTypes.string.isRequired,
 };
 export default LookupSearch;

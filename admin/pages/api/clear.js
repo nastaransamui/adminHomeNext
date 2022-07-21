@@ -12,20 +12,20 @@ const apiRoute = nextConnect({
 apiRoute.get(async (req, res, next) => {
   const { hzErrorConnection, hz } = await hazelCast();
   if (!hzErrorConnection) {
-    const multiMapu = await hz.getMultiMap('Users');
     const multiMapv = await hz.getMultiMap('Videos');
     const multiMapf = await hz.getMultiMap('Features');
     const multiMapp = await hz.getMultiMap('Photos');
+    const multiMapu = await hz.getMultiMap('Users');
     const multiMapc = await hz.getMultiMap('Countries');
     const multiMapPr = await hz.getMultiMap('Provinces');
     const multiMapCt = await hz.getMultiMap('Cities');
     const multiMapCu = await hz.getMultiMap('Currencies');
     const multiMapAg = await hz.getMultiMap('Agencies');
     const multiMapRo = await hz.getMultiMap('Roles');
-    await multiMapu.destroy();
     await multiMapv.destroy();
     await multiMapf.destroy();
     await multiMapp.destroy();
+    await multiMapu.destroy();
     await multiMapc.destroy();
     await multiMapPr.destroy();
     await multiMapCt.destroy();

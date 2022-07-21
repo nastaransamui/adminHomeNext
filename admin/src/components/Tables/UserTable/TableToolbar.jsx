@@ -26,6 +26,8 @@ const TableToolbar = (props) => {
     setMainData,
     originalData,
     _id,
+    modelName,
+    lookupFrom,
   } = props;
   const theme = useTheme();
   const [showSearch, setShowSearch] = useState(false);
@@ -78,6 +80,8 @@ const TableToolbar = (props) => {
               columns={columns}
               setMainData={setMainData}
               originalData={originalData}
+              modelName={modelName}
+              lookupFrom={lookupFrom}
               _id={_id}
             />
           </Typography>
@@ -190,5 +194,7 @@ TableToolbar.propTypes = {
   ).isRequired,
   setMainData: PropTypes.func.isRequired,
   originalData: PropTypes.array.isRequired,
+  modelName: PropTypes.string.isRequired,
+  lookupFrom: PropTypes.string.isRequired,
 };
 export default TableToolbar;

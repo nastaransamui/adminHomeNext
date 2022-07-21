@@ -15,11 +15,14 @@ import Name from './Steps/Name/Name';
 import RoutesStep from './Steps/Routes/RoutesStep';
 import CrudStep from './Steps/CrudStep/CrudStep';
 import useButtonActivation from '../../Hooks/useButtonActivation';
+import UsersStep from './Steps/Users/UsersStep'
+import { useDispatch } from 'react-redux';
 
 const Role = (props) => {
   const { rtlActive, reactRoutes } = props;
   const { t } = useTranslation('roles');
   const history = useHistory();
+  const dispatch = useDispatch();
   const {
     formSubmit,
     handleChange,
@@ -34,6 +37,8 @@ const Role = (props) => {
     pushUrl,
     roleRoute,
     routeValidate,
+    totalUsers,
+    getRole
   } = roleHook(reactRoutes);
 
   const { createButtonDisabled, updateButtonDisabled } =
@@ -46,6 +51,11 @@ const Role = (props) => {
         <Tooltip title={t('goBack')} arrow placement='bottom'>
           <IconButton
             onClick={() => {
+               //Reset pagenumber of agents
+               dispatch({
+                type: 'ROLES_USER_DATA_PAGENUMBER',
+                payload: 0,
+              });
               history.push(pushUrl);
             }}>
             {rtlActive ? <ArrowForward /> : <ArrowBack />}
@@ -73,6 +83,9 @@ const Role = (props) => {
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
                     updateButtonDisabled: updateButtonDisabled,
+                    totalUsers: totalUsers,
+                    getRole:getRole,
+                    ...props
                   },
                   {
                     stepName: t('routes'),
@@ -89,6 +102,9 @@ const Role = (props) => {
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
                     updateButtonDisabled: updateButtonDisabled,
+                    totalUsers: totalUsers,
+                    getRole:getRole,
+                    ...props
                   },
                   {
                     stepName: t('crud'),
@@ -105,21 +121,23 @@ const Role = (props) => {
                     routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
                     updateButtonDisabled: updateButtonDisabled,
+                    totalUsers: totalUsers,
+                    getRole:getRole,
+                    ...props
                   },values.users_id !== undefined && {
                     stepName: t('users'),
-                    stepComponent: CrudStep,
-                    stepId: 'users',
-                    isValidated: isRouteValidate,
-                    handleAddRoutes: handleAddRoutes,
-                    handleRemoveRoutes: handleRemoveRoutes,
+                    stepComponent: UsersStep,
+                    isValidated: isValidated,
                     handleChange: handleChange,
+                    stepId: 'users',
                     values: values,
-                    roleNameError: roleNameError,
                     setValues: setValues,
                     role_id: role_id,
-                    routeValidate: routeValidate,
                     createButtonDisabled: createButtonDisabled,
                     updateButtonDisabled: updateButtonDisabled,
+                    totalUsers: totalUsers,
+                    getRole:getRole,
+                    ...props
                   }
                 ].filter(Boolean)}
                 title={values.roleName}

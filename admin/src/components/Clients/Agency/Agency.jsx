@@ -104,7 +104,7 @@ export default function Agency(props) {
 
   const { createButtonDisabled, updateButtonDisabled } =
     useButtonActivation(clientRoute);
-  console.log({ createButtonDisabled, updateButtonDisabled });
+
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
       <Fragment>

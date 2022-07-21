@@ -226,6 +226,7 @@ const MainSearch = forwardRef((props, ref) => {
           disableRipple
           disableFocusRipple
           onClick={() => {
+            setFilterValue('')
             setMainData(state.dataArray);
             setShowSearch(!showSearch);
           }}>

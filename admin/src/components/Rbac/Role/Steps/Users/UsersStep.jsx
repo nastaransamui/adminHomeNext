@@ -1,133 +1,91 @@
 import { Fragment, useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
-import { alpha } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
-
+import { alpha } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { CircleToBlockLoading } from 'react-loadingg';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import Table from '../../../../Tables/UserTable/Table';
 
-import Table from '../../../Tables/UserTable/Table';
-
-const AgentsData = (props) => {
-  const { values, t, totalAgents, getUser, _id, setValues } = props;
-  const { dataAgentPageNumber } = useSelector((state) => state);
+const UsersStep = (props) => {
+  const { values, t, totalUsers, getRole, role_id, setValues } = props;
+  const { rolesUserDataPageNumber } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const { agentsData } = values;
+  const { usersData } = values;
   const [mainData, setMainData] = useState(undefined);
   const theme = useTheme();
   const [rowsPerPage, setRowsPerPage] = useState(
-    JSON.parse(localStorage.getItem('agentDataRowsPerPage')) || 5
+    JSON.parse(localStorage.getItem('roleUsersDataRowsPerPage')) || 5
   );
   const [dense, setDense] = useState(
-    JSON.parse(localStorage.getItem('agentDataDense') || false)
+    JSON.parse(localStorage.getItem('roleUsersDataDense') || false)
   );
   const [order, setOrder] = useState(
-    localStorage.getItem('agentDataOrder') || 'asc'
+    localStorage.getItem('roleUsersDataOrder') || 'asc'
   );
   const [orderBy, setOrderBy] = useState(
-    localStorage.getItem('agentDataOrderBy') || 'agentName'
+    localStorage.getItem('roleUsersDataOrderBy') || 'userName'
   );
 
   useEffect(() => {
     let isMount = true;
     if (isMount) {
-      setMainData(agentsData);
+      setMainData(usersData);
     }
     return () => {
       isMount = false;
     };
-  }, [agentsData]);
+  }, [usersData]);
 
   useEffect(() => {
     let isMount = true;
     if (isMount) {
-      getUser();
+      getRole();
     }
     return () => {
       isMount = false;
     };
-  }, [dataAgentPageNumber]);
+  }, [rolesUserDataPageNumber]);
 
   const columns = useMemo(() => {
     return [
       {
-        id: 'agentName',
-        label: 'Agent Name',
+        id: 'userName',
+        label: 'User Name',
         align: 'center',
         minWidth: 180,
         disablePadding: true,
         type: 'string',
       },
       {
-        id: 'isActive',
-        label: 'Activation',
+        id: 'isAdmin',
+        label: 'Admin Access',
         minWidth: 70,
         align: 'center',
         disablePadding: true,
         type: 'boolean',
       },
       {
-        id: 'email',
-        label: 'Email',
-        align: 'center',
-        minWidth: 300,
-        disablePadding: true,
-        type: 'string',
-      },
-      {
-        id: 'phones',
-        label: 'Phones',
-        align: 'center',
-        minWidth: 180,
-        disablePadding: true,
-        type: 'phonesArray',
-      },
-      {
-        id: 'agentId',
-        label: 'Agent Id',
-        minWidth: 120,
+        id: 'firstName',
+        label: 'Name',
+        minWidth: 70,
         align: 'center',
         disablePadding: false,
         type: 'string',
       },
       {
-        id: 'creditAmount',
-        label: 'Credit',
-        minWidth: 170,
+        id: 'lastName',
+        label: 'Last Name',
+        minWidth: 70,
         align: 'center',
         disablePadding: false,
-        type: 'number',
+        type: 'string',
       },
       {
-        id: 'depositAmount',
-        label: 'Deposit',
-        minWidth: 170,
-        align: 'center',
-        disablePadding: false,
-        type: 'number',
-      },
-      {
-        id: 'remainCreditAmount',
-        label: 'Remain Credit',
-        minWidth: 170,
-        align: 'center',
-        disablePadding: false,
-        type: 'number',
-      },
-      {
-        id: 'remainDepositAmount',
-        label: 'Remain Deposit',
-        minWidth: 170,
-        align: 'center',
-        disablePadding: false,
-        type: 'number',
-      },
-      {
-        id: 'address',
-        label: 'Address',
+        id: 'position',
+        label: 'Position',
         minWidth: 70,
         align: 'center',
         disablePadding: false,
@@ -158,8 +116,8 @@ const AgentsData = (props) => {
         type: 'string',
       },
       {
-        id: 'remark',
-        label: 'Remark',
+        id: 'aboutMe',
+        label: 'About Me',
         minWidth: 120,
         align: 'center',
         disablePadding: false,
@@ -170,8 +128,8 @@ const AgentsData = (props) => {
 
   const deleteSX = (row) => {
     return {
-      textDecoration: !values.agents_id.includes(row._id) ? 'line-through' : '',
-      ...(!values.agents_id.includes(row._id) && {
+      textDecoration: !values.users_id.includes(row._id) ? 'line-through' : '',
+      ...(!values.users_id.includes(row._id) && {
         bgcolor: (theme) =>
           alpha(
             theme.palette.secondary.main,
@@ -183,55 +141,56 @@ const AgentsData = (props) => {
 
   const deleteIconClicked = (selected, setSelected) => {
     const idsToDeleteSet = new Set(selected);
-    const newArr = values.agents_id.filter((id) => {
+    const newArr = values.users_id.filter((id) => {
       return !idsToDeleteSet.has(id);
     });
-    setValues((oldValues) => ({ ...oldValues, agents_id: newArr }));
+    setValues((oldValues) => ({ ...oldValues, users_id: newArr }));
     setSelected([]);
   };
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
-    localStorage.setItem('agentDataOrder', isAsc ? 'desc' : 'asc');
+    localStorage.setItem('roleUsersDataOrder', isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    localStorage.setItem('agentDataOrderBy', property);
-    getUser();
+    localStorage.setItem('roleUsersDataOrderBy', property);
+    getRole();
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     localStorage.setItem(
-      'agentDataRowsPerPage',
+      'roleUsersDataRowsPerPage',
       parseInt(event.target.value, 10)
     );
     dispatch({
-      type: 'DATA_AGENT_PAGENUMBER',
+      type: 'ROLES_USER_DATA_PAGENUMBER',
       payload: 0,
     });
-    localStorage.setItem('agentDataPage', 0);
-    getUser();
+    localStorage.setItem('roleUsersDataPage', 0);
+    getRole();
   };
 
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
     localStorage.setItem(
-      'agentDataDense',
+      'roleUsersDataDense',
       JSON.stringify(event.target.checked)
     );
   };
 
   const handleChangePage = (event, newPage) => {
     dispatch({
-      type: 'DATA_AGENT_PAGENUMBER',
+      type: 'ROLES_USER_DATA_PAGENUMBER',
       payload: newPage,
     });
-    getUser();
+    getRole();
   };
 
   const emptyRows =
-    dataAgentPageNumber > 0
-      ? Math.max(0, (1 + dataAgentPageNumber) * rowsPerPage - totalAgents)
+    rolesUserDataPageNumber > 0
+      ? Math.max(0, (1 + rolesUserDataPageNumber) * rowsPerPage - totalUsers)
       : 0;
 
   return (
@@ -240,16 +199,15 @@ const AgentsData = (props) => {
         <CircleToBlockLoading color={theme.palette.secondary.main} />
       ) : (
         <Fragment>
-          <Paper
-            sx={{ width: '100%', mb: 2, overflow: 'hidden', borderRadius: 0 }}>
+          <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden', borderRadius: 0 }}>
             <Table
-              tableName={t('agentData')}
+              tableName={t('usersData')}
               columns={columns}
               mainData={mainData}
               setMainData={setMainData}
-              originalData={agentsData}
+              originalData={usersData}
               deleteSX={deleteSX}
-              arrayOfIds={values.agents_id}
+              arrayOfIds={values.users_id}
               deleteIconClicked={deleteIconClicked}
               dense={dense}
               order={order}
@@ -258,13 +216,13 @@ const AgentsData = (props) => {
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               emptyRows={emptyRows}
               handleChangePage={handleChangePage}
-              total={totalAgents}
+              total={totalUsers}
               rowsPerPage={rowsPerPage}
-              pageNumber={dataAgentPageNumber}
-              _id={_id}
-              canDelete={true}
-              modelName='Users'
-              lookupFrom='agencies'
+              pageNumber={rolesUserDataPageNumber}
+              _id={role_id}
+              canDelete={false}
+              modelName='Roles'
+              lookupFrom='users'
             />
           </Paper>{' '}
           <FormControlLabel
@@ -277,14 +235,4 @@ const AgentsData = (props) => {
   );
 };
 
-AgentsData.propTypes = {
-  values: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
-  totalAgents: PropTypes.number.isRequired,
-  getUser: PropTypes.func.isRequired,
-  _id: PropTypes.string.isRequired,
-  setValues: PropTypes.func.isRequired,
-};
-
-export default AgentsData;
+export default UsersStep;

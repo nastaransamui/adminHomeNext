@@ -76,7 +76,7 @@ const TableBody = forwardRef((props, ref) => {
         return [
           <GridActionsCellItem
             icon={
-              <Tooltip arrow title={t('editTooltip')}>
+              <Tooltip arrow title={t('editTooltip',{ns: 'common'})}>
                 <Edit
                   style={{
                     color: updateButtonDisabled
@@ -156,7 +156,7 @@ const TableBody = forwardRef((props, ref) => {
           />,
           <GridActionsCellItem
             icon={
-              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
                 <Delete
                   style={{
                     color: deleteButtonDisabled

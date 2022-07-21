@@ -3,7 +3,6 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import middleware from '../../../middleware/multiparty';
-var ObjectId = require('mongoose').Types.ObjectId;
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
 import { findRoleById } from '../../../helpers/auth';
@@ -62,9 +61,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               });
               const { hzErrorConnection, hz } = await hazelCast();
               if (!hzErrorConnection) {
-                const multiMap = await hz.getMultiMap('Agencies');
+                const multiMap = await hz.getMultiMap('Roles');
                 await multiMap.destroy();
-                await multiMap.put('allAgencies', totalRoles);
+                await multiMap.put('allRoles', totalRoles);
                 await hz.shutdown();
               }
             }

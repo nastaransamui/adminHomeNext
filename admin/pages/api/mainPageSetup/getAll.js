@@ -107,6 +107,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`all${modelName}`);
           for (const value of values) {
+            value.map((a) => delete a.password);
             res.status(200).json({
               success: true,
               totalValuesLength: value.length,

@@ -498,7 +498,7 @@ const Body = forwardRef((props, ref) => {
               )
             ) : (
               editUrl !== '' && (
-                <Tooltip title={t('editTooltip')} placement='bottom' arrow>
+                <Tooltip title={t('editTooltip',{ns: 'common'})} placement='bottom' arrow>
                   <span>
                     <Button
                       color='primary'
@@ -533,7 +533,7 @@ const Body = forwardRef((props, ref) => {
                 data._id !== profile._id &&
                 editUrl !== '') ||
               modelName == 'Agencies' ? (
-              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
                 <span>
                   <Button
                     color='error'
@@ -548,7 +548,7 @@ const Body = forwardRef((props, ref) => {
             ) : activesId !== undefined ? null : modelName !== 'Users' &&
               !data.isActive &&
               deleteAlert !== undefined ? (
-              <Tooltip title={t('deleteTooltip')} placement='bottom' arrow>
+              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
                 <span>
                   <Button
                     disabled={deleteButtonDisabled}

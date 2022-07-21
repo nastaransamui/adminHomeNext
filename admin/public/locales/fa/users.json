@@ -25,12 +25,6 @@
   "updatedAt": "آخرین به روز رسانی",
   "createdAt": "تاریخ ایجاد",
   "createNew": "به صفحه ایجاد یک کاربر جدید بروید",
-  "editTooltip": "این کاربر را ویرایش کنید",
-  "deleteTooltip": "این کاربر را پاک کنید",
-  "deleteTitle": "آیا مطمئن هستید که این کاربر را حذف می کنید؟",
-  "confirmDelete": "یکی را انتخاب کنید:",
-  "confirmDeleteButton": "حذف",
-  "cancelDeleteButton": "لغو",
   "information": "اطلاعات کاربر",
   "expand": "مشاهده اطلاعات بیشتر",
   "notDefine": "این فیلد ارائه نشده است.",
@@ -43,5 +37,6 @@
   "noRow": "هیچ ردیفی یافت نشد",
   "userEditSuccess": "کاربر با موفقیت به روز شد.",
   "Not Found": "نتیجه یافت نشد",
-  "roleName": "نام نقش"
+  "roleName": "نام نقش",
+  "agentData": "جدول اطلاعات آژانس های کاربر"
 }

@@ -29,6 +29,7 @@ const TableHead = (props) => {
     rowCount,
     onRequestSort,
     deleteIconClicked,
+    canDelete
   } = props;
 
   const createSortHandler = (property) => (event) => {
@@ -37,7 +38,7 @@ const TableHead = (props) => {
   return (
     <MuiTableHead>
       <TableRow>
-        <StyledTableCell padding='checkbox'>
+        {canDelete && <StyledTableCell >
           <Checkbox
             color='primary'
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -47,7 +48,7 @@ const TableHead = (props) => {
               'aria-label': 'select all desserts',
             }}
           />
-        </StyledTableCell>
+        </StyledTableCell>}
         {columns.map((column) => {
           return (
             <StyledTableCell
@@ -85,6 +86,7 @@ TableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
   columns: PropTypes.array.isRequired,
+  canDelete: PropTypes.bool.isRequired
 };
 
 export default TableHead;

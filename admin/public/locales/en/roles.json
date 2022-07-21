@@ -28,5 +28,6 @@
   "read": "Read",
   "create": "Create",
   "update": "Update",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "roleEditSuccess": "Role was edited successfully."
 }

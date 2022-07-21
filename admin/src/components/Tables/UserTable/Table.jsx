@@ -99,7 +99,10 @@ const Table = (props) => {
     pageNumber,
     setMainData,
     originalData,
-    _id
+    canDelete,
+    _id,
+    modelName,
+    lookupFrom,
   } = props;
 
   const theme = useTheme();
@@ -164,7 +167,7 @@ const Table = (props) => {
               id={labelId}
               scope='row'
               padding='none'>
-              {row.isActive ? (
+              {row.isActive || row.isAdmin ? (
                 <Done style={{ color: theme.palette.success.main }} />
               ) : (
                 <Close style={{ color: theme.palette.error.main }} />
@@ -205,6 +208,8 @@ const Table = (props) => {
         setMainData={setMainData}
         originalData={originalData}
         _id={_id}
+        modelName={modelName}
+        lookupFrom={lookupFrom}
       />
       <TableContainer sx={{ maxHeight: 420 }}>
         <MuiTable
@@ -220,6 +225,7 @@ const Table = (props) => {
             onRequestSort={handleRequestSort}
             rowCount={mainData.length}
             columns={columns}
+            canDelete={canDelete}
           />
           <TableBody className={classes.table}>
             {stableSort(mainData, getComparator(order, orderBy)).map(
@@ -239,7 +245,7 @@ const Table = (props) => {
                     key={row._id}
                     selected={isItemSelected}
                     sx={deleteSX(row)}>
-                    <TableCell padding='checkbox'>
+                    {canDelete &&<TableCell padding='checkbox'>
                       <Checkbox
                         disabled={!arrayOfIds.includes(row._id)}
                         color='primary'
@@ -248,7 +254,7 @@ const Table = (props) => {
                           'aria-labelledby': labelId,
                         }}
                       />
-                    </TableCell>
+                    </TableCell>}
                     <MainRows row={row} labelId={labelId} />
                   </TableRow>
                 );
@@ -305,6 +311,9 @@ Table.propTypes = {
   setMainData: PropTypes.func.isRequired,
   originalData: PropTypes.array.isRequired,
 _id: PropTypes.string.isRequired,
+canDelete: PropTypes.bool.isRequired,
+modelName: PropTypes.string.isRequired,
+lookupFrom: PropTypes.string.isRequired,
 };
 
 export default Table;

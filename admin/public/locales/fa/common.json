@@ -78,5 +78,11 @@
   "labelSearch": "برچسب جستجو",
   "filterType": "نوع فیلتر",
   "fieldNoOptions": "هیچ گزینه ای برای این جستجو وجود ندارد.",
-  "Notfind": "نتیجه یافت نشد"
+  "Notfind": "نتیجه یافت نشد",
+  "editTooltip": "این مورد را ویرایش کنید.",
+  "deleteTooltip": "این مورد را حذف کنید.",
+  "deleteTitle": "آیا مطمئن هستید که این مورد  را حذف می کنید؟",
+  "confirmDelete": "یکی را انتخاب کنید:",
+  "confirmDeleteButton": "حذف",
+  "cancelDeleteButton": "لغو"
 }

@@ -6,6 +6,31 @@ import mongoose from 'mongoose';
 import Roles from '../../../models/Roles';
 import { ObjectId } from 'mongodb';
 import hazelCast from '../../../helpers/hazelCast';
+import Users from '../../../models/Users';
+
+function paginate(array, valuesPerPage, valuesPageNumber) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice(
+    (valuesPageNumber - 1) * valuesPerPage,
+    valuesPageNumber * valuesPerPage
+  );
+}
+
+const sort_by = (field, reverse, primer) => {
+  const key = primer
+    ? function (x) {
+        return primer(x[field]);
+      }
+    : function (x) {
+        return x[field];
+      };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function (a, b) {
+    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+  };
+};
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -19,63 +44,179 @@ const apiRoute = nextConnect({
 apiRoute.post(verifyToken, async (req, res, next) => {
   const dbConnected = await dbConnect();
   const { success } = dbConnected;
+
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      const { _id, modelName } = req.body;
-      const collection = mongoose.model(modelName);
+      const { _id } = req.body;
+      const collection = mongoose.model('Roles');
+      const { page, rowsPerPage, order } = req?.query;
       const { hzErrorConnection, hz } = await hazelCast();
       if (hzErrorConnection) {
         const roleValue = await collection.aggregate([
           { $match: { _id: ObjectId(_id) } },
-          // { $unwind: { path: '$users_id', preserveNullAndEmptyArrays: true } },
-          // {
-          //   $lookup: {
-          //     from: 'users',
-          //     localField: 'users_id',
-          //     pipeline: [
-          //       {
-          //         $project: {
-          //           _id: 1,
-          //           profileImage: 1,
-          //           userName: 1,
-          //         },
-          //       },
-          //     ],
-          //     foreignField: '_id',
-          //     as: 'usersData',
-          //   },
-          // },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'users_id',
+              pipeline: [
+                {
+                  $project: {
+                    password: 0,
+                    twitter: 0,
+                    google: 0,
+                    facebook: 0,
+                    roleName: 0,
+                    role_id: 0,
+                    province_id: 0,
+                    profileImageKey: 0,
+                    folderId: 0,
+                    finalFolder: 0,
+                    country_id: 0,
+                    city_id: 0,
+                    accessToken: 0,
+                  },
+                },
+              ],
+              foreignField: '_id',
+              as: 'usersData',
+            },
+          },
         ]);
+        const totalUsers = roleValue[0].usersData.length;
+        roleValue[0].usersData = paginate(
+          roleValue[0].usersData.sort(
+            sort_by(
+              req?.query['orderBy'],
+              order == 'asc' ? false : true,
+              (a) => {
+                return typeof a == 'boolean' || typeof a == 'number'
+                  ? a
+                  : typeof a == 'object'
+                  ? a[0].number
+                  : a.toUpperCase();
+              }
+            )
+          ),
+          parseInt(rowsPerPage),
+          parseInt(page) + 1
+        );
         if (roleValue.length > 0) {
           res.status(200).json({
             success: true,
             data: roleValue[0],
+            totalUsers: totalUsers,
           });
         } else {
           res.status(403).json({ success: false, Error: 'Notfind' });
         }
       } else {
-        const multiMap = await hz.getMultiMap(modelName);
-        const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+        const multiMap = await hz.getMultiMap('Roles');
+        const dataIsExist = await multiMap.containsKey(`allRoles`);
+        const userMultiMap = await hz.getMultiMap('Users');
+        const usersDataIsExist = await userMultiMap.containsKey(`allUsers`);
         if (dataIsExist) {
-          const values = await multiMap.get(`all${modelName}`);
+          const values = await multiMap.get(`allRoles`);
           for (const value of values) {
-            const role = value.filter((a) => a._id == _id);
-            if (role.length > 0) {
-              res.status(200).json({
-                success: true,
-                data: role[0],
-              });
+            if (usersDataIsExist) {
+              const users = await userMultiMap.get(`allUsers`);
+              for (const user of users) {
+                const roleUsers = user.filter((a) =>
+                  value[0].users_id.includes(a._id)
+                );
+                const role = value.filter((a) => a._id == _id);
+                const totalUsers = roleUsers.length;
+                role[0].usersData = paginate(
+                  roleUsers.sort(
+                    sort_by(
+                      req?.query['orderBy'],
+                      order == 'asc' ? false : true,
+                      (a) => {
+                        return typeof a == 'boolean' || typeof a == 'number'
+                          ? a
+                          : typeof a == 'object'
+                          ? a[0].number
+                          : a.toUpperCase();
+                      }
+                    )
+                  ),
+                  parseInt(rowsPerPage),
+                  parseInt(page) + 1
+                );
+                if (role.length > 0) {
+                  res.status(200).json({
+                    success: true,
+                    data: role[0],
+                    totalUsers: totalUsers,
+                  });
+                } else {
+                  res.status(403).json({ success: false, Error: 'Notfind' });
+                }
+              }
             } else {
-              res.status(500).json({ success: false, Error: 'Notfind' });
+              const roleValue = await collection.aggregate([
+                { $match: { _id: ObjectId(_id) } },
+                {
+                  $lookup: {
+                    from: 'users',
+                    localField: 'users_id',
+                    pipeline: [
+                      {
+                        $project: {
+                          password: 0,
+                          twitter: 0,
+                          google: 0,
+                          facebook: 0,
+                          roleName: 0,
+                          role_id: 0,
+                          province_id: 0,
+                          profileImageKey: 0,
+                          folderId: 0,
+                          finalFolder: 0,
+                          country_id: 0,
+                          city_id: 0,
+                          accessToken: 0,
+                        },
+                      },
+                    ],
+                    foreignField: '_id',
+                    as: 'usersData',
+                  },
+                },
+              ]);
+              const totalUsers = roleValue[0].usersData.length;
+              roleValue[0].usersData = paginate(
+                roleValue[0].usersData.sort(
+                  sort_by(
+                    req?.query['orderBy'],
+                    order == 'asc' ? false : true,
+                    (a) => {
+                      return typeof a == 'boolean' || typeof a == 'number'
+                        ? a
+                        : typeof a == 'object'
+                        ? a[0].number
+                        : a.toUpperCase();
+                    }
+                  )
+                ),
+                parseInt(rowsPerPage),
+                parseInt(page) + 1
+              );
+              if (roleValue.length > 0) {
+                res.status(200).json({
+                  success: true,
+                  data: roleValue[0],
+                  totalUsers: totalUsers,
+                });
+              } else {
+                res.status(403).json({ success: false, Error: 'Notfind' });
+              }
             }
           }
         } else {
           const roleValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },
-            { $unwind: '$users_id' },
             {
               $lookup: {
                 from: 'users',
@@ -83,9 +224,19 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 pipeline: [
                   {
                     $project: {
-                      _id: 1,
-                      profileImage: 1,
-                      userName: 1,
+                      password: 0,
+                      twitter: 0,
+                      google: 0,
+                      facebook: 0,
+                      roleName: 0,
+                      role_id: 0,
+                      province_id: 0,
+                      profileImageKey: 0,
+                      folderId: 0,
+                      finalFolder: 0,
+                      country_id: 0,
+                      city_id: 0,
+                      accessToken: 0,
                     },
                   },
                 ],
@@ -94,13 +245,32 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               },
             },
           ]);
+          const totalUsers = roleValue[0].usersData.length;
+          roleValue[0].usersData = paginate(
+            roleValue[0].usersData.sort(
+              sort_by(
+                req?.query['orderBy'],
+                order == 'asc' ? false : true,
+                (a) => {
+                  return typeof a == 'boolean' || typeof a == 'number'
+                    ? a
+                    : typeof a == 'object'
+                    ? a[0].number
+                    : a.toUpperCase();
+                }
+              )
+            ),
+            parseInt(rowsPerPage),
+            parseInt(page) + 1
+          );
           if (roleValue.length > 0) {
             res.status(200).json({
               success: true,
               data: roleValue[0],
+              totalUsers: totalUsers,
             });
           } else {
-            res.status(500).json({ success: false, Error: 'Notfind' });
+            res.status(403).json({ success: false, Error: 'Notfind' });
           }
         }
       }

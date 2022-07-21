@@ -78,5 +78,11 @@
   "labelSearch": "Search label",
   "filterType": "Type of Filter",
   "fieldNoOptions": "No Option for this search.",
-  "Notfind": "Result not found"
+  "Notfind": "Result not found",
+  "deleteTooltip": "Delete this item.",
+  "editTooltip": "Edit this item.",
+  "deleteTitle": "Are you sure to delete this ?",
+  "confirmDelete": "Select one: ",
+  "confirmDeleteButton": "Delete",
+  "cancelDeleteButton": "Cancell"
 }

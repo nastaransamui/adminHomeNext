@@ -13,7 +13,9 @@ import { getRoleUrl, createUrl, editUrl } from './roleStatic';
 export var pushUrl = '/admin/dashboard/rbac-data';
 
 const roleHook = (reactRoutes) => {
-  const { adminAccessToken } = useSelector((state) => state);
+  const { adminAccessToken, rolesUserDataPageNumber } = useSelector(
+    (state) => state
+  );
   const location = useLocation();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -43,7 +45,52 @@ const roleHook = (reactRoutes) => {
   if (!rolesRoute.crud[0]?.active) {
     pushUrl = '/admin/dashboard';
   }
+  const [totalUsers, setTotalUsers] = useState(0);
 
+  //send api to get Client information
+  const getRole = async () => {
+    const res = await fetch(
+      `${getRoleUrl}?page=${rolesUserDataPageNumber}&rowsPerPage=${
+        JSON.parse(localStorage.getItem('roleUsersDataRowsPerPage')) || 5
+      }&order=${localStorage.getItem('roleUsersDataOrder') || 'asc'}&orderBy=${
+        localStorage.getItem('roleUsersDataOrderBy') || 'userName'
+      }`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: `Brearer ${adminAccessToken}`,
+        },
+        body: JSON.stringify(values),
+      }
+    );
+    const { status } = res;
+    const role = await res.json();
+    const errorText =
+      role.Error !== 'Notfind' && role?.ErrorCode == undefined
+        ? role.Error
+        : role.Error == 'Notfind'
+        ? t('Notfind', { ns: 'common' })
+        : t(`${role?.ErrorCode}`);
+    if (status !== 200 && !role.success) {
+      alertCall(theme, 'error', errorText, () => {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        } else {
+          history.push(pushUrl);
+        }
+      });
+    } else {
+      delete role.data.__v;
+      setTotalUsers(role.totalUsers);
+      setValues((oldValues) => ({
+        ...oldValues,
+        ...role?.data,
+      }));
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+    }
+  };
   useEffect(() => {
     let isMount = true;
     if (isMount) {
@@ -55,42 +102,6 @@ const roleHook = (reactRoutes) => {
           setValues({ ...location.state });
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         } else {
-          //send api to get Client information
-          const getRole = async () => {
-            const res = await fetch(getRoleUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                token: `Brearer ${adminAccessToken}`,
-              },
-              body: JSON.stringify(values),
-            });
-            const { status } = res;
-            const role = await res.json();
-            const errorText =
-              role?.ErrorCode == undefined && role.Error == 'Notfind'
-                ? t('Notfind', { ns: 'common' })
-                : role.Error
-                ? t(`${role?.ErrorCode}`)
-                : role.Error;
-            if (status !== 200 && !role.success) {
-              alertCall(theme, 'error', errorText, () => {
-                dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                if (!checkCookies('adminAccessToken')) {
-                  router.push('/', undefined, { shallow: true });
-                } else {
-                  history.push(pushUrl);
-                }
-              });
-            } else {
-              delete role.data.__v;
-              setValues((oldValues) => ({
-                ...oldValues,
-                ...role?.data,
-              }));
-              dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            }
-          };
           getRole();
         }
       }
@@ -297,6 +308,8 @@ const roleHook = (reactRoutes) => {
     pushUrl,
     roleRoute,
     routeValidate,
+    totalUsers,
+    getRole,
   };
 };
 

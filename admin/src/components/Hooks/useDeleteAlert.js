@@ -13,18 +13,18 @@ const useDeleteAlert = ({ state, modelName, t, deleteUrl, dispatchType }) => {
   const sweetDeleteAlert = (data) => {
     data.modelName = modelName;
     Swal.fire({
-      title: `${t('deleteTitle')}`,
-      text: `${t('confirmDelete')}`,
+      title: `${t('deleteTitle', { ns: 'common' })}`,
+      text: `${t('confirmDelete', { ns: 'common' })}`,
       showCancelButton: true,
       background: theme.palette.background.default,
       confirmButtonColor: theme.palette.secondary.main,
       cancelButtonColor: theme.palette.primary.main,
       confirmButtonText: `<i class="fa fa-thumbs-up" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('confirmDeleteButton')}<span>`,
+      }">${t('confirmDeleteButton', { ns: 'common' })}<span>`,
       cancelButtonText: `<i class="fa fa-thumbs-down" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('cancelDeleteButton')}<span>`,
+      }">${t('cancelDeleteButton', { ns: 'common' })}<span>`,
       color: theme.palette.text.color,
       icon: 'question',
       showClass: {

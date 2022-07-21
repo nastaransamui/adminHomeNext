@@ -71,6 +71,20 @@ apiRoute.post(
             const totalValues = await collection.find();
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
+              const multiMapu = await hz.getMultiMap('Users');
+              const multiMapc = await hz.getMultiMap('Countries');
+              const multiMapPr = await hz.getMultiMap('Provinces');
+              const multiMapCt = await hz.getMultiMap('Cities');
+              const multiMapCu = await hz.getMultiMap('Currencies');
+              const multiMapAg = await hz.getMultiMap('Agencies');
+              const multiMapRo = await hz.getMultiMap('Roles');
+              await multiMapu.destroy();
+              await multiMapc.destroy();
+              await multiMapPr.destroy();
+              await multiMapCt.destroy();
+              await multiMapCu.destroy();
+              await multiMapAg.destroy();
+              await multiMapRo.destroy();
               const multiMap = await hz.getMultiMap(modelName);
               await multiMap.destroy();
               await multiMap.put(`all${modelName}`, totalValues);

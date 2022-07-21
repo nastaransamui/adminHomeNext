@@ -28,5 +28,6 @@
   "read": "خواندن",
   "create": "ایجاد",
   "update": "به روز رسانی",
-  "dashboard": "داشبورد"
+  "dashboard": "داشبورد",
+  "roleEditSuccess": "نقش با موفقیت ویرایش شد."
 }
