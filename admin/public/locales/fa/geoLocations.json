@@ -73,5 +73,6 @@
   "cityInformation": "اطلاعات شهر",
   "cityMap": "نقشه شهر",
   "state_id": "شناسه استان",
-  "Not Found": "نتیجه یافت نشد"
+  "Not Found": "نتیجه یافت نشد",
+  "noResult": "هیچ نتیجه ای پیدا نشد"
 }

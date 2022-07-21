@@ -1,7 +1,7 @@
 import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import VideoLibrary from '@mui/icons-material/VideoLibrary';
 import AddPhotoAlternate from '@mui/icons-material/AddPhotoAlternate';
-import { YouTube as YoutubeIcon } from '@mui/icons-material/YouTube';
+import { YouTube as YoutubeIcon } from '@mui/icons-material';
 import TextFormat from '@mui/icons-material/TextFormat';
 import Delete from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Grid';

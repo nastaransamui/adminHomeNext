@@ -74,5 +74,6 @@
   "cityInformation": "City Informations",
   "cityMap": "City Map",
   "state_id": "State Id",
-  "Not Found": "result not found"
+  "Not Found": "result not found",
+  "noResult": "No any result found."
 }
