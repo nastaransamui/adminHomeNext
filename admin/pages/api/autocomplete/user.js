@@ -54,6 +54,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       const searchRegex = new RegExp(escapeRegExp(filter), 'i');
       if (hzErrorConnection) {
         const valuesList = await collection.aggregate([
+          { $match: { isAdmin: true } },
           { $sort: { userName: 1 } },
           { $match: { userName: searchRegex } },
           { $limit: 50 },
@@ -73,13 +74,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`all${modelName}`);
           for (const value of values) {
-            const filterUsersItem = value.map((a) => {
-              return {
-                _id: a._id,
-                userName: a.userName,
-                profileImage: a.profileImage,
-              };
-            });
+            const filterUsersItem = value
+              .filter((a) => a.isAdmin)
+              .map((a) => {
+                return {
+                  _id: a._id,
+                  userName: a.userName,
+                  profileImage: a.profileImage,
+                };
+              });
             const filterdData = filterUsersItem.filter((row) => {
               return Object.keys(row).some((field) => {
                 if (row[field] !== null) {
@@ -107,6 +110,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
         } else {
           const valuesList = await collection.aggregate([
+            { $match: { isAdmin: true } },
             { $sort: { userName: 1 } },
             { $match: { userName: searchRegex } },
             { $limit: 50 },

@@ -82,7 +82,6 @@ export default function SecondRow({t, rtlActive, showLang}) {
   }, []);
 
 
-
   const dataTable = (mapData) => {
     let result = [];
     for (let index = 0; index < mapData.length; index++) {

@@ -8,7 +8,10 @@ const useStyles = makeStyles((theme) => {
       height: '6rem !important',
     },
     wrapperDiv: {
-      margin: '100px auto',
+      margin: '50px auto',
+      marginTop: -10,
+      marginBottom: 10,
+      minHeight: 200,
       padding: '0px',
       maxWidth: '360px',
       textAlign: 'center',
@@ -32,7 +35,7 @@ const Loading = (props) => {
     <div>
       <div className={classes.wrapperDiv}>
         <div className={classes.iconWrapper}>
-        <CircleToBlockLoading color="#03c2ca" />
+        <CircleToBlockLoading color={props.color} />
         </div>
       </div>
     </div>

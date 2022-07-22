@@ -28,16 +28,15 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      const {
-        _id,
-        city_id,
-        country_id,
-        province_id,
-        currencyCode_id,
-        accountManager_id,
-      } = req.body;
+      const { _id } = req.body;
       delete req.body._id;
       req.body.phones = JSON.parse(req?.body?.phones);
+      req.body.accountManager_id = JSON.parse(req?.body?.accountManager_id);
+      req.body.currencyCode_id = JSON.parse(req?.body?.currencyCode_id);
+      req.body.country_id = JSON.parse(req?.body?.country_id);
+      req.body.province_id = JSON.parse(req?.body?.province_id);
+      req.body.city_id = JSON.parse(req?.body?.city_id);
+      console.log(req.body);
       findAgentById(_id).then(async (oldAgent) => {
         for (var key in req.body) {
           if (
@@ -45,16 +44,6 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
             req.body[key] !== undefined
           ) {
             await deleteObjectsId(req, res, next, oldAgent);
-            oldAgent.city_id = [];
-            oldAgent.city_id.push(city_id);
-            oldAgent.province_id = [];
-            oldAgent.province_id.push(province_id);
-            oldAgent.country_id = [];
-            oldAgent.country_id.push(country_id);
-            oldAgent.currencyCode_id = [];
-            oldAgent.currencyCode_id.push(currencyCode_id);
-            oldAgent.accountManager_id = [];
-            oldAgent.accountManager_id.push(accountManager_id);
             oldAgent[key] = req.body[key];
           }
         }

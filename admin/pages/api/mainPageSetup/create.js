@@ -45,6 +45,11 @@ apiRoute.post(
         delete req.body._id;
         if (modelName == 'Agencies') {
           req.body.phones = JSON.parse(req?.body?.phones);
+          req.body.accountManager_id = JSON.parse(req?.body?.accountManager_id);
+          req.body.currencyCode_id = JSON.parse(req?.body?.currencyCode_id);
+          req.body.country_id = JSON.parse(req?.body?.country_id);
+          req.body.province_id = JSON.parse(req?.body?.province_id);
+          req.body.city_id = JSON.parse(req?.body?.city_id);
         }
         if (modelName == 'Roles') {
           req.body.routes = JSON.parse(req?.body?.routes);
@@ -58,7 +63,6 @@ apiRoute.post(
         }
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
-          // console.log(err);
           if (err) {
             res.status(403).json({
               success: false,

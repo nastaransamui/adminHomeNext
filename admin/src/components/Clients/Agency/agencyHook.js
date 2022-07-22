@@ -46,11 +46,11 @@ const agencyHook = (reactRoutes) => {
     finalFolder: 'agencies',
     folderId: (Math.random() + 1).toString(36).substring(7),
     cityName: '',
-    city_id: '',
+    city_id: [],
     provinceName: '',
-    province_id: '',
+    province_id: [],
     countryName: '',
-    country_id: '',
+    country_id: [],
     phones: [
       {
         tags: [''],
@@ -59,23 +59,23 @@ const agencyHook = (reactRoutes) => {
       },
     ],
     email: '',
-    currencyCode_id: '',
+    currencyCode_id: [],
     currencyCode: '',
     creditAmount: 0,
     depositAmount: 0,
     remainCreditAmount: 0,
     remainDepositAmount: 0,
-    userCreated: profile._id,
-    userUpdated: profile._id,
+    userCreated: [profile._id],
+    userUpdated: [profile._id],
     accountManager: '',
-    accountManager_id: '',
+    accountManager_id: [],
     isActive: true,
     isVercel: isVercel,
     modelName: 'Agencies',
     remark: '',
     _id: client_id || '',
   });
-  // console.log(values);
+
   const [openCity, setOpenCity] = useState(false);
   const [cityOptions, setCityOptions] = useState([]);
   let loadingCity = openCity && cityOptions.length === 0;
@@ -129,7 +129,11 @@ const agencyHook = (reactRoutes) => {
         setValues({
           ...values,
           [name]: '',
-          city_id: '',
+          city_id: [],
+          provinceName: '',
+          province_id: [],
+          countryName: '',
+          country_id: [],
         });
         setCountryPhoneCode('th');
       }
@@ -137,73 +141,72 @@ const agencyHook = (reactRoutes) => {
         setValues({
           ...values,
           [name]: '',
-          province_id: '',
+          province_id: [],
           cityName: '',
-          city_id: '',
+          city_id: [],
         });
         setCountryPhoneCode('th');
       }
       if (name == 'countryName') {
-        setValues({ ...values, [name]: '', country_id: '' });
+        setValues({ ...values, [name]: '', country_id: [] });
         setCountryPhoneCode('th');
       }
       if (name == 'accountManager') {
-        setValues({ ...values, [name]: '', accountManager_id: '' });
+        setValues({ ...values, [name]: '', accountManager_id: [] });
         setCountryPhoneCode('th');
       }
       if (name == 'currencyCode') {
-        setValues({ ...values, [name]: '', currencyCode_id: '' });
+        setValues({ ...values, [name]: '', currencyCode_id: [] });
         setCountryPhoneCode('th');
       }
     } else {
       if (name == 'cityName') {
-        setValues({
-          ...values,
-          [name]: newValue.name,
-          city_id: newValue._id,
-          provinceName: newValue.state_name,
-          province_id: newValue.state_id,
-          countryName: newValue.country,
-          country_id: newValue.country_id,
-        });
+        values.city_id.push(newValue._id);
+        values[name] = newValue.name;
+        values.province_id = [];
+        values.province_id.push(newValue.state_id);
+        values.provinceName = newValue.state_name;
+        values.country_id = [];
+        values.country_id.push(newValue.country_id);
+        values.countryName = newValue.country;
+        setValues({ ...values });
         setCountryPhoneCode(newValue.iso2.toLowerCase());
       }
       if (name == 'provinceName') {
-        setValues({
-          ...values,
-          cityName: '',
-          city_id: '',
-          provinceName: newValue.name,
-          province_id: newValue._id,
-          countryName: newValue.country,
-          country_id: newValue.country_id,
-        });
+        values.cityName = '';
+        values.city_id = [];
+        values.province_id = [];
+        values.province_id.push(newValue._id);
+        values.provinceName = newValue.name;
+        values.country_id = [];
+        values.country_id.push(newValue.country_id);
+        values.countryName = newValue.country;
+        setValues({ ...values });
         setCountryPhoneCode(newValue.iso2.toLowerCase());
       }
       if (name == 'countryName') {
-        setValues({
-          ...values,
-          cityName: '',
-          city_id: '',
-          provinceName: '',
-          province_id: '',
-          countryName: newValue.name,
-          country_id: newValue._id,
-        });
+        values.cityName = '';
+        values.city_id = [];
+        values.provinceName = '';
+        values.province_id = [];
+        values.country_id = [];
+        values.country_id.push(newValue._id);
+        values.countryName = newValue.name;
+        setValues({ ...values });
         setCountryPhoneCode(newValue.iso2.toLowerCase());
       }
       if (name == 'accountManager') {
+        values.accountManager = newValue.userName;
+        values.accountManager_id.push(newValue._id);
         setValues({
           ...values,
-          accountManager: newValue.userName,
-          accountManager_id: newValue._id,
         });
       }
       if (name == 'currencyCode') {
+        values.currencyCode = newValue.currency;
+        values.currencyCode_id.push(newValue._id);
         setValues({
           ...values,
-          currencyCode: newValue.currency,
-          currencyCode_id: newValue._id,
         });
       }
     }
@@ -847,6 +850,21 @@ const agencyHook = (reactRoutes) => {
 function toFormData(o) {
   return Object.entries(o).reduce((d, e) => {
     if (e[0] == 'phones') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'accountManager_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'city_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'province_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'country_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'currencyCode_id') {
       e[1] = JSON.stringify(e[1]);
     }
     return d.append(...e), d;

@@ -1,16 +1,13 @@
-import {
-  AccountBox,
-  Dashboard,
-  Apps,
-  Public,
-  AttachMoney,
-  DataThresholding,
-  Apartment,
-  SouthAmerica,
-  Badge,
-  AccountTree,
-} from '@mui/icons-material/';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AccountBox from '@mui/icons-material/AccountBox';
+import Dashboard from '@mui/icons-material/Dashboard';
+import Apps from '@mui/icons-material/Apps';
+import Public from '@mui/icons-material/Public';
+import AttachMoney from '@mui/icons-material/AttachMoney';
+import DataThresholding from '@mui/icons-material/DataThresholding';
+import Apartment from '@mui/icons-material/Apartment';
+import SouthAmerica from '@mui/icons-material/SouthAmerica';
+import Badge from '@mui/icons-material/Badge';
+import AccountTree from '@mui/icons-material/AccountTree';
 
 var dashRoutes = [
   {

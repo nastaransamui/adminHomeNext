@@ -22,8 +22,6 @@ const apiRoute = nextConnect({
 
 apiRoute.use(middleware);
 
-// apiRoute.use(verifySingleActive);
-
 apiRoute.post(
   verifyToken,
   verifySingleActive,
