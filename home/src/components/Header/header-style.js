@@ -43,10 +43,10 @@ const useStyles = makeStyles((theme) => {
             fill: theme.palette.common.white,
           },
           '& a': {
-            color:
-              theme.palette.mode === 'light'
-                ? theme.palette.common.black
-                : theme.palette.common.white,
+            color: theme.palette.common.white,
+            // theme.palette.mode === 'light'
+            //   ? theme.palette.common.black
+            //   : theme.palette.common.white,
           },
         },
         '& $mobileMenu': {
@@ -154,10 +154,10 @@ const useStyles = makeStyles((theme) => {
             padding: theme.spacing(0, 2),
             fontWeight: theme.typography.fontWeightMedium,
             transition: 'all 0.3s ease-out',
-            color:
-              theme.palette.mode === 'light'
-                ? theme.palette.common.black
-                : theme.palette.common.white,
+            color: 'white',
+            // theme.palette.mode === 'light'
+            //   ? theme.palette.common.black
+            //   : theme.palette.common.white,
             fontSize: 16,
             boxShadow: 'none',
             position: 'relative',
@@ -192,17 +192,17 @@ const useStyles = makeStyles((theme) => {
       justifyContent: 'space-evenly',
       maxWidth: '27%',
       '& a': {
-        color:
-          theme.palette.mode === 'light'
-            ? theme.palette.common.black
-            : theme.palette.common.white,
+        color: 'white',
+        // theme.palette.mode === 'light'
+        //   ? theme.palette.common.black
+        //   : theme.palette.common.white,
         padding: theme.spacing(0.5, 3),
         margin: theme.spacing(0, 0.5),
         fontSize: 16,
       },
       '& $button': {
         background: theme.palette.secondary.light,
-        color: theme.palette.secondary.dark + '!important',
+        color: theme.palette.primary.dark + '!important',
         fontWeight: theme.typography.fontWeightBold,
       },
     },

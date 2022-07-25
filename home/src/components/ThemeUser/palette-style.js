@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => {
       position: 'fixed',
       display: 'flex',
       flexDirection: 'column',
-      right: 10,
-      top: '47%',
+      left: 10,
+      bottom: '10%',
       zIndex: 9999,
       borderRadius: 8,
       boxShadow: theme.shadows[4],
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => {
         top: '45%',
       },
       '&$active': {
-        right: 624,
+        left: 684,
         border: 'none',
       },
       '& svg': {
