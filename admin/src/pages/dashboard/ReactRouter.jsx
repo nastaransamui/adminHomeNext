@@ -31,6 +31,10 @@ import Clients from '../agencies-page/AgencyPage';
 import Client from '../../components/Clients/Agency/Agency';
 import RbacData from '../rbac-page/RbackPage';
 import Role from '../../components/Rbac/Role/Role';
+import Allhotels from '../accommodations-page/AccomodationsPage';
+import Hotels from '../hotels-page/HotelPage';
+import Hotel from '../../components/Accommodations/Actives/Hotel/Hotel';
+
 import { useSelector } from 'react-redux';
 
 export function NotFoundPage() {
@@ -128,20 +132,19 @@ export default function ReactRouter(props) {
           setAddUserProfile(true);
         }
       }
-      const indexOfCurrentRoute = reactRoutes.findIndex((obj)=>{
-        return obj.path == location.pathname
-      })
-      if(indexOfCurrentRoute !== -1){
-        const r = reactRoutes[indexOfCurrentRoute]
-        if (location.search !== '' ) {
+      const indexOfCurrentRoute = reactRoutes.findIndex((obj) => {
+        return obj.path == location.pathname;
+      });
+      if (indexOfCurrentRoute !== -1) {
+        const r = reactRoutes[indexOfCurrentRoute];
+        if (location.search !== '') {
           let updateStatus =
-            r.crud[r.crud.findIndex((obj) => obj.name == 'update')]
-              .active;
+            r.crud[r.crud.findIndex((obj) => obj.name == 'update')].active;
           setUserHasUpdateAccess(updateStatus);
-        }else{
+        } else {
           setUserHasUpdateAccess(true);
         }
-      }else{
+      } else {
         setUserHasUpdateAccess(true);
       }
     }
@@ -173,6 +176,9 @@ export default function ReactRouter(props) {
       Currency,
       Clients,
       Client,
+      Allhotels,
+      Hotels,
+      Hotel,
     };
   });
 
@@ -200,14 +206,6 @@ export default function ReactRouter(props) {
             if (r.crud[0].active) {
               return (
                 <Route exact path={r.path} key={i + 2}>
-                  {/* {userHasUpdateAccess ? (
-                    <DynamicComponent
-                      {...props}
-                      componentView={r.componentView}
-                    />
-                  ) : (
-                    <Redirect to='/admin/dashboard' {...props} />
-                  )} */}
                   <DynamicComponent
                     {...props}
                     componentView={r.componentView}

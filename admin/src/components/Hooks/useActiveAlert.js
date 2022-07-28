@@ -20,18 +20,18 @@ const useActiveAlert = ({
   const theme = useTheme();
   const sweetActiveAlert = (data) => {
     Swal.fire({
-      title: `${t('activeTitle')}`,
-      text: `${t('confirmActive')}`,
+      title: `${t('activeTitle', { ns: 'common' })}`,
+      text: `${t('confirmActive', { ns: 'common' })}`,
       showCancelButton: true,
       background: theme.palette.background.default,
       confirmButtonColor: theme.palette.secondary.main,
       cancelButtonColor: theme.palette.primary.main,
       confirmButtonText: `<i class="fa fa-thumbs-up" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('confirmActiveButton')}<span>`,
+      }">${t('confirmActiveButton', { ns: 'common' })}<span>`,
       cancelButtonText: `<i class="fa fa-thumbs-down" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('cancelActiveButton')}<span>`,
+      }">${t('cancelActiveButton', { ns: 'common' })}<span>`,
       color: theme.palette.text.color,
       icon: 'question',
       showClass: {
@@ -59,18 +59,19 @@ const useActiveAlert = ({
                 valuesSortByField: state.SortBy[`field`],
                 valuesSortBySorting: state.SortBy[`sorting`],
                 country_id: data.id,
+                iso2: data.iso2,
               }),
             });
             const { status } = res;
-            const response = await res.json();
             if (status !== 200 && !res.ok) {
-              alertCall(theme, 'error', response.Error, () => {
+              alertCall(theme, 'error', res.statusText, () => {
                 dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
                 if (!checkCookies('adminAccessToken')) {
                   router.push('/', undefined, { shallow: true });
                 }
               });
             } else {
+              const response = await res.json();
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               dispatch({
                 type: dispatchType,
@@ -81,8 +82,8 @@ const useActiveAlert = ({
                 },
               });
               Swal.fire({
-                title: t('activated'),
-                text: t('activeSuccess'),
+                title: t('activated', { ns: 'common' }),
+                text: t('activeSuccess', { ns: 'common' }),
                 icon: 'success',
                 confirmButtonColor: theme.palette.primary.main,
                 background: theme.palette.background.default,
@@ -110,18 +111,18 @@ const useActiveAlert = ({
   };
   const sweetDiactiveAlert = (data) => {
     Swal.fire({
-      title: `${t('diActiveTitle')}`,
-      text: `${t('confirmDiActive')}`,
+      title: `${t('diActiveTitle', { ns: 'common' })}`,
+      text: `${t('confirmDiActive', { ns: 'common' })}`,
       showCancelButton: true,
       background: theme.palette.background.default,
       confirmButtonColor: theme.palette.secondary.main,
       cancelButtonColor: theme.palette.primary.main,
       confirmButtonText: `<i class="fa fa-thumbs-up" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('confirmDiActiveButton')}<span>`,
+      }">${t('confirmDiActiveButton', { ns: 'common' })}<span>`,
       cancelButtonText: `<i class="fa fa-thumbs-down" ></i> <span style="color:${
         theme.palette.primary.contrastText
-      }">${t('cancelDiActiveButton')}<span>`,
+      }">${t('cancelDiActiveButton', { ns: 'common' })}<span>`,
       color: theme.palette.text.color,
       icon: 'question',
       showClass: {
@@ -177,8 +178,8 @@ const useActiveAlert = ({
                 },
               });
               Swal.fire({
-                title: t('diActivated'),
-                text: t('diActiveSuccess'),
+                title: t('diActivated', { ns: 'common' }),
+                text: t('diActiveSuccess', { ns: 'common' }),
                 icon: 'success',
                 confirmButtonColor: theme.palette.primary.main,
                 background: theme.palette.background.default,

@@ -85,6 +85,7 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
       case 'Provinces':
       case 'Countries':
       case 'global_countries':
+      case 'HotelsList':
         setFilterValue(
           newValue !== null ? newValue[`${fieldValue}`] || '' : ''
         );
@@ -260,6 +261,24 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             }`}
           </>
         );
+      case 'HotelsList':
+        return (
+          <>
+            <img
+              height={30}
+              width={30}
+              style={{ borderRadius: '50%' }}
+              src={`/admin/flags/128x128/${dataOptions.iso2}.png`}
+              alt=''
+            />
+            &nbsp;&nbsp;&nbsp;
+            {`${dataOptions[fieldValue]} - ${dataOptions[`title_${lang}`]} ${t(
+              'totalHotel'
+            )} : ${dataOptions.totalHotel} - ${t('hotelReady')} : ${
+              dataOptions.hotelReady
+            } - ${t('hotelNotComplete')} : ${dataOptions.hotelNotComplete}`}
+          </>
+        );
     }
   };
 
@@ -283,6 +302,8 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         return dataOptions.agentName;
       case 'Roles':
         return dataOptions.roleName;
+      case 'HotelsList':
+        return dataOptions.title_en;
     }
   };
 

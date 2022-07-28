@@ -1,0 +1,8 @@
+{
+  "name": "Country Name",
+  "iso2": "Alpha-2",
+  "totalHotel": "Total hotels",
+  "hotelReady": "Ready hotels",
+  "hotelNotComplete": "Hotels need attention",
+  "title_en": "English title"
+}

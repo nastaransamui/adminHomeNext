@@ -25,6 +25,7 @@ import {
   currenciesAStore,
 } from '../../src/components/exchange/Currencies/currenciesStatic';
 import { Agencies } from '../../src/components/Clients/Agencies/agenciesStatic';
+import { hotelsGStore } from '../../src/components/Accommodations/All/Hotels/hotelsStatic';
 import { Roles } from '../../src/components/Rbac/Roles/rolesStatic';
 import routes from '../../routes';
 
@@ -104,6 +105,7 @@ function index(props) {
           break;
         case 'currencies':
         case 'countries':
+        case 'allhotels':
           if (purePathArray[0].includes('g-')) {
             a.componentView = `global_${lastPartOfPath}`;
             a.componentName =
@@ -252,6 +254,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('roles', ctx)
               ? JSON.parse(getCookies(ctx).roles)
               : { ...Roles },
+          })),
+          ...(await store.dispatch({
+            type: 'HOTELS_G_STORE',
+            payload: checkCookies('hotelsGStore', ctx)
+              ? JSON.parse(getCookies(ctx).hotelsGStore)
+              : { ...hotelsGStore },
           })),
         },
       };

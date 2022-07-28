@@ -16,6 +16,7 @@ import {
 } from '../components/exchange/Currencies/currenciesStatic';
 import { Agencies } from '../components/Clients/Agencies/agenciesStatic';
 import { Roles } from '../components/Rbac/Roles/rolesStatic';
+import { hotelsGStore } from '../components/Accommodations/All/Hotels/hotelsStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -40,6 +41,7 @@ const initialState = {
   Roles: { ...Roles },
   dataAgentPageNumber: 0,
   rolesUserDataPageNumber: 0,
+  hotelsGStore: { ...hotelsGStore },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -126,6 +128,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, dataAgentPageNumber: payload };
     case 'ROLES_USER_DATA_PAGENUMBER':
       return { ...state, rolesUserDataPageNumber: payload };
+    case 'HOTELS_G_STORE':
+      return {
+        ...state,
+        hotelsGStore: { ...payload },
+      };
     default:
       return state;
   }

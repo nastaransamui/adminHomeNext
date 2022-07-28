@@ -8,6 +8,7 @@ import Apartment from '@mui/icons-material/Apartment';
 import SouthAmerica from '@mui/icons-material/SouthAmerica';
 import Badge from '@mui/icons-material/Badge';
 import AccountTree from '@mui/icons-material/AccountTree';
+import HotelIcon from '@mui/icons-material/Hotel';
 
 var dashRoutes = [
   {
@@ -218,6 +219,15 @@ var dashRoutes = [
             state: 'gCurrenciesMultiCollapse',
             layout: '/admin',
           },
+          {
+            path: '/dashboard/g-hotels/allhotels',
+            'name_en-US': 'All Hotels',
+            name_fa: 'همه هتلها',
+            'mini_en-US': 'AH',
+            mini_fa: 'ه ه',
+            state: 'gHotelsMultiCollapse',
+            layout: '/admin',
+          },
         ],
       },
       {
@@ -268,6 +278,16 @@ var dashRoutes = [
             layout: '/admin',
             icon: AttachMoney.type?.render().props.children.props.d,
           },
+          // {
+          //   path: '/dashboard/a-hotels/hotels',
+          //   'name_en-US': 'Active hotels',
+          //   name_fa: 'هتلهای فعال',
+          //   'mini_en-US': 'AH',
+          //   mini_fa: 'ه',
+          //   state: 'aHotelsMultiCollapse',
+          //   layout: '/admin',
+          //   icon: HotelIcon.type?.render().props.children.props.d,
+          // },
         ],
       },
     ],
@@ -296,6 +316,34 @@ var dashRoutes = [
         'mini_en-US': 'AA',
         mini_fa: 'آا',
         state: 'agencyCollapse',
+        layout: '/admin',
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    collapse: true,
+    'name_en-US': 'Hotels Data',
+    name_fa: 'اطلاعات هتلها',
+    icon: HotelIcon.type?.render().props.children.props.d,
+    state: 'hotelsDataCollapse',
+    views: [
+      {
+        path: '/dashboard/hotel-data/hotels',
+        'name_en-US': 'Hotels List',
+        name_fa: 'فهرست هتلها',
+        'mini_en-US': 'HL',
+        mini_fa: 'ف ه',
+        state: 'hotelsCollapse',
+        layout: '/admin',
+      },
+      {
+        path: '/dashboard/hotel-data/hotels/hotel',
+        'name_en-US': 'Add hotel',
+        name_fa: 'هتل اضافه کنید',
+        'mini_en-US': 'AH',
+        mini_fa: 'آه',
+        state: 'hotelCollapse',
         layout: '/admin',
       },
     ],

@@ -31,6 +31,8 @@ import exchange_en from '../public/locales/en/exchange.json';
 import exchange_fa from '../public/locales/fa/exchange.json';
 import agencies_en from '../public/locales/en/agencies.json';
 import agencies_fa from '../public/locales/fa/agencies.json';
+import hotels_en from '../public/locales/en/hotels.json';
+import hotels_fa from '../public/locales/fa/hotels.json';
 import i18next from 'i18next';
 import 'video-react/dist/video-react.css';
 import { withTranslation, useTranslation } from 'react-i18next';
@@ -95,6 +97,7 @@ i18next
         dataGridLocale: dataGridLocale_en,
         exchange: exchange_en,
         agencies: agencies_en,
+        hotels: hotels_en,
       },
       fa: {
         common: common_fa,
@@ -111,6 +114,7 @@ i18next
         dataGridLocale: dataGridLocale_fa,
         exchange: exchange_fa,
         agencies: agencies_fa,
+        hotels: hotels_fa,
       },
     },
   });

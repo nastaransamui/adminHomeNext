@@ -42,7 +42,7 @@ const TableBody = forwardRef((props, ref) => {
     {
       field: 'actions',
       type: 'actions',
-      headerName: t('actions'),
+      headerName: t('actions',{ns: 'common'}),
       headerAlign: 'center',
       width: 100,
       cellClassName: 'actions',
@@ -56,7 +56,8 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'Cities' ||
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
-          modelName == 'global_currencies'
+          modelName == 'global_currencies' ||
+          modelName == 'HotelsList'
             ? true
             : modelName == 'Agencies'
             ? false
@@ -70,13 +71,14 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'Countries' ||
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
-          modelName == 'global_currencies'
+          modelName == 'global_currencies' ||
+          modelName == 'HotelsList'
             ? false
             : true;
         return [
           <GridActionsCellItem
             icon={
-              <Tooltip arrow title={t('editTooltip',{ns: 'common'})}>
+              <Tooltip arrow title={t('editTooltip', { ns: 'common' })}>
                 <Edit
                   style={{
                     color: updateButtonDisabled
@@ -102,7 +104,7 @@ const TableBody = forwardRef((props, ref) => {
           <GridActionsCellItem
             icon={
               activesId == undefined ? (
-                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                <Tooltip title={t('ToggleOn', {ns: "common"})} placement='bottom' arrow>
                   <ToggleOn
                     style={{
                       color: deleteButtonDisabled
@@ -112,7 +114,7 @@ const TableBody = forwardRef((props, ref) => {
                   />
                 </Tooltip>
               ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
-                <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+                <Tooltip title={t('ToggleOff', {ns: "common"})} placement='bottom' arrow>
                   <ToggleOff
                     style={{
                       color: deleteButtonDisabled
@@ -122,7 +124,7 @@ const TableBody = forwardRef((props, ref) => {
                   />
                 </Tooltip>
               ) : (
-                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                <Tooltip title={t('ToggleOn', {ns: "common"})} placement='bottom' arrow>
                   <ToggleOn
                     style={{
                       color: deleteButtonDisabled
@@ -156,7 +158,10 @@ const TableBody = forwardRef((props, ref) => {
           />,
           <GridActionsCellItem
             icon={
-              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
+              <Tooltip
+                title={t('deleteTooltip', { ns: 'common' })}
+                placement='bottom'
+                arrow>
                 <Delete
                   style={{
                     color: deleteButtonDisabled
@@ -190,47 +195,54 @@ const TableBody = forwardRef((props, ref) => {
   const doubleClickFunc = (params) => {
     if (editUrl !== '') {
       if (modelName == 'Provinces') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?state_id=${params?.row?.id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?state_id=${params?.row?.id}`,
+            state: params.row,
+          });
       } else if (modelName == 'Countries') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?country_id=${params?.row?.id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?country_id=${params?.row?.id}`,
+            state: params.row,
+          });
       } else if (modelName == 'Cities') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?city_id=${params?.row?.id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?city_id=${params?.row?.id}`,
+            state: params.row,
+          });
       } else if (modelName == 'Currencies') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?currency_id=${params?.row?._id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?currency_id=${params?.row?._id}`,
+            state: params.row,
+          });
       } else if (modelName == 'Agencies') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?client_id=${params?.row?._id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?client_id=${params?.row?._id}`,
+            state: params.row,
+          });
       } else if (modelName == 'Roles') {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?role_id=${params?.row?._id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?role_id=${params?.row?._id}`,
+            state: params.row,
+          });
       } else if (!updateButtonDisabled) {
-        !updateButtonDisabled && history.push({
-          pathname: editUrl,
-          search: `?_id=${params.id}`,
-          state: params.row,
-        });
+        !updateButtonDisabled &&
+          history.push({
+            pathname: editUrl,
+            search: `?_id=${params.id}`,
+            state: params.row,
+          });
       }
     } else {
       if (activesId == undefined) {

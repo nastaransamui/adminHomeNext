@@ -395,6 +395,7 @@ const Body = forwardRef((props, ref) => {
     }
   };
 
+  
   return (
     <>
       {typeof icon !== 'undefined' ? (
@@ -458,7 +459,7 @@ const Body = forwardRef((props, ref) => {
           <div className={classes.cardHoverUnder}>
             {activesId !== undefined ? (
               activesId.filter((e) => e.id == data.id).length > 0 ? (
-                <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+                <Tooltip title={t('ToggleOff',{ns: 'common'})} placement='bottom' arrow>
                   <span>
                     <Button
                       color='primary'
@@ -477,7 +478,7 @@ const Body = forwardRef((props, ref) => {
                   </span>
                 </Tooltip>
               ) : (
-                <Tooltip title={t('ToggleOn')} placement='bottom' arrow>
+                <Tooltip title={t('ToggleOn',{ns: 'common'})} placement='bottom' arrow>
                   <span>
                     <Button
                       disabled={deleteButtonDisabled}
@@ -511,7 +512,7 @@ const Body = forwardRef((props, ref) => {
               )
             )}
             {modelName == 'Countries' || modelName == 'Currencies' ? (
-              <Tooltip title={t('ToggleOff')} placement='bottom' arrow>
+              <Tooltip title={t('ToggleOff',{ns: 'common'})} placement='bottom' arrow>
                 <span>
                   <Button
                     color='primary'

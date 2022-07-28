@@ -174,7 +174,8 @@ export default function NavbarLinks(props) {
           </IconButton>
         )}
       </div>
-      <div className={managerClasses}>
+      {/* notification icon */}
+      {/* <div className={managerClasses}>
         <IconButton
           aria-label='Notifications'
           aria-owns={openNotification ? 'notification-menu-list' : null}
@@ -236,7 +237,7 @@ export default function NavbarLinks(props) {
             );
           }}
         </Popper>
-      </div>
+      </div> */}
       <div className={managerClasses}>
         <IconButton
           aria-owns={openProfile ? 'profile-menu-list' : null}

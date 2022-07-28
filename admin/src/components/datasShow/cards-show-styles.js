@@ -98,6 +98,7 @@ const cardsShowStyles = makeStyles((theme) => {
       justifyContent: 'center',
       borderBottom: `1px solid ${theme.palette.primary.main}`,
       minWidth: 140,
+      alignItems: 'flex-start',
     },
     phone: {
       '& .MuiOutlinedInput-root': {

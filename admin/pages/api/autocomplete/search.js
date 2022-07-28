@@ -10,6 +10,7 @@ import Photos from '../../../models/Photos';
 import Users from '../../../models/Users';
 import Videos from '../../../models/Videos';
 import Agencies from '../../../models/Agencies';
+import axios from 'axios';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -750,6 +751,63 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+            }
+          }
+          break;
+        case 'HotelsList':
+          if (hzErrorConnection) {
+            axios
+              .get(
+                `${process.env.NEXT_PUBLIC_API_LINK}/hotels/list?${fieldValue}=${filterValue}`
+                // `http://192.168.1.116:3000/api/hotels/list?${fieldValue}=${filterValue}`
+              )
+              .then((resp) => {
+                const valuesList = resp.data.data;
+                res.status(200).json({ success: true, data: valuesList });
+              });
+          } else {
+            const multiMap = await hz.getMultiMap(modelName);
+            const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+            if (dataIsExist) {
+              const values = await multiMap.get(`all${modelName}`);
+              for (const value of values) {
+                const filterdData = value.filter((row) => {
+                  return Object.keys(row).some((field) => {
+                    if (field == fieldValue) {
+                      if (row[field] !== null) {
+                        return searchRegex.test(row[field].toString());
+                      }
+                    }
+                  });
+                });
+                if (filterdData.length > 0) {
+                  res.status(200).json({
+                    success: true,
+                    data: paginate(
+                      filterdData.sort(
+                        sort_by('iso2', false, (a) => a.toUpperCase())
+                      ),
+                      50,
+                      1
+                    ),
+                  });
+                } else {
+                  res.status(200).json({
+                    success: true,
+                    data: [],
+                  });
+                }
+              }
+            } else {
+              axios
+                .get(
+                  // `${process.env.NEXT_PUBLIC_API_LINK}/hotels/list?${fieldValue}=${filterValue}`
+                  `http://192.168.1.116:3000/api/hotels/list?${fieldValue}=${filterValue}`
+                )
+                .then((resp) => {
+                  const valuesList = resp.data.data;
+                  res.status(200).json({ success: true, data: valuesList });
+                });
             }
           }
           break;

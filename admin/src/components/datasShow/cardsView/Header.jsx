@@ -40,7 +40,8 @@ const Header = forwardRef((props, ref) => {
       modelName == 'Provinces' ||
       modelName == 'Cities' ||
       modelName == 'global_currencies' ||
-      modelName == 'Currencies'
+      modelName == 'Currencies' ||
+      modelName == 'HotelsList'
     ) {
       return (
         <img

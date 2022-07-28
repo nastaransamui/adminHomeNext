@@ -306,7 +306,8 @@ export const RenderCellAvatar = (params) => {
       modelName == 'Provinces' ||
       modelName == 'Cities' ||
       modelName == 'global_currencies' ||
-      modelName == 'Currencies'
+      modelName == 'Currencies' ||
+      modelName == 'HotelsList'
     ) {
       return (
         <img
