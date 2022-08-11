@@ -23,6 +23,8 @@ apiRoute.get(async (req, res, next) => {
     const multiMapAg = await hz.getMultiMap('Agencies');
     const multiMapRo = await hz.getMultiMap('Roles');
     const multiMapHl = await hz.getMultiMap('HotelsList');
+    const hotelNullMap = await hz.getMultiMap('NullHotels');
+    const hotelMap = await hz.getMultiMap('Hotels');
     await multiMapv.destroy();
     await multiMapf.destroy();
     await multiMapp.destroy();
@@ -34,6 +36,8 @@ apiRoute.get(async (req, res, next) => {
     await multiMapAg.destroy();
     await multiMapRo.destroy();
     await multiMapHl.destroy();
+    await hotelNullMap.destroy();
+    await hotelMap.destroy();
 
     console.log('clear all catch');
     await hz.shutdown();

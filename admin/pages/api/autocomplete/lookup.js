@@ -253,6 +253,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     }
                   }
                 }
+                await hz.shutdown();
               } else {
                 await usersAgencyLookup();
               }
@@ -300,6 +301,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     }
                   }
                 }
+                await hz.shutdown();
               } else {
                 await rolesUsersLookup();
               }

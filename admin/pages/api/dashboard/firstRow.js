@@ -268,6 +268,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             valuesList[0].totalCountries.totalCountries = country.length;
           }
           const dashboardArray = createDashobardArray(valuesList);
+          await hz.shutdown();
           res.status(200).json({ success: true, data: dashboardArray });
         } else {
           await dbAggregate();

@@ -1,7 +1,14 @@
 export const getAllUrl = '/admin/api/geoLocations/getAllCities';
 export const editUrl = '/admin/dashboard/a-locations/cities';
 export const exportCsvUrl = `/admin/api/geoLocations/export`;
-import { Info, Flag, Title, Map, Domain } from '@mui/icons-material';
+import Flag from '@mui/icons-material/Flag';
+import Info from '@mui/icons-material/Info';
+import Title from '@mui/icons-material/Title';
+import Map from '@mui/icons-material/Map';
+import Domain from '@mui/icons-material/Domain';
+import HotelIcon from '@mui/icons-material/Hotel';
+import Badge from '@mui/icons-material/Badge';
+import AccountBox from '@mui/icons-material/AccountBox';
 
 export const dataGridColumns = [
   {
@@ -37,6 +44,39 @@ export const dataGridColumns = [
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
     searchAble: true,
+  },
+  {
+    field: 'totalHotels', // Db name
+    headerAlign: 'center', //
+    description: 'totalActiveHotels', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
+    field: 'totalUsers', // Db name
+    headerAlign: 'center', //
+    description: 'totalUsers', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
+    field: 'totalAgents', // Db name
+    headerAlign: 'center', //
+    description: 'totalAgents', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'latitude', // Db name
@@ -96,6 +136,24 @@ export const citiesFields = [
     Icon: Title,
     label: 'name',
     type: 'string',
+    filterable: true,
+  },
+  {
+    Icon: HotelIcon,
+    label: 'totalHotels',
+    type: 'number',
+    filterable: true,
+  },
+  {
+    Icon: Badge,
+    label: 'totalUsers',
+    type: 'number',
+    filterable: true,
+  },
+  {
+    Icon: AccountBox,
+    label: 'totalAgents',
+    type: 'number',
     filterable: true,
   },
   {

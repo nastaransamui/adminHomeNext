@@ -63,6 +63,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             const city = valuesList[0];
             res.status(200).json({ success: true, data: city });
           }
+          await hz.shutdown();
         } else {
           const valuesList = await collection.aggregate([
             { $unwind: '$states' },
@@ -87,6 +88,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           if (valuesList.length > 0) {
             const city = valuesList[0].city[0];
             res.status(200).json({ success: true, data: city });
+            await hz.shutdown();
           } else {
             res.status(500).json({ success: false, Error: 'noResult' });
           }

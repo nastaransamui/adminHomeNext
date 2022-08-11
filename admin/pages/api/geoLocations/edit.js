@@ -67,6 +67,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   totalValuesLength: valuesList.length,
                   data: result,
                 });
+                await hz.shutdown();
               }
             }
           });
@@ -127,6 +128,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   totalValuesLength: valuesList.length,
                   data: result,
                 });
+                await hz.shutdown();
               }
             }
           });
@@ -190,6 +192,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   totalValuesLength: valuesList.length,
                   data: result,
                 });
+                await hz.shutdown();
               }
             }
           });

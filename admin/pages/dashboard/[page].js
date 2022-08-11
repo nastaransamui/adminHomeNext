@@ -153,6 +153,14 @@ export default withTranslation(['dashboard'])(index);
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     const cookies = new Cookies(ctx.req, ctx.res);
+    const isVercel =
+      process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
+    async function call() {
+      await fetch(`${process.env.NEXT_PUBLIC_ADMIN_URL}/api/socket`);
+    }
+    if (!isVercel) {
+      call();
+    }
     const profile = jwt.verify(
       getCookies(ctx).adminAccessToken,
       process.env.NEXT_PUBLIC_SECRET_KEY,

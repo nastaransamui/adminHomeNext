@@ -128,6 +128,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               });
             }
           }
+          await hz.shutdown();
         } else {
           const valuesList = await collection.aggregate([
             { $unwind: '$states' },

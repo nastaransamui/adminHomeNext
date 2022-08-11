@@ -3,12 +3,20 @@ const timeZone = require('mongoose-timezone');
 
 const CountriesSchema = new mongoose.Schema(
   {
-    id: { type: Number, required: true, index: true },
+    id: {
+      type: Number,
+      required: true,
+      index: true,
+      unique: true,
+      index: true,
+    },
     users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
     agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
-    name: { type: String, required: true },
-    iso3: { type: String, required: true },
-    iso2: { type: String, required: true },
+    hotels_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hotels' }],
+    isHotelsActive: { type: Boolean, default: false },
+    name: { type: String, required: true, unique: true, index: true },
+    iso3: { type: String, required: true, unique: true, index: true },
+    iso2: { type: String, required: true, unique: true, index: true },
     numeric_code: { type: String, required: true },
     phone_code: { type: String, required: true },
     capital: { type: String, required: false, default: '' },
@@ -57,6 +65,7 @@ const CountriesSchema = new mongoose.Schema(
         type: { type: String, default: null },
         users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
         agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
+        hotels_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hotels' }],
         cities: [
           {
             id: Number,
@@ -66,6 +75,9 @@ const CountriesSchema = new mongoose.Schema(
             users_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
             agents_id: [
               { type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' },
+            ],
+            hotels_id: [
+              { type: mongoose.Schema.Types.ObjectId, ref: 'Hotels' },
             ],
           },
         ],

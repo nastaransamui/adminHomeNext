@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, forwardRef } from 'react';
 
 import { Container } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -13,9 +13,15 @@ import {
   hotelsFields,
   dataGridColumns,
 } from './hotelsStatic';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
 const Hotels = (props) => {
-  const { componentView, reactRoutes, rtlActive } = props;
+  const { componentView, reactRoutes, rtlActive, socket } = props;
 
   const allHotelsRoute = reactRoutes.filter((a) => {
     if (a.componentName == 'Allhotels' && a.componentView == componentView) {
@@ -30,7 +36,10 @@ const Hotels = (props) => {
     searchText,
     rows: hotels,
     exportCsv,
-  } = hotelsHook();
+    openAlert,
+    handleCloseAlert,
+    alertText,
+  } = hotelsHook(socket);
   const { hotelsGStore } = useSelector((state) => state);
   const {
     dataArrayLengh,
@@ -41,7 +50,6 @@ const Hotels = (props) => {
     GridView,
     activesId,
   } = hotelsGStore;
-
   const { sweetActiveAlert } = useActiveAlert({
     state: hotelsGStore,
     modelName: 'HotelsList',
@@ -74,17 +82,29 @@ const Hotels = (props) => {
     cookieName: 'hotelsGStore',
   });
 
-  let filterhotelsFields = hotelsFields.filter((a)=>{
-    if(rtlActive){
-      return a.label !== 'title_en'
-    }else{
-      return a.label !== 'title_fa'
+  let filterhotelsFields = hotelsFields.filter((a) => {
+    if (rtlActive) {
+      return a.label !== 'title_en';
+    } else {
+      return a.label !== 'title_fa';
     }
-  })
+  });
 
-  
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
+      <Snackbar
+        open={openAlert}
+        sx={{ width: '40%' }}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert
+          onClose={handleCloseAlert}
+          icon={<CheckCircleOutlineIcon fontSize='inherit' />}
+          severity='info'
+          sx={{ width: '100%' }}>
+          {alertText}
+        </Alert>
+      </Snackbar>
       <Fragment>
         <DataShow
           {...props}

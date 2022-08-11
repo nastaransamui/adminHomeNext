@@ -46,6 +46,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               res.status(500).json({ success: false, Error: 'noResult' });
             }
           }
+          await hz.shutdown();
         } else {
           //find all currencies and add to map
           const currencies = await collection.find({});

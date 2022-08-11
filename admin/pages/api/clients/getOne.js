@@ -298,6 +298,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               res.status(500).json({ success: false, Error: 'Notfind' });
             }
           }
+          await hz.shutdown();
         } else {
           const agentValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },

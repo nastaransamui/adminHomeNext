@@ -283,6 +283,7 @@ export const RenderCellAvatar = (params) => {
   const rtlActive = i18n.language == 'fa';
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
   const { dataGridColumns, modelName, row, activesId, formattedValue } = params;
+
   const Image = () => {
     if (modelName == 'Users') {
       return (
@@ -341,6 +342,12 @@ export const RenderCellAvatar = (params) => {
       modelName == 'global_currencies'
     ) {
       if (activesId.filter((e) => e.id == params.id).length > 0) {
+        return 'secondary';
+      } else {
+        return 'primary';
+      }
+    } else if (modelName == 'HotelsList') {
+      if (activesId?.filter((e) => e._id.iso2 == params.row.iso2).length > 0) {
         return 'secondary';
       } else {
         return 'primary';

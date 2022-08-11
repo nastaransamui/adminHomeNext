@@ -53,6 +53,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               const multiMap = await hz.getMultiMap('Currencies');
               await multiMap.destroy();
               await multiMap.put(`allCurrencies`, valuesList);
+              await hz.shutdown();
               res.status(200).json({
                 success: true,
                 totalValuesLength: valuesList.length,

@@ -214,6 +214,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               }
             }
           }
+          await hz.shutdown();
         } else {
           const roleValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },
@@ -269,8 +270,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               data: roleValue[0],
               totalUsers: totalUsers,
             });
+            await hz.shutdown();
           } else {
             res.status(403).json({ success: false, Error: 'Notfind' });
+            await hz.shutdown();
           }
         }
       }

@@ -21,7 +21,7 @@ export const dataGridColumns = [
     field: 'iso2', // Db name
     headerAlign: 'center', //
     description: 'iso2', //Discription from translation
-    width: 150,
+    width: 180,
     type: 'string',
     filterable: true,
     hasAvatar: [false, ''],
@@ -32,7 +32,7 @@ export const dataGridColumns = [
     field: 'totalHotel', // Db name
     headerAlign: 'center', //
     description: 'totalHotel', //Discription from translation
-    width: 150,
+    width: 180,
     type: 'number',
     filterable: false,
     hasAvatar: [false, ''],
@@ -43,7 +43,7 @@ export const dataGridColumns = [
     field: 'hotelReady', // Db name
     headerAlign: 'center', //
     description: 'hotelReady', //Discription from translation
-    width: 150,
+    width: 180,
     type: 'number',
     filterable: false,
     hasAvatar: [false, ''],
@@ -54,7 +54,7 @@ export const dataGridColumns = [
     field: 'hotelNotComplete', // Db name
     headerAlign: 'center', //
     description: 'hotelNotComplete', //Discription from translation
-    width: 150,
+    width: 180,
     type: 'number',
     filterable: false,
     hasAvatar: [false, ''],

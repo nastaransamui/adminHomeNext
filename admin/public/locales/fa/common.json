@@ -102,5 +102,7 @@
   "actions": "اقدامات",
   "totalHotel": "مجموع هتل ها",
   "hotelReady": "هتل های آماده",
-  "hotelNotComplete": "هتلهای ناقص"
+  "hotelNotComplete": "هتلهای ناقص",
+  "notFound": "سابقه پیدا نشد.",
+  "countryNotActive": "این کشور هنوز فعال نیست. لطفا ابتدا کشور را فعال کنید."
 }

@@ -67,9 +67,19 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.countryId': '$id',
               'states.country_id': '$_id',
               'states.totalCities': { $size: '$states.cities' },
+              'states.totalHotels': { $size: '$states.hotels_id' },
+              'states.totalUsers': { $size: '$states.users_id' },
+              'states.totalAgents': { $size: '$states.agents_id' },
             },
           },
-          { $unset: 'states.cities' },
+          {
+            $unset: [
+              'states.cities',
+              'states.hotels_id',
+              'states.users_id',
+              'states.agents_id',
+            ],
+          },
           { $group: { _id: null, provinces: { $push: '$states' } } },
           { $project: { _id: 1, provinces: '$provinces' } },
         ]);
@@ -137,9 +147,19 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 'states.countryId': '$id',
                 'states.country_id': '$_id',
                 'states.totalCities': { $size: '$states.cities' },
+                'states.totalHotels': { $size: '$states.hotels_id' },
+                'states.totalUsers': { $size: '$states.users_id' },
+                'states.totalAgents': { $size: '$states.agents_id' },
               },
             },
-            { $unset: 'states.cities' },
+            {
+              $unset: [
+                'states.cities',
+                'states.hotels_id',
+                'states.users_id',
+                'states.agents_id',
+              ],
+            },
             { $group: { _id: null, provinces: { $push: '$states' } } },
             { $project: { _id: 1, provinces: '$provinces' } },
           ]);

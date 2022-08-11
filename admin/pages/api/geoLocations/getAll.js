@@ -80,6 +80,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           let data = JSON.parse(rawdata);
           data.map((doc) => {
             doc.totalStates = doc.states.length;
+            doc.totalActiveHotels = 0;
+            doc.totalUsers = 0;
+            doc.totalAgents = 0;
+            doc.isHotelsActive = false;
             delete doc.states;
             return doc;
           });
@@ -101,7 +105,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 sort_by(
                   [req.body['valuesSortByField']],
                   valuesSortBySorting > 0 ? false : true,
-                  (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+                  (a) =>
+                    typeof a == 'boolean' || typeof a == 'number'
+                      ? a
+                      : a.toUpperCase(),
                   activesIds
                 )
               ),
@@ -122,9 +129,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               {
                 $addFields: {
                   totalStates: { $size: '$states' },
+                  totalActiveHotels: { $size: '$hotels_id' },
+                  totalUsers: { $size: '$users_id' },
+                  totalAgents: { $size: '$agents_id' },
                 },
               },
-              { $unset: 'states' },
+              { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
             ]);
             res.status(200).json({
               success: true,
@@ -134,7 +144,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   sort_by(
                     [req.body['valuesSortByField']],
                     valuesSortBySorting > 0 ? false : true,
-                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                    (a) =>
+                      typeof a == 'boolean' || typeof a == 'number'
+                        ? a
+                        : a.toUpperCase()
                   )
                 ),
                 valuesPerPage,
@@ -157,7 +170,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       sort_by(
                         [req.body['valuesSortByField']],
                         valuesSortBySorting > 0 ? false : true,
-                        (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                        (a) =>
+                          typeof a == 'boolean' || typeof a == 'number'
+                            ? a
+                            : a.toUpperCase()
                       )
                     ),
                     valuesPerPage,
@@ -165,14 +181,18 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   ),
                 });
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
+                    totalActiveHotels: { $size: '$hotels_id' },
+                    totalUsers: { $size: '$users_id' },
+                    totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: 'states' },
+                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
               ]);
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({
@@ -183,7 +203,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     sort_by(
                       [req.body['valuesSortByField']],
                       valuesSortBySorting > 0 ? false : true,
-                      (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                      (a) =>
+                        typeof a == 'boolean' || typeof a == 'number'
+                          ? a
+                          : a.toUpperCase()
                     )
                   ),
                   valuesPerPage,

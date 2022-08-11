@@ -4,5 +4,6 @@
   "totalHotel": "Total hotels",
   "hotelReady": "Ready hotels",
   "hotelNotComplete": "Hotels need attention",
-  "title_en": "English title"
+  "title_en": "English title",
+  "durationAlert": "Reminder: Based on number of Hotels and connection speed, activation may take a while."
 }

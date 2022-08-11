@@ -35,6 +35,7 @@ const TableBody = forwardRef((props, ref) => {
     diactiveAlert,
     deleteButtonDisabled,
     updateButtonDisabled,
+    state
   } = props;
 
   const columns = [
@@ -42,9 +43,9 @@ const TableBody = forwardRef((props, ref) => {
     {
       field: 'actions',
       type: 'actions',
-      headerName: t('actions',{ns: 'common'}),
+      headerName: t('actions', { ns: 'common' }),
       headerAlign: 'center',
-      width: 100,
+      width: 150,
       cellClassName: 'actions',
       filterable: false,
       cellClassName: 'super-app-theme--cell',
@@ -104,7 +105,10 @@ const TableBody = forwardRef((props, ref) => {
           <GridActionsCellItem
             icon={
               activesId == undefined ? (
-                <Tooltip title={t('ToggleOn', {ns: "common"})} placement='bottom' arrow>
+                <Tooltip
+                  title={t('ToggleOff', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <ToggleOn
                     style={{
                       color: deleteButtonDisabled
@@ -113,8 +117,18 @@ const TableBody = forwardRef((props, ref) => {
                     }}
                   />
                 </Tooltip>
-              ) : activesId?.filter((e) => e.id == params.id).length > 0 ? (
-                <Tooltip title={t('ToggleOff', {ns: "common"})} placement='bottom' arrow>
+              ) : activesId?.filter((e) => {
+                  switch (modelName) {
+                    case 'HotelsList':
+                      return e._id[state.SortBy.field] == params.row[state.SortBy.field]
+                    default:
+                      return e.id == params.id;
+                  }
+                }).length > 0 ? (
+                <Tooltip
+                  title={t('ToggleOff', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <ToggleOff
                     style={{
                       color: deleteButtonDisabled
@@ -124,7 +138,10 @@ const TableBody = forwardRef((props, ref) => {
                   />
                 </Tooltip>
               ) : (
-                <Tooltip title={t('ToggleOn', {ns: "common"})} placement='bottom' arrow>
+                <Tooltip
+                  title={t('ToggleOn', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <ToggleOn
                     style={{
                       color: deleteButtonDisabled
@@ -141,7 +158,14 @@ const TableBody = forwardRef((props, ref) => {
               if (activesId == undefined) {
                 !deleteButtonDisabled && diactiveAlert(params.row);
               } else {
-                if (activesId?.filter((e) => e.id == params.id).length > 0) {
+                if (activesId?.filter((e) => {
+                  switch (modelName) {
+                    case 'HotelsList':
+                      return e._id[state.SortBy.field] == params.row[state.SortBy.field]
+                    default:
+                      return e.id == params.id;
+                  }
+                }).length > 0) {
                   !deleteButtonDisabled && diactiveAlert(params.row);
                 } else {
                   !deleteButtonDisabled && activeAlert(params.row);
@@ -248,7 +272,14 @@ const TableBody = forwardRef((props, ref) => {
       if (activesId == undefined) {
         !deleteButtonDisabled && diactiveAlert(params.row);
       } else {
-        if (activesId?.filter((e) => e.id == params.id).length > 0) {
+        if (activesId?.filter((e) => {
+          switch (modelName) {
+            case 'HotelsList':
+              return e._id[state.SortBy.field] == params.row[state.SortBy.field]
+            default:
+              return e.id == params.id;
+          }
+        }).length > 0) {
           !deleteButtonDisabled && diactiveAlert(params.row);
         } else {
           !deleteButtonDisabled && activeAlert(params.row);

@@ -89,6 +89,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
             let rawdata = fs.readFileSync(fileToRead);
             let data = JSON.parse(rawdata);
+            data.map((doc) => {
+              doc.totalStates = doc.states.length;
+              doc.totalActiveHotels = 0;
+              doc.totalUsers = 0;
+              doc.totalAgents = 0;
+              doc.isHotelsActive = false;
+              delete doc.states;
+              return doc;
+            });
             var activesIds = await collection.find({}, { _id: true, id: true });
             let orderCountryByActivation = data.sort((a, b) => {
               return (
@@ -105,9 +114,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
+                    totalActiveHotels: { $size: '$hotels_id' },
+                    totalUsers: { $size: '$users_id' },
+                    totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: 'states' },
+                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
               ]);
               await multiMap.put(`all${modelName}`, valuesList);
               await hz.shutdown();
@@ -121,7 +133,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   sort_by(
                     [req.body['valuesSortByField']],
                     valuesSortBySorting > 0 ? false : true,
-                    (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+                    (a) =>
+                      typeof a == 'boolean' || typeof a == 'number'
+                        ? a
+                        : a.toUpperCase(),
                     activesIds
                   )
                 ),
@@ -136,9 +151,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
+                    totalActiveHotels: { $size: '$hotels_id' },
+                    totalUsers: { $size: '$users_id' },
+                    totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: 'states' },
+                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
               ]);
               res.status(200).json({
                 success: true,
@@ -148,7 +166,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     sort_by(
                       [req.body['valuesSortByField']],
                       valuesSortBySorting > 0 ? false : true,
-                      (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                      (a) =>
+                        typeof a == 'boolean' || typeof a == 'number'
+                          ? a
+                          : a.toUpperCase()
                     )
                   ),
                   valuesPerPage,
@@ -165,9 +186,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
+                    totalActiveHotels: { $size: '$hotels_id' },
+                    totalUsers: { $size: '$users_id' },
+                    totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: 'states' },
+                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
               ]);
 
               await multiMap.put(`all${modelName}`, valuesList);
@@ -179,7 +203,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     sort_by(
                       [req.body['valuesSortByField']],
                       valuesSortBySorting > 0 ? false : true,
-                      (a) => (typeof a == 'boolean' ? a : a.toUpperCase())
+                      (a) =>
+                        typeof a == 'boolean' || typeof a == 'number'
+                          ? a
+                          : a.toUpperCase()
                     )
                   ),
                   valuesPerPage,
@@ -200,22 +227,35 @@ apiRoute.post(verifyToken, async (req, res, next) => {
 function involvedError(result) {
   //Check if country involve in user and agent
   const isCountryInvolved =
-    result?.users_id?.length > 0 || result?.agents_id?.length > 0;
+    result?.users_id?.length > 0 ||
+    result?.agents_id?.length > 0 ||
+    result?.hotels_id?.length > 0;
   // Check if state involve in user and agent
   const stateInvolved = result?.states.filter(
-    (a) => a.users_id?.length > 0 || a.agents_id?.length > 0
+    (a) =>
+      a.users_id?.length > 0 ||
+      a.agents_id?.length > 0 ||
+      a.hotels_id?.length > 0
   );
   const isStateInvolved = stateInvolved.length > 0;
   // Check if cities involve in user and agent
   const statesThatCitiesInvolve = result?.states.filter((s) => {
     let opt = s.cities.some(
-      (a) => a.users_id?.length > 0 || a.agents_id?.length > 0
+      (a) =>
+        a.users_id?.length > 0 ||
+        a.agents_id?.length > 0 ||
+        a.hotels_id?.length > 0
     );
     return opt;
   });
   const citiesInvolved = statesThatCitiesInvolve
     .map((a) =>
-      a.cities.filter((a) => a.users_id?.length > 0 || a.agents_id?.length > 0)
+      a.cities.filter(
+        (a) =>
+          a.users_id?.length > 0 ||
+          a.agents_id?.length > 0 ||
+          a.hotels_id?.length > 0
+      )
     )
     .flat(1);
   const isCitiesInvolved = citiesInvolved.length > 0;
@@ -261,6 +301,28 @@ function involvedError(result) {
                 ? ` ${citiesInvolved.map((a) =>
                     a.agents_id?.length > 0
                       ? `${a.name} city is involved with ${a.agents_id?.length} agent(s)`
+                      : ``
+                  )} `
+                : ``
+            }`
+          : ''
+      } ${
+        result?.hotels_id?.length > 0
+          ? `${result?.hotels_id?.length} hotel(s) is/are involved with ${
+              result?.name
+            } ${
+              isStateInvolved
+                ? `, ${stateInvolved.map((a) =>
+                    a.hotels_id?.length > 0
+                      ? `${a.name} state is involved with ${a.hotels_id?.length} hotel(s) `
+                      : ``
+                  )}  `
+                : ``
+            } ${
+              isCitiesInvolved
+                ? ` ${citiesInvolved.map((a) =>
+                    a.hotels_id?.length > 0
+                      ? `${a.name} city is involved with ${a.hotels_id?.length} hotel(s)`
                       : ``
                   )} `
                 : ``

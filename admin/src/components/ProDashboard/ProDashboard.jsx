@@ -4,12 +4,15 @@ import SidebarMain from '../SideBar/SidebarMain';
 import dashboardStyle from './dashboar-style';
 import cx from 'classnames';
 import ReactRouter from '../../pages/dashboard/ReactRouter';
+import {  useEffect } from 'react';
 import Footer from '../Footer/Footer';
 import LoadingOverlay from 'react-loading-overlay';
 import { CircleToBlockLoading } from 'react-loadingg';
 import { useTheme } from '@mui/styles';
 import { useSelector } from 'react-redux';
-// import routes from '../../../routes'
+const isVercel = process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
+import { io } from 'socket.io-client';
+let socket;
 export default function ProDashboard(props) {
   const {
     t,
@@ -20,7 +23,6 @@ export default function ProDashboard(props) {
     handleDrawerToggle,
     sidebarMinimizeFunc,
     accessRole,
-    reactRoutes,
   } = props;
   const location = useLocation();
   const { adminFormSubmit } = useSelector((state) => state);
@@ -53,6 +55,24 @@ export default function ProDashboard(props) {
     Array.isArray(a.views) && (a.views = a.views.filter(f));
   });
   filter.unshift(routes[0]);
+
+  useEffect(() => {
+    let isMount = true;
+    if (isMount && !isVercel) {
+      socketInitializer();
+    }
+    return () => {
+      isMount = false;
+      socket?.disconnect();
+    };
+  }, []);
+  const socketInitializer = async () => {
+    socket = io();
+    socket.on('connect', () => {
+      console.log('connected');
+    });
+  }
+  
   return (
     <>
       <div>
@@ -88,7 +108,7 @@ export default function ProDashboard(props) {
             <CircleToBlockLoading color={theme.palette.secondary.main} />
           }
         />
-        <ReactRouter rtlActive={rtlActive} {...props} />
+        <ReactRouter rtlActive={rtlActive} {...props} socket={socket}/>
       </span>
 
       <span

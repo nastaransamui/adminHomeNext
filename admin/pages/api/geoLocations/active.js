@@ -5,6 +5,7 @@ import hazelCast from '../../../helpers/hazelCast';
 import mongoose from 'mongoose';
 import Countries from '../../../models/Countries';
 import fs from 'fs';
+import { firstLevelSort } from '../hotels/active';
 
 // Pagination function
 function paginate(array, valuesPerPage, valuesPageNumber) {
@@ -77,11 +78,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       var collection = mongoose.model(modelName);
       const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
       let rawdata = fs.readFileSync(fileToRead);
-      let data = JSON.parse(rawdata).filter(function (entry) {
+      let singleCountry = JSON.parse(rawdata).filter(function (entry) {
         delete entry._id;
         return entry.id === country_id;
       })[0];
-      const newValue = await new collection(data);
+      const newValue = await new collection(singleCountry);
       const { hzErrorConnection, hz } = await hazelCast();
       await newValue.save(async (err, result) => {
         if (err) {
@@ -90,51 +91,69 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             Error: err.toString(),
             ErrorCode: err?.code,
           });
-        } else {
-          const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
-          let rawdata = fs.readFileSync(fileToRead);
-          let data = JSON.parse(rawdata);
-          var activesIds = await collection.find({}, { _id: true, id: true });
-          let orderCountryByActivation = data.sort((a, b) => {
-            return (
-              activesIds.findIndex((p) => p.id === b.id) -
-              activesIds.findIndex((p) => p.id === a.id)
-            );
-          });
-          if (!hzErrorConnection) {
-            const multiMap = await hz.getMultiMap(modelName);
-            const multiMapPr = await hz.getMultiMap('Provinces');
-            await multiMap.destroy();
-            await multiMapPr.destroy();
-            const valuesList = await collection.aggregate([
-              {
-                $addFields: {
-                  totalStates: { $size: '$states' },
-                },
-              },
-              { $unset: 'states' },
-            ]);
-            await multiMap.put(`all${modelName}`, valuesList);
-            await hz.shutdown();
-          }
-          res.status(200).json({
-            success: true,
-            totalValuesLength: orderCountryByActivation.length,
-            activesId: activesIds,
-            data: paginate(
-              orderCountryByActivation.sort(
-                sort_by(
-                  [req.body['valuesSortByField']],
-                  valuesSortBySorting > 0 ? false : true,
-                  (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
-                  activesIds
-                )
-              ),
-              valuesPerPage,
-              valuesPageNumber
-            ),
-          });
         }
+        let data = JSON.parse(rawdata);
+        data.map((doc) => {
+          doc.totalStates = doc.states.length;
+          doc.totalActiveHotels = 0;
+          doc.totalUsers = 0;
+          doc.totalAgents = 0;
+          doc.isHotelsActive = false;
+          delete doc.states;
+          return doc;
+        });
+        var activesIds = await collection.find({}, { _id: true, id: true });
+        const firstSort = firstLevelSort(data, valuesSortBySorting, req);
+        let orderCountryByActivation = firstSort.sort((a, b) => {
+          return (
+            activesIds.findIndex((p) => p.id === b.id) -
+            activesIds.findIndex((p) => p.id === a.id)
+          );
+        });
+        if (!hzErrorConnection) {
+          const countryMultiMap = await hz.getMultiMap(modelName);
+          const provinceMultiMap = await hz.getMultiMap('Provinces');
+          const citiesMultiMap = await hz.getMultiMap('Cities');
+          await countryMultiMap.destroy();
+          await provinceMultiMap.destroy();
+          await citiesMultiMap.destroy();
+          const valuesList = await collection.aggregate([
+            {
+              $addFields: {
+                totalStates: { $size: '$states' },
+                totalActiveHotels: { $size: '$hotels_id' },
+                totalUsers: { $size: '$users_id' },
+                totalAgents: { $size: '$agents_id' },
+              },
+            },
+            { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
+          ]);
+          await countryMultiMap.put(`all${modelName}`, valuesList);
+          await hz.shutdown();
+        }
+        res.status(200).json({
+          success: true,
+          totalValuesLength: 1,
+          activesId: [],
+          data: [],
+        });
+        // res.status(200).json({
+        //   success: true,
+        //   totalValuesLength: data.length,
+        //   activesId: activesIds,
+        //   data: paginate(
+        //     orderCountryByActivation.sort(
+        //       sort_by(
+        //         [req.body['valuesSortByField']],
+        //         valuesSortBySorting > 0 ? false : true,
+        //         (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
+        //         activesIds
+        //       )
+        //     ),
+        //     valuesPerPage,
+        //     valuesPageNumber
+        //   ),
+        // });
       });
     } catch (error) {
       res.status(500).json({ success: false, Error: error.toString() });

@@ -60,5 +60,10 @@
   "cityMap": "City Map",
   "state_id": "State Id",
   "Not Found": "result not found",
-  "noResult": "No any result found."
+  "noResult": "No any result found.",
+  "totalActiveHotels": "Number of hotels",
+  "totalUsers": "Number of users",
+  "totalAgents": "Number of agents",
+  "isHotelsActive": "Hotels status",
+  "totalHotels": "Number of hotels"
 }

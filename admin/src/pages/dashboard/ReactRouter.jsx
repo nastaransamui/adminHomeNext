@@ -108,7 +108,7 @@ export function CustomSwitch(props) {
 }
 
 export default function ReactRouter(props) {
-  const { reactRoutes } = props;
+  const { reactRoutes,socket } = props;
   const [addUserProfile, setAddUserProfile] = useState(false);
   const [userHasUpdateAccess, setUserHasUpdateAccess] = useState(true);
   const { profile } = useSelector((state) => state);
@@ -183,46 +183,47 @@ export default function ReactRouter(props) {
   });
 
   return (
-    <CustomSwitch profile={profile}>
-      <>
-        <Route exact path='/admin/dashboard' key={0}>
-          <MainDashboard {...props} />
-          <ThemeUser {...props} />
-        </Route>
-        {addUserProfile && (
-          <Route key={1} exact path='/admin/dashboard/user-page'>
-            {(addUserProfile && query.get('_id') == null) ||
-            query.get('_id') !== profile._id ? (
-              <Redirect to='/admin/dashboard' {...props} />
-            ) : (
-              <UserPage {...props} />
-            )}
+      <CustomSwitch profile={profile}>
+        <>
+          <Route exact path='/admin/dashboard' key={0}>
+            <MainDashboard {...props} />
             <ThemeUser {...props} />
           </Route>
-        )}
-        {reactRoutes.map((r, i) => {
-          const DynamicComponent = componentsMap[r.componentName];
-          if (DynamicComponent !== undefined) {
-            if (r.crud[0].active) {
-              return (
-                <Route exact path={r.path} key={i + 2}>
-                  <DynamicComponent
-                    {...props}
-                    componentView={r.componentView}
-                  />
-                  <ThemeUser {...props} />
-                </Route>
-              );
+          {addUserProfile && (
+            <Route key={1} exact path='/admin/dashboard/user-page'>
+              {(addUserProfile && query.get('_id') == null) ||
+              query.get('_id') !== profile._id ? (
+                <Redirect to='/admin/dashboard' {...props} />
+              ) : (
+                <UserPage {...props} />
+              )}
+              <ThemeUser {...props} />
+            </Route>
+          )}
+          {reactRoutes.map((r, i) => {
+            const DynamicComponent = componentsMap[r.componentName];
+            if (DynamicComponent !== undefined) {
+              if (r.crud[0].active) {
+                return (
+                  <Route exact path={r.path} key={i + 2}>
+                    <DynamicComponent
+                      {...props}
+                      componentView={r.componentView}
+                      socket={socket}
+                    />
+                    <ThemeUser {...props} />
+                  </Route>
+                );
+              }
             }
-          }
-        })}
-        <Route
-          path='/admin/dashboard/notfoundpage'
-          key={reactRoutes.length + 3}>
-          <NotFound {...props} />
-          <ThemeUser {...props} />
-        </Route>
-      </>
-    </CustomSwitch>
+          })}
+          <Route
+            path='/admin/dashboard/notfoundpage'
+            key={reactRoutes.length + 3}>
+            <NotFound {...props} />
+            <ThemeUser {...props} />
+          </Route>
+        </>
+      </CustomSwitch>
   );
 }

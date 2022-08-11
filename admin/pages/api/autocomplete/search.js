@@ -131,6 +131,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $unwind: '$states' },
@@ -224,6 +225,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },
@@ -307,6 +309,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $sort: { name: 1 } },
@@ -338,6 +341,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           // var activesIds = await collection.find({}, { _id: false, id: true });
           data.map((doc) => {
             doc.totalStates = doc.states.length;
+            doc.totalActiveHotels = 0;
+            doc.totalUsers = 0;
+            doc.totalAgents = 0;
+            doc.isHotelsActive = false;
             delete doc.states;
             return doc;
           });
@@ -418,6 +425,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               var collection = mongoose.model(modelName);
               const valuesList = await collection.aggregate([
@@ -517,6 +525,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $sort: { currency_name: 1 } },
@@ -618,6 +627,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     });
                   }
                 }
+                await hz.shutdown();
               } else {
                 //Initiate match
                 var match = {
@@ -798,6 +808,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               axios
                 .get(
@@ -860,6 +871,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   });
                 }
               }
+              await hz.shutdown();
             } else {
               var collection = mongoose.model(modelName);
               const valuesList = await collection.aggregate([

@@ -589,6 +589,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                   res.status(403).json({ success: false, Error: 'noResults' });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },
@@ -828,6 +829,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                   res.status(403).json({ success: false, Error: 'noResults' });
                 }
               }
+              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },

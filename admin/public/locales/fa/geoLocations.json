@@ -59,5 +59,10 @@
   "cityMap": "نقشه شهر",
   "state_id": "شناسه استان",
   "Not Found": "نتیجه یافت نشد",
-  "noResult": "هیچ نتیجه ای پیدا نشد"
+  "noResult": "هیچ نتیجه ای پیدا نشد",
+  "totalActiveHotels": "تعداد هتل ها",
+  "totalUsers": "تعداد کاربران",
+  "totalAgents": "تعداد نمایندگان",
+  "isHotelsActive": "وضعیت هتل ها",
+  "totalHotels": "تعداد هتل ها"
 }

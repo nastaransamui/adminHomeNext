@@ -102,5 +102,7 @@
   "actions": "Actions",
   "totalHotel": "Total hotels",
   "hotelReady": "Ready hotels",
-  "hotelNotComplete": "Hotels need attention"
+  "hotelNotComplete": "Hotels need attention",
+  "notFound": "Record not found.",
+  "countryNotActive": "This country is not active yet. Please first activate the country."
 }

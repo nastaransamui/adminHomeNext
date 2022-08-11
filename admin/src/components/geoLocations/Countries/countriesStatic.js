@@ -3,18 +3,19 @@ export const activeUrl = '/admin/api/geoLocations/active';
 export const diActiveUrl = '/admin/api/geoLocations/diactive';
 export const editUrl = '/admin/dashboard/a-locations/countries';
 export const exportCsvUrl = `/admin/api/geoLocations/export`;
-import {
-  Info,
-  Flag,
-  Title,
-  LocalPhone,
-  LocationCity,
-  CurrencyExchange,
-  SouthAmerica,
-  Update,
-  Dns,
-  Map,
-} from '@mui/icons-material';
+import Info from '@mui/icons-material/Info';
+import Flag from '@mui/icons-material/Flag';
+import Title from '@mui/icons-material/Title';
+import LocalPhone from '@mui/icons-material/LocalPhone';
+import LocationCity from '@mui/icons-material/LocationCity';
+import CurrencyExchange from '@mui/icons-material/CurrencyExchange';
+import SouthAmerica from '@mui/icons-material/SouthAmerica';
+import Update from '@mui/icons-material/Update';
+import Dns from '@mui/icons-material/Dns';
+import Map from '@mui/icons-material/Map';
+import HotelIcon from '@mui/icons-material/Hotel';
+import Badge from '@mui/icons-material/Badge';
+import AccountBox from '@mui/icons-material/AccountBox';
 
 export const dataGridColumns = [
   {
@@ -93,6 +94,50 @@ export const dataGridColumns = [
     hasAvatar: [false, ''],
     hasVideo: [false, ''],
     searchAble: true,
+  },
+  {
+    field: 'totalActiveHotels', // Db name
+    headerAlign: 'center', //
+    description: 'totalActiveHotels', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
+    field: 'isHotelsActive', // Db name
+    headerAlign: 'center', //
+    description: 'isHotelsActive', //Discription from translation
+    width: 140,
+    type: 'boolean',
+    filterable: true,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
+    field: 'totalUsers', // Db name
+    headerAlign: 'center', //
+    description: 'totalUsers', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
+    field: 'totalAgents', // Db name
+    headerAlign: 'center', //
+    description: 'totalAgents', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
   },
   {
     field: 'phone_code', // Db name
@@ -231,6 +276,30 @@ export const countriesFields = [
     label: 'native',
     type: 'string',
     filterable: false,
+  },
+  {
+    Icon: HotelIcon,
+    label: 'totalActiveHotels',
+    type: 'number',
+    filterable: true,
+  },
+  {
+    Icon: Badge,
+    label: 'totalUsers',
+    type: 'number',
+    filterable: true,
+  },
+  {
+    Icon: AccountBox,
+    label: 'totalAgents',
+    type: 'number',
+    filterable: true,
+  },
+  {
+    Icon: HotelIcon,
+    label: 'isHotelsActive',
+    type: 'boolean',
+    filterable: true,
   },
   {
     Icon: LocalPhone,

@@ -2,8 +2,9 @@ import { useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import alertCall from './useAlert';
-import { checkCookies, setCookies } from 'cookies-next';
+import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 
 const useActiveAlert = ({
   state,
@@ -17,10 +18,14 @@ const useActiveAlert = ({
   const dispatch = useDispatch();
   const router = useRouter();
   const { adminAccessToken } = useSelector((state) => state);
+  const { i18n } = useTranslation();
+  const lang = i18n.language == 'fa' ? 'fa' : 'en';
   const theme = useTheme();
   const sweetActiveAlert = (data) => {
     Swal.fire({
-      title: `${t('activeTitle', { ns: 'common' })}`,
+      title: `${t('activeTitle', { ns: 'common' })} ${
+        modelName == 'HotelsList' ? data[`title_${lang}`] : ''
+      }`,
       text: `${t('confirmActive', { ns: 'common' })}`,
       showCancelButton: true,
       background: theme.palette.background.default,
@@ -59,17 +64,26 @@ const useActiveAlert = ({
                 valuesSortByField: state.SortBy[`field`],
                 valuesSortBySorting: state.SortBy[`sorting`],
                 country_id: data.id,
-                iso2: data.iso2,
+                iso2: data?.iso2,
+                hotelReady: data?.hotelReady,
+                hotelNotComplete: data?.hotelNotComplete,
+                activesId: activesId,
               }),
             });
             const { status } = res;
             if (status !== 200 && !res.ok) {
-              alertCall(theme, 'error', res.statusText, () => {
-                dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                if (!checkCookies('adminAccessToken')) {
-                  router.push('/', undefined, { shallow: true });
+              const { Error } = await res.json();
+              alertCall(
+                theme,
+                'error',
+                t(`${Error}`, { ns: 'common' }) || res.statusText,
+                () => {
+                  dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+                  if (!checkCookies('adminAccessToken')) {
+                    router.push('/', undefined, { shallow: true });
+                  }
                 }
-              });
+              );
             } else {
               const response = await res.json();
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -158,15 +172,21 @@ const useActiveAlert = ({
               }),
             });
             const { status } = res;
-            const response = await res.json();
             if (status !== 200 && !res.ok) {
-              alertCall(theme, 'error', response.Error, () => {
-                dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-                if (!checkCookies('adminAccessToken')) {
-                  router.push('/', undefined, { shallow: true });
+              const { Error } = await res.json();
+              alertCall(
+                theme,
+                'error',
+                t(`${Error}`, { ns: 'common' }) || res.statusText,
+                () => {
+                  dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+                  if (!checkCookies('adminAccessToken')) {
+                    router.push('/', undefined, { shallow: true });
+                  }
                 }
-              });
+              );
             } else {
+              const response = await res.json();
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
               dispatch({
                 type: dispatchType,

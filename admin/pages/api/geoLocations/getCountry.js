@@ -51,6 +51,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             var country = value.filter((a) => a.id == country_id);
             res.status(200).json({ success: true, data: country[0] });
           }
+          await hz.shutdown();
         } else {
           //find all countries and add to map
           const valuesList = await collection.aggregate([
@@ -68,6 +69,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           var country = valuesList.filter((a) => a.id == country_id);
           if (country.length > 0) {
             res.status(200).json({ success: true, data: country[0] });
+            await hz.shutdown();
           } else {
             res.status(500).json({ success: false, Error: 'noResult' });
           }

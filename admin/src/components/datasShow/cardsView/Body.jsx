@@ -54,7 +54,9 @@ const Body = forwardRef((props, ref) => {
     icon,
     deleteButtonDisabled,
     updateButtonDisabled,
+    state
   } = props;
+  
   const { stringLimit, profile } = useSelector((state) => state);
   const { i18n } = useTranslation();
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
@@ -109,8 +111,8 @@ const Body = forwardRef((props, ref) => {
   };
 
   const labelSx = {
-    lineHeight: 1.80
-  }
+    lineHeight: 1.8,
+  };
 
   const keyboardSx = (index, expanded) => {
     return {
@@ -364,7 +366,11 @@ const Body = forwardRef((props, ref) => {
       return (
         <Box className={classes.expandIconBox}>
           <Icon style={iconStyle(i)} />
-          <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
+          <Typography
+            variant='caption'
+            display='block'
+            gutterBottom
+            sx={labelSx}>
             {t(`${showLabel}`)}
             {' :'}
           </Typography>
@@ -375,7 +381,11 @@ const Body = forwardRef((props, ref) => {
         return (
           <Box className={classes.expandIconBox}>
             <CheckBox style={iconStyle(i)} />
-            <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
+            <Typography
+              variant='caption'
+              display='block'
+              gutterBottom
+              sx={labelSx}>
               {t(`${showLabel}`)}
               {' :'}
             </Typography>
@@ -385,7 +395,11 @@ const Body = forwardRef((props, ref) => {
         return (
           <Box className={classes.expandIconBox}>
             <CheckBoxOutlineBlank style={iconStyle(i)} />
-            <Typography variant='caption' display='block' gutterBottom sx={labelSx}>
+            <Typography
+              variant='caption'
+              display='block'
+              gutterBottom
+              sx={labelSx}>
               {t(`${showLabel}`)}
               {' :'}
             </Typography>
@@ -395,7 +409,6 @@ const Body = forwardRef((props, ref) => {
     }
   };
 
-  
   return (
     <>
       {typeof icon !== 'undefined' ? (
@@ -458,8 +471,18 @@ const Body = forwardRef((props, ref) => {
         <CardBody ref={ref}>
           <div className={classes.cardHoverUnder}>
             {activesId !== undefined ? (
-              activesId.filter((e) => e.id == data.id).length > 0 ? (
-                <Tooltip title={t('ToggleOff',{ns: 'common'})} placement='bottom' arrow>
+              activesId.filter((e) => {
+                switch (modelName) {
+                  case 'HotelsList':
+                    return e._id[state.SortBy.field] == data[state.SortBy.field];
+                  default:
+                    return e.id == data.id;
+                }
+              }).length > 0 ? (
+                <Tooltip
+                  title={t('ToggleOff', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <span>
                     <Button
                       color='primary'
@@ -478,7 +501,10 @@ const Body = forwardRef((props, ref) => {
                   </span>
                 </Tooltip>
               ) : (
-                <Tooltip title={t('ToggleOn',{ns: 'common'})} placement='bottom' arrow>
+                <Tooltip
+                  title={t('ToggleOn', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <span>
                     <Button
                       disabled={deleteButtonDisabled}
@@ -499,7 +525,10 @@ const Body = forwardRef((props, ref) => {
               )
             ) : (
               editUrl !== '' && (
-                <Tooltip title={t('editTooltip',{ns: 'common'})} placement='bottom' arrow>
+                <Tooltip
+                  title={t('editTooltip', { ns: 'common' })}
+                  placement='bottom'
+                  arrow>
                   <span>
                     <Button
                       color='primary'
@@ -512,7 +541,10 @@ const Body = forwardRef((props, ref) => {
               )
             )}
             {modelName == 'Countries' || modelName == 'Currencies' ? (
-              <Tooltip title={t('ToggleOff',{ns: 'common'})} placement='bottom' arrow>
+              <Tooltip
+                title={t('ToggleOff', { ns: 'common' })}
+                placement='bottom'
+                arrow>
                 <span>
                   <Button
                     color='primary'
@@ -534,7 +566,10 @@ const Body = forwardRef((props, ref) => {
                 data._id !== profile._id &&
                 editUrl !== '') ||
               modelName == 'Agencies' ? (
-              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
+              <Tooltip
+                title={t('deleteTooltip', { ns: 'common' })}
+                placement='bottom'
+                arrow>
                 <span>
                   <Button
                     color='error'
@@ -549,7 +584,10 @@ const Body = forwardRef((props, ref) => {
             ) : activesId !== undefined ? null : modelName !== 'Users' &&
               !data.isActive &&
               deleteAlert !== undefined ? (
-              <Tooltip title={t('deleteTooltip',{ns: 'common'})} placement='bottom' arrow>
+              <Tooltip
+                title={t('deleteTooltip', { ns: 'common' })}
+                placement='bottom'
+                arrow>
                 <span>
                   <Button
                     disabled={deleteButtonDisabled}
