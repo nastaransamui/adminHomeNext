@@ -8,6 +8,7 @@ import CardAvatar from '../../Card/CardAvatar';
 import { Player } from 'video-react';
 import avatar from '../../../../public/images/faces/avatar1.jpg';
 import customerAvatar from '../../../../public/images/faces/Customer.png';
+import hotelAvatar from '../../../../public/images/faces/hotel.jpg';
 import { useSelector } from 'react-redux';
 
 const Header = forwardRef((props, ref) => {
@@ -34,7 +35,9 @@ const Header = forwardRef((props, ref) => {
       return <img src={data.profileImage || avatar.src} alt='...' />;
     } else if (modelName == 'Agencies') {
       return <img src={data.logoImage || customerAvatar.src} alt='...' />;
-    } else if (
+    }  else if (modelName == 'Hotels') {
+      return <img src={data.hotelThumb || hotelAvatar.src} alt='...' />;
+    }else if (
       modelName == 'global_countries' ||
       modelName == 'Countries' ||
       modelName == 'Provinces' ||

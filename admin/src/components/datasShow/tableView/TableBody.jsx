@@ -35,7 +35,7 @@ const TableBody = forwardRef((props, ref) => {
     diactiveAlert,
     deleteButtonDisabled,
     updateButtonDisabled,
-    state
+    state,
   } = props;
 
   const columns = [
@@ -58,7 +58,8 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
           modelName == 'global_currencies' ||
-          modelName == 'HotelsList'
+          modelName == 'HotelsList' ||
+          modelName == 'Hotels'
             ? true
             : modelName == 'Agencies'
             ? false
@@ -73,7 +74,8 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
           modelName == 'global_currencies' ||
-          modelName == 'HotelsList'
+          modelName == 'HotelsList' ||
+          modelName == 'Hotels'
             ? false
             : true;
         return [
@@ -105,22 +107,59 @@ const TableBody = forwardRef((props, ref) => {
           <GridActionsCellItem
             icon={
               activesId == undefined ? (
-                <Tooltip
-                  title={t('ToggleOff', { ns: 'common' })}
-                  placement='bottom'
-                  arrow>
-                  <ToggleOn
-                    style={{
-                      color: deleteButtonDisabled
-                        ? theme.palette.text.disabled
-                        : theme.palette.success.main,
-                    }}
-                  />
-                </Tooltip>
+                <Fragment>
+                  {modelName == 'Hotels' ? (
+                    <Fragment>
+                      {params?.row.isActive ? (
+                        <Tooltip
+                          title={t('ToggleOff', { ns: 'common' })}
+                          placement='bottom'
+                          arrow>
+                          <ToggleOff
+                            style={{
+                              color: deleteButtonDisabled
+                                ? theme.palette.text.disabled
+                                : theme.palette.success.main,
+                            }}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip
+                          title={t('ToggleOn', { ns: 'common' })}
+                          placement='bottom'
+                          arrow>
+                          <ToggleOn
+                            style={{
+                              color: deleteButtonDisabled
+                                ? theme.palette.text.disabled
+                                : theme.palette.error.main,
+                            }}
+                          />
+                        </Tooltip>
+                      )}
+                    </Fragment>
+                  ) : (
+                    <Tooltip
+                      title={t('ToggleOff', { ns: 'common' })}
+                      placement='bottom'
+                      arrow>
+                      <ToggleOn
+                        style={{
+                          color: deleteButtonDisabled
+                            ? theme.palette.text.disabled
+                            : theme.palette.success.main,
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                </Fragment>
               ) : activesId?.filter((e) => {
                   switch (modelName) {
                     case 'HotelsList':
-                      return e._id[state.SortBy.field] == params.row[state.SortBy.field]
+                      return (
+                        e._id[state.SortBy.field] ==
+                        params.row[state.SortBy.field]
+                      );
                     default:
                       return e.id == params.id;
                   }
@@ -156,16 +195,33 @@ const TableBody = forwardRef((props, ref) => {
             className='textPrimary'
             onClick={() => {
               if (activesId == undefined) {
-                !deleteButtonDisabled && diactiveAlert(params.row);
+                switch (modelName) {
+                  case 'Hotels':
+                    if(params?.row?.isActive){
+                      !deleteButtonDisabled && diactiveAlert(params.row);
+                    }else{
+                      !deleteButtonDisabled && activeAlert(params.row);
+                    }
+                    break;
+
+                  default:
+                    !deleteButtonDisabled && diactiveAlert(params.row);
+                    break;
+                }
               } else {
-                if (activesId?.filter((e) => {
-                  switch (modelName) {
-                    case 'HotelsList':
-                      return e._id[state.SortBy.field] == params.row[state.SortBy.field]
-                    default:
-                      return e.id == params.id;
-                  }
-                }).length > 0) {
+                if (
+                  activesId?.filter((e) => {
+                    switch (modelName) {
+                      case 'HotelsList':
+                        return (
+                          e._id[state.SortBy.field] ==
+                          params.row[state.SortBy.field]
+                        );
+                      default:
+                        return e.id == params.id;
+                    }
+                  }).length > 0
+                ) {
                   !deleteButtonDisabled && diactiveAlert(params.row);
                 } else {
                   !deleteButtonDisabled && activeAlert(params.row);
@@ -272,14 +328,18 @@ const TableBody = forwardRef((props, ref) => {
       if (activesId == undefined) {
         !deleteButtonDisabled && diactiveAlert(params.row);
       } else {
-        if (activesId?.filter((e) => {
-          switch (modelName) {
-            case 'HotelsList':
-              return e._id[state.SortBy.field] == params.row[state.SortBy.field]
-            default:
-              return e.id == params.id;
-          }
-        }).length > 0) {
+        if (
+          activesId?.filter((e) => {
+            switch (modelName) {
+              case 'HotelsList':
+                return (
+                  e._id[state.SortBy.field] == params.row[state.SortBy.field]
+                );
+              default:
+                return e.id == params.id;
+            }
+          }).length > 0
+        ) {
           !deleteButtonDisabled && diactiveAlert(params.row);
         } else {
           !deleteButtonDisabled && activeAlert(params.row);
@@ -311,7 +371,7 @@ const TableBody = forwardRef((props, ref) => {
           columns={columns}
           getRowId={(row) => row._id}
           rows={mainData}
-          rowHeight={100}
+          rowHeight={130}
           pageSize={perPage}
           paginationMode='server'
           rowCount={total}

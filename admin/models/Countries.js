@@ -14,6 +14,7 @@ const CountriesSchema = new mongoose.Schema(
     agents_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Agencies' }],
     hotels_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hotels' }],
     isHotelsActive: { type: Boolean, default: false },
+    isCountryActive: { type: Boolean, default: false },
     name: { type: String, required: true, unique: true, index: true },
     iso3: { type: String, required: true, unique: true, index: true },
     iso2: { type: String, required: true, unique: true, index: true },

@@ -4,35 +4,30 @@ import CardBody from '../../Card/CardBody';
 
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import {
-  ArtTrack,
-  Close,
-  DeleteForeverOutlined,
-  Done,
-  KeyboardArrowDown,
-  CheckBox,
-  CheckBoxOutlineBlank,
-  ToggleOff,
-  ToggleOn,
-} from '@mui/icons-material';
-
+import ArtTrack from '@mui/icons-material/ArtTrack';
+import Close from '@mui/icons-material/Close';
+import DeleteForeverOutlined from '@mui/icons-material/DeleteForeverOutlined';
+import Done from '@mui/icons-material/Done';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import CheckBox from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
+import ToggleOff from '@mui/icons-material/ToggleOff';
+import ToggleOn from '@mui/icons-material/ToggleOn';
 import SvgIcon from '@mui/material/SvgIcon';
-
-import {
-  Button,
-  ClickAwayListener,
-  Divider,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-  Box,
-  Typography,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Divider from '@mui/material/Divider';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import Rating from '@mui/material/Rating';
 
 const Body = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
@@ -54,9 +49,9 @@ const Body = forwardRef((props, ref) => {
     icon,
     deleteButtonDisabled,
     updateButtonDisabled,
-    state
+    state,
   } = props;
-  
+
   const { stringLimit, profile } = useSelector((state) => state);
   const { i18n } = useTranslation();
   const lang = i18n.language == 'fa' ? 'fa' : 'en';
@@ -223,6 +218,10 @@ const Body = forwardRef((props, ref) => {
       } else if (typeof data[label] !== 'boolean') {
         if (typeof data[label] !== 'number' && data[label] == '') {
           return `${t('notDefine')}`;
+        } else if (typeof data[label] == 'string' && type == 'rating') {
+          return (
+            <Rating name='read-only' value={parseInt(data[label])} readOnly />
+          );
         } else {
           // Validate date
           if (
@@ -474,7 +473,9 @@ const Body = forwardRef((props, ref) => {
               activesId.filter((e) => {
                 switch (modelName) {
                   case 'HotelsList':
-                    return e._id[state.SortBy.field] == data[state.SortBy.field];
+                    return (
+                      e._id[state.SortBy.field] == data[state.SortBy.field]
+                    );
                   default:
                     return e.id == data.id;
                 }
@@ -562,6 +563,54 @@ const Body = forwardRef((props, ref) => {
                   </Button>
                 </span>
               </Tooltip>
+            ) : modelName == 'Hotels' ? (
+              <Fragment>
+                {data.isActive ? (
+                  <Tooltip
+                    title={t('ToggleOn', { ns: 'common' })}
+                    placement='bottom'
+                    arrow>
+                    <span>
+                      <Button
+                        disabled={deleteButtonDisabled}
+                        color='primary'
+                        onClick={() => {
+                          activeAlert(data);
+                        }}>
+                        <ToggleOn
+                          style={{
+                            color: deleteButtonDisabled
+                              ? theme.palette.text.disabled
+                              : theme.palette.error.main,
+                          }}
+                        />
+                      </Button>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title={t('ToggleOff', { ns: 'common' })}
+                    placement='bottom'
+                    arrow>
+                    <span>
+                      <Button
+                        color='primary'
+                        disabled={deleteButtonDisabled}
+                        onClick={() => {
+                          diactiveAlert(data);
+                        }}>
+                        <ToggleOff
+                          style={{
+                            color: deleteButtonDisabled
+                              ? theme.palette.text.disabled
+                              : theme.palette.success.main,
+                          }}
+                        />
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
+              </Fragment>
             ) : (modelName == 'Users' &&
                 data._id !== profile._id &&
                 editUrl !== '') ||
@@ -627,6 +676,8 @@ const Body = forwardRef((props, ref) => {
                     ? data?.agentName
                     : modelName == 'Roles'
                     ? data?.roleName
+                    : modelName == 'Hotels'
+                    ? data?.hotelName
                     : data[`title_${lang}`]
                 }
                 placement='top'
@@ -700,7 +751,6 @@ const Body = forwardRef((props, ref) => {
                               onClick={() => gotToEdit(data._id)}
                               sx={dataFieldsSX}>
                               <ListItemIcon sx={{ color: 'inherit' }}>
-                                {/* <Icon style={iconStyle(i)} /> */}
                                 {listIcons(data, Icon, label, type, i)}
                               </ListItemIcon>
                               <ListItemText

@@ -107,7 +107,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   } else {
     try {
       const { hzErrorConnection, hz } = await hazelCast();
-      const country = await Countries.findOne({ iso2: iso2 });
+      const country = await Countries.findOne({
+        iso2: iso2,
+        isCountryActive: true,
+      });
       if (country == null) {
         res.status(403).json({ success: false, Error: `countryNotActive` });
       } else {
@@ -294,7 +297,7 @@ async function updateHotelList(
             valuesPageNumber
           ),
         });
-        await hz.shutdown();
+        // await hz.shutdown();
       }
     }
   }
@@ -366,7 +369,7 @@ async function getHotelsReady(
       if (!hzErrorConnection) {
         const hotelMap = await hz.getMultiMap('Hotels');
         await hotelMap.put(`allHotels`, fixedHotel);
-        await hz.shutdown();
+        // await hz.shutdown();
       }
       await importCountry(
         res,
@@ -414,7 +417,7 @@ async function getNullHotels(
         if (!hzErrorConnection) {
           const hotelNullMap = await hz.getMultiMap('NullHotels');
           await hotelNullMap.put(`allNullHotels`, nullHotelsObj);
-          await hz.shutdown();
+          // await hz.shutdown();
         }
         Accommodationnull.create(nullHotelsObj, async (err, result) => {
           if (err) {
@@ -601,7 +604,7 @@ async function importCountry(
             await multiMap.destroy();
             await multiMapP.destroy();
             await multiMapC.destroy();
-            await hz.shutdown();
+            // await hz.shutdown();
           }
           res.status(200).json({
             success: true,

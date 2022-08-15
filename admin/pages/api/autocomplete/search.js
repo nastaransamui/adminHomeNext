@@ -10,6 +10,7 @@ import Photos from '../../../models/Photos';
 import Users from '../../../models/Users';
 import Videos from '../../../models/Videos';
 import Agencies from '../../../models/Agencies';
+import Hotels from '../../../models/Hotels';
 import axios from 'axios';
 
 const apiRoute = nextConnect({
@@ -681,18 +682,81 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           } else {
             if (hzErrorConnection) {
               let phoneNumber = filterValue;
-              if (!phoneNumber.startsWith('+')) {
-                phoneNumber = [
-                  phoneNumber.slice(0, 0),
-                  '+',
-                  phoneNumber.slice(0),
-                ].join('');
+              if (phoneNumber.startsWith('+')) {
+                phoneNumber = phoneNumber.substring(1).replace(/\s/g, '');
               }
               const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
               const valuesList = await collection.aggregate([
                 { $sort: { agentName: 1 } },
-                { $match: { 'phones.number': phoneRegex } },
+                {
+                  $addFields: {
+                    [`${`convertedphones`}`]: {
+                      $reduce: {
+                        input: '$phones.number',
+                        initialValue: '',
+                        in: { $concat: ['$$value', '$$this'] },
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`${`convertedphones`}`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: '+',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: '(',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: ' ',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: ')',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: '-',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                { $match: { convertedphones: phoneRegex } },
                 { $limit: 50 },
+                { $unset: `convertedphones` },
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
@@ -708,12 +772,32 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               if (dataIsExist) {
                 const values = await multiMap.get(`all${modelName}`);
                 for (const value of values) {
+                  const phoneSearchRegex = new RegExp(
+                    escapeRegExp(
+                      filterValue
+                        .substring(1)
+                        .replaceAll(/\s/g, '')
+                        .replaceAll('(', '')
+                        .replaceAll(')', '')
+                        .replaceAll('-', '')
+                    ),
+                    'i'
+                  );
                   const filterdData = value.filter((row) => {
                     return Object.keys(row).some((field) => {
                       if (field == fieldValue) {
                         if (row[field] !== null) {
-                          return searchRegex.test(
-                            row[field].map((a, i) => a.number)[0].toString()
+                          return phoneSearchRegex.test(
+                            row[field]
+                              .map((a, i) =>
+                                a.number
+                                  .substring(1)
+                                  .replaceAll(/\s/g, '')
+                                  .replaceAll('(', '')
+                                  .replaceAll(')', '')
+                                  .replaceAll('-', '')
+                              )
+                              .toString()
                           );
                         }
                       }
@@ -739,18 +823,81 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 }
               } else {
                 let phoneNumber = filterValue;
-                if (!phoneNumber.startsWith('+')) {
-                  phoneNumber = [
-                    phoneNumber.slice(0, 0),
-                    '+',
-                    phoneNumber.slice(0),
-                  ].join('');
+                if (phoneNumber.startsWith('+')) {
+                  phoneNumber = phoneNumber.substring(1).replace(/\s/g, '');
                 }
                 const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
                 const valuesList = await collection.aggregate([
                   { $sort: { agentName: 1 } },
-                  { $match: { 'phones.number': phoneRegex } },
+                  {
+                    $addFields: {
+                      [`${`convertedphones`}`]: {
+                        $reduce: {
+                          input: '$phones.number',
+                          initialValue: '',
+                          in: { $concat: ['$$value', '$$this'] },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      [`${`convertedphones`}`]: {
+                        $replaceAll: {
+                          input: '$convertedphones',
+                          find: '+',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      [`convertedphones`]: {
+                        $replaceAll: {
+                          input: '$convertedphones',
+                          find: '(',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      [`convertedphones`]: {
+                        $replaceAll: {
+                          input: '$convertedphones',
+                          find: ' ',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      [`convertedphones`]: {
+                        $replaceAll: {
+                          input: '$convertedphones',
+                          find: ')',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  },
+                  {
+                    $addFields: {
+                      [`convertedphones`]: {
+                        $replaceAll: {
+                          input: '$convertedphones',
+                          find: '-',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  },
+                  { $match: { convertedphones: phoneRegex } },
                   { $limit: 50 },
+                  { $unset: `convertedphones` },
                 ]);
                 if (valuesList.length > 0) {
                   res.status(200).json({ success: true, data: valuesList });
@@ -819,6 +966,309 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   const valuesList = resp.data.data;
                   res.status(200).json({ success: true, data: valuesList });
                 });
+            }
+          }
+          break;
+        case 'Hotels':
+          var collection = mongoose.model(modelName);
+          if (hzErrorConnection) {
+            var match = {
+              $match: { [fieldValue]: searchRegex },
+            };
+            var addFields = {
+              $addFields: {},
+            };
+            var phoneAddFields = {
+              $addFields: {},
+            };
+            var unset = {
+              $unset: `converted${fieldValue}`,
+            };
+            switch (fieldValue) {
+              case 'hotelId':
+                addFields = {
+                  $addFields: {
+                    [`${`converted${fieldValue}`}`]: {
+                      $toString: `$${fieldValue}`,
+                    },
+                  },
+                };
+                match = {
+                  $match: {
+                    [`${`converted${fieldValue}`}`]: searchRegex,
+                  },
+                };
+                break;
+              case 'phones':
+              case 'fax':
+                let phoneNumber = filterValue;
+                if (phoneNumber.startsWith('+')) {
+                  phoneNumber = phoneNumber.substring(1).replace(/\s/g, '');
+                }
+                const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
+                match = {
+                  $match: {
+                    convertedphones: phoneRegex,
+                  },
+                };
+                const input = fieldValue == 'phones' ? '$phones' : '$fax';
+                addFields = {
+                  $addFields: {
+                    [`${`convertedphones`}`]: {
+                      $replaceAll: {
+                        input: input,
+                        find: '+',
+                        replacement: '',
+                      },
+                    },
+                  },
+                };
+                unset = {
+                  $unset: `convertedphones`,
+                };
+                break;
+            }
+            const valuesList = await collection.aggregate([
+              { $sort: { name: 1 } },
+              { ...addFields },
+              {
+                $addFields: {
+                  [`convertedphones`]: {
+                    $replaceAll: {
+                      input: '$convertedphones',
+                      find: '(',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  [`convertedphones`]: {
+                    $replaceAll: {
+                      input: '$convertedphones',
+                      find: ' ',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  [`convertedphones`]: {
+                    $replaceAll: {
+                      input: '$convertedphones',
+                      find: ')',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  [`convertedphones`]: {
+                    $replaceAll: {
+                      input: '$convertedphones',
+                      find: '-',
+                      replacement: '',
+                    },
+                  },
+                },
+              },
+              { ...match },
+              { $limit: 100 },
+              { ...unset },
+            ]);
+            if (valuesList.length > 0) {
+              res.status(200).json({ success: true, data: valuesList });
+            } else {
+              res.status(200).json({
+                success: true,
+                data: [],
+              });
+            }
+          } else {
+            const multiMap = await hz.getMultiMap(modelName);
+            const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+            if (dataIsExist) {
+              const values = await multiMap.get(`all${modelName}`);
+              for (const value of values) {
+                var filterdHotels = [];
+                if (fieldValue !== 'phones' && fieldValue !== 'fax') {
+                  const searchRegex = new RegExp(
+                    escapeRegExp(filterValue),
+                    'i'
+                  );
+                  filterdHotels = value.filter((row) => {
+                    return Object.keys(row).some((field) => {
+                      if (field == fieldValue && row[field] !== null) {
+                        return searchRegex.test(row[field].toString());
+                      }
+                    });
+                  });
+                } else {
+                  const searchRegex = new RegExp(
+                    escapeRegExp(
+                      filterValue
+                        .substring(1)
+                        .replaceAll(/\s/g, '')
+                        .replaceAll('(', '')
+                        .replaceAll(')', '')
+                        .replaceAll('-', '')
+                    ),
+                    'i'
+                  );
+                  filterdHotels = value.filter((row) => {
+                    return Object.keys(row).some((field) => {
+                      if (field == fieldValue && row[field] !== null) {
+                        return searchRegex.test(
+                          row[field]
+                            // .substring(1)
+                            .replaceAll(/\s/g, '')
+                            .replaceAll('(', '')
+                            .replaceAll(')', '')
+                            .replaceAll('-', '')
+                            .replaceAll(',', '')
+                        );
+                      }
+                    });
+                  });
+                }
+                if (filterdHotels.length > 0) {
+                  res.status(200).json({
+                    success: true,
+                    data: paginate(
+                      filterdHotels.sort(
+                        sort_by('hotelName', false, (a) => a.toUpperCase())
+                      ),
+                      100,
+                      1
+                    ),
+                  });
+                } else {
+                  res.status(200).json({
+                    success: true,
+                    data: [],
+                  });
+                }
+              }
+              await hz.shutdown();
+            } else {
+              var match = {
+                $match: { [fieldValue]: searchRegex },
+              };
+              var addFields = {
+                $addFields: {},
+              };
+              var phoneAddFields = {
+                $addFields: {},
+              };
+              var unset = {
+                $unset: `converted${fieldValue}`,
+              };
+              switch (fieldValue) {
+                case 'hotelId':
+                  addFields = {
+                    $addFields: {
+                      [`${`converted${fieldValue}`}`]: {
+                        $toString: `$${fieldValue}`,
+                      },
+                    },
+                  };
+                  match = {
+                    $match: {
+                      [`${`converted${fieldValue}`}`]: searchRegex,
+                    },
+                  };
+                  break;
+                case 'phones':
+                case 'fax':
+                  let phoneNumber = filterValue;
+                  if (phoneNumber.startsWith('+')) {
+                    phoneNumber = phoneNumber.substring(1).replace(/\s/g, '');
+                  }
+                  const phoneRegex = new RegExp(escapeRegExp(phoneNumber), 'i');
+                  match = {
+                    $match: {
+                      convertedphones: phoneRegex,
+                    },
+                  };
+                  const input = fieldValue == 'phones' ? '$phones' : '$fax';
+                  addFields = {
+                    $addFields: {
+                      [`${`convertedphones`}`]: {
+                        $replaceAll: {
+                          input: input,
+                          find: '+',
+                          replacement: '',
+                        },
+                      },
+                    },
+                  };
+                  unset = {
+                    $unset: `convertedphones`,
+                  };
+                  break;
+              }
+              const valuesList = await collection.aggregate([
+                { $sort: { name: 1 } },
+                { ...addFields },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: '(',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: ' ',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: ')',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                {
+                  $addFields: {
+                    [`convertedphones`]: {
+                      $replaceAll: {
+                        input: '$convertedphones',
+                        find: '-',
+                        replacement: '',
+                      },
+                    },
+                  },
+                },
+                { ...match },
+                { $limit: 100 },
+                { ...unset },
+              ]);
+              if (valuesList.length > 0) {
+                res.status(200).json({ success: true, data: valuesList });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  data: [],
+                });
+              }
             }
           }
           break;

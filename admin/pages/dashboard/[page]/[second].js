@@ -27,6 +27,7 @@ import {
 import { Agencies } from '../../../src/components/Clients/Agencies/agenciesStatic';
 import { hotelsGStore } from '../../../src/components/Accommodations/All/Hotels/hotelsStatic';
 import { Roles } from '../../../src/components/Rbac/Roles/rolesStatic';
+import { Hotels } from '../../../src/components/Accommodations/Actives/Hotels/activeHotelsStatic';
 import routes from '../../../routes';
 
 function index(props) {
@@ -266,6 +267,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
             payload: checkCookies('hotelsGStore', ctx)
               ? JSON.parse(getCookies(ctx).hotelsGStore)
               : { ...hotelsGStore },
+          })),
+          ...(await store.dispatch({
+            type: 'HOTELS',
+            payload: checkCookies('hotels', ctx)
+              ? JSON.parse(getCookies(ctx).hotels)
+              : { ...Hotels },
           })),
         },
       };

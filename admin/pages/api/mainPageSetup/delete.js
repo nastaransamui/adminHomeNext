@@ -21,6 +21,30 @@ const apiRoute = nextConnect({
   },
 });
 
+function paginate(array, valuesPerPage, valuesPageNumber) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice(
+    (valuesPageNumber - 1) * valuesPerPage,
+    valuesPageNumber * valuesPerPage
+  );
+}
+
+const sort_by = (field, reverse, primer) => {
+  const key = primer
+    ? function (x) {
+        return primer(x[field]);
+      }
+    : function (x) {
+        return x[field];
+      };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function (a, b) {
+    return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+  };
+};
+
 apiRoute.post(
   verifyToken,
   MultifileMiddlewareDelete,
@@ -33,6 +57,7 @@ apiRoute.post(
       try {
         const { modelName } = req.body;
         var collection = mongoose.model(modelName);
+        const { hzErrorConnection, hz } = await hazelCast();
         switch (modelName) {
           case 'Users':
             collection.findById(req.body._id, async (err, docs) => {
@@ -78,7 +103,6 @@ apiRoute.post(
                 await deleteObjectsId(req, res, next, docs);
                 await docs.remove();
                 const totalValues = await collection.find();
-                const { hzErrorConnection, hz } = await hazelCast();
                 if (!hzErrorConnection) {
                   const multiMapu = await hz.getMultiMap('Users');
                   const multiMapc = await hz.getMultiMap('Countries');
@@ -103,6 +127,97 @@ apiRoute.post(
                 });
               }
             });
+            break;
+          case 'Hotels':
+            const {
+              valuesPerPage,
+              valuesPageNumber,
+              locale,
+              valuesSortBySorting,
+              modelName,
+            } = req.body;
+            await collection.updateOne(
+              { _id: req.body?.data?._id },
+              {
+                $set: { isActive: !req.body?.data?.isActive },
+              }
+            );
+            if (hzErrorConnection) {
+              const hotelsValue = await collection.aggregate([
+                {
+                  $sort: {
+                    [req.body['valuesSortByField']]: valuesSortBySorting,
+                  },
+                },
+                {
+                  $facet: {
+                    paginatedResults: [
+                      { $skip: valuesPerPage * (valuesPageNumber - 1) },
+                      { $limit: valuesPerPage },
+                    ],
+                    totalCount: [
+                      {
+                        $count: 'count',
+                      },
+                    ],
+                  },
+                },
+              ]);
+              res.status(200).json({
+                success: true,
+                totalValuesLength: hotelsValue[0].totalCount[0].count,
+                data: hotelsValue[0].paginatedResults,
+              });
+            } else {
+              const multiMap = await hz.getMultiMap(modelName);
+              const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+              if (dataIsExist) {
+                const values = await multiMap.get(`all${modelName}`);
+                for (const value of values) {
+                  for (let index = 0; index < value.length; index++) {
+                    const element = value[index];
+                    if (element._id == req.body?.data?._id) {
+                      element.isActive = !req.body?.data?.isActive;
+                    }
+                  }
+                  await multiMap.destroy(`all${modelName}`, value);
+                  await multiMap.put(`all${modelName}`, value);
+                  res.status(200).json({
+                    success: true,
+                    totalValuesLength: value.length,
+                    data: paginate(
+                      value.sort(
+                        sort_by(
+                          [req.body['valuesSortByField']],
+                          valuesSortBySorting > 0 ? false : true,
+                          (a) =>
+                            typeof a == 'boolean' || typeof a == 'number'
+                              ? a
+                              : a.toUpperCase()
+                        )
+                      ),
+                      valuesPerPage,
+                      valuesPageNumber
+                    ),
+                  });
+                }
+              } else {
+                const hotelValue = await collection.aggregate([
+                  { $match: {} },
+                  {
+                    $sort: {
+                      [req.body['valuesSortByField']]: valuesSortBySorting,
+                    },
+                  },
+                ]);
+                await multiMap.put(`all${modelName}`, hotelValue);
+                res.status(200).json({
+                  success: true,
+                  totalValuesLength: hotelValue.length,
+                  data: paginate(hotelValue, valuesPerPage, valuesPageNumber),
+                });
+              }
+            }
             break;
           default:
             collection.findByIdAndDelete(req.body._id, async (err, docs) => {

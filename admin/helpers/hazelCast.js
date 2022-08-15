@@ -3,7 +3,7 @@ var { Client } = require('hazelcast-client');
 
 function createClientConfig() {
   const lifecycleListener = (state) => {
-    console.log('Lifecycle Event >>> ' + state);
+    // console.log('Lifecycle Event >>> ' + state);
   };
 
   return {
@@ -38,8 +38,6 @@ const hazelCast = async () => {
       const client = await Client.newHazelcastClient(createClientConfig());
       // Print some information about this client
       return { hzErrorConnection: false, hz: client };
-
-      await client.shutdown();
     } catch (err) {
       return { hzErrorConnection: true, hz: null };
     }

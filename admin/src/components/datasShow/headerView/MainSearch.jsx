@@ -20,9 +20,6 @@ import { useHistory } from 'react-router-dom';
 
 import { Close } from '@mui/icons-material';
 
-export function escapeRegExp(value) {
-  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
 
 const MainSearch = forwardRef((props, ref) => {
   const classes = cardsShowStyles();
@@ -48,6 +45,7 @@ const MainSearch = forwardRef((props, ref) => {
     setFieldValue,
     getLabels,
     handleAutocomplete,
+    filterOptionFunc
   } = useDataSearch(modelName, state, dataGridColumns, setMainData);
 
   return (
@@ -109,28 +107,8 @@ const MainSearch = forwardRef((props, ref) => {
             isOptionEqualToValue={(dataOptions, value) => {
               return dataOptions.name === value.name;
             }}
-            filterOptions={(x, s) => {
-              const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
-              const filterdData = x.filter((row) => {
-                if (fieldValue !== 'phones') {
-                  return Object.keys(row).some((field) => {
-                    if (row[field] !== null) {
-                      return searchRegex.test(row[field].toString());
-                    }
-                  });
-                } else {
-                  return Object.keys(row).some((field) => {
-                    if (row[field] !== null) {
-                      if (field == 'phones') {
-                        return row[field].map((a, i) => {
-                          return searchRegex.test(a.number.toString());
-                        });
-                      }
-                    }
-                  });
-                }
-              });
-              return filterdData;
+            filterOptions={(options, state) => {
+              return filterOptionFunc(options,state)
             }}
             renderOption={(props, dataOptions) => (
               <Box component='li' {...props} key={dataOptions._id}>
@@ -140,7 +118,7 @@ const MainSearch = forwardRef((props, ref) => {
             renderInput={(params) => {
               return (
                 <>
-                  {fieldValue !== 'phones' ? (
+                  {fieldValue !== 'phones' && fieldValue !== 'fax' ? (
                     <TextField
                       {...params}
                       label={t('labelSearch', { ns: 'common' })}

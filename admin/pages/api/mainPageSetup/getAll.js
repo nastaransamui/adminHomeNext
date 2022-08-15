@@ -10,6 +10,7 @@ import Photos from '../../../models/Photos';
 import Features from '../../../models/Features';
 import Agencies from '../../../models/Agencies';
 import Roles from '../../../models/Roles';
+import Hotels from '../../../models/Hotels';
 
 const { faker } = require('@faker-js/faker');
 //Username case to lower case
@@ -80,7 +81,31 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               data: paginate(agentValue, valuesPerPage, valuesPageNumber),
             });
             break;
-
+          case 'Hotels':
+            const hotelsValue = await collection.aggregate([
+              {
+                $sort: { [req.body['valuesSortByField']]: valuesSortBySorting },
+              },
+              {
+                $facet: {
+                  paginatedResults: [
+                    { $skip: valuesPerPage * (valuesPageNumber - 1) },
+                    { $limit: valuesPerPage },
+                  ],
+                  totalCount: [
+                    {
+                      $count: 'count',
+                    },
+                  ],
+                },
+              },
+            ]);
+            res.status(200).json({
+              success: true,
+              totalValuesLength: hotelsValue[0].totalCount[0].count,
+              data: hotelsValue[0].paginatedResults,
+            });
+            break;
           default:
             const defaultValuesList = await collection
               .find({})
@@ -107,7 +132,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`all${modelName}`);
           for (const value of values) {
-            value.map((a) => delete a.password);
+            if (modelName == 'Users') value.map((a) => delete a.password);
             res.status(200).json({
               success: true,
               totalValuesLength: value.length,
@@ -143,6 +168,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 success: true,
                 totalValuesLength: agentValue.length,
                 data: paginate(agentValue, valuesPerPage, valuesPageNumber),
+              });
+              break;
+            case 'Hotels':
+              const hotelValue = await collection.aggregate([
+                { $match: {} },
+                {
+                  $sort: {
+                    [req.body['valuesSortByField']]: valuesSortBySorting,
+                  },
+                },
+              ]);
+              await multiMap.put(`all${modelName}`, hotelValue);
+              res.status(200).json({
+                success: true,
+                totalValuesLength: hotelValue.length,
+                data: paginate(hotelValue, valuesPerPage, valuesPageNumber),
               });
               break;
             default:

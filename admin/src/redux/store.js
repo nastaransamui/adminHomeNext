@@ -17,6 +17,7 @@ import {
 import { Agencies } from '../components/Clients/Agencies/agenciesStatic';
 import { Roles } from '../components/Rbac/Roles/rolesStatic';
 import { hotelsGStore } from '../components/Accommodations/All/Hotels/hotelsStatic';
+import { Hotels } from '../components/Accommodations/Actives/Hotels/activeHotelsStatic';
 
 const initialState = {
   adminAccessToken: null,
@@ -42,6 +43,7 @@ const initialState = {
   dataAgentPageNumber: 0,
   rolesUserDataPageNumber: 0,
   hotelsGStore: { ...hotelsGStore },
+  Hotels: { ...Hotels },
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -132,6 +134,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         hotelsGStore: { ...payload },
+      };
+    case 'HOTELS':
+      return {
+        ...state,
+        Hotels: { ...payload },
       };
     default:
       return state;

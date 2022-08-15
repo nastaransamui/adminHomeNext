@@ -68,6 +68,7 @@ const useActiveAlert = ({
                 hotelReady: data?.hotelReady,
                 hotelNotComplete: data?.hotelNotComplete,
                 activesId: activesId,
+                data: data,
               }),
             });
             const { status } = res;
@@ -87,14 +88,26 @@ const useActiveAlert = ({
             } else {
               const response = await res.json();
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-              dispatch({
-                type: dispatchType,
-                payload: {
-                  ...state,
-                  dataArrayLengh: response.totalValuesLength,
-                  activesId: response.activesId,
-                },
-              });
+              if (modelName == 'Hotels') {
+                dispatch({
+                  type: dispatchType,
+                  payload: {
+                    ...state,
+                    dataArray: response.data,
+                    dataArrayLengh: response.totalValuesLength,
+                    activesId: response.activesId,
+                  },
+                });
+              } else {
+                dispatch({
+                  type: dispatchType,
+                  payload: {
+                    ...state,
+                    dataArrayLengh: response.totalValuesLength,
+                    activesId: response.activesId,
+                  },
+                });
+              }
               Swal.fire({
                 title: t('activated', { ns: 'common' }),
                 text: t('activeSuccess', { ns: 'common' }),

@@ -3,12 +3,17 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import avatar from '../../../public/images/faces/avatar1.jpg';
 import customerAvatar from '../../../public/images/faces/Customer.png';
+import hotelAvatar from '../../../public/images/faces/hotel.jpg';
 import alertCall from '../../components/Hooks/useAlert';
 import { checkCookies } from 'cookies-next';
 import { useRouter } from 'next/router';
 const getDataUrl = '/admin/api/autocomplete/search';
 import { useTheme } from '@mui/material';
 import SvgIcon from '@mui/material/SvgIcon';
+
+export function escapeRegExp(value) {
+  return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
   const { adminAccessToken, stringLimit } = useSelector((state) => state);
@@ -116,6 +121,7 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         }
         break;
       case 'Roles':
+      case 'Hotels':
         setFilterValue(
           newValue !== null ? newValue[`${fieldValue}`] || '' : ''
         );
@@ -279,6 +285,20 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
             } - ${t('hotelNotComplete')} : ${dataOptions.hotelNotComplete}`}
           </>
         );
+      case 'Hotels':
+        return (
+          <>
+            <img
+              height={30}
+              width={30}
+              style={{ borderRadius: '50%' }}
+              src={`${dataOptions.hotelThumb || hotelAvatar.src}`}
+              alt=''
+            />
+            &nbsp;&nbsp;&nbsp;
+            {`${dataOptions.hotelName} ${dataOptions[fieldValue]}`}
+          </>
+        );
     }
   };
 
@@ -304,7 +324,100 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
         return dataOptions.roleName;
       case 'HotelsList':
         return dataOptions.title_en;
+      case 'Hotels':
+        return dataOptions.hotelName;
     }
+  };
+
+  const filterOptionFunc = (options, state) => {
+    switch (modelName) {
+      case 'Agencies':
+        if (fieldValue !== 'phones') {
+          const agentSearchRegex = new RegExp(escapeRegExp(filterValue), 'i');
+          const filterdData = options.filter((row) => {
+            return Object.keys(row).some((field) => {
+              if (field == fieldValue && row[field] !== null) {
+                return agentSearchRegex.test(row[field].toString());
+              }
+            });
+          });
+          return filterdData;
+        } else {
+          const searchRegex = new RegExp(
+            escapeRegExp(
+              filterValue
+                .substring(1)
+                .replaceAll(/\s/g, '')
+                .replaceAll('(', '')
+                .replaceAll(')', '')
+                .replaceAll('-', '')
+            ),
+            'i'
+          );
+          const filterdData = options.filter((row) => {
+            return Object.keys(row).some((field) => {
+              if (field == fieldValue && row[field] !== null) {
+                return row[field].map((a, i) => {
+                  return searchRegex.test(a.number.toString());
+                });
+              }
+            });
+          });
+          return filterdData;
+        }
+        break;
+      case 'Hotels':
+        if (fieldValue !== 'phones' && fieldValue !== 'fax') {
+          const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
+          const filterData = options.filter((row) => {
+            return Object.keys(row).some((field) => {
+              if (field == fieldValue && row[field] !== null) {
+                return searchRegex.test(row[field].toString());
+              }
+            });
+          });
+          return filterData;
+        } else {
+          const searchRegex = new RegExp(
+            escapeRegExp(
+              filterValue
+                .substring(1)
+                .replaceAll(/\s/g, '')
+                .replaceAll('(', '')
+                .replaceAll(')', '')
+                .replaceAll('-', '')
+            ),
+            'i'
+          );
+          const filterData = options.filter((row) => {
+            return Object.keys(row).some((field) => {
+              if (field == fieldValue && row[field] !== null) {
+                return searchRegex.test(
+                  row[field]
+                    // .substring(1)
+                    .replaceAll(/\s/g, '')
+                    .replaceAll('(', '')
+                    .replaceAll(')', '')
+                    .replaceAll('-', '')
+                    .replaceAll(',', '')
+                );
+              }
+            });
+          });
+          return filterData;
+        }
+      default:
+        const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
+        const filterdData = options.filter((row) => {
+          return Object.keys(row).some((field) => {
+            if (field == fieldValue && row[field] !== null) {
+              return searchRegex.test(row[field].toString());
+            }
+          });
+        });
+        return filterdData;
+    }
+    // return options;
   };
 
   return {
@@ -319,6 +432,7 @@ const useDataSearch = (modelName, state, dataGridColumns, setMainData) => {
     setFieldValue,
     getLabels,
     handleAutocomplete,
+    filterOptionFunc,
   };
 };
 

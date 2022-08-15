@@ -11,6 +11,7 @@ const alertCall = (theme, type, message, callback) => {
         backgroundColor: backgroundColor,
         color: 'black',
         zIndex: 9999,
+        padding: 10,
       },
     },
     onClose: function () {

@@ -65,6 +65,17 @@ const hotelsHook = (socket) => {
 
   useEffect(() => {
     let isMount = true;
+    if (isMount) {
+      setOpenAlert(true);
+      setAlertText(t('durationAlert'));
+    }
+    return () => {
+      isMount = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMount = true;
     if (isMount && !isVercel && socket !== undefined) {
       socket.on('hotelsImportDone', (data) => {
         setOpenAlert(true);
@@ -117,7 +128,6 @@ const hotelsHook = (socket) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpenAlert(false);
   };
 

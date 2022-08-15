@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import avatar from '../../../../public/images/faces/avatar1.jpg';
 import customerAvatar from '../../../../public/images/faces/Customer.png';
+import hotelAvatar from '../../../../public/images/faces/hotel.jpg';
 import { Close, Done } from '@mui/icons-material';
 import {
   GridToolbarContainer,
@@ -32,7 +33,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Stack, InputLabel, TextField } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import SvgIcon from '@mui/material/SvgIcon';
-import IconButton from '@mui/material/IconButton';
+import Rating from '@mui/material/Rating';
 
 function isOverflown(element) {
   return (
@@ -41,7 +42,7 @@ function isOverflown(element) {
   );
 }
 const GridCellExpand = React.memo(function GridCellExpand(props) {
-  const { width, value } = props;
+  const { width, value, field } = props;
   const wrapper = React.useRef(null);
   const cellDiv = React.useRef(null);
   const cellValue = React.useRef(null);
@@ -119,6 +120,8 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
         }}>
         {value == '' ? (
           <Close style={{ color: theme.palette.error.main }} />
+        ) : field == 'hotelRating' ? (
+          <Rating name='read-only' value={parseInt(value)} readOnly />
         ) : (
           value
         )}
@@ -158,6 +161,7 @@ export const RenderCellExpand = (params) => {
         <GridCellExpand
           value={params.value || ''}
           width={params.colDef.computedWidth}
+          field={params.field}
         />
       ) : (
         <span
@@ -170,6 +174,8 @@ export const RenderCellExpand = (params) => {
             ? params.value
             : params.modelName == 'Agencies'
             ? params?.row?.currencyCode + ' ' + params.value.toLocaleString()
+            : params.modelName == 'Hotels'
+            ? params.value
             : params.value.toLocaleString()}
         </span>
       )}
@@ -301,6 +307,14 @@ export const RenderCellAvatar = (params) => {
           alt='...'
         />
       );
+    } else if (modelName == 'Hotels') {
+      return (
+        <img
+          style={{ height: 40, width: 40, borderRadius: '50%' }}
+          src={row[dataGridColumns[0].hasAvatar[1]] || hotelAvatar.src}
+          alt='...'
+        />
+      );
     } else if (
       modelName == 'global_countries' ||
       modelName == 'Countries' ||
@@ -389,23 +403,34 @@ export const RenderCellAvatar = (params) => {
         invisible={params.modelName == 'Users' && params.id !== profile._id}>
         <Image />
       </Badge>
-      {modelName == 'Users'
-        ? formattedValue.length <= stringLimit
-          ? formattedValue
-          : rtlActive
-          ? `... ${formattedValue.slice(0, stringLimit)}`
-          : `${formattedValue.slice(0, stringLimit)} ...`
-        : modelName == 'global_countries' || modelName == 'Countries'
-        ? rtlActive
-          ? `${row?.translations?.fa} / ${row?.name}`
-          : row?.name
-        : modelName == 'Provinces' || modelName == 'Cities'
-        ? row?.name
-        : modelName == 'Agencies'
-        ? row?.agentName
-        : modelName == 'global_currencies' || modelName == 'Currencies'
-        ? row?.currency_name
-        : row[`title_${lang}`]}
+      <u
+        style={{
+          inlineSize: 150,
+          overflowWrap: 'break-word',
+          whiteSpace: 'pre-line',
+          textAlign: 'center',
+          textDecoration: 'none',
+        }}>
+        {modelName == 'Users'
+          ? formattedValue.length <= stringLimit
+            ? formattedValue
+            : rtlActive
+            ? `... ${formattedValue.slice(0, stringLimit)}`
+            : `${formattedValue.slice(0, stringLimit)} ...`
+          : modelName == 'global_countries' || modelName == 'Countries'
+          ? rtlActive
+            ? `${row?.translations?.fa} / ${row?.name}`
+            : row?.name
+          : modelName == 'Provinces' || modelName == 'Cities'
+          ? row?.name
+          : modelName == 'Agencies'
+          ? row?.agentName
+          : modelName == 'Hotels'
+          ? row?.hotelName
+          : modelName == 'global_currencies' || modelName == 'Currencies'
+          ? row?.currency_name
+          : row[`title_${lang}`]}
+      </u>
     </span>
   );
 };

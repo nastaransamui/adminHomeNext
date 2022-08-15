@@ -30,6 +30,17 @@ export const dataGridColumns = [
     searchAble: true,
   },
   {
+    field: 'isCountryActive', // Db name
+    headerAlign: 'center', //
+    description: 'isCountryActive', //Discription from translation
+    width: 140,
+    type: 'boolean',
+    filterable: true,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
     field: 'iso3', // Db name
     headerAlign: 'center', //
     description: 'iso3', //Discription from translation
@@ -257,6 +268,12 @@ export const countriesFields = [
     Icon: Title,
     label: 'name',
     type: 'string',
+    filterable: true,
+  },
+  {
+    Icon: HotelIcon,
+    label: 'isCountryActive',
+    type: 'boolean',
     filterable: true,
   },
   {

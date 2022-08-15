@@ -84,18 +84,36 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             doc.totalUsers = 0;
             doc.totalAgents = 0;
             doc.isHotelsActive = false;
+            doc.isCountryActive = false;
             delete doc.states;
             return doc;
           });
           var collection = mongoose.model(modelName);
-          var activesIds = await collection.find({}, { _id: true, id: true });
+          var activesIds = await collection.find(
+            { isCountryActive: true },
+            { _id: true, id: true, isHotelsActive: true }
+          );
           let orderCountryByActivation = data.sort((a, b) => {
+            if (activesIds.findIndex((p) => p.id === b.id) !== -1) {
+              b.isCountryActive = true;
+              b.isHotelsActive =
+                activesIds[
+                  activesIds.findIndex((p) => p.id === b.id)
+                ].isHotelsActive;
+            }
+
+            if (activesIds.findIndex((p) => p.id === a.id) !== -1) {
+              a.isCountryActive = true;
+              a.isHotelsActive =
+                activesIds[
+                  activesIds.findIndex((p) => p.id === a.id)
+                ].isHotelsActive;
+            }
             return (
               activesIds.findIndex((p) => p.id === b.id) -
               activesIds.findIndex((p) => p.id === a.id)
             );
           });
-
           res.status(200).json({
             success: true,
             totalValuesLength: orderCountryByActivation.length,
@@ -126,6 +144,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
             const valuesList = await collection.aggregate([
+              { $match: { isCountryActive: true } },
               {
                 $addFields: {
                   totalStates: { $size: '$states' },
@@ -162,11 +181,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             if (dataIsExist) {
               const values = await multiMap.get(`all${modelName}`);
               for (const value of values) {
+                const activeCountry = value.filter((a) => a.isCountryActive);
                 res.status(200).json({
                   success: true,
-                  totalValuesLength: value.length,
+                  totalValuesLength: activeCountry.length,
                   data: paginate(
-                    value.sort(
+                    activeCountry.sort(
                       sort_by(
                         [req.body['valuesSortByField']],
                         valuesSortBySorting > 0 ? false : true,
@@ -184,6 +204,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
+                { $match: { isCountryActive: true } },
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
