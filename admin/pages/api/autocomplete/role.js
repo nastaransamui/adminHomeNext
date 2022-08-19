@@ -93,7 +93,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 success: true,
                 data: paginate(
                   filterdData.sort(
-                    sort_by('userName', false, (a) => a.toUpperCase())
+                    sort_by('roleName', false, (a) => {
+                      if (a !== undefined) {
+                        return typeof a == 'boolean' || typeof a == 'number'
+                          ? a
+                          : a.toUpperCase();
+                      }
+                    })
                   ),
                   50,
                   1

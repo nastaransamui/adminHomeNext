@@ -1,18 +1,14 @@
-import {
-  MenuItem,
-  MenuList,
-  ClickAwayListener,
-  Paper,
-  Grow,
-  Hidden,
-  Popper,
-  Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  useMediaQuery,
-} from '@mui/material';
+
+import  ClickAwayListener  from '@mui/material/ClickAwayListener';
+import Paper from '@mui/material/Paper'
+import Grow from '@mui/material/Grow'
+import Hidden from '@mui/material/Hidden'
+import Popper from '@mui/material/Popper'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 import { removeCookies, setCookies } from 'cookies-next';
 import { useTheme } from '@mui/styles';
@@ -426,7 +422,7 @@ export default function NavbarLinks(props) {
         className={classes.buttonLink}
         classes={{ label: rtlActive ? classes.labelRTL : '' }}
         onClick={handleChangeMode}>
-        {theme.palette.type == 'dark' ? (
+        {theme.palette.type == 'light' ? (
           <DarkModeIcon
             className={
               classes.headerLinksSvg + ' ' + rtlActive

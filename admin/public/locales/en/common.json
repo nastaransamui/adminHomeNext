@@ -104,5 +104,16 @@
   "hotelReady": "Ready hotels",
   "hotelNotComplete": "Hotels need attention",
   "notFound": "Record not found.",
-  "countryNotActive": "This country is not active yet. Please first activate the country."
+  "countryNotActive": "This country is not active yet. Please first activate the country.",
+  "goBack": "Go back",
+  "roleName": "Role name",
+  "autocompleteLoading": "Type for Search",
+  "autocompleteNoOptions": "No options for this search",
+  "cityName": "City",
+  "provinceName": "Province/State",
+  "countryName": "Country",
+  "required": "This field is required",
+  "emailRequire": "Email should be valid.",
+  "routeChanged": "The value of roles changed.You need to save before continue.",
+  "Total": "Total"
 }

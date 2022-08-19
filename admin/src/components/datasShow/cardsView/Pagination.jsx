@@ -13,7 +13,9 @@ const Pagination = forwardRef((props, ref) => {
     t,
     requestSearch,
     paginationChange,
+    state
   } = props;
+  const {dataArrayLengh} = state;
   const { adminFormSubmit } = useSelector((state) => state);
   return (
     <Grid
@@ -27,6 +29,8 @@ const Pagination = forwardRef((props, ref) => {
       <Grid item>
         <Typography>
           {t('Page', { ns: 'common' })}: {pageNumber}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+          {t('Total', { ns: 'common' })}: {dataArrayLengh.toLocaleString()}
         </Typography>
       </Grid>
       {adminFormSubmit ? (

@@ -23,5 +23,10 @@
   "latitude": "Latitude",
   "longitude": "Longitude",
   "hotelId": "ID",
-  "Giataid": "Giata ID"
+  "Giataid": "Giata ID",
+  "active": "Active",
+  "notActive": "Inactive",
+  "required": "This field is required",
+  "emailRequire": "Email should be valid.",
+  "mapCoordinate": "Click on map to select coordinate."
 }

@@ -27,7 +27,7 @@ import {
 import { Agencies } from '../../../../src/components/Clients/Agencies/agenciesStatic';
 import { hotelsGStore } from '../../../../src/components/Accommodations/All/Hotels/hotelsStatic';
 import { Roles } from '../../../../src/components/Rbac/Roles/rolesStatic';
-import { Hotels } from '../../../src/components/Accommodations/Actives/Hotels/activeHotelsStatic';
+import { Hotels } from '../../../../src/components/Accommodations/Actives/Hotels/activeHotelsStatic';
 import routes from '../../../../routes';
 
 function index(props) {

@@ -12,7 +12,7 @@ export default function AgencyPage(props) {
   return (
     <Fragment>
       {search !== '' ? (
-        <Hotel hotel_id={query.get('hotel_id')} {...props} />
+        <Hotel _id={query.get('_id')} {...props} />
       ) : (
         <ActiveHotels {...props} />
       )}

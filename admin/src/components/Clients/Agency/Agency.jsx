@@ -1,33 +1,26 @@
 import { Fragment } from 'react';
 import agencyStyle from './agency-style';
 import customerAvatar from '../../../../public/images/faces/Customer.png';
-import avatar from '../../../../public/images/faces/avatar1.jpg';
-import {
-  ArrowBack,
-  ArrowForward,
-  Delete,
-  Add,
-  Remove,
-} from '@mui/icons-material';
-
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import Delete from '@mui/icons-material/Delete';
+import Add from '@mui/icons-material/Add';
+import Remove from '@mui/icons-material/Remove';
 import Card from '../../Card/Card';
 import CardBody from '../../Card/CardBody';
 import CardHeader from '../../Card/CardHeader';
 import CardIcon from '../../Card/CardIcon';
 import CardAvatar from '../../Card/CardAvatar';
-import {
-  Container,
-  Grid,
-  Fab,
-  IconButton,
-  Button,
-  useTheme,
-  MenuItem,
-  Tooltip,
-  Autocomplete,
-  Box,
-  CircularProgress,
-} from '@mui/material';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Fab from '@mui/material/Fab';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/styles';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import Autocomplete from '../../Autocomplete/Autocomplete';
 
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -44,6 +37,14 @@ import PhoneInput from '../../PhoneInput/PhoneInput';
 import NumberInput from '../../NumberInput/NumberInput';
 
 import useButtonActivation from '../../Hooks/useButtonActivation';
+
+import {
+  cityUrl,
+  countryUrl,
+  provinceUrl,
+  userUrl,
+  currencyUrl,
+} from './agencyStatic';
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -66,33 +67,6 @@ export default function Agency(props) {
     uploadImage,
     deleteImage,
     formSubmit,
-    handleAutocomplete,
-    openCity,
-    setOpenCity,
-    openProvince,
-    setOpenProvince,
-    openCountry,
-    setOpenCountry,
-    openAm,
-    setOpenAm,
-    openCurrency,
-    setOpenCurrency,
-    loadingCity,
-    loadingProvince,
-    loadingCountry,
-    loadingAm,
-    loadingCurrency,
-    cityOptions,
-    provinceOptions,
-    countryOptions,
-    amOptions,
-    currencyOptions,
-    sleep,
-    setCountryFilter,
-    setProvinceFilter,
-    setCityFilter,
-    setAmFilter,
-    setCurrencyFilter,
     countryPhoneCode,
     numbersRef,
     phoneTags,
@@ -289,492 +263,74 @@ export default function Agency(props) {
 
                     <Grid item xs={12} sm={12} md={6}>
                       <Autocomplete
-                        id='user-select'
-                        options={amOptions}
-                        loading={loadingAm}
-                        loadingText={t('loadingUsers')}
-                        autoHighlight
-                        inputValue={values.accountManager}
-                        onChange={(event, newValue) => {
-                          handleAutocomplete('accountManager', newValue);
-                        }}
-                        open={openAm}
-                        onOpen={() => {
-                          setOpenAm(true);
-                        }}
-                        onClose={() => {
-                          setOpenAm(false);
-                        }}
-                        getOptionLabel={(amOptions) => amOptions.userName}
-                        getOptionDisabled={(amOptions) => amOptions.error}
-                        isOptionEqualToValue={(amOptions, value) =>
-                          amOptions.label === value.label
-                        }
-                        filterOptions={(x) => {
-                          const searchRegex = new RegExp(
-                            escapeRegExp(values.accountManager),
-                            'i'
-                          );
-                          const filterdData = x.filter((row) => {
-                            return Object.keys(row).some((field) => {
-                              if (row[field] !== null) {
-                                return searchRegex.test(row[field].toString());
-                              }
-                            });
-                          });
-                          return filterdData;
-                        }}
-                        renderOption={(props, amOptions) => (
-                          <Box component='li' {...props} key={amOptions._id}>
-                            <img
-                              height={30}
-                              width={30}
-                              style={{ borderRadius: '50%' }}
-                              src={`${amOptions.profileImage || avatar.src}`}
-                              alt=''
-                            />
-                            &nbsp;&nbsp;&nbsp;
-                            {`${amOptions.userName}`}
-                          </Box>
-                        )}
-                        renderInput={(params) => (
-                          <TextValidator
-                            {...params}
-                            label={t('accountManager')}
-                            variant='standard'
-                            value={values.accountManager}
-                            onBlur={() => {
-                              if (
-                                amOptions
-                                  .map((a) => a.userName)
-                                  .indexOf(values.accountManager) == -1
-                              ) {
-                                setValues({ ...values, accountManager: '' });
-                              }
-                            }}
-                            onChange={(e) => {
-                              setValues({
-                                ...values,
-                                accountManager: e.target.value,
-                              });
-                              (async () => {
-                                await sleep(1e3); // For demo purposes.
-                                setAmFilter(e.target.value);
-                              })();
-                            }}
-                            className={classes.inputAutocomplete}
-                            fullWidth
-                            InputProps={{
-                              ...params.InputProps,
-                              endAdornment: (
-                                <Fragment>
-                                  {loadingAm ? (
-                                    <CircularProgress
-                                      color='inherit'
-                                      size={20}
-                                    />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                                </Fragment>
-                              ),
-                            }}
-                          />
-                        )}
+                        required={false}
+                        modelName='Users'
+                        componentName='AccountManager'
+                        optionsUrl={userUrl}
+                        nameValue='accountManager'
+                        value={values.accountManager}
+                        setValues={setValues}
+                        values={values}
+                        arrayIdName='accountManager_id'
+                        componentInUse='Agency'
                       />
                     </Grid>
                   </Grid>
                   <Grid container spacing={3} style={{ marginTop: 10 }}>
                     <Grid item xs={12} sm={12} md={3}>
                       <Autocomplete
-                        id='city-select'
-                        options={cityOptions}
-                        loading={loadingCity}
-                        loadingText={t('loadingCity')}
-                        noOptionsText={t('cityNoOptions')}
-                        inputValue={values.cityName}
-                        autoHighlight
-                        onChange={(event, newValue) => {
-                          handleAutocomplete('cityName', newValue);
-                        }}
-                        open={openCity}
-                        onOpen={() => {
-                          setOpenCity(true);
-                        }}
-                        onClose={() => {
-                          setOpenCity(false);
-                        }}
-                        getOptionLabel={(cityOptions) => cityOptions.name}
-                        getOptionDisabled={(cityOptions) => cityOptions.error}
-                        isOptionEqualToValue={(cityOptions, value) => {
-                          return cityOptions.name === value.name;
-                        }}
-                        filterOptions={(x, s) => {
-                          const searchRegex = new RegExp(
-                            escapeRegExp(values.cityName),
-                            'i'
-                          );
-                          const filterdData = x.filter((row) => {
-                            return Object.keys(row).some((field) => {
-                              if (row[field] !== null) {
-                                return searchRegex.test(row[field].toString());
-                              }
-                            });
-                          });
-                          return filterdData;
-                        }}
-                        renderOption={(props, cityOptions) => (
-                          <Box component='li' {...props} key={cityOptions.id}>
-                            {cityOptions.emoji} {cityOptions.name}{' '}
-                            {cityOptions.state_name} {cityOptions.iso2}
-                          </Box>
-                        )}
-                        renderInput={(params) => (
-                          <TextValidator
-                            {...params}
-                            label={t('cityName')}
-                            variant='standard'
-                            value={values.cityName}
-                            validators={['required']}
-                            errorMessages={[t('required')]}
-                            onBlur={() => {
-                              if (
-                                cityOptions
-                                  .map((a) => a.name)
-                                  .indexOf(values.cityName) == -1
-                              ) {
-                                setValues({
-                                  ...values,
-                                  cityName: '',
-                                  city_id: '',
-                                });
-                              }
-                            }}
-                            onChange={(e) => {
-                              setValues({
-                                ...values,
-                                cityName: e.target.value,
-                              });
-                              (async () => {
-                                await sleep(1e3); // For demo purposes.
-                                setCityFilter(e.target.value);
-                              })();
-                            }}
-                            className={classes.inputAutocomplete}
-                            fullWidth
-                            InputProps={{
-                              ...params.InputProps,
-                              endAdornment: (
-                                <Fragment>
-                                  {loadingCity ? (
-                                    <CircularProgress
-                                      color='inherit'
-                                      size={20}
-                                    />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                                </Fragment>
-                              ),
-                            }}
-                          />
-                        )}
+                        required
+                        modelName='Countries'
+                        componentName='Cities'
+                        optionsUrl={cityUrl}
+                        nameValue='cityName'
+                        value={values.cityName}
+                        setValues={setValues}
+                        values={values}
+                        arrayIdName='city_id'
+                        componentInUse='Agency'
                       />
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
                       <Autocomplete
-                        id='province-select'
-                        disablePortal
-                        options={provinceOptions}
-                        loading={loadingProvince}
-                        loadingText={t('loadingProvince')}
-                        inputValue={values.provinceName}
-                        autoHighlight
-                        onChange={(event, newValue) => {
-                          handleAutocomplete('provinceName', newValue);
-                        }}
-                        open={openProvince}
-                        onOpen={() => {
-                          setOpenProvince(true);
-                        }}
-                        onClose={() => {
-                          setOpenProvince(false);
-                        }}
-                        getOptionLabel={(provinceOptions) =>
-                          provinceOptions.name
-                        }
-                        getOptionDisabled={(provinceOptions) =>
-                          provinceOptions.error
-                        }
-                        isOptionEqualToValue={(provinceOptions, value) =>
-                          provinceOptions.label === value.label
-                        }
-                        filterOptions={(x) => {
-                          const searchRegex = new RegExp(
-                            escapeRegExp(values.provinceName),
-                            'i'
-                          );
-                          const filterdData = x.filter((row) => {
-                            return Object.keys(row).some((field) => {
-                              if (row[field] !== null) {
-                                return searchRegex.test(row[field].toString());
-                              }
-                            });
-                          });
-                          return filterdData;
-                        }}
-                        renderOption={(props, provinceOptions) => (
-                          <Box
-                            component='li'
-                            {...props}
-                            key={provinceOptions.id}>
-                            {provinceOptions.emoji} {provinceOptions.name}{' '}
-                            {provinceOptions.iso2}
-                          </Box>
-                        )}
-                        renderInput={(params) => (
-                          <TextValidator
-                            {...params}
-                            label={t('provinceName')}
-                            variant='standard'
-                            value={values.provinceName}
-                            validators={['required']}
-                            errorMessages={[t('required')]}
-                            onBlur={() => {
-                              if (
-                                provinceOptions
-                                  .map((a) => a.name)
-                                  .indexOf(values.provinceName) == -1
-                              ) {
-                                setValues({
-                                  ...values,
-                                  provinceName: '',
-                                  province_id: '',
-                                });
-                              }
-                            }}
-                            onChange={(e) => {
-                              setValues({
-                                ...values,
-                                provinceName: e.target.value,
-                              });
-                              (async () => {
-                                await sleep(1e3); // For demo purposes.
-                                setProvinceFilter(e.target.value);
-                              })();
-                            }}
-                            className={classes.inputAutocomplete}
-                            fullWidth
-                            InputProps={{
-                              ...params.InputProps,
-                              endAdornment: (
-                                <Fragment>
-                                  {loadingProvince ? (
-                                    <CircularProgress
-                                      color='inherit'
-                                      size={20}
-                                    />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                                </Fragment>
-                              ),
-                            }}
-                          />
-                        )}
+                        required
+                        modelName='Countries'
+                        componentName='Provinces'
+                        optionsUrl={provinceUrl}
+                        nameValue='provinceName'
+                        value={values.provinceName}
+                        setValues={setValues}
+                        values={values}
+                        arrayIdName='province_id'
+                        componentInUse='Agency'
                       />
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
                       <Autocomplete
-                        id='country-select'
-                        options={countryOptions}
-                        loading={loadingCountry}
-                        loadingText={t('loadingCountry')}
-                        autoHighlight
-                        inputValue={values.countryName}
-                        onChange={(event, newValue) => {
-                          handleAutocomplete('countryName', newValue);
-                        }}
-                        open={openCountry}
-                        onOpen={() => {
-                          setOpenCountry(true);
-                        }}
-                        onClose={() => {
-                          setOpenCountry(false);
-                        }}
-                        getOptionLabel={(countryOptions) => countryOptions.name}
-                        getOptionDisabled={(countryOptions) =>
-                          countryOptions.error
-                        }
-                        isOptionEqualToValue={(countryOptions, value) =>
-                          countryOptions.label === value.label
-                        }
-                        filterOptions={(x) => {
-                          const searchRegex = new RegExp(
-                            escapeRegExp(values.countryName),
-                            'i'
-                          );
-                          const filterdData = x.filter((row) => {
-                            return Object.keys(row).some((field) => {
-                              if (row[field] !== null) {
-                                return searchRegex.test(row[field].toString());
-                              }
-                            });
-                          });
-                          return filterdData;
-                        }}
-                        renderOption={(props, countryOptions) => (
-                          <Box
-                            component='li'
-                            {...props}
-                            key={countryOptions.id}>
-                            {countryOptions.emoji} {countryOptions.name}{' '}
-                            {countryOptions.iso2}
-                          </Box>
-                        )}
-                        renderInput={(params) => (
-                          <TextValidator
-                            {...params}
-                            label={t('countryName')}
-                            variant='standard'
-                            value={values.countryName}
-                            validators={['required']}
-                            errorMessages={[t('required')]}
-                            onBlur={() => {
-                              if (
-                                countryOptions
-                                  .map((a) => a.name)
-                                  .indexOf(values.countryName) == -1
-                              ) {
-                                setValues({
-                                  ...values,
-                                  countryName: '',
-                                  country_id: '',
-                                });
-                              }
-                            }}
-                            onChange={(e) => {
-                              setValues({
-                                ...values,
-                                countryName: e.target.value,
-                              });
-                              (async () => {
-                                await sleep(1e3); // For demo purposes.
-                                setCountryFilter(e.target.value);
-                              })();
-                            }}
-                            className={classes.inputAutocomplete}
-                            fullWidth
-                            InputProps={{
-                              ...params.InputProps,
-                              endAdornment: (
-                                <Fragment>
-                                  {loadingCountry ? (
-                                    <CircularProgress
-                                      color='inherit'
-                                      size={20}
-                                    />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                                </Fragment>
-                              ),
-                            }}
-                          />
-                        )}
+                        required
+                        modelName='Countries'
+                        componentName='Countries'
+                        optionsUrl={countryUrl}
+                        nameValue='countryName'
+                        value={values.countryName}
+                        setValues={setValues}
+                        values={values}
+                        arrayIdName='country_id'
+                        componentInUse='Agency'
                       />
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
                       <Autocomplete
-                        id='currency-select'
-                        options={currencyOptions}
-                        loading={loadingCurrency}
-                        loadingText={t('loadingCurrency')}
-                        autoHighlight
-                        inputValue={values.currencyCode}
-                        onChange={(event, newValue) => {
-                          handleAutocomplete('currencyCode', newValue);
-                        }}
-                        open={openCurrency}
-                        onOpen={() => {
-                          setOpenCurrency(true);
-                        }}
-                        onClose={() => {
-                          setOpenCurrency(false);
-                        }}
-                        getOptionLabel={(currencyOptions) =>
-                          currencyOptions.currency
-                        }
-                        getOptionDisabled={(currencyOptions) =>
-                          currencyOptions.error
-                        }
-                        isOptionEqualToValue={(currencyOptions, value) =>
-                          currencyOptions.label === value.label
-                        }
-                        filterOptions={(x) => {
-                          const searchRegex = new RegExp(
-                            escapeRegExp(values.currencyCode),
-                            'i'
-                          );
-                          const filterdData = x.filter((row) => {
-                            return Object.keys(row).some((field) => {
-                              if (row[field] !== null) {
-                                return searchRegex.test(row[field].toString());
-                              }
-                            });
-                          });
-                          return filterdData;
-                        }}
-                        renderOption={(props, currencyOptions) => (
-                          <Box
-                            component='li'
-                            {...props}
-                            key={currencyOptions.id}>
-                            {currencyOptions.emoji} {currencyOptions.currency}{' '}
-                            {currencyOptions.currency_name}
-                          </Box>
-                        )}
-                        renderInput={(params) => (
-                          <TextValidator
-                            {...params}
-                            label={t('currencyCode')}
-                            variant='standard'
-                            value={values.currencyCode}
-                            validators={['required']}
-                            errorMessages={[t('required')]}
-                            onBlur={() => {
-                              if (
-                                currencyOptions
-                                  .map((a) => a.currency)
-                                  .indexOf(values.currencyCode) == -1
-                              ) {
-                                setValues({ ...values, currencyCode: '' });
-                              }
-                            }}
-                            onChange={(e) => {
-                              setValues({
-                                ...values,
-                                currencyCode: e.target.value,
-                              });
-                              (async () => {
-                                await sleep(1e3); // For demo purposes.
-                                setCurrencyFilter(e.target.value);
-                              })();
-                            }}
-                            className={classes.inputAutocomplete}
-                            fullWidth
-                            InputProps={{
-                              ...params.InputProps,
-                              endAdornment: (
-                                <Fragment>
-                                  {loadingCurrency ? (
-                                    <CircularProgress
-                                      color='inherit'
-                                      size={20}
-                                    />
-                                  ) : null}
-                                  {params.InputProps.endAdornment}
-                                </Fragment>
-                              ),
-                            }}
-                          />
-                        )}
+                        required
+                        modelName='Currencies'
+                        componentName='Currencies'
+                        optionsUrl={currencyUrl}
+                        nameValue='currencyCode'
+                        value={values.currencyCode}
+                        setValues={setValues}
+                        values={values}
+                        arrayIdName='currencyCode_id'
+                        componentInUse='Agency'
                       />
                     </Grid>
                   </Grid>

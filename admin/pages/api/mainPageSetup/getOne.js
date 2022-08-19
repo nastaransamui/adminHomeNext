@@ -54,7 +54,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       const collection = mongoose.model(modelName);
       switch (modelName) {
         case 'Users':
-          console.log(req.body);
           var userValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },
             { $unset: ['password'] },
@@ -75,7 +74,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               },
             },
           ]);
-          console.log(userValue);
           const { page, rowsPerPage, order } = req?.query;
           const totalAgents = userValue[0].agentsData.length;
           userValue[0].agentsData = paginate(

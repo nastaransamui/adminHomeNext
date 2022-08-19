@@ -66,7 +66,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`allProvinces`);
           for (const value of values) {
-            console.log(value);
             const filterProvincesItem = value.map((a) => {
               return {
                 id: a.id,

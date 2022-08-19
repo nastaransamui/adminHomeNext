@@ -17,6 +17,7 @@ import Agencies from '../../../models/Agencies';
 import Countries from '../../../models/Countries';
 import Currencies from '../../../models/Currencies';
 import Roles from '../../../models/Roles';
+import Hotels from '../../../models/Hotels';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -55,15 +56,28 @@ apiRoute.post(
           req.body.routes = JSON.parse(req?.body?.routes);
         }
         if (modelName == 'Users') {
-          // req.body.agents_id = JSON.parse(req?.body?.agents_id);
           req.body.country_id = JSON.parse(req?.body?.country_id);
           req.body.province_id = JSON.parse(req?.body?.province_id);
           req.body.city_id = JSON.parse(req?.body?.city_id);
           req.body.role_id = JSON.parse(req?.body?.role_id);
         }
+        if (modelName == 'Hotels') {
+          req.body.country_id = JSON.parse(req?.body?.country_id);
+          req.body.province_id = JSON.parse(req?.body?.province_id);
+          req.body.city_id = JSON.parse(req?.body?.city_id);
+          req.body.facilities_id = JSON.parse(req?.body?.facilities_id);
+          req.body.hotelImages = JSON.parse(req?.body?.hotelImages);
+          req.body.userCreated = JSON.parse(req?.body?.userCreated);
+          req.body.userUpdated = JSON.parse(req?.body?.userUpdated);
+          req.body.imageKey = JSON.parse(req?.body?.imageKey);
+          req.body.rooms_id = JSON.parse(req?.body?.rooms_id);
+        }
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
           if (err) {
+            if (modelName !== 'Roles') {
+              fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+            }
             res.status(403).json({
               success: false,
               Error: err.toString(),
@@ -102,7 +116,9 @@ apiRoute.post(
           }
         });
       } catch (error) {
-        fsDeleteObjectsFolder(res, next, req.body.folderId);
+        console.log(error);
+        console.log(req.body.folderId);
+        fsDeleteObjectsFolder(req, res, next, req.body.folderId);
         res.status(500).json({ success: false, Error: error.toString() });
       }
     }

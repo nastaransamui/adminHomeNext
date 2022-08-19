@@ -12,9 +12,6 @@
   "createUserProfile": "کاربر ایجاد کنید",
   "firstName": "نام کوچک",
   "lastName": "نام خانوادگی",
-  "cityName": "شهر",
-  "provinceName": "استان / ایالت",
-  "countryName": "کشور",
   "position": "موقعیت",
   "aboutMe": "درمورد من",
   "follow": "دنبال کردن",
@@ -36,6 +33,5 @@
   "noRow": "هیچ ردیفی یافت نشد",
   "userEditSuccess": "کاربر با موفقیت به روز شد.",
   "Not Found": "نتیجه یافت نشد",
-  "roleName": "نام نقش",
   "agentData": "جدول اطلاعات آژانس های کاربر"
 }

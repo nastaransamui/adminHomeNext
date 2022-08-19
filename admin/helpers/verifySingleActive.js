@@ -18,7 +18,7 @@ const verifySingleActive = async (req, res, next) => {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      if (!req.body.isActive) {
+      if (!req.body?.isActive) {
         next();
       } else {
         var collection = mongoose.model(req?.body?.modelName);

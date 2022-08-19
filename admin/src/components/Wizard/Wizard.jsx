@@ -51,7 +51,7 @@ const Wizard = (props) => {
           if (steps.length === 2) {
             setWidth('50%');
           } else {
-            console.log()
+            console.log();
             setWidth(100 / 3 + '%');
           }
         }
@@ -63,10 +63,10 @@ const Wizard = (props) => {
       isMount = false;
       window.removeEventListener('resize', updateWidth);
     };
-  }, [rtlActive,steps.length]);
+  }, [rtlActive, steps.length]);
 
   const updateWidth = () => {
-    refreshAnimation(currentStep);
+    // refreshAnimation(currentStep);
   };
 
   const refreshAnimation = (index) => {
@@ -114,7 +114,7 @@ const Wizard = (props) => {
 
   const navigationStepChange = (key) => {
     if (steps) {
-      var validationState = steps[currentStep].isValidated();
+      var validationState = steps[currentStep]?.isValidated();
       if (key > currentStep) {
         for (var i = currentStep; i < key; i++) {
           if ([steps[i].stepId].sendState !== undefined) {
@@ -155,7 +155,9 @@ const Wizard = (props) => {
               setCurrentStep(currentStep + 1);
               setNextButton(steps.length > currentStep + 1 + 1 ? true : false);
               setPreviousButton(currentStep + 1 > 0 ? true : false);
-              setFinishButton(steps.length === currentStep + 1 + 1 ? true : false);
+              setFinishButton(
+                steps.length === currentStep + 1 + 1 ? true : false
+              );
               refreshAnimation(currentStep + 1);
             }
           } else {
@@ -239,24 +241,38 @@ const Wizard = (props) => {
             {steps[currentStep].stepName}
           </div>
         </div>
-        <div className={classes.content}>
+        <div
+          className={cx({
+            [classes.content]: true,
+            [classes.bgLocation]:
+              steps[currentStep]?.stepName == 'locationData',
+            // []:
+          })}>
           {steps.map((prop, key) => {
-            const stepContentClasses = cx({
-              [classes.stepContentActive]: currentStep === key,
-              [classes.stepContent]: currentStep !== key,
-            });
-            return (
-              <div
-                className={
-                  stepContentClasses + ` animate__animated animate__zoomIn`
-                }
-                key={key}>
-                <prop.stepComponent {...steps[0]} />
-              </div>
-            );
+            if (steps[currentStep].stepName == prop.stepName) {
+              const stepContentClasses = cx({
+                [classes.stepContentActive]: currentStep === key,
+                [classes.stepContent]: currentStep !== key,
+              });
+              return (
+                <div
+                  className={
+                    stepContentClasses + ` animate__animated animate__zoomIn`
+                  }
+                  key={key}>
+                  <prop.stepComponent {...steps[currentStep]} />
+                </div>
+              );
+            }
+            // console.log(prop)
           })}
         </div>
-        <div className={classes.footer}>
+        <div
+          className={cx({
+            [classes.footer]: true,
+            [classes.footerBgLocation]:
+              steps[currentStep]?.stepName == 'locationData',
+          })}>
           <div className={classes.left}>
             {previousButton ? (
               <Button

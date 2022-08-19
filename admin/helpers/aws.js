@@ -185,39 +185,85 @@ export const fsCreateSingle = async (req, res, next) => {
 
 export const fsCreateMulti = async (req, res, next) => {
   try {
-    const { finalFolder, folderId } = req.body;
-    const publicFolder = `${process.cwd()}/public`;
-    const newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
-    const url = publicUrl;
+    const { finalFolder, folderId, countryFolder, modelName } = req.body;
+    var publicFolder = `${process.cwd()}/public`;
+    var newFolder;
+    var url = publicUrl;
+    var fileExtention;
+    var uniqueName;
+    var location;
+    var Key;
+    switch (modelName) {
+      case 'Hotels':
+        newFolder = `${publicFolder}/${finalFolder}/${countryFolder}/${folderId}`;
+        if (!fs.existsSync(newFolder)) {
+          fs.mkdirSync(newFolder, { recursive: true });
+        }
+        try {
+          delete req.body.hotelImages;
+          req.body.hotelImages = [];
+          req.body.imageKey = [];
+          req.body.hotelThumb = '';
+          for (const element of req.files) {
+            fileExtention = path.extname(element.fileName);
+            uniqueName = uuidv4();
+            location = `${url}/${finalFolder}/${countryFolder}/${folderId}/${uniqueName}${fileExtention}`;
+            Key = `${newFolder}/${uniqueName}${fileExtention}`;
+            await fse
+              .move(element.path, Key)
+              .then(async () => {
+                req.body.hotelImages.push(location);
+                req.body.imageKey.push(Key);
+                if (element.finalFolder == 'hotelThumb') {
+                  req.body.hotelThumb = location;
+                }
+              })
+              .catch((err) => {
+                fsDeleteObjectsFolder(req, res, next, newFolder);
+                res.status(401).json({ success: false, Error: err.toString() });
+              });
+          }
+          req.body.hotelImages = JSON.stringify(req.body.hotelImages);
+          req.body.imageKey = JSON.stringify(req.body.imageKey);
+          next();
+        } catch (error) {
+          fsDeleteObjectsFolder(req, res, next, newFolder);
+          res.status(500).json({ success: false, Error: error.toString() });
+        }
+        break;
+      default:
+        newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
 
-    // check if profileImage directory exists
-    if (!fs.existsSync(newFolder)) {
-      fs.mkdirSync(newFolder, { recursive: true });
-    }
-    try {
-      for (const element of req.files) {
-        const fileExtention = path.extname(element.fileName);
-        const uniqueName = uuidv4();
-        const location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
-        const Key = `${newFolder}/${uniqueName}${fileExtention}`;
-        await fse
-          .move(element.path, Key)
-          .then(async () => {
-            req.body[element.finalFolder] = location;
-            req.body[`${element.finalFolder}Key`] = Key;
-          })
-          .catch((err) => {
-            fsDeleteObjectsFolder(res, next, newFolder);
-            res.status(401).json({ success: false, Error: err.toString() });
-          });
-      }
-      next();
-    } catch (error) {
-      fsDeleteObjectsFolder(res, next, newFolder);
-      res.status(500).json({ success: false, Error: error.toString() });
+        // check if profileImage directory exists
+        if (!fs.existsSync(newFolder)) {
+          fs.mkdirSync(newFolder, { recursive: true });
+        }
+        try {
+          for (const element of req.files) {
+            fileExtention = path.extname(element.fileName);
+            uniqueName = uuidv4();
+            location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
+            Key = `${newFolder}/${uniqueName}${fileExtention}`;
+            await fse
+              .move(element.path, Key)
+              .then(async () => {
+                req.body[element.finalFolder] = location;
+                req.body[`${element.finalFolder}Key`] = Key;
+              })
+              .catch((err) => {
+                fsDeleteObjectsFolder(res, next, newFolder);
+                res.status(401).json({ success: false, Error: err.toString() });
+              });
+          }
+          next();
+        } catch (error) {
+          fsDeleteObjectsFolder(res, next, newFolder);
+          res.status(500).json({ success: false, Error: error.toString() });
+        }
+        break;
     }
   } catch (error) {
-    fsDeleteObjectsFolder(res, next, newFolder);
+    fsDeleteObjectsFolder(req, res, next, newFolder);
     res.status(500).json({ success: false, Error: error.toString() });
   }
 };
@@ -244,7 +290,7 @@ export const fsEditMulti = async (req, res, next) => {
             req.body[`${element.finalFolder}Key`] = Key;
           })
           .catch((err) => {
-            fsDeleteObjectsFolder(res, next, newFolder);
+            fsDeleteObjectsFolder(req, res, next, newFolder);
             res.status(401).json({ success: false, Error: err.toString() });
           });
       }
@@ -272,8 +318,20 @@ export const fsDeleteSingle = async (res, next, fileKey) => {
   });
 };
 
-export const fsDeleteObjectsFolder = async (res, next, newFolder) => {
-  fs.rmSync(newFolder, { recursive: true, force: true }, (error) => {
+export const fsDeleteObjectsFolder = async (req, res, next, newFolder) => {
+  const { modelName, finalFolder, countryFolder, folderId } = req.body;
+  var publicFolder = `${process.cwd()}/public`;
+  var deleteFolder;
+  switch (modelName) {
+    case 'Hotels':
+      deleteFolder = `${publicFolder}/${finalFolder}/${countryFolder}/${folderId}`;
+      break;
+    default:
+      deleteFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+      break;
+  }
+
+  fs.rm(deleteFolder, { recursive: true, force: true }, (error) => {
     if (error) {
       console.log(error);
       res.status(403).json({

@@ -21,11 +21,15 @@ const setFilesObj = (form) => {
   Object.entries(form).forEach((doc) => {
     for (const [key, value] of Object.entries(doc)) {
       if (typeof value == 'object') {
-        finalFiles.push({
-          fileName: value[0].originalFilename,
-          path: value[0].path,
-          fileType: value[0].headers['content-type'],
-          finalFolder: doc[0],
+        value.forEach((element) => {
+          // if (element?.fieldName !== 'hotelThumb') {
+          finalFiles.push({
+            fileName: element.originalFilename,
+            path: element.path,
+            fileType: element.headers['content-type'],
+            finalFolder: element.fieldName,
+          });
+          // }
         });
       }
     }

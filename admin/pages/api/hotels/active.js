@@ -488,6 +488,8 @@ function fixResult(req, country, arr) {
     element.folderId = makeid(20);
     element.hotelThumb = '';
     element.hotelImages = [];
+    element.imageKey = [];
+    element.remark = '';
     element.userCreated = [req?.user?._id];
     element.userUpdated = [req?.user?._id];
   });

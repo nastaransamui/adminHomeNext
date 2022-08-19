@@ -51,6 +51,8 @@ import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
 import 'animate.css';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import 'react-phone-input-material-ui/lib/style.css';
+import '../styles/animate-slider-horizontal.css';
+import 'react-image-gallery/styles/css/image-gallery.css';
 
 //Theme
 import { ThemeProvider } from '@mui/material/styles';

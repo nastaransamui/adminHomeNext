@@ -31,5 +31,7 @@
   "phones": "تلفن",
   "email": "ایمیل",
   "agentEditSuccess": "عامل با موفقیت ویرایش شد.",
-  "agentCreateSuccess": "عامل با موفقیت ایجاد شد."
+  "agentCreateSuccess": "عامل با موفقیت ایجاد شد.",
+  "required": "این فیلد الزامی است",
+  "emailRequire": "ایمیل باید معتبر باشد."
 }

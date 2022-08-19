@@ -30,5 +30,7 @@
   "email": "Email",
   "phones": "Phones",
   "agentEditSuccess": "Agent was successfully edited.",
-  "agentCreateSuccess": "Agent was successfully created."
+  "agentCreateSuccess": "Agent was successfully created.",
+  "required": "This field is required",
+  "emailRequire": "Email should be valid."
 }

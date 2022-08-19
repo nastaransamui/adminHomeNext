@@ -81,6 +81,9 @@ const wizardStyle = makeStyles((theme) => {
       minHeight: '340px',
       padding: '20px 15px',
     },
+    bgLocation: {
+      backgroundColor: theme.palette.background.default,
+    },
     stepContent: {
       display: 'none',
     },
@@ -89,6 +92,9 @@ const wizardStyle = makeStyles((theme) => {
     },
     footer: {
       padding: '0 15px',
+    },
+    footerBgLocation: {
+      backgroundColor: theme.palette.background.default,
     },
     left: {
       float: theme.direction == 'ltr' ? 'left!important' : 'right!important',

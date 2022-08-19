@@ -104,5 +104,16 @@
   "hotelReady": "هتل های آماده",
   "hotelNotComplete": "هتلهای ناقص",
   "notFound": "سابقه پیدا نشد.",
-  "countryNotActive": "این کشور هنوز فعال نیست. لطفا ابتدا کشور را فعال کنید."
+  "countryNotActive": "این کشور هنوز فعال نیست. لطفا ابتدا کشور را فعال کنید.",
+  "goBack": "برگرد",
+  "cityName": "شهر",
+  "provinceName": "استان / ایالت",
+  "countryName": "کشور",
+  "roleName": "نام نقش",
+  "autocompleteLoading": "برای جستجو تایپ کنید",
+  "autocompleteNoOptions": "هیچ گزینه ای برای این جستجو وجود ندارد",
+  "required": "این فیلد الزامی است",
+  "emailRequire": "ایمیل باید معتبر باشد.",
+  "routeChanged": "ارزش نقش ها تغییر کرد. قبل از ادامه باید ذخیره کنید.",
+  "Total": "جمع کل"
 }

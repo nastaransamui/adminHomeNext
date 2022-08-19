@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -10,9 +10,6 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
-import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
 import {
   ValidatorForm,
   TextValidator,
@@ -23,25 +20,18 @@ import { useTheme } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import SvgIcon from '@mui/material/SvgIcon';
 import Card from '../Card/Card';
 import CardBody from '../Card/CardBody';
 import CardHeader from '../Card/CardHeader';
 import CardIcon from '../Card/CardIcon';
 import CardAvatar from '../Card/CardAvatar';
-import Close from '@mui/icons-material/Close';
-import Done from '@mui/icons-material/Done';
+import Autocomplete from '../Autocomplete/Autocomplete';
+import { roleUrl, cityUrl, countryUrl, provinceUrl } from './userStatic';
 
 import { isRegex } from '../auth/functions';
 
 export function escapeRegExp(value) {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
-
-function copy(arr1, arr2) {
-  for (var i = 0; i < arr1.length; i++) {
-    arr2[i] = arr1[i];
-  }
 }
 
 const CreateUser = (props) => {
@@ -58,31 +48,10 @@ const CreateUser = (props) => {
     profileImageBlob,
     uploadImage,
     deleteImage,
-    formSubmit,
-    handleAutocomplete,
-    openRole,
-    setOpenRole,
-    openCity,
-    setOpenCity,
-    openProvince,
-    setOpenProvince,
-    openCountry,
-    setOpenCountry,
-    loadingRole,
-    loadingCity,
-    loadingProvince,
-    loadingCountry,
-    roleOptions,
-    cityOptions,
-    provinceOptions,
-    countryOptions,
-    sleep,
-    setRoleFilter,
-    setCountryFilter,
-    setProvinceFilter,
-    setCityFilter,
     roleNameError,
+    setRoleNameError,
     updateRoleName,
+    setUpdateRoleName,
   } = props;
 
   useEffect(() => {
@@ -269,380 +238,65 @@ const CreateUser = (props) => {
               </Grid>
               <Grid item xs={12} sm={12} md={4}>
                 <Autocomplete
-                  id='role-select'
-                  disabled={profile._id ==values._id}
-                  options={roleOptions}
-                  loading={loadingRole}
-                  loadingText={t('loadingRole')}
-                  noOptionsText={t('roleNoOptions')}
-                  inputValue={values.roleName}
-                  autoHighlight
-                  onChange={(event, newValue) => {
-                    handleAutocomplete('roleName', newValue);
-                  }}
-                  open={openRole}
-                  onOpen={() => {
-                    setOpenRole(true);
-                  }}
-                  onClose={() => {
-                    setOpenRole(false);
-                  }}
-                  getOptionLabel={(roleOptions) => roleOptions.roleName}
-                  getOptionDisabled={(roleOptions) => {
-                    return !roleOptions.isActive;
-                  }}
-                  isOptionEqualToValue={(roleOptions, value) => {
-                    return roleOptions.roleName === value.roleName;
-                  }}
-                  filterOptions={(options, state) => {
-                    const searchRegex = new RegExp(
-                      escapeRegExp(values.roleName),
-                      'i'
-                    );
-                    const filterdData = options.filter((row) => {
-                      return Object.keys(row).some((field) => {
-                        if (row[field] !== null) {
-                          return searchRegex.test(row[field].toString());
-                        }
-                      });
-                    });
-                    return filterdData;
-                  }}
-                  renderOption={(props, roleOptions) => (
-                    <Box component='li' {...props} key={roleOptions._id}>
-                      <SvgIcon
-                        style={{ color: theme.palette.secondary.main }}
-                        sx={{ mr: 2 }}>
-                        <path d={`${roleOptions.icon}`} />
-                      </SvgIcon>
-                      {'  '}
-                      {roleOptions.roleName}{' '}
-                      {roleOptions.isActive ? (
-                        <Done className={classes.autocompleteIconDone} />
-                      ) : (
-                        <Close className={classes.autocompleteIconClose} />
-                      )}
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextValidator
-                      {...params}
-                      label={t('roleName')}
-                      variant='standard'
-                      error={
-                        roleNameError ||
-                        (updateRoleName.changed &&
-                          updateRoleName.roleName !== values.roleName)
-                      }
-                      helperText={
-                        roleNameError
-                          ? t('required')
-                          : (updateRoleName.changed &&
-                            updateRoleName.roleName !== values.roleName)
-                          ? t('routeChanged')
-                          : ' '
-                      }
-                      validators={
-                        values.role_id.length == 0
-                          ? ['required']
-                          : _id == null
-                          ? ['required']
-                          : []
-                      }
-                      errorMessages={[t('required')]}
-                      value={values.roleName}
-                      onBlur={() => {
-                        if (
-                          roleOptions
-                            .map((a) => a.roleName)
-                            .indexOf(values.roleName) == -1
-                        ) {
-                          setValues({ ...values, roleName: '', role_id: [] });
-                        }
-                      }}
-                      onChange={(e) => {
-                        setValues({ ...values, roleName: e.target.value });
-                        (async () => {
-                          await sleep(1e3);
-                          setRoleFilter(e.target.value);
-                        })();
-                      }}
-                      className={classes.inputAutocomplete}
-                      fullWidth
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <Fragment>
-                            {loadingRole ? (
-                              <CircularProgress color='inherit' size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </Fragment>
-                        ),
-                      }}
-                    />
-                  )}
+                  required
+                  modelName='Roles'
+                  componentName='Roles'
+                  optionsUrl={roleUrl}
+                  disabled={profile._id == values._id}
+                  nameValue='roleName'
+                  value={values.roleName}
+                  setValues={setValues}
+                  values={values}
+                  arrayIdName='role_id'
+                  roleNameError={roleNameError}
+                  setRoleNameError={setRoleNameError}
+                  updateRoleName={updateRoleName}
+                  setUpdateRoleName={setUpdateRoleName}
+                  componentInUse='Users'
                 />
               </Grid>
             </Grid>
             <Grid container spacing={1} style={{ marginTop: 10 }}>
               <Grid item xs={12} sm={12} md={3}>
                 <Autocomplete
-                  id='city-select'
-                  options={cityOptions}
-                  loading={loadingCity}
-                  loadingText={t('loadingCity')}
-                  noOptionsText={t('cityNoOptions')}
-                  inputValue={values.cityName}
-                  autoHighlight
-                  onChange={(event, newValue) => {
-                    handleAutocomplete('cityName', newValue);
-                  }}
-                  open={openCity}
-                  onOpen={() => {
-                    setOpenCity(true);
-                  }}
-                  onClose={() => {
-                    setOpenCity(false);
-                  }}
-                  getOptionLabel={(cityOptions) => cityOptions.name}
-                  getOptionDisabled={(cityOptions) => cityOptions.error}
-                  isOptionEqualToValue={(cityOptions, value) => {
-                    return cityOptions.name === value.name;
-                  }}
-                  filterOptions={(x, s) => {
-                    const searchRegex = new RegExp(
-                      escapeRegExp(values.cityName),
-                      'i'
-                    );
-                    const filterdData = x.filter((row) => {
-                      return Object.keys(row).some((field) => {
-                        if (row[field] !== null) {
-                          return searchRegex.test(row[field].toString());
-                        }
-                      });
-                    });
-                    return filterdData;
-                  }}
-                  renderOption={(props, cityOptions) => (
-                    <Box component='li' {...props} key={cityOptions.id}>
-                      {cityOptions.emoji} {cityOptions.name}{' '}
-                      {cityOptions.state_name} {cityOptions.iso2}
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextValidator
-                      {...params}
-                      label={t('cityName')}
-                      variant='standard'
-                      value={values.cityName}
-                      onBlur={() => {
-                        if (
-                          cityOptions
-                            .map((a) => a.name)
-                            .indexOf(values.cityName) == -1
-                        ) {
-                          setValues({ ...values, cityName: '', city_id: [] });
-                        }
-                      }}
-                      onChange={(e) => {
-                        setValues({ ...values, cityName: e.target.value });
-                        (async () => {
-                          await sleep(1e3); // For demo purposes.
-                          setCityFilter(e.target.value);
-                        })();
-                      }}
-                      className={classes.inputAutocomplete}
-                      fullWidth
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <Fragment>
-                            {loadingCity ? (
-                              <CircularProgress color='inherit' size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </Fragment>
-                        ),
-                      }}
-                    />
-                  )}
+                  required={false}
+                  modelName='Countries'
+                  componentName='Cities'
+                  optionsUrl={cityUrl}
+                  nameValue='cityName'
+                  value={values.cityName}
+                  setValues={setValues}
+                  values={values}
+                  arrayIdName='city_id'
+                  componentInUse='Users'
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3}>
                 <Autocomplete
-                  id='province-select'
-                  disablePortal
-                  options={provinceOptions}
-                  loading={loadingProvince}
-                  loadingText={t('loadingProvince')}
-                  inputValue={values.provinceName}
-                  autoHighlight
-                  onChange={(event, newValue) => {
-                    handleAutocomplete('provinceName', newValue);
-                  }}
-                  open={openProvince}
-                  onOpen={() => {
-                    setOpenProvince(true);
-                  }}
-                  onClose={() => {
-                    setOpenProvince(false);
-                  }}
-                  getOptionLabel={(provinceOptions) => provinceOptions.name}
-                  getOptionDisabled={(provinceOptions) => provinceOptions.error}
-                  isOptionEqualToValue={(provinceOptions, value) =>
-                    provinceOptions.label === value.label
-                  }
-                  filterOptions={(x) => {
-                    const searchRegex = new RegExp(
-                      escapeRegExp(values.provinceName),
-                      'i'
-                    );
-                    const filterdData = x.filter((row) => {
-                      return Object.keys(row).some((field) => {
-                        if (row[field] !== null) {
-                          return searchRegex.test(row[field].toString());
-                        }
-                      });
-                    });
-                    return filterdData;
-                  }}
-                  renderOption={(props, provinceOptions) => (
-                    <Box component='li' {...props} key={provinceOptions.id}>
-                      {provinceOptions.emoji} {provinceOptions.name}{' '}
-                      {provinceOptions.iso2}
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextValidator
-                      {...params}
-                      label={t('provinceName')}
-                      variant='standard'
-                      value={values.provinceName}
-                      onBlur={() => {
-                        if (
-                          provinceOptions
-                            .map((a) => a.name)
-                            .indexOf(values.provinceName) == -1
-                        ) {
-                          setValues({
-                            ...values,
-                            provinceName: '',
-                            province_id: [],
-                          });
-                        }
-                      }}
-                      onChange={(e) => {
-                        setValues({
-                          ...values,
-                          provinceName: e.target.value,
-                        });
-                        (async () => {
-                          await sleep(1e3); // For demo purposes.
-                          setProvinceFilter(e.target.value);
-                        })();
-                      }}
-                      className={classes.inputAutocomplete}
-                      fullWidth
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <Fragment>
-                            {loadingProvince ? (
-                              <CircularProgress color='inherit' size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </Fragment>
-                        ),
-                      }}
-                    />
-                  )}
+                  required={false}
+                  modelName='Countries'
+                  componentName='Provinces'
+                  optionsUrl={provinceUrl}
+                  nameValue='provinceName'
+                  value={values.provinceName}
+                  setValues={setValues}
+                  values={values}
+                  arrayIdName='province_id'
+                  componentInUse='Users'
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3}>
                 <Autocomplete
-                  id='country-select'
-                  options={countryOptions}
-                  loading={loadingCountry}
-                  loadingText={t('loadingCountry')}
-                  autoHighlight
-                  inputValue={values.countryName}
-                  onChange={(event, newValue) => {
-                    handleAutocomplete('countryName', newValue);
-                  }}
-                  open={openCountry}
-                  onOpen={() => {
-                    setOpenCountry(true);
-                  }}
-                  onClose={() => {
-                    setOpenCountry(false);
-                  }}
-                  getOptionLabel={(countryOptions) => countryOptions.name}
-                  getOptionDisabled={(countryOptions) => countryOptions.error}
-                  isOptionEqualToValue={(countryOptions, value) =>
-                    countryOptions.label === value.label
-                  }
-                  filterOptions={(x) => {
-                    const searchRegex = new RegExp(
-                      escapeRegExp(values.countryName),
-                      'i'
-                    );
-                    const filterdData = x.filter((row) => {
-                      return Object.keys(row).some((field) => {
-                        if (row[field] !== null) {
-                          return searchRegex.test(row[field].toString());
-                        }
-                      });
-                    });
-                    return filterdData;
-                  }}
-                  renderOption={(props, countryOptions) => (
-                    <Box component='li' {...props} key={countryOptions.id}>
-                      {countryOptions.emoji} {countryOptions.name}{' '}
-                      {countryOptions.iso2}
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextValidator
-                      {...params}
-                      label={t('countryName')}
-                      variant='standard'
-                      value={values.countryName}
-                      onBlur={() => {
-                        if (
-                          countryOptions
-                            .map((a) => a.name)
-                            .indexOf(values.countryName) == -1
-                        ) {
-                          setValues({
-                            ...values,
-                            countryName: '',
-                            country_id: '',
-                          });
-                        }
-                      }}
-                      onChange={(e) => {
-                        setValues({ ...values, countryName: e.target.value });
-                        (async () => {
-                          await sleep(1e3); // For demo purposes.
-                          setCountryFilter(e.target.value);
-                        })();
-                      }}
-                      className={classes.inputAutocomplete}
-                      fullWidth
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <Fragment>
-                            {loadingCountry ? (
-                              <CircularProgress color='inherit' size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </Fragment>
-                        ),
-                      }}
-                    />
-                  )}
+                  required={false}
+                  modelName='Countries'
+                  componentName='Countries'
+                  optionsUrl={countryUrl}
+                  nameValue='countryName'
+                  value={values.countryName}
+                  setValues={setValues}
+                  values={values}
+                  arrayIdName='country_id'
+                  componentInUse='Users'
                 />
               </Grid>
               <Grid item xs={12} sm={12} md={3}>

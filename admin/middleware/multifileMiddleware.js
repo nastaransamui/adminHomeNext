@@ -12,6 +12,7 @@ export const multifileMiddlewareCreate = async (req, res, next) => {
   try {
     if (req.files.length == 0) {
       //Todo no file upload
+      req.body.hotelImages = JSON.stringify('[]');
       next();
     } else {
       if (isVercel) {
@@ -38,7 +39,7 @@ export const MultifileMiddlewareDelete = async (req, res, next) => {
       //delete folder
       const publicFolder = `${process.cwd()}/public`;
       const newFolder = `${publicFolder}/${req.body.finalFolder}/${req.body.folderId}`;
-      await fsDeleteObjectsFolder(res, next, newFolder);
+      await fsDeleteObjectsFolder(req, res, next, newFolder);
     }
   } catch (error) {
     res.status(500).json({ success: false, Error: error.toString() });

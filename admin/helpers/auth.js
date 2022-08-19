@@ -161,7 +161,7 @@ export function validatePassword(user, inputPassword) {
 
 export async function hashPassword(req, res, next) {
   try {
-    if (req.body.password !== undefined && req.body.password !== '') {
+    if (req.body?.password !== undefined && req.body?.password !== '') {
       const cryptoPassword = CryptoJS.AES.encrypt(
         req.body.password,
         process.env.NEXT_PUBLIC_SECRET_KEY

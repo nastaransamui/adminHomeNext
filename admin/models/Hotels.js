@@ -3,7 +3,7 @@ const timeZone = require('mongoose-timezone');
 
 const HotelsSchema = new mongoose.Schema(
   {
-    Giataid: { type: String, required: true, unique: true, index: true },
+    Giataid: { type: String, index: true },
     city_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],
     cityName: { type: String, required: true },
     hotelId: { type: Number, required: true, unique: true, index: true },
@@ -13,6 +13,7 @@ const HotelsSchema = new mongoose.Schema(
     fax: { type: String },
     email: { type: String },
     url: { type: String },
+    remark: { type: String },
     countryIso2: { type: String, required: true, index: true },
     countryName: { type: String, required: true },
     country_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Countries' }],
@@ -34,6 +35,7 @@ const HotelsSchema = new mongoose.Schema(
     folderId: { type: String, required: true },
     hotelThumb: { type: String },
     hotelImages: [{ type: String }],
+    imageKey: [{ type: String }],
   },
   { timestamps: true }
 );

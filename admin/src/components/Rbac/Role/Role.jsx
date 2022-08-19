@@ -48,7 +48,7 @@ const Role = (props) => {
   return (
     <Container style={{ marginTop: 10, minHeight: '78vh' }} maxWidth='xl'>
       <Fragment>
-        <Tooltip title={t('goBack')} arrow placement='bottom'>
+        <Tooltip title={t('goBack', {ns: "common"})} arrow placement='bottom'>
           <IconButton
             onClick={() => {
                //Reset pagenumber of agents
