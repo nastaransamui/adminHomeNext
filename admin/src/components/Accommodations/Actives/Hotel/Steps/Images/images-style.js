@@ -35,7 +35,7 @@ const imagesStyle = makeStyles((theme) => {
       position: 'absolute',
       width: 250,
       height: 250,
-      left: -50,
+      left: -45,
       top: -43,
       transform: `rotateY(${theme.direction == 'rtl' ? 177 : 0}deg)`,
       [theme.breakpoints.down('sm')]: {
@@ -67,6 +67,17 @@ const imagesStyle = makeStyles((theme) => {
         padding: `5px 10px`,
         fontSize: 11,
       },
+    },
+    closeDialog: {
+      right: 12,
+      top: 8,
+      position: 'absolute',
+    },
+    muiChip: {
+      margin:
+        theme.direction == 'ltr'
+          ? `0px 5px 0 -6px !important`
+          : `0px 5px 0 -10px !important`,
     },
   };
 });

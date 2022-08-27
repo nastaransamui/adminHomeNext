@@ -23,17 +23,22 @@ const setFilesObj = (form) => {
       if (typeof value == 'object') {
         value.forEach((element) => {
           // if (element?.fieldName !== 'hotelThumb') {
+          // console.log(doc);
+
           finalFiles.push({
             fileName: element.originalFilename,
             path: element.path,
             fileType: element.headers['content-type'],
             finalFolder: element.fieldName,
+            thumbnail:
+              element?.originalFilename == doc[1][0][`originalFilename`],
           });
           // }
         });
       }
     }
   });
+  finalFiles = finalFiles.filter((a) => a.finalFolder !== 'hotelThumb');
   return finalFiles;
 };
 
@@ -44,6 +49,7 @@ middleware.use(async (req, res, next) => {
     if (!err) {
       req.body = setFieldsObj(fields);
       req.files = setFilesObj(files);
+      // res.status(500).json({ success: false, Error: 'err.toString()' });
       next();
     } else {
       console.log('Handle error from multiparty miideleware');

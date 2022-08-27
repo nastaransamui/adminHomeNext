@@ -12,7 +12,7 @@ export const multifileMiddlewareCreate = async (req, res, next) => {
   try {
     if (req.files.length == 0) {
       //Todo no file upload
-      req.body.hotelImages = JSON.stringify('[]');
+      // req.body.hotelImages = JSON.stringify([]);
       next();
     } else {
       if (isVercel) {

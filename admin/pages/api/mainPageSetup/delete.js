@@ -180,7 +180,7 @@ apiRoute.post(
                       element.isActive = !req.body?.data?.isActive;
                     }
                   }
-                  await multiMap.destroy(`all${modelName}`, value);
+                  await multiMap.clear(`all${modelName}`);
                   await multiMap.put(`all${modelName}`, value);
                   res.status(200).json({
                     success: true,
@@ -224,6 +224,7 @@ apiRoute.post(
               if (err) {
                 res.status(500).json({ success: false, Error: err.toString() });
               } else {
+                const { modelName } = req.body;
                 if (modelName == 'Agencies') {
                   await deleteObjectsId(req, res, next, docs);
                 }
@@ -309,8 +310,6 @@ export async function deleteObjectsId(req, res, next, result) {
   const { modelName } = req.body;
   switch (modelName) {
     case 'Users':
-      console.log(result._id);
-      console.log(result.role_id);
       if (result?.role_id.length > 0) {
         await Roles.updateOne(
           { _id: { $in: result.role_id } },

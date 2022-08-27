@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 
 const Hotel = (props) => {
   const { rtlActive, reactRoutes } = props;
-  const { t } = useTranslation('roles');
+  const { t } = useTranslation('hotels');
   const history = useHistory();
   // const dispatch = useDispatch();
   const {
@@ -126,7 +126,7 @@ const Hotel = (props) => {
                 }}
                 previousButtonText={t('previous')}
                 nextButtonText={t('next')}
-                finishButtonText={t('finish')}
+                finishButtonText={_id == undefined ? t('finish') : t('edit')}
                 nextButtonClick={(e) => isPublicDataValidated()}
               />
             </ValidatorForm>

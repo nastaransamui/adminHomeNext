@@ -229,9 +229,11 @@ const Body = forwardRef((props, ref) => {
             type !== 'number'
           ) {
             const formatedDate =
-              modelName == 'Agencies'
+              modelName == 'Agencies' || modelName == 'Hotels' 
                 ? label == 'updatedAt'
-                  ? moment(data[label]).format('MMMM Do YYYY, H:mm')
+                  ? moment(new Date(data[label].slice(0, -1))).format(
+                    'MMMM Do YYYY, H:mm'
+                  )
                   : moment(new Date(data[label].slice(0, -1))).format(
                       'MMMM Do YYYY, H:mm'
                     )

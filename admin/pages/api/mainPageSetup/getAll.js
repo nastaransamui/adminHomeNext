@@ -102,7 +102,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             ]);
             res.status(200).json({
               success: true,
-              totalValuesLength: hotelsValue[0].totalCount[0].count,
+              totalValuesLength: hotelsValue[0]?.totalCount[0]?.count || 0,
               data: hotelsValue[0].paginatedResults,
             });
             break;

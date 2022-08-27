@@ -3,13 +3,11 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import middleware from '../../../middleware/multiparty';
-import Agencies from '../../../models/Agencies';
+import Hotels from '../../../models/Hotels';
 import { editMiddleware } from '../../../middleware/userMiddleware';
 import { deleteFsAwsError } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
-import { findAgentById } from '../../../helpers/auth';
-import { deleteObjectsId } from '../mainPageSetup/delete';
-import { updateObjectsId } from '../mainPageSetup/create';
+import { findHotelById } from '../../../helpers/auth';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -28,25 +26,28 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
     try {
-      const { _id } = req.body;
+      const { _id, modelName } = req.body;
       delete req.body._id;
-      req.body.phones = JSON.parse(req?.body?.phones);
-      req.body.accountManager_id = JSON.parse(req?.body?.accountManager_id);
-      req.body.currencyCode_id = JSON.parse(req?.body?.currencyCode_id);
-      req.body.country_id = JSON.parse(req?.body?.country_id);
-      req.body.province_id = JSON.parse(req?.body?.province_id);
+      delete req.body.deletedImage;
       req.body.city_id = JSON.parse(req?.body?.city_id);
-      findAgentById(_id).then(async (oldAgent) => {
+      req.body.country_id = JSON.parse(req?.body?.country_id);
+      req.body.rooms_id = JSON.parse(req?.body?.rooms_id);
+      req.body.facilities_id = JSON.parse(req?.body?.facilities_id);
+      req.body.userCreated = JSON.parse(req?.body?.userCreated);
+      req.body.userUpdated = JSON.parse(req?.body?.userUpdated);
+      req.body.hotelImages = JSON.parse(req?.body?.hotelImages);
+      req.body.imageKey = JSON.parse(req?.body?.imageKey);
+      req.body.province_id = JSON.parse(req?.body?.province_id);
+      findHotelById(_id).then(async (oldHotel) => {
         for (var key in req.body) {
           if (
-            typeof oldAgent[key] !== 'function' &&
+            typeof oldHotel[key] !== 'function' &&
             req.body[key] !== undefined
           ) {
-            await deleteObjectsId(req, res, next, oldAgent);
-            oldAgent[key] = req.body[key];
+            oldHotel[key] = req.body[key];
           }
         }
-        oldAgent.save(async (err, result) => {
+        oldHotel.save(async (err, result) => {
           if (err) {
             res.status(403).json({
               success: false,
@@ -55,34 +56,30 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
               ErrorCode: err?.code,
             });
           } else {
-            await updateObjectsId(req, res, next, result);
-            const totalAgent = await Agencies.aggregate([{ $match: {} }]);
             res.status(200).json({
               success: true,
-              totalAgentLength: totalAgent.length,
               data: result,
             });
             const { hzErrorConnection, hz } = await hazelCast();
             if (!hzErrorConnection) {
-              const multiMapu = await hz.getMultiMap('Users');
-              const multiMapc = await hz.getMultiMap('Countries');
-              const multiMapPr = await hz.getMultiMap('Provinces');
-              const multiMapCt = await hz.getMultiMap('Cities');
-              const multiMapCu = await hz.getMultiMap('Currencies');
-              const multiMapAg = await hz.getMultiMap('Agencies');
-              await multiMapu.destroy();
-              await multiMapc.destroy();
-              await multiMapPr.destroy();
-              await multiMapCt.destroy();
-              await multiMapCu.destroy();
-              await multiMapAg.destroy();
-              await multiMapAg.put('allAgencies', totalAgent);
+              const multiMap = await hz.getMultiMap(modelName);
+              const dataIsExist = await multiMap.containsKey(`all${modelName}`);
+              if (dataIsExist) {
+                const values = await multiMap.get(`all${modelName}`);
+                for (const value of values) {
+                  const objIndex = value.findIndex((obj) => obj._id == _id);
+                  value[objIndex] = result;
+                  await multiMap.clear(`all${modelName}`);
+                  await multiMap.put(`all${modelName}`, value);
+                }
+              }
               await hz.shutdown();
             }
           }
         });
       });
     } catch (error) {
+      console.log(error);
       deleteFsAwsError(req, res, next);
       res.status(500).json({ success: false, Error: error.toString() });
     }

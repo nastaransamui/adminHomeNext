@@ -204,7 +204,8 @@ export const RenderCellBoolean = (params) => {
 };
 
 export const RenderCellDate = (params) => {
-  let formatDate = params.formattedValue;
+  let epoch = moment(params.formattedValue).valueOf();
+
   switch (params.modelName) {
     case 'Agencies':
       return (
@@ -217,7 +218,28 @@ export const RenderCellDate = (params) => {
             width: '100%',
           }}>
           {params.field == 'updatedAt'
-            ? moment(params.formattedValue).format('MMMM Do YYYY, H:mm')
+            ? moment(new Date(params.formattedValue.slice(0, -1))).format(
+                'MMMM Do YYYY, H:mm'
+              )
+            : moment(new Date(params.formattedValue.slice(0, -1))).format(
+                'MMMM Do YYYY, H:mm'
+              )}
+        </span>
+      );
+    case 'Hotels':
+      return (
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            width: '100%',
+          }}>
+          {params.field == 'updatedAt'
+            ? moment(new Date(params.formattedValue.slice(0, -1))).format(
+                'MMMM Do YYYY, H:mm'
+              )
             : moment(new Date(params.formattedValue.slice(0, -1))).format(
                 'MMMM Do YYYY, H:mm'
               )}

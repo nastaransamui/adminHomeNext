@@ -214,7 +214,7 @@ export const fsCreateMulti = async (req, res, next) => {
               .then(async () => {
                 req.body.hotelImages.push(location);
                 req.body.imageKey.push(Key);
-                if (element.finalFolder == 'hotelThumb') {
+                if (element.thumbnail) {
                   req.body.hotelThumb = location;
                 }
               })
@@ -270,30 +270,70 @@ export const fsCreateMulti = async (req, res, next) => {
 
 export const fsEditMulti = async (req, res, next) => {
   try {
-    const { finalFolder, folderId } = req.body;
-    const publicFolder = `${process.cwd()}/public`;
-    const newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
-    const url = publicUrl;
+    const { finalFolder, folderId, countryFolder, modelName } = req.body;
+    var publicFolder = `${process.cwd()}/public`;
+    var newFolder;
+    var url = publicUrl;
+    var fileExtention;
+    var uniqueName;
+    var location;
+    var Key;
     try {
-      for (const element of req.files) {
-        if (req.body[`${element.finalFolder}Key`] !== '') {
-          fs.unlinkSync(req.body[`${element.finalFolder}Key`]);
-        }
-        const fileExtention = path.extname(element.fileName);
-        const uniqueName = uuidv4();
-        const location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
-        const Key = `${newFolder}/${uniqueName}${fileExtention}`;
-        await fse
-          .move(element.path, Key)
-          .then(async () => {
-            req.body[element.finalFolder] = location;
-            req.body[`${element.finalFolder}Key`] = Key;
-          })
-          .catch((err) => {
-            fsDeleteObjectsFolder(req, res, next, newFolder);
-            res.status(401).json({ success: false, Error: err.toString() });
-          });
+      switch (modelName) {
+        case 'Hotels':
+          newFolder = `${publicFolder}/${finalFolder}/${countryFolder}/${folderId}`;
+          if (!fs.existsSync(newFolder)) {
+            fs.mkdirSync(newFolder, { recursive: true });
+          }
+          req.body.hotelImages = JSON.parse(req.body.hotelImages);
+          req.body.imageKey = JSON.parse(req.body.imageKey);
+          console.log(req.body);
+          for (const element of req.files) {
+            fileExtention = path.extname(element.fileName);
+            uniqueName = uuidv4();
+            location = `${url}/${finalFolder}/${countryFolder}/${folderId}/${uniqueName}${fileExtention}`;
+            Key = `${newFolder}/${uniqueName}${fileExtention}`;
+            await fse
+              .move(element.path, Key)
+              .then(async () => {
+                req.body.hotelImages.push(location);
+                req.body.imageKey.push(Key);
+                if (element.thumbnail) {
+                  req.body.hotelThumb = '';
+                  req.body.hotelThumb = location;
+                }
+              })
+              .catch((err) => {
+                fsDeleteObjectsFolder(req, res, next, newFolder);
+                res.status(401).json({ success: false, Error: err.toString() });
+              });
+          }
+          req.body.hotelImages = JSON.stringify(req.body.hotelImages);
+          break;
+        default:
+          newFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+          for (const element of req.files) {
+            if (req.body[`${element.finalFolder}Key`] !== '') {
+              fs.unlinkSync(req.body[`${element.finalFolder}Key`]);
+            }
+            fileExtention = path.extname(element.fileName);
+            uniqueName = uuidv4();
+            location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
+            Key = `${newFolder}/${uniqueName}${fileExtention}`;
+            await fse
+              .move(element.path, Key)
+              .then(async () => {
+                req.body[element.finalFolder] = location;
+                req.body[`${element.finalFolder}Key`] = Key;
+              })
+              .catch((err) => {
+                fsDeleteObjectsFolder(req, res, next, newFolder);
+                res.status(401).json({ success: false, Error: err.toString() });
+              });
+          }
+          break;
       }
+      req.body.imageKey = JSON.stringify(req?.body?.imageKey);
       next();
     } catch (error) {
       console.log(error);
@@ -316,6 +356,21 @@ export const fsDeleteSingle = async (res, next, fileKey) => {
       });
     }
   });
+};
+
+export const fsDeleteMulti = async (res, next, fileKeysArr) => {
+  for (const filepath of fileKeysArr) {
+    fs.unlink(filepath, function (error) {
+      if (error) {
+        console.log(error);
+        res.status(403).json({
+          success: false,
+          Error: error.toString(),
+          ErrorCode: error?.code,
+        });
+      }
+    });
+  }
 };
 
 export const fsDeleteObjectsFolder = async (req, res, next, newFolder) => {

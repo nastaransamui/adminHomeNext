@@ -7,10 +7,10 @@ import IconButton from '@mui/material/IconButton';
 import Close from '@mui/icons-material/Close';
 import TextValidator from 'react-material-ui-form-validator/lib/TextValidator';
 import ImageGallery from 'react-image-gallery';
-
+import { useTranslation } from 'next-i18next';
+import { createRef } from 'react';
 const Images = (props) => {
   const {
-    t,
     values,
     errorRequied,
     fileObjects,
@@ -22,12 +22,13 @@ const Images = (props) => {
   } = props;
   const classes = imagesStyle();
   const [open, setOpen] = useState(false);
-
+  const { t } = useTranslation('hotels');
+  const imageRef = createRef()
   const dialogTitle = () => (
     <>
       <span>{t('uploadFile')}</span>
       <IconButton
-        style={{ right: '12px', top: '8px', position: 'absolute' }}
+        className={classes.closeDialog}
         onClick={() => setOpen(false)}>
         <Close />
       </IconButton>
@@ -36,6 +37,7 @@ const Images = (props) => {
   const startIndex = fileObjects.findIndex((object) => {
     return object.thumbnail === values.hotelThumb;
   })
+  
 
   return (
     <Fragment>
@@ -53,9 +55,9 @@ const Images = (props) => {
         className={classes.root}
         variant='standard'
         validators={['required']}
-        errorMessages={[t('thumbNamerequired')]}
+        errorMessages={[t('thumbNailrequired')]}
         error={errorRequied.hotelThumb}
-        helperText={errorRequied.hotelThumb ? t('thumbNamerequired') : ''}
+        helperText={errorRequied.hotelThumb ? t('thumbNailrequired') : ''}
       />
       <div className={classes.div}>
         <DropzoneDialogBase
@@ -91,12 +93,14 @@ const Images = (props) => {
           }}
           previewChipProps={{
             color: 'secondary',
+            classes:{deleteIcon: classes.muiChip}
           }}
         />
         <div className={classes.heroContent}>
           {fileObjects.length > 0 && (
             <ImageGallery
               items={fileObjects}
+              ref={imageRef}
               isRTL={rtlActive}
               showPlayButton={false}
               startIndex={startIndex !== -1 ? startIndex : 0}
@@ -124,7 +128,7 @@ const Images = (props) => {
                   </span>
                 );
               }}
-              renderItem={(item) => {
+              renderItem={(item ) => {
                 const index = fileObjects.findIndex((object) => {
                   return object.thumbnail === item.thumbnail;
                 });
@@ -162,6 +166,7 @@ const Images = (props) => {
                         <Button
                           className={classes.button}
                           onClick={() => {
+                            fileObjects[index+1] == undefined && imageRef?.current?.slideToIndex(index -1)
                             onDeleteButtonClick(index, isThumbImage);
                           }}>
                           {t('delete')}
