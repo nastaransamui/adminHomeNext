@@ -18,25 +18,24 @@ const setFieldsObj = (form) => {
 // Set files object if exist
 const setFilesObj = (form) => {
   let finalFiles = [];
-  Object.entries(form).forEach((doc) => {
-    for (const [key, value] of Object.entries(doc)) {
-      if (typeof value == 'object') {
-        value.forEach((element) => {
-          // if (element?.fieldName !== 'hotelThumb') {
-          // console.log(doc);
-
-          finalFiles.push({
-            fileName: element.originalFilename,
-            path: element.path,
-            fileType: element.headers['content-type'],
-            finalFolder: element.fieldName,
-            thumbnail:
-              element?.originalFilename == doc[1][0][`originalFilename`],
-          });
-          // }
-        });
-      }
-    }
+  var mergeFiles = [].concat.apply([], Object.values(form));
+  var thumbOriginalFilename;
+  const indexOfThumb = mergeFiles
+    .map(function (e) {
+      return e.fieldName;
+    })
+    .indexOf('hotelThumb');
+  if (indexOfThumb !== -1) {
+    thumbOriginalFilename = mergeFiles[indexOfThumb]?.originalFilename;
+  }
+  mergeFiles.forEach((element) => {
+    finalFiles.push({
+      fileName: element.originalFilename,
+      path: element.path,
+      fileType: element.headers['content-type'],
+      finalFolder: element.fieldName,
+      thumbnail: element?.originalFilename == thumbOriginalFilename,
+    });
   });
   finalFiles = finalFiles.filter((a) => a.finalFolder !== 'hotelThumb');
   return finalFiles;

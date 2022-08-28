@@ -4,7 +4,7 @@ import verifyToken from '../../../helpers/verifyToken';
 import multiparty from '../../../middleware/multiparty';
 import hazelCast from '../../../helpers/hazelCast';
 import { multifileMiddlewareCreate } from '../../../middleware/multifileMiddleware';
-import { fsDeleteObjectsFolder } from '../../../helpers/aws';
+import { fsDeleteObjectsFolder, deleteFsAwsError } from '../../../helpers/aws';
 import mongoose from 'mongoose';
 import Hotels from '../../../models/Hotels';
 const apiRoute = nextConnect({
@@ -40,9 +40,13 @@ apiRoute.post(
         req.body.rooms_id = JSON.parse(req?.body?.rooms_id);
         const newValue = await new collection(req.body);
         await newValue.save(async (err, result) => {
-          console.log(result);
           if (err) {
-            console.log(err);
+            // console.log(err);
+            if (req.body.isVercel) {
+              deleteFsAwsError(req, res, next);
+            } else {
+              fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+            }
             res.status(403).json({
               success: false,
               Error: err.toString(),
@@ -71,8 +75,12 @@ apiRoute.post(
           });
         });
       } catch (error) {
-        console.log(error);
-        fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+        if (req.body.isVercel) {
+          deleteFsAwsError(req, res, next);
+        } else {
+          fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+        }
+
         res.status(500).json({ success: false, Error: error.toString() });
       }
     }

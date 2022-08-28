@@ -52,59 +52,163 @@ export const awsCreateSingle = async (req, res, next) => {
 };
 
 export const awsCreateMulti = async (req, res, next) => {
-  const { finalFolder, folderId } = req.body;
+  const { finalFolder, folderId, countryFolder, modelName } = req.body;
   // Array to wait till all datas come
   var ResponseData = [];
-  req.files.map((file) => {
-    var s3Params = {
-      Bucket: s3Bucket,
-      ContentType: file.fileType,
-      Body: fs.createReadStream(file.path),
-      ACL: 'public-read',
-      Key: `${finalFolder}/${folderId}/${file.fileName}`,
-    };
-    try {
-      s3.upload(s3Params, async (err, data) => {
-        if (err) {
-          console.log(err);
-          res.status(401).json({ success: false, Error: err });
-        } else {
-          req.body[file.finalFolder] = data.Location;
-          req.body[`${file.finalFolder}Key`] = data.Key;
-          ResponseData.push(data);
-          if (ResponseData.length == req.files.length) next();
+  var Key;
+  var fileExtention;
+  var uniqueName;
+  switch (modelName) {
+    case 'Hotels':
+      delete req.body.hotelImages;
+      req.body.hotelImages = [];
+      req.body.imageKey = [];
+      // req.body.hotelThumb = '';
+      req.files.map((file) => {
+        fileExtention = path.extname(file.fileName);
+        uniqueName = uuidv4();
+        Key = `${finalFolder}/${folderId}/${file.fileName}`;
+        var s3Params = {
+          Bucket: s3Bucket,
+          ContentType: file.fileType,
+          Body: fs.createReadStream(file.path),
+          ACL: 'public-read',
+          Key: Key,
+        };
+        try {
+          s3.upload(s3Params, async (err, data) => {
+            if (err) {
+              console.log(err);
+              res.status(401).json({ success: false, Error: err });
+            } else {
+              req.body.hotelImages.push(data.Location);
+              req.body.imageKey.push(data.Key);
+              ResponseData.push({ ...file, ...data });
+              if (ResponseData.length == req.files.length) {
+                ResponseData.map((a) => {
+                  if (a.thumbnail) {
+                    req.body.hotelThumb = a.Location;
+                  }
+                });
+                req.body.hotelImages = JSON.stringify(req.body.hotelImages);
+                req.body.imageKey = JSON.stringify(req.body.imageKey);
+                next();
+              }
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ success: false, Error: error.toString() });
         }
       });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ success: false, Error: error.toString() });
-    }
-  });
+      break;
+    default:
+      req.files.map((file) => {
+        Key = `${finalFolder}/${folderId}/${file.fileName}`;
+        var s3Params = {
+          Bucket: s3Bucket,
+          ContentType: file.fileType,
+          Body: fs.createReadStream(file.path),
+          ACL: 'public-read',
+          Key: Key,
+        };
+        try {
+          s3.upload(s3Params, async (err, data) => {
+            if (err) {
+              console.log(err);
+              res.status(401).json({ success: false, Error: err });
+            } else {
+              req.body[file.finalFolder] = data.Location;
+              req.body[`${file.finalFolder}Key`] = data.Key;
+              ResponseData.push(data);
+              if (ResponseData.length == req.files.length) next();
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ success: false, Error: error.toString() });
+        }
+      });
+      break;
+  }
 };
 
 export const awsEditMulti = async (req, res, next) => {
-  var s3Params = {
-    Bucket: s3Bucket,
-    Delete: {
-      Objects: req.files.map((file) => {
-        return { Key: req.body[`${file.finalFolder}Key`] };
-      }),
-    },
-  };
-  try {
-    s3.deleteObjects(s3Params, async (err, data) => {
-      if (err) {
-        res.status(403).json({
-          success: false,
-          Error: err.toString(),
-          ErrorCode: err?.code,
+  const { modelName, finalFolder, folderId } = req.body;
+  var s3Params;
+  switch (modelName) {
+    case 'Hotels':
+      await awsDeleteObjectsFolder(req, res, next, req.body.deletedImage);
+      var ResponseData = [];
+      var Key;
+      var fileExtention;
+      var uniqueName;
+      req.body.hotelImages = JSON.parse(req.body.hotelImages);
+      req.body.imageKey = JSON.parse(req.body.imageKey);
+      req.files.map((file) => {
+        fileExtention = path.extname(file.fileName);
+        uniqueName = uuidv4();
+        Key = `${finalFolder}/${folderId}/${file.fileName}`;
+        var s3Params = {
+          Bucket: s3Bucket,
+          ContentType: file.fileType,
+          Body: fs.createReadStream(file.path),
+          ACL: 'public-read',
+          Key: Key,
+        };
+        try {
+          s3.upload(s3Params, async (err, data) => {
+            if (err) {
+              console.log(err);
+              res.status(401).json({ success: false, Error: err });
+            } else {
+              req.body.hotelImages.push(data.Location);
+              req.body.imageKey.push(data.Key);
+              ResponseData.push({ ...file, ...data });
+              if (ResponseData.length == req.files.length) {
+                ResponseData.map((a) => {
+                  if (a.thumbnail) {
+                    req.body.hotelThumb = a.Location;
+                  }
+                });
+                req.body.hotelImages = JSON.stringify(req.body.hotelImages);
+                req.body.imageKey = JSON.stringify(req.body.imageKey);
+                next();
+              }
+            }
+          });
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ success: false, Error: error.toString() });
+        }
+      });
+      break;
+
+    default:
+      s3Params = {
+        Bucket: s3Bucket,
+        Delete: {
+          Objects: req.files.map((file) => {
+            return { Key: req.body[`${file.finalFolder}Key`] };
+          }),
+        },
+      };
+      try {
+        s3.deleteObjects(s3Params, async (err, data) => {
+          if (err) {
+            res.status(403).json({
+              success: false,
+              Error: err.toString(),
+              ErrorCode: err?.code,
+            });
+          } else {
+            awsCreateMulti(req, res, next);
+          }
         });
-      } else {
-        awsCreateMulti(req, res, next);
+      } catch (error) {
+        res.status(500).json({ success: false, Error: error.toString() });
       }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, Error: error.toString() });
+      break;
   }
 };
 
@@ -121,34 +225,82 @@ export const awsDeleteSingle = async (res, next, fileKey) => {
   });
 };
 
-export const awsDeleteObjectsFolder = async (res, next, newFolder) => {
-  const listParams = {
-    Bucket: s3Bucket,
-    Prefix: newFolder,
-  };
+export const awsDeleteObjectsFolder = async (req, res, next, newFolder) => {
+  const { modelName, hotelThumb } = req.body;
+  var listParams;
+  var listedObjects;
+  var deleteParams;
+  switch (modelName) {
+    case 'Hotels':
+      for (const prifix of newFolder) {
+        listParams = {
+          Bucket: s3Bucket,
+          Prefix: prifix,
+        };
+        listedObjects = await s3.listObjectsV2(listParams).promise();
+        if (listedObjects.Contents.length === 0) next();
+        deleteParams = {
+          Bucket: s3Bucket,
+          Delete: { Objects: [] },
+        };
+        console.log(req.body);
+        listedObjects.Contents.forEach(({ Key }) => {
+          deleteParams.Delete.Objects.push({ Key });
+        });
+        s3.deleteObjects(deleteParams, (error, data) => {
+          if (hotelThumb !== '' && hotelThumb !== undefined) {
+            const word = 'amazonaws.com/';
+            console.log(hotelThumb);
+            const index = hotelThumb?.indexOf(word);
+            const length = word.length;
 
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
-  // console.log(listedObjects);
-  if (listedObjects.Contents.length === 0) next();
-  const deleteParams = {
-    Bucket: s3Bucket,
-    Delete: { Objects: [] },
-  };
+            const thumbPerfix = hotelThumb.slice(index + length);
+            console.log(data['Deleted'][0].Key);
+            console.log(thumbPerfix);
+            if (data['Deleted'][0].Key == thumbPerfix) {
+              req.body.hotelThumb = '';
+            }
+          }
+          if (error) {
+            res.status(403).json({
+              success: false,
+              Error: error.toString(),
+              ErrorCode: error?.code,
+            });
+          } else {
+            next();
+          }
+        });
+      }
+      break;
+    default:
+      listParams = {
+        Bucket: s3Bucket,
+        Prefix: newFolder,
+      };
+      listedObjects = await s3.listObjectsV2(listParams).promise();
+      if (listedObjects.Contents.length === 0) next();
+      deleteParams = {
+        Bucket: s3Bucket,
+        Delete: { Objects: [] },
+      };
 
-  listedObjects.Contents.forEach(({ Key }) => {
-    deleteParams.Delete.Objects.push({ Key });
-  });
-  s3.deleteObjects(deleteParams, (error, data) => {
-    if (error) {
-      res.status(403).json({
-        success: false,
-        Error: error.toString(),
-        ErrorCode: error?.code,
+      listedObjects.Contents.forEach(({ Key }) => {
+        deleteParams.Delete.Objects.push({ Key });
       });
-    } else {
-      next();
-    }
-  });
+      s3.deleteObjects(deleteParams, (error, data) => {
+        if (error) {
+          res.status(403).json({
+            success: false,
+            Error: error.toString(),
+            ErrorCode: error?.code,
+          });
+        } else {
+          // next();
+        }
+      });
+      break;
+  }
 };
 
 export const fsCreateSingle = async (req, res, next) => {
@@ -400,33 +552,86 @@ export const fsDeleteObjectsFolder = async (req, res, next, newFolder) => {
 };
 
 export const deleteFsAwsError = async (req, res, next) => {
-  //Check that form has some files to
-  if (req.files.length !== 0) {
-    // create Key for delete file from S3 or filesystem
-    const key = req.body[`${req.files[0].finalFolder}Key`];
-    if (req.body.isVercel) {
-      s3.deleteObject({ Bucket: s3Bucket, Key: key }, (error) => {
-        if (error) {
-          console.log(error);
-          res.status(403).json({
-            success: false,
-            Error: error.toString(),
-            ErrorCode: error?.code,
+  const { modelName, hotelThumb, imageKey } = req.body;
+  var key;
+  var listParams;
+  var listedObjects;
+  var deleteParams;
+  switch (modelName) {
+    case 'Hotels':
+      if (req.files.length !== 0) {
+        for (const prifix of imageKey) {
+          listParams = {
+            Bucket: s3Bucket,
+            Prefix: prifix,
+          };
+          listedObjects = await s3.listObjectsV2(listParams).promise();
+          if (listedObjects.Contents.length === 0) next();
+          deleteParams = {
+            Bucket: s3Bucket,
+            Delete: { Objects: [] },
+          };
+          listedObjects.Contents.forEach(({ Key }) => {
+            deleteParams.Delete.Objects.push({ Key });
+          });
+          s3.deleteObjects(deleteParams, (error, data) => {
+            if (error) {
+              res.status(403).json({
+                success: false,
+                Error: error.toString(),
+                ErrorCode: error?.code,
+              });
+            } else {
+              if (hotelThumb !== '' && hotelThumb !== undefined) {
+                const word = 'amazonaws.com/';
+                console.log(hotelThumb);
+                const index = hotelThumb?.indexOf(word);
+                const length = word.length;
+
+                const thumbPerfix = hotelThumb.slice(index + length);
+                console.log(data['Deleted'][0].Key);
+                console.log(thumbPerfix);
+                if (data['Deleted'][0].Key == thumbPerfix) {
+                  req.body.hotelThumb = '';
+                }
+              }
+              next();
+            }
           });
         }
-      });
-    } else {
-      fs.unlink(key, (error) => {
-        if (error) {
-          console.log(error);
-          res.status(403).json({
-            success: false,
-            Error: error.toString(),
-            ErrorCode: error?.code,
+      }
+      break;
+
+    default:
+      //Check that form has some files to
+      if (req.files.length !== 0) {
+        // create Key for delete file from S3 or filesystem
+        key = req.body[`${req.files[0].finalFolder}Key`];
+        if (req.body.isVercel) {
+          s3.deleteObject({ Bucket: s3Bucket, Key: key }, (error) => {
+            if (error) {
+              console.log(error);
+              res.status(403).json({
+                success: false,
+                Error: error.toString(),
+                ErrorCode: error?.code,
+              });
+            }
+          });
+        } else {
+          fs.unlink(key, (error) => {
+            if (error) {
+              console.log(error);
+              res.status(403).json({
+                success: false,
+                Error: error.toString(),
+                ErrorCode: error?.code,
+              });
+            }
           });
         }
-      });
-    }
+      }
+      next();
+      break;
   }
-  next();
 };

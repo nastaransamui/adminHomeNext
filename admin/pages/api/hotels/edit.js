@@ -5,7 +5,7 @@ import verifyToken from '../../../helpers/verifyToken';
 import middleware from '../../../middleware/multiparty';
 import Hotels from '../../../models/Hotels';
 import { editMiddleware } from '../../../middleware/userMiddleware';
-import { deleteFsAwsError } from '../../../helpers/aws';
+import { deleteFsAwsError, fsDeleteObjectsFolder } from '../../../helpers/aws';
 import hazelCast from '../../../helpers/hazelCast';
 import { findHotelById } from '../../../helpers/auth';
 
@@ -49,6 +49,12 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
         }
         oldHotel.save(async (err, result) => {
           if (err) {
+            // console.log(err);
+            if (req.body.isVercel) {
+              deleteFsAwsError(req, res, next);
+            } else {
+              fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+            }
             res.status(403).json({
               success: false,
               Error: err.toString(),
@@ -79,8 +85,11 @@ apiRoute.post(verifyToken, editMiddleware, async (req, res, next) => {
         });
       });
     } catch (error) {
-      console.log(error);
-      deleteFsAwsError(req, res, next);
+      if (req.body.isVercel) {
+        deleteFsAwsError(req, res, next);
+      } else {
+        fsDeleteObjectsFolder(req, res, next, req.body.folderId);
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

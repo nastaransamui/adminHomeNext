@@ -26,11 +26,12 @@ export const editMiddleware = async (req, res, next) => {
           } else {
             if (oldUserData.isVercel) {
               await awsDeleteObjectsFolder(
+                req,
                 res,
                 next,
                 oldUserData.profileImageKey
               );
-              next();
+              // next();
             } else {
               await fsDeleteSingle(res, next, oldUserData.profileImageKey);
               next();
@@ -74,11 +75,12 @@ export const editMiddleware = async (req, res, next) => {
           } else {
             if (oldAgencyData.isVercel) {
               await awsDeleteObjectsFolder(
+                req,
                 res,
                 next,
                 oldAgencyData.logoImageKey
               );
-              next();
+              // next();
             } else {
               await fsDeleteSingle(res, next, oldAgencyData.logoImageKey);
               next();
@@ -122,13 +124,9 @@ export const editMiddleware = async (req, res, next) => {
             if (req.body.deletedImage.length !== 0) {
               console.log(`fileDeleted inside file upload`);
               if (oldHotelData.isVercel) {
-                //Todo
-                await awsDeleteObjectsFolder(res, next, req.body.deletedImage);
-                next();
               } else {
                 for (const filepath of req.body.deletedImage) {
                   fs.unlink(filepath, function (error) {
-                    console.log(filepath);
                     if (error) {
                       console.log(error);
                       res.status(403).json({
@@ -145,9 +143,7 @@ export const editMiddleware = async (req, res, next) => {
             if (isVercel) {
               //Todo
               //Upload file to s3 and update body
-              await awsCreateMulti(req, res, next);
-              delete req.body.deletedImage;
-              next();
+              await awsEditMulti(req, res, next);
             } else {
               //Move file to folder and update body
               // req.body.imageKey = JSON.parse(req?.body?.imageKey);
@@ -156,12 +152,14 @@ export const editMiddleware = async (req, res, next) => {
             break;
           case req.body.deletedImage.length !== 0:
             if (oldHotelData.isVercel) {
-              //Todo
-              await awsDeleteObjectsFolder(res, next, req.body.deletedImage);
-              delete req.body.deletedImage;
-              next();
+              console.log('onlydeleteVercel');
+              await awsDeleteObjectsFolder(
+                req,
+                res,
+                next,
+                req.body.deletedImage
+              );
             } else {
-              console.log('onlydelete');
               await fsDeleteMulti(res, next, req.body.deletedImage);
               next();
             }

@@ -34,7 +34,7 @@ export const MultifileMiddlewareDelete = async (req, res, next) => {
     if (req.body.isVercel) {
       //Upload files to s3 and update body
       const newFolder = `${req.body.finalFolder}/${req.body.folderId}`;
-      await awsDeleteObjectsFolder(res, next, newFolder);
+      await awsDeleteObjectsFolder(req, res, next, newFolder);
     } else {
       //delete folder
       const publicFolder = `${process.cwd()}/public`;
