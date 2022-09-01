@@ -29,6 +29,8 @@ const useAutoComplete = (
   let loadingOption = openOption && stateOptions.length == 0;
   const [stateFilter, setStateFilter] = useState('');
 
+  //update that change country and province not reset city if same
+
   const handleAutocomplete = (name, newValue) => {
     switch (componentName) {
       case 'Roles':
@@ -73,6 +75,7 @@ const useAutoComplete = (
           setValues({ ...values });
         } else {
           values[nameValue] = newValue.name;
+          values.city_id = [];
           values.city_id.push(newValue._id);
           values.province_id = [];
           values.province_id.push(newValue.state_id);
@@ -97,8 +100,8 @@ const useAutoComplete = (
         if (newValue == null) {
           values[nameValue] = '';
           values.province_id = [];
-          values.cityName = '';
-          values.city_id = [];
+          // values.cityName = '';
+          // values.city_id = [];
           setValues({ ...values });
           if (componentInUse == 'Hotel') {
             setRoleNameError((oldValue) => ({
@@ -108,8 +111,8 @@ const useAutoComplete = (
             }));
           }
         } else {
-          values.cityName = '';
-          values.city_id = [];
+          // values.cityName = '';
+          // values.city_id = [];
           values.province_id = [];
           values.province_id.push(newValue._id);
           values.provinceName = newValue.name;
@@ -165,6 +168,7 @@ const useAutoComplete = (
           setValues({ ...values, [nameValue]: '', currencyCode_id: [] });
         } else {
           values.currencyCode = newValue.currency;
+          values.currencyCode_id = [];
           values.currencyCode_id.push(newValue._id);
           setValues({
             ...values,
@@ -176,6 +180,7 @@ const useAutoComplete = (
           setValues({ ...values, [nameValue]: '', accountManager_id: [] });
         } else {
           values.accountManager = newValue.userName;
+          values.accountManager_id = [];
           values.accountManager_id.push(newValue._id);
           setValues({
             ...values,
@@ -385,6 +390,7 @@ const useAutoComplete = (
     renderBox,
     getLabels,
     onBlurFunc,
+    stateFilter,
   };
 };
 

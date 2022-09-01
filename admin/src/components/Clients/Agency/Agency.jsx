@@ -277,7 +277,7 @@ export default function Agency(props) {
                     </Grid>
                   </Grid>
                   <Grid container spacing={3} style={{ marginTop: 10 }}>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <Autocomplete
                         required
                         modelName='Countries'
@@ -291,7 +291,7 @@ export default function Agency(props) {
                         componentInUse='Agency'
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <Autocomplete
                         required
                         modelName='Countries'
@@ -305,7 +305,7 @@ export default function Agency(props) {
                         componentInUse='Agency'
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <Autocomplete
                         required
                         modelName='Countries'
@@ -319,7 +319,7 @@ export default function Agency(props) {
                         componentInUse='Agency'
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <Autocomplete
                         required
                         modelName='Currencies'
@@ -335,7 +335,7 @@ export default function Agency(props) {
                     </Grid>
                   </Grid>
                   <Grid container spacing={3} style={{ marginTop: 10 }}>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <TextValidator
                         className={classes.input}
                         variant='standard'
@@ -361,7 +361,7 @@ export default function Agency(props) {
                         fullWidth
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <TextValidator
                         className={classes.input}
                         variant='standard'
@@ -387,7 +387,7 @@ export default function Agency(props) {
                         fullWidth
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <TextValidator
                         className={classes.input}
                         variant='standard'
@@ -412,7 +412,7 @@ export default function Agency(props) {
                         fullWidth
                       />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
                       <TextValidator
                         className={classes.input}
                         variant='standard'
@@ -438,11 +438,11 @@ export default function Agency(props) {
                       />
                     </Grid>
                   </Grid>
-                  <Grid container spacing={3} style={{ marginTop: 10 }}>
+                  <Grid container spacing={1} style={{ marginTop: 20 }}>
                     {values?.phones.map((value, index) => {
                       return (
                         <Fragment key={index}>
-                          <Grid item xs={12} sm={12} md={3}>
+                          <Grid item xs={12} sm={12} md={5}>
                             <PhoneInput
                               type='text'
                               value={value.number}
@@ -525,7 +525,7 @@ export default function Agency(props) {
                               errorMessages={[t('required')]}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={12} md={3}>
+                          <Grid item xs={12} sm={12} md={1}>
                             <Box
                               sx={{
                                 display: 'flex',

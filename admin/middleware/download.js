@@ -1,9 +1,5 @@
 import Users from '../models/Users';
-import {
-  awsCreateSingle,
-  fsCreateSingle,
-  fsDeleteSingle,
-} from '../helpers/aws';
+import { awsCreateSingle, fsCreateSingle } from '../helpers/fileSystem';
 import hazelCast from '../helpers/hazelCast';
 import mongoose from 'mongoose';
 import Countries from '../models/Countries';

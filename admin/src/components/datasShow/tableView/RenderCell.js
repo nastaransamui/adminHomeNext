@@ -155,6 +155,18 @@ GridCellExpand.propTypes = {
 };
 
 export const RenderCellExpand = (params) => {
+  const returnValue = (params) => {
+    switch (params.modelName) {
+      case 'Hotels':
+        return params.value;
+      case 'Agencies':
+        return params?.row?.currencyCode + ' ' + params.value.toLocaleString();
+      default:
+        return typeof params.value !== 'undefined'
+          ? params.value.toLocaleString()
+          : params.value;
+    }
+  };
   return (
     <>
       {typeof params.value == 'string' ? (
@@ -170,13 +182,7 @@ export const RenderCellExpand = (params) => {
             display: 'flex',
             justifyContent: 'center',
           }}>
-          {params.type !== 'number'
-            ? params.value
-            : params.modelName == 'Agencies'
-            ? params?.row?.currencyCode + ' ' + params.value.toLocaleString()
-            : params.modelName == 'Hotels'
-            ? params.value
-            : params.value.toLocaleString()}
+          {returnValue(params)}
         </span>
       )}
     </>

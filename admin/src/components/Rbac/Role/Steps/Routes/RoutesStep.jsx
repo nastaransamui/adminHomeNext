@@ -79,7 +79,7 @@ const RoutesStep = (props) => {
 
   useEffect(() => {
     let isMount = true;
-    if (isMount && role_id !== undefined) {
+    if (isMount ) {
       setRight(values.routes);
       const notIncluded = copyRoute.filter((a) => {
         if (

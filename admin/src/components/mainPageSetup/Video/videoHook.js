@@ -81,12 +81,24 @@ const videoHook = (reactRoutes) => {
         values[e.target.name] = newFile;
         switch (e.target.name) {
           case 'videoLink':
+            if (_id !== undefined && values.videoLinkKey !== '') {
+              values.deletedImage.push(values.videoLinkKey);
+            }
+            values.videoLinkKey = '';
             setVideoLinkBlob(URL.createObjectURL(newFile));
             break;
           case 'imageMobileShow':
+            if (_id !== undefined && values.imageMobileShowKey !== '') {
+              values.deletedImage.push(values.imageMobileShowKey);
+            }
+            values.imageMobileShowKey = '';
             setImageMobileBlob(URL.createObjectURL(newFile));
             break;
           case 'videoPoster':
+            if (_id !== undefined && values.videoPosterKey !== '') {
+              values.deletedImage.push(values.videoPosterKey);
+            }
+            values.videoPosterKey = '';
             setVideoPosterBlob(URL.createObjectURL(newFile));
             break;
         }
@@ -97,6 +109,10 @@ const videoHook = (reactRoutes) => {
 
   const deleteFile = (name) => {
     values[name] = '';
+    if (_id !== undefined && values[`${name}Key`] !== '') {
+      values.deletedImage.push(values[`${name}Key`]);
+      values[`${name}Key`] = '';
+    }
     setValues((oldValues) => ({ ...oldValues }));
   };
 
@@ -188,7 +204,11 @@ const videoHook = (reactRoutes) => {
       if (_id !== undefined) {
         if (location.state) {
           // Data is in state of location
-          setValues({ ...location.state, modelName: 'Videos' });
+          setValues({
+            ...location.state,
+            modelName: 'Videos',
+            deletedImage: [],
+          });
           setVideoLinkBlob(location.state.videoLink);
           setImageMobileBlob(location.state.imageMobileShow);
           setVideoPosterBlob(location.state.videoPoster);
@@ -221,7 +241,11 @@ const videoHook = (reactRoutes) => {
               });
             } else {
               delete video.data.__v;
-              setValues({ ...video.data, modelName: 'Videos' });
+              setValues({
+                ...video.data,
+                modelName: 'Videos',
+                deletedImage: [],
+              });
               setVideoLinkBlob(video.data.videoLink);
               setImageMobileBlob(video.data.imageMobileShow);
               setVideoPosterBlob(video.data.videoPoster);
@@ -255,10 +279,12 @@ const videoHook = (reactRoutes) => {
 };
 
 function toFormData(o) {
-  return Object.entries(o).reduce(
-    (d, e) => (d.append(...e), d),
-    new FormData()
-  );
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'deletedImage') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
 }
 
 export default videoHook;

@@ -38,6 +38,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               'states.countryId': '$id',
               'states.country_id': '$_id',
               'states.totalCities': { $size: '$states.cities' },
+              'states.cities': { $slice: ['$states.cities', 10] },
             },
           },
           { $group: { _id: null, province: { $push: '$states' } } },

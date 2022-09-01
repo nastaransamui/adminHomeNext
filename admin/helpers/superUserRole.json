@@ -695,6 +695,79 @@
           "views": []
         }
       ]
+    },
+    {
+      "path": "/dashboard",
+      "name_en-US": "Hotels Data",
+      "name_fa": "اطلاعات هتلها",
+      "crud": [
+        {
+          "name": "read",
+          "active": true
+        },
+        {
+          "name": "delete",
+          "active": true
+        },
+        {
+          "name": "create",
+          "active": true
+        },
+        {
+          "name": "update",
+          "active": true
+        }
+      ],
+      "views": [
+        {
+          "path": "/dashboard/hotel-data/hotels",
+          "name_en-US": "Hotels List",
+          "name_fa": "فهرست هتلها",
+          "crud": [
+            {
+              "name": "read",
+              "active": true
+            },
+            {
+              "name": "delete",
+              "active": true
+            },
+            {
+              "name": "create",
+              "active": true
+            },
+            {
+              "name": "update",
+              "active": true
+            }
+          ],
+          "views": []
+        },
+        {
+          "path": "/dashboard/hotel-data/hotels/hotel",
+          "name_en-US": "Add hotel",
+          "name_fa": "هتل اضافه کنید",
+          "crud": [
+            {
+              "name": "read",
+              "active": true
+            },
+            {
+              "name": "delete",
+              "active": true
+            },
+            {
+              "name": "create",
+              "active": true
+            },
+            {
+              "name": "update",
+              "active": true
+            }
+          ],
+          "views": []
+        }
+      ]
     }
   ]
 }

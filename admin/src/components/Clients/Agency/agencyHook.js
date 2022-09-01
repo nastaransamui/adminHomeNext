@@ -117,12 +117,19 @@ const agencyHook = (reactRoutes) => {
         });
         setLogoImageBlob(URL.createObjectURL(newFile));
         values[e.target.name] = newFile;
+        if (client_id !== undefined && values.logoImageKey !== '') {
+          values.deletedImage.push(values.logoImageKey);
+        }
+        values.logoImageKey = '';
         setValues((oldValue) => ({ ...oldValue }));
       }
     }
   };
 
   const deleteImage = () => {
+    if (client_id !== undefined && values.logoImageKey !== '') {
+      values.deletedImage.push(values.logoImageKey);
+    }
     setLogoImageBlob('');
     values.logoImage = '';
     values.logoImageKey = '';
@@ -187,7 +194,7 @@ const agencyHook = (reactRoutes) => {
       delete values?.provinceData;
       delete values?.userCreatedData;
       delete values?.userUpdatedData;
-      values.userUpdated = profile._id;
+      values.userUpdated = [profile._id];
       try {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
         const res = await fetch(editUrl, {
@@ -257,6 +264,7 @@ const agencyHook = (reactRoutes) => {
           setValues((oldValues) => ({
             ...oldValues,
             ...location.state,
+            deletedImage: [],
           }));
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         } else {
@@ -299,10 +307,14 @@ const agencyHook = (reactRoutes) => {
                   setPhoneNumberError(phoneNumberError);
                 }
               });
-              setValues((oldValues) => ({
-                ...oldValues,
-                ...agent?.data,
-              }));
+              setValues((oldValues) => {
+                oldValues.deletedImage = oldValues?.deletedImage || [];
+                return {
+                  ...oldValues,
+                  ...agent?.data,
+                  deletedImage: [],
+                };
+              });
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             }
           };
@@ -371,6 +383,15 @@ function toFormData(o) {
       e[1] = JSON.stringify(e[1]);
     }
     if (e[0] == 'currencyCode_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'deletedImage') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'userUpdated') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'userCreated') {
       e[1] = JSON.stringify(e[1]);
     }
     return d.append(...e), d;

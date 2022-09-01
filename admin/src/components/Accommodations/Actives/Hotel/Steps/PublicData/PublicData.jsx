@@ -191,7 +191,7 @@ const PublicData = (props) => {
           <Grid item xs={12} sm={4} md={3} lg={3}>
             <TextValidator
               className={classes.input}
-              autoComplete='off'
+              // autoComplete='off'
               InputProps={{
                 style: {
                   WebkitTextFillColor: theme.palette.text.color,

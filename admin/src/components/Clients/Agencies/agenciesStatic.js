@@ -15,7 +15,7 @@ import {
 export const editUrl = '/admin/dashboard/client-data/clients';
 export const createUrl = '/admin/dashboard/client-data/clients/client';
 export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 export const exportCsvUrl = `/admin/api/clients/export`;
 export const agenciesFields = [
   {

@@ -10,7 +10,7 @@ import {
 export const editUrl = '/admin/dashboard/main-page-setup/features';
 export const createUrl = '/admin/dashboard/main-page-setup/features/feature';
 export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 
 export const featuresFields = [
   {

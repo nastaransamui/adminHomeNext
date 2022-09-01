@@ -79,9 +79,17 @@ const featureHook = (reactRoutes) => {
         values[e.target.name] = newFile;
         switch (e.target.name) {
           case 'featureLink':
+            if (_id !== undefined && values.featureLinkKey !== '') {
+              values.deletedImage.push(values.featureLinkKey);
+            }
+            values.featureLinkKey = '';
             setFeatureLinkBlob(URL.createObjectURL(newFile));
             break;
           case 'featureThumb':
+            if (_id !== undefined && values.featureThumbKey !== '') {
+              values.deletedImage.push(values.featureThumbKey);
+            }
+            values.featureThumbKey = '';
             setFeatureThumbBlob(URL.createObjectURL(newFile));
             break;
         }
@@ -92,6 +100,10 @@ const featureHook = (reactRoutes) => {
 
   const deleteFile = (name) => {
     values[name] = '';
+    if (_id !== undefined && values[`${name}Key`] !== '') {
+      values.deletedImage.push(values[`${name}Key`]);
+      values[`${name}Key`] = '';
+    }
     setValues((oldValues) => ({ ...oldValues }));
   };
 
@@ -185,7 +197,11 @@ const featureHook = (reactRoutes) => {
       if (_id !== undefined) {
         if (location.state) {
           // Data is in state of location
-          setValues({ ...location.state, modelName: 'Features' });
+          setValues({
+            ...location.state,
+            modelName: 'Features',
+            deletedImage: [],
+          });
           setFeatureLinkBlob(location.state.featureLink);
           setFeatureThumbBlob(location.state.featureThumb);
         } else {
@@ -198,7 +214,11 @@ const featureHook = (reactRoutes) => {
                 'Content-Type': 'application/json',
                 token: `Brearer ${adminAccessToken}`,
               },
-              body: JSON.stringify({ _id: _id, modelName: 'Features' }),
+              body: JSON.stringify({
+                _id: _id,
+                modelName: 'Features',
+                deletedImage: [],
+              }),
             });
             const { status } = res;
             const feature = await res.json();
@@ -217,7 +237,11 @@ const featureHook = (reactRoutes) => {
               });
             } else {
               delete feature.data.__v;
-              setValues({ ...feature.data, modelName: 'Features' });
+              setValues({
+                ...feature.data,
+                modelName: 'Features',
+                deletedImage: [],
+              });
               setFeatureLinkBlob(feature.data.featureLink);
               setFeatureThumbBlob(feature.data.featureThumb);
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -249,10 +273,12 @@ const featureHook = (reactRoutes) => {
 };
 
 function toFormData(o) {
-  return Object.entries(o).reduce(
-    (d, e) => (d.append(...e), d),
-    new FormData()
-  );
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'deletedImage') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
 }
 
 export default featureHook;

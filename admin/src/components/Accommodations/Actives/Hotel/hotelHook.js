@@ -225,7 +225,6 @@ const hotelHook = (reactRoutes) => {
     } else {
       //Edit Hotel
       values.userUpdated = [profile._id];
-      console.log(values);
       try {
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
         const res = await fetch(editUrl, {
@@ -309,7 +308,6 @@ const hotelHook = (reactRoutes) => {
   }, [values.latitude, values.longitude, theme]);
 
   const isPublicDataValidated = () => {
-    return true;
     switch ('') {
       case values.hotelId:
       case values.hotelName:
@@ -350,7 +348,6 @@ const hotelHook = (reactRoutes) => {
   };
 
   const isLocationDataValidated = () => {
-    return true;
     switch ('') {
       case values.cityName:
       case values.provinceName:
@@ -443,9 +440,6 @@ const hotelHook = (reactRoutes) => {
     if (_id !== undefined) {
       values.deletedImage.push(...values.imageKey.splice(index, 1));
     }
-    // console.log(...values.imageKey.splice(index, 1));
-    // values.deletedImage.push(...values.imageKey.splice(index, 1));
-    // console.log(values.deletedImage);
     fileObjects.splice(index, 1);
     values.hotelImages.splice(index, 1);
     if (isThumbImage) {
@@ -460,8 +454,6 @@ const hotelHook = (reactRoutes) => {
     imageChanged(values.hotelImages);
     setFileObjects(fileObjects);
   };
-
-  console.log(values);
 
   return {
     formSubmit,
@@ -504,7 +496,6 @@ function toFormData(o) {
       e[1] = JSON.stringify(e[1]);
     }
     if (o._id !== '' && e[0] == 'hotelThumb') {
-      console.log(e[1]);
       typeof e[1] == 'object' && d.append('hotelThumb', e[1]);
     }
     if (o._id !== '') {

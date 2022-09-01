@@ -1,7 +1,7 @@
-import { Fragment} from 'react';
+import { Fragment } from 'react';
 import Wizard from '../Wizard/Wizard';
 import CreateUser from './CreateUser';
-import RolesData from './UserEditSteps/RolesData/RolesData'
+import RolesData from './UserEditSteps/RolesData/RolesData';
 import AgentsData from './UserEditSteps/AgentsData/AgentsData';
 
 const EditUser = (props) => {
@@ -15,9 +15,9 @@ const EditUser = (props) => {
     setValues,
     formSubmit,
     _id,
-    updateRoleName
+    updateRoleName,
   } = props;
-  
+
   return (
     <Fragment>
       <Wizard
@@ -61,11 +61,17 @@ const EditUser = (props) => {
             ...props,
           },
         ]}
-        title={t('createRouteTitle')}
-        subtitle={t('createRouteSubTitle')}
+        title={t('editUserTitle')}
+        subtitle={t('editUserSubTitle')}
         finishButtonClick={(e) => formSubmit()}
         previousButtonText={t('previous')}
-        nextButtonText={values.roleName !== '' && updateRoleName.changed && updateRoleName.roleName !== values.roleName ? t('finish'):  t('next')}
+        nextButtonText={
+          values.roleName !== '' &&
+          updateRoleName.changed &&
+          updateRoleName.roleName !== values.roleName
+            ? t('finish')
+            : t('next')
+        }
         finishButtonText={t('finish')}
       />
     </Fragment>

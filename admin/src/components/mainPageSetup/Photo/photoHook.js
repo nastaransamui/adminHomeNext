@@ -73,6 +73,10 @@ const photoHook = (reactRoutes) => {
           type: file.type,
         });
         values[e.target.name] = newFile;
+        if (_id !== undefined && values.imageShowKey !== '') {
+          values.deletedImage.push(values.imageShowKey);
+        }
+        values.imageShowKey = '';
         setImageBlob(URL.createObjectURL(newFile));
         setValues((oldValues) => ({ ...oldValues }));
       }
@@ -81,6 +85,10 @@ const photoHook = (reactRoutes) => {
 
   const deleteFile = (name) => {
     values[name] = '';
+    if (_id !== undefined && values[`${name}Key`] !== '') {
+      values.deletedImage.push(values[`${name}Key`]);
+      values[`${name}Key`] = '';
+    }
     setValues((oldValues) => ({ ...oldValues }));
   };
 
@@ -171,7 +179,11 @@ const photoHook = (reactRoutes) => {
       if (_id !== undefined) {
         if (location.state) {
           // Data is in state of location
-          setValues({ ...location.state, modelName: 'Photos' });
+          setValues({
+            ...location.state,
+            modelName: 'Photos',
+            deletedImage: [],
+          });
           setImageBlob(location.state.imageShow);
         } else {
           // need search
@@ -202,7 +214,11 @@ const photoHook = (reactRoutes) => {
               });
             } else {
               delete photo.data.__v;
-              setValues({ ...photo.data, modelName: 'Photos' });
+              setValues({
+                ...photo.data,
+                modelName: 'Photos',
+                deletedImage: [],
+              });
               setImageBlob(photo.data.imageShow);
               dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
             }
@@ -250,10 +266,12 @@ const photoHook = (reactRoutes) => {
 };
 
 function toFormData(o) {
-  return Object.entries(o).reduce(
-    (d, e) => (d.append(...e), d),
-    new FormData()
-  );
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'deletedImage') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
 }
 
 export default photoHook;

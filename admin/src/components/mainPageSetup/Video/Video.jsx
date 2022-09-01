@@ -44,7 +44,6 @@ export default function Video(props) {
 
   const { createButtonDisabled, updateButtonDisabled } =
     useButtonActivation(videoRoute);
-    console.log(values)
   return (
     <div style={{ minWidth: '100%' }}>
       <Tooltip title={t('goBack')} arrow placement='bottom'>

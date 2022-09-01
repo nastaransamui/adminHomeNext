@@ -10,10 +10,10 @@ import movieAvatar from '../../../../public/images/faces/movie.jpg';
 import { useTranslation } from 'react-i18next';
 import photoStyle from './photo-styles';
 
-export const createUrl = `/admin/api/mainPageSetup/create`;
+export const createUrl = `/admin/api/modelsCrud/create`;
 
 export const getUrl = `/admin/api/mainPageSetup/getOne`;
-export const editUrl = `/admin/api/mainPageSetup/edit`;
+export const editUrl = `/admin/api/modelsCrud/edit`;
 
 export const Stories = (
   rtlActive,

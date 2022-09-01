@@ -1,7 +1,7 @@
 export const editUrl = '/admin/dashboard/hotel-data/hotels';
 export const createUrl = '/admin/dashboard/hotel-data/hotels/hotel';
 export const getAllUrl = '/admin/api/mainPageSetup/getAll';
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 export const exportCsvUrl = `/admin/api/hotels/export`;
 
 import Title from '@mui/icons-material/Title';

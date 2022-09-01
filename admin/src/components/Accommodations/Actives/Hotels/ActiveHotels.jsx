@@ -14,9 +14,9 @@ import {
   hotelsFields,
   deleteUrl,
 } from './activeHotelsStatic';
-import useActiveAlert from '../../../Hooks/useActiveAlert';
 import useDataHeaders from '../../../Hooks/useDataHeaders';
 import useButtonActivation from '../../../Hooks/useButtonActivation';
+import useDeleteAlert from '../../../Hooks/useDeleteAlert';
 
 const ActiveHotels = (props) => {
   const { t } = useTranslation('hotels');
@@ -37,21 +37,14 @@ const ActiveHotels = (props) => {
   const { dataArrayLengh, pageNumber, SortBy, CardView, PerPage, GridView } =
     Hotels;
 
-    const { sweetActiveAlert } = useActiveAlert({
+    const sweetDeleteAlert = useDeleteAlert({
       state: Hotels,
       modelName: 'Hotels',
       t: t,
-      Url: deleteUrl,
+      deleteUrl: deleteUrl,
       dispatchType: 'HOTELS',
     });
-  
-    const { sweetDiactiveAlert } = useActiveAlert({
-      state:Hotels,
-      modelName: 'Hotels',
-      t: t,
-      Url: deleteUrl,
-      dispatchType:'HOTELS',
-    });
+
   const {
     gridNumberFunc,
     cardViewsFunc,
@@ -83,8 +76,7 @@ const ActiveHotels = (props) => {
           mainData={hotels}
           profile
           modelName='Hotels'
-          activeAlert={sweetActiveAlert}
-          diactiveAlert={sweetDiactiveAlert}
+          deleteAlert={sweetDeleteAlert}
           dataGridColumns={dataGridColumns}
           gridNumberFunc={gridNumberFunc}
           gridNumber={GridView}

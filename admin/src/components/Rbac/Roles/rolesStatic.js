@@ -1,7 +1,7 @@
 export const editUrl = '/admin/dashboard/rbac-data';
 export const createUrl = '/admin/dashboard/rbac-data/role';
 export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 export const exportCsvUrl = `/admin/api/rbac/export`;
 import HomeWork from '@mui/icons-material/HomeWork';
 import EventIcon from '@mui/icons-material/Event';

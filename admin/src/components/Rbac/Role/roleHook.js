@@ -83,14 +83,23 @@ const roleHook = (reactRoutes) => {
       });
     } else {
       delete role.data.__v;
+      values.modelName = 'Roles';
       setTotalUsers(role.totalUsers);
-      setValues((oldValues) => ({
-        ...oldValues,
-        ...role?.data,
-      }));
+      if (values.roleName == '') {
+        setValues((oldValues) => ({
+          ...oldValues,
+          ...role?.data,
+        }));
+      } else {
+        setValues((oldValues) => ({
+          ...oldValues,
+          usersData: role?.data?.usersData,
+        }));
+      }
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
     }
   };
+
   useEffect(() => {
     let isMount = true;
     if (isMount) {
@@ -98,6 +107,7 @@ const roleHook = (reactRoutes) => {
         //Role information is inside location.state and will use it
         dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
         if (location.state !== undefined) {
+          values.modelName = 'Roles';
           delete location?.state.__v;
           setValues({ ...location.state });
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
@@ -112,6 +122,7 @@ const roleHook = (reactRoutes) => {
   }, [location]);
 
   const formSubmit = async () => {
+    values.modelName = 'Roles';
     if (role_id == undefined) {
       try {
         //Create role
@@ -209,10 +220,12 @@ const roleHook = (reactRoutes) => {
     }
   };
   const handleChange = (name) => (event) => {
-    if (event.target.value !== '') {
-      setRoleNameError(false);
-    } else {
-      setRoleNameError(true);
+    if (name == 'roleName') {
+      if (event.target.value !== '') {
+        setRoleNameError(false);
+      } else {
+        setRoleNameError(true);
+      }
     }
     if (typeof values[name] == 'boolean') {
       setValues({ ...values, [name]: !values[name] });

@@ -50,6 +50,37 @@ const aboutHook = (reactRoutes) => {
     values[e.target.name] = e.target.value;
     setValues((oldValues) => ({ ...oldValues }));
   };
+  const getResult = async () => {
+    const res = await fetch(getUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: `Brearer ${adminAccessToken}`,
+      },
+      body: JSON.stringify({ modelName: 'About', deletedImage: [] }),
+    });
+    const { status } = res;
+    const response = await res.json();
+    const errorText =
+      response?.ErrorCode == undefined
+        ? t(`${response.Error}`)
+        : t(`${response?.ErrorCode}`);
+    if (status !== 200 && !response.success) {
+      alertCall(theme, 'error', errorText, () => {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        if (!checkCookies('adminAccessToken')) {
+          router.push('/', undefined, { shallow: true });
+        }
+      });
+    } else {
+      delete response.data.__v;
+      setValues({ ...response.data, modelName: 'About', deletedImage: [] });
+      setFirstThumbBlob(response.data.firstThumb);
+      setSecondThumbBlob(response.data.secondThumb);
+      setThirdThumbBlob(response.data.thirdThumb);
+      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+    }
+  };
 
   const uploadFile = (e) => {
     const random = (Math.random() + 1).toString(36).substring(7);
@@ -73,12 +104,33 @@ const aboutHook = (reactRoutes) => {
         values[e.target.name] = newFile;
         switch (e.target.name) {
           case 'firstThumb':
+            if (
+              !values.firstThumbKey.endsWith('/default/1.jpg') &&
+              values.firstThumbKey !== ''
+            ) {
+              values.deletedImage.push(values.firstThumbKey);
+              values.firstThumbKey = '';
+            }
             setFirstThumbBlob(URL.createObjectURL(newFile));
             break;
           case 'secondThumb':
+            if (
+              !values.secondThumbKey.endsWith('/default/2.jpg') &&
+              values.secondThumbKey !== ''
+            ) {
+              values.deletedImage.push(values.secondThumbKey);
+              values.secondThumbKey = '';
+            }
             setSecondThumbBlob(URL.createObjectURL(newFile));
             break;
           case 'thirdThumb':
+            if (
+              !values.thirdThumbKey.endsWith('/default/3.jpg') &&
+              values.thirdThumbKey !== ''
+            ) {
+              values.deletedImage.push(values.thirdThumbKey);
+              values.thirdThumbKey = '';
+            }
             setThirdThumbBlob(URL.createObjectURL(newFile));
             break;
         }
@@ -89,6 +141,17 @@ const aboutHook = (reactRoutes) => {
 
   const deleteFile = (name) => {
     values[name] = '';
+    //Keep original file
+    var originalPhotoFile =
+      name == 'firstThumb'
+        ? '1.jpg'
+        : name == 'secondThumb'
+        ? '2.jpg'
+        : '3.jpg';
+    if (!values[`${name}Key`].endsWith(originalPhotoFile)) {
+      values.deletedImage.push(values[`${name}Key`]);
+      values[`${name}Key`] = '';
+    }
     setValues((oldValues) => ({ ...oldValues }));
   };
 
@@ -114,6 +177,7 @@ const aboutHook = (reactRoutes) => {
         });
       } else {
         alertCall(theme, 'success', t('aboutEdited'), () => {
+          getResult();
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           if (!checkCookies('adminAccessToken')) {
             router.push('/', undefined, { shallow: true });
@@ -134,37 +198,6 @@ const aboutHook = (reactRoutes) => {
     let isMount = true;
     if (isMount) {
       dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: true });
-      const getResult = async () => {
-        const res = await fetch(getUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            token: `Brearer ${adminAccessToken}`,
-          },
-          body: JSON.stringify({ modelName: 'About' }),
-        });
-        const { status } = res;
-        const response = await res.json();
-        const errorText =
-          response?.ErrorCode == undefined
-            ? t(`${response.Error}`)
-            : t(`${response?.ErrorCode}`);
-        if (status !== 200 && !response.success) {
-          alertCall(theme, 'error', errorText, () => {
-            dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-            if (!checkCookies('adminAccessToken')) {
-              router.push('/', undefined, { shallow: true });
-            }
-          });
-        } else {
-          delete response.data.__v;
-          setValues({ ...response.data, modelName: 'About' });
-          setFirstThumbBlob(response.data.firstThumb);
-          setSecondThumbBlob(response.data.secondThumb);
-          setThirdThumbBlob(response.data.thirdThumb);
-          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-        }
-      };
 
       getResult();
     }
@@ -188,10 +221,12 @@ const aboutHook = (reactRoutes) => {
 };
 
 function toFormData(o) {
-  return Object.entries(o).reduce(
-    (d, e) => (d.append(...e), d),
-    new FormData()
-  );
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'deletedImage') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
 }
 
 export default aboutHook;

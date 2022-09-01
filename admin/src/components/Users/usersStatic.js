@@ -11,7 +11,7 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 export const editUrl = '/admin/dashboard/user-page';
 export const createUrl = '/admin/dashboard/user-page/user';
 export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 export const exportCsvUrl = `/admin/api/users/export`;
 export const userFields = [
   {

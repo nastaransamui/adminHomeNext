@@ -58,10 +58,10 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
           modelName == 'global_currencies' ||
-          modelName == 'HotelsList' ||
-          modelName == 'Hotels'
+          modelName == 'HotelsList' 
             ? true
-            : modelName == 'Agencies'
+            : modelName == 'Agencies'||
+            modelName == 'Hotels'
             ? false
             : modelName == 'Roles'
             ? false
@@ -74,8 +74,7 @@ const TableBody = forwardRef((props, ref) => {
           modelName == 'global_countries' ||
           modelName == 'Currencies' ||
           modelName == 'global_currencies' ||
-          modelName == 'HotelsList' ||
-          modelName == 'Hotels'
+          modelName == 'HotelsList' 
             ? false
             : true;
         return [

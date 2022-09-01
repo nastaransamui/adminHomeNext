@@ -91,16 +91,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             ErrorCode: err?.code,
           });
         } else {
-          const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
-          let rawdata = fs.readFileSync(fileToRead);
-          let data = JSON.parse(rawdata);
-          var activesIds = await collection.find({}, { _id: true, id: true });
-          let orderCurrencyByActivation = data.sort((a, b) => {
-            return (
-              activesIds.findIndex((p) => p.id === b.id) -
-              activesIds.findIndex((p) => p.id === a.id)
-            );
-          });
           if (!hzErrorConnection) {
             const multiMap = await hz.getMultiMap(modelName);
             await multiMap.destroy();
@@ -110,20 +100,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
           res.status(200).json({
             success: true,
-            totalValuesLength: orderCurrencyByActivation.length,
-            activesId: activesIds,
-            data: paginate(
-              orderCurrencyByActivation.sort(
-                sort_by(
-                  [req.body['valuesSortByField']],
-                  valuesSortBySorting > 0 ? false : true,
-                  (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
-                  activesIds
-                )
-              ),
-              valuesPerPage,
-              valuesPageNumber
-            ),
+            totalValuesLength: 1,
+            activesId: [],
+            data: [],
           });
         }
       });

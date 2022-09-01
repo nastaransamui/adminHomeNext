@@ -166,21 +166,28 @@ export function validatePassword(user, inputPassword) {
     process.env.NEXT_PUBLIC_SECRET_KEY
   );
   const originalPassword = bytes.toString(CryptoJS.enc.Utf8);
-
   const passwordsMatch = originalPassword == inputPassword;
   return passwordsMatch;
 }
 
 export async function hashPassword(req, res, next) {
   try {
-    if (req.body?.password !== undefined && req.body?.password !== '') {
-      const cryptoPassword = CryptoJS.AES.encrypt(
-        req.body.password,
-        process.env.NEXT_PUBLIC_SECRET_KEY
-      ).toString();
-      req.body.password = cryptoPassword;
+    const { modelName } = req.body;
+    switch (modelName) {
+      case 'Users':
+        if (req.body?.password !== undefined && req.body?.password !== '') {
+          const cryptoPassword = CryptoJS.AES.encrypt(
+            req.body.password,
+            process.env.NEXT_PUBLIC_SECRET_KEY
+          ).toString();
+          req.body.password = cryptoPassword;
+        }
+        next();
+        break;
+      default:
+        next();
+        break;
     }
-    next();
   } catch (error) {
     res
       .status(500)

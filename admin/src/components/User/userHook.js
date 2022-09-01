@@ -98,6 +98,10 @@ const userHook = () => {
         });
         setProfileImageBlob(URL.createObjectURL(newFile));
         values[e.target.name] = newFile;
+        if (_id !== undefined && values.profileImageKey !== '') {
+          values.deletedImage.push(values.profileImageKey);
+        }
+        values.profileImageKey = '';
         setValues((oldValue) => ({ ...oldValue }));
       }
     }
@@ -105,6 +109,9 @@ const userHook = () => {
 
   const deleteImage = () => {
     setProfileImageBlob('');
+    if (_id !== undefined && values.profileImageKey !== '') {
+      values.deletedImage.push(values.profileImageKey);
+    }
     values.profileImage = '';
     values.profileImageKey = '';
     setValues((oldValue) => ({ ...oldValue }));
@@ -237,8 +244,8 @@ const userHook = () => {
             if (!checkCookies('adminAccessToken')) {
               router.push('/', undefined, { shallow: true });
             } else {
-              // history.push('/admin/dashboard/user-page');
-              getUser();
+              history.push('/admin/dashboard/user-page');
+              // getUser();
             }
           }
         );
@@ -258,6 +265,7 @@ const userHook = () => {
         setValues((oldValues) => ({
           ...oldValues,
           ...location.profile,
+          deletedImage: [],
         }));
       } else if (_id !== undefined) {
         //User information is inside location.state and will use it
@@ -277,6 +285,7 @@ const userHook = () => {
           setValues((oldValues) => ({
             ...oldValues,
             ...location.state,
+            deletedImage: [],
           }));
           dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
         } else {
@@ -336,6 +345,7 @@ const userHook = () => {
         roleName: user.data.roleName,
       }));
       setValues((oldValues) => {
+        oldValues.deletedImage = oldValues?.deletedImage || [];
         if (oldValues.userName == '') {
           //page refresh
           return {
@@ -389,6 +399,9 @@ function toFormData(o) {
       e[1] = JSON.stringify(e[1]);
     }
     if (e[0] == 'role_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'deletedImage') {
       e[1] = JSON.stringify(e[1]);
     }
     return d.append(...e), d;

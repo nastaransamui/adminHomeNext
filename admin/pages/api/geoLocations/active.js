@@ -5,7 +5,6 @@ import hazelCast from '../../../helpers/hazelCast';
 import mongoose from 'mongoose';
 import Countries from '../../../models/Countries';
 import fs from 'fs';
-import { firstLevelSort } from '../hotels/active';
 
 // Pagination function
 function paginate(array, valuesPerPage, valuesPageNumber) {
@@ -156,14 +155,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               delete doc.states;
               return doc;
             });
-            // var activesIds = await collection.find({}, { _id: true, id: true });
-            // const firstSort = firstLevelSort(data, valuesSortBySorting, req);
-            // let orderCountryByActivation = firstSort.sort((a, b) => {
-            //   return (
-            //     activesIds.findIndex((p) => p.id === b.id) -
-            //     activesIds.findIndex((p) => p.id === a.id)
-            //   );
-            // });
             if (!hzErrorConnection) {
               const countryMultiMap = await hz.getMultiMap(modelName);
               const provinceMultiMap = await hz.getMultiMap('Provinces');
@@ -194,23 +185,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               activesId: [],
               data: [],
             });
-            // res.status(200).json({
-            //   success: true,
-            //   totalValuesLength: data.length,
-            //   activesId: activesIds,
-            //   data: paginate(
-            //     orderCountryByActivation.sort(
-            //       sort_by(
-            //         [req.body['valuesSortByField']],
-            //         valuesSortBySorting > 0 ? false : true,
-            //         (a) => (typeof a == 'boolean' ? a : a.toUpperCase()),
-            //         activesIds
-            //       )
-            //     ),
-            //     valuesPerPage,
-            //     valuesPageNumber
-            //   ),
-            // });
           });
           break;
       }

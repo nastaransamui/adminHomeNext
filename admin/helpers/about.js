@@ -12,24 +12,24 @@ export async function createAboutIsEmpty(req, res, next) {
       process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
 
     const firstThumb = isVercel
-      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/l1zbvg/1.jpg'
-      : 'http://localhost:4000/admin/about/l1zbvg/1.jpg';
+      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/default/1.jpg'
+      : 'http://localhost:4000/admin/about/default/1.jpg';
     const firstThumbKey = isVercel
-      ? 'about/l1zbvg/1.jpg'
-      : '/home/majid/host/work/adminHomeNext/admin/public/about/l1zbvg/1.jpg';
+      ? 'about/default/1.jpg'
+      : '/home/majid/host/work/adminHomeNext/admin/public/about/default/1.jpg';
 
     const secondThumb = isVercel
-      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/l1zbvg/2.jpg'
-      : 'http://localhost:4000/admin/about/l1zbvg/2.jpg';
+      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/default/2.jpg'
+      : 'http://localhost:4000/admin/about/default/2.jpg';
     const secondThumbKey = isVercel
-      ? 'about/l1zbvg/2.jpg'
-      : '/home/majid/host/work/adminHomeNext/admin/public/about/l1zbvg/2.jpg';
+      ? 'about/default/2.jpg'
+      : '/home/majid/host/work/adminHomeNext/admin/public/about/default/2.jpg';
     const thirdThumb = isVercel
-      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/l1zbvg/3.jpg'
-      : 'http://localhost:4000/admin/about/l1zbvg/3.jpg';
+      ? 'https://recminvestment.s3.ap-southeast-1.amazonaws.com/about/default/3.jpg'
+      : 'http://localhost:4000/admin/about/default/3.jpg';
     const thirdThumbKey = isVercel
-      ? 'about/l1zbvg/3.jpg'
-      : '/home/majid/host/work/adminHomeNext/admin/public/about/l1zbvg/3.jpg';
+      ? 'about/default/3.jpg'
+      : '/home/majid/host/work/adminHomeNext/admin/public/about/default/3.jpg';
 
     const about = {
       title_en: 'About us',
@@ -54,7 +54,7 @@ export async function createAboutIsEmpty(req, res, next) {
       thirdRight: -84,
       finalFolder: 'about',
       modelName: 'About',
-      folderId: 'l1zbvg',
+      folderId: 'default',
       isVercel: isVercel,
     };
     try {

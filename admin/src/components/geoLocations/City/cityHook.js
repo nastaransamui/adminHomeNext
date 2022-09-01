@@ -40,7 +40,6 @@ const cityHook = (reactRoutes) => {
     values[e.target.name] = e.target.value;
     setValues((oldValues) => ({ ...oldValues }));
   };
-
   const formSubmit = async () => {
     values.modelName = 'Countries';
     values.dataType = 'Cities';
@@ -52,7 +51,7 @@ const cityHook = (reactRoutes) => {
           headers: {
             token: `Brearer ${adminAccessToken}`,
           },
-          body: JSON.stringify(values),
+          body: toFormData(values),
         });
         const { status } = res;
         const response = await res.json();
@@ -192,5 +191,20 @@ const cityHook = (reactRoutes) => {
     updateButtonDisabled,
   };
 };
+
+function toFormData(o) {
+  return Object.entries(o).reduce((d, e) => {
+    if (e[0] == 'agents_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'hotels_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    if (e[0] == 'users_id') {
+      e[1] = JSON.stringify(e[1]);
+    }
+    return d.append(...e), d;
+  }, new FormData());
+}
 
 export default cityHook;

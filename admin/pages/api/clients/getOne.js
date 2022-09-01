@@ -31,12 +31,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         const agentValue = await collection.aggregate([
           { $match: { _id: ObjectId(_id) } },
           {
-            $unwind: {
-              path: '$accountManager_id',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
             $lookup: {
               from: 'users',
               localField: 'accountManager_id',
@@ -51,12 +45,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
               foreignField: '_id',
               as: 'accountManagerData',
-            },
-          },
-          {
-            $unwind: {
-              path: '$currencyCode_id',
-              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -79,12 +67,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             },
           },
           {
-            $unwind: {
-              path: '$userCreated',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
             $lookup: {
               from: 'users',
               localField: 'userCreated',
@@ -99,12 +81,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
               foreignField: '_id',
               as: 'userCreatedData',
-            },
-          },
-          {
-            $unwind: {
-              path: '$userUpdated',
-              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -125,12 +101,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             },
           },
           {
-            $unwind: {
-              path: '$country_id',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
             $lookup: {
               from: 'countries',
               localField: 'country_id',
@@ -145,12 +115,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
               foreignField: '_id',
               as: 'countryData',
-            },
-          },
-          {
-            $unwind: {
-              path: '$province_id',
-              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -205,12 +169,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             },
           },
           {
-            $unwind: {
-              path: '$city_id',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
             $lookup: {
               from: 'countries',
               let: { city_id: '$city_id' },
@@ -260,20 +218,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ],
             },
           },
-          {
-            $unwind: {
-              path: '$province_id',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $unwind: {
-              path: '$city_id',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
         ]);
-
         if (agentValue.length > 0) {
           res.status(200).json({
             success: true,
@@ -302,7 +247,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         } else {
           const agentValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },
-            { $unwind: '$accountManager_id' },
             {
               $lookup: {
                 from: 'users',
@@ -320,7 +264,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 as: 'accountManagerData',
               },
             },
-            { $unwind: '$currencyCode_id' },
             {
               $lookup: {
                 from: 'currencies',
@@ -340,7 +283,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 as: 'currencyCodeData',
               },
             },
-            { $unwind: '$userCreated' },
             {
               $lookup: {
                 from: 'users',
@@ -358,7 +300,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 as: 'userCreatedData',
               },
             },
-            { $unwind: '$userUpdated' },
             {
               $lookup: {
                 from: 'users',
@@ -376,7 +317,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 as: 'userUpdatedData',
               },
             },
-            { $unwind: '$country_id' },
             {
               $lookup: {
                 from: 'countries',
@@ -394,7 +334,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 as: 'countryData',
               },
             },
-            { $unwind: '$province_id' },
             {
               $lookup: {
                 from: 'countries',
@@ -446,7 +385,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 ],
               },
             },
-            { $unwind: '$city_id' },
             {
               $lookup: {
                 from: 'countries',
@@ -498,18 +436,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     },
                   },
                 ],
-              },
-            },
-            {
-              $unwind: {
-                path: '$province_id',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $unwind: {
-                path: '$city_id',
-                preserveNullAndEmptyArrays: true,
               },
             },
           ]);

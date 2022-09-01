@@ -3,7 +3,7 @@ import { Info, Flag, CheckBox, Title, Event } from '@mui/icons-material';
 export const editUrl = '/admin/dashboard/main-page-setup/photos';
 export const createUrl = '/admin/dashboard/main-page-setup/photos/photo';
 export const getAllUrl = `/admin/api/mainPageSetup/getAll`;
-export const deleteUrl = `/admin/api/mainPageSetup/delete`;
+export const deleteUrl = `/admin/api/modelsCrud/delete`;
 
 export const photosFields = [
   {

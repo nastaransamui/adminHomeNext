@@ -81,12 +81,29 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   'states.cities.country': '$name',
                   'states.cities.emoji': '$emoji',
                   'states.cities.iso2': '$iso2',
+                  'states.cities.iso3': '$iso3',
+                  'states.cities.countryId': '$id',
                   'states.cities.country_id': '$_id',
+                  'states.cities.stateId': '$states.id',
                   'states.cities.state_name': '$states.name',
                   'states.cities.state_id': '$states._id',
-                  'states.cities.stateId': '$states.id',
-                  'states.cities.countryId': '$id',
+                  'states.cities.totalHotels': {
+                    $size: '$states.cities.hotels_id',
+                  },
+                  'states.cities.totalUsers': {
+                    $size: '$states.cities.users_id',
+                  },
+                  'states.cities.totalAgents': {
+                    $size: '$states.cities.agents_id',
+                  },
                 },
+              },
+              {
+                $unset: [
+                  'states.cities.hotels_id',
+                  'states.cities.users_id',
+                  'states.cities.agents_id',
+                ],
               },
               { $sort: { 'states.cities.name': 1 } },
               { $limit: 50 },
@@ -178,9 +195,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   'states.country': '$name',
                   'states.emoji': '$emoji',
                   'states.iso2': '$iso2',
-                  'states.country_id': '$_id',
+                  'states.iso3': '$iso3',
                   'states.countryId': '$id',
+                  'states.country_id': '$_id',
+                  'states.totalCities': { $size: '$states.cities' },
+                  'states.totalHotels': { $size: '$states.hotels_id' },
+                  'states.totalUsers': { $size: '$states.users_id' },
+                  'states.totalAgents': { $size: '$states.agents_id' },
                 },
+              },
+              {
+                $unset: [
+                  'states.cities',
+                  'states.hotels_id',
+                  'states.users_id',
+                  'states.agents_id',
+                ],
               },
               { $sort: { 'states.name': 1 } },
               { $limit: 50 },
@@ -265,10 +295,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               {
                 $addFields: {
                   totalStates: { $size: '$states' },
+                  totalActiveHotels: { $size: '$hotels_id' },
+                  totalUsers: { $size: '$users_id' },
+                  totalAgents: { $size: '$agents_id' },
                 },
               },
-              { $unset: 'states' },
+              { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
             ]);
+            console.log(valuesList);
             if (valuesList.length > 0) {
               res.status(200).json({ success: true, data: valuesList });
             } else {
@@ -319,9 +353,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 {
                   $addFields: {
                     totalStates: { $size: '$states' },
+                    totalActiveHotels: { $size: '$hotels_id' },
+                    totalUsers: { $size: '$users_id' },
+                    totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: 'states' },
+                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });

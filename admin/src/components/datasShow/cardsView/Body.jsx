@@ -573,20 +573,14 @@ const Body = forwardRef((props, ref) => {
                     placement='bottom'
                     arrow>
                     <span>
-                      <Button
-                        disabled={deleteButtonDisabled}
-                        color='primary'
-                        onClick={() => {
-                          activeAlert(data);
-                        }}>
-                        <ToggleOn
-                          style={{
-                            color: deleteButtonDisabled
-                              ? theme.palette.text.disabled
-                              : theme.palette.error.main,
-                          }}
-                        />
-                      </Button>
+                    <Button
+                    color='error'
+                    disabled={deleteButtonDisabled}
+                    onClick={() => {
+                      deleteAlert(data);
+                    }}>
+                    <DeleteForeverOutlined />
+                  </Button>
                     </span>
                   </Tooltip>
                 ) : (

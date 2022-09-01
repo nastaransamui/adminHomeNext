@@ -33,7 +33,7 @@ const autoStyle = makeStyles((theme) => {
 });
 
 const Autocomplete = (props) => {
-  props
+  props;
   const {
     required,
     modelName,
@@ -49,8 +49,8 @@ const Autocomplete = (props) => {
     updateRoleName,
     setUpdateRoleName,
     componentName,
-    componentInUse
-  } = props
+    componentInUse,
+  } = props;
   const {
     openOption,
     setOpenOption,
@@ -86,7 +86,7 @@ const Autocomplete = (props) => {
       loading={loadingOption}
       loadingText={t('autocompleteLoading')}
       noOptionsText={t('autocompleteNoOptions')}
-      inputValue={value}
+      inputValue={values[nameValue]}
       autoHighlight
       onChange={(event, newValue) => {
         handleAutocomplete(nameValue, newValue);
@@ -106,9 +106,9 @@ const Autocomplete = (props) => {
           return !stateOptions.isActive;
         }
       }}
-      isOptionEqualToValue={(stateOptions, value) => {
-        return stateOptions[nameValue] === value;
-      }}
+      // isOptionEqualToValue={(stateOptions, value) => {
+      //   isOptionEqualToValueFunc(stateOptions, value);
+      // }}
       filterOptions={(options, state) => {
         const searchRegex = new RegExp(escapeRegExp(value), 'i');
         const filterdData = options.filter((row) => {
@@ -201,7 +201,7 @@ Autocomplete.propTypes = {
   setRoleNameError: PropTypes.func,
   updateRoleName: PropTypes.object,
   setUpdateRoleName: PropTypes.func,
-  componentInUse: PropTypes.string.isRequired
+  componentInUse: PropTypes.string.isRequired,
 };
 
 export default Autocomplete;

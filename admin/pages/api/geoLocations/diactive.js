@@ -250,12 +250,16 @@ function involvedError(result) {
   const isCountryInvolved =
     result?.users_id?.length > 0 ||
     result?.agents_id?.length > 0 ||
+    result?.hotels_id?.length > 0 ||
     result.isHotelsActive;
 
   // Check if state involve in user and agent
   const stateInvolved = result?.states.filter(
     (a) =>
-      a.users_id?.length > 0 || a.agents_id?.length > 0 || result.isHotelsActive
+      a.users_id?.length > 0 ||
+      a.agents_id?.length > 0 ||
+      a.hotels_id?.length > 0 ||
+      result.isHotelsActive
   );
   const isStateInvolved = stateInvolved.length > 0;
   // Check if cities involve in user and agent
@@ -264,6 +268,7 @@ function involvedError(result) {
       (a) =>
         a.users_id?.length > 0 ||
         a.agents_id?.length > 0 ||
+        a.hotels_id?.length > 0 ||
         result.isHotelsActive
     );
     return opt;
@@ -274,6 +279,7 @@ function involvedError(result) {
         (a) =>
           a.users_id?.length > 0 ||
           a.agents_id?.length > 0 ||
+          a.hotels_id?.length > 0 ||
           result.isHotelsActive
       )
     )

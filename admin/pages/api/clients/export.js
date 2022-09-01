@@ -2,7 +2,7 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import { downloadClientsMiddleware } from '../../../middleware/download';
-import { deleteFsAwsError } from '../../../helpers/aws';
+import { awsDelete } from '../../../helpers/fileSystem';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -22,17 +22,29 @@ apiRoute.post(
       res.status(500).json({ success: false, Error: dbConnected.error });
     } else {
       try {
+        var deleteArray = [req.body.downloadKey];
         res.setHeader('Content-Type', 'image/jpg');
         res.status(200).json({
           success: true,
           fileLink: req.body.download,
         });
         setTimeout(() => {
-          deleteFsAwsError(req, res, next);
+          if (req?.body?.isVercel) {
+            awsDelete(req, res, next, deleteArray, (status, error) => {});
+          } else {
+            console.log('delete fs');
+          }
         }, 60000);
       } catch (error) {
-        deleteFsAwsError(req, res, next);
-        res.status(500).json({ success: false, Error: error.toString() });
+        if (req?.body?.isVercel) {
+          awsDelete(req, res, next, [req.body.downloadKey], (status, err) => {
+            if (status) {
+              res.status(500).json({ success: false, Error: err.toString() });
+            }
+          });
+        } else {
+          console.log('delete fs');
+        }
       }
     }
   }

@@ -52,6 +52,7 @@ middleware.use(async (req, res, next) => {
       next();
     } else {
       console.log('Handle error from multiparty miideleware');
+      console.log(err);
       res.status(500).json({ success: false, Error: err.toString() });
       next();
     }
