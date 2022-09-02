@@ -64,6 +64,7 @@ const provincesHook = () => {
           download: '',
           downloadKey: '',
           finalFolder: 'download',
+          folderId: 'provinces',
         }),
       });
       const { status, ok } = res;

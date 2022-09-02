@@ -130,7 +130,7 @@ export const dataGridColumns = [
     field: 'createdAt', // Db name
     headerAlign: 'center', //
     description: 'createdAt', //Discription from translation
-    width: 150,
+    width: 250,
     type: 'dateTime',
     filterable: true,
     hasAvatar: [false, ''],
@@ -141,7 +141,7 @@ export const dataGridColumns = [
     field: 'updatedAt', // Db name
     headerAlign: 'center', //
     description: 'updatedAt', //Discription from translation
-    width: 150,
+    width: 250,
     type: 'dateTime',
     filterable: true,
     hasAvatar: [false, ''],

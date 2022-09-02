@@ -17,7 +17,7 @@ import {
   deleteObjectsId,
   roleInvolvedError,
 } from '../../../helpers/objectsIds';
-import { awsDelete } from '../../../helpers/fileSystem';
+import { awsDelete, fsDelete } from '../../../helpers/fileSystem';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -88,11 +88,33 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                           }
                         );
                       } else {
-                        //Todo fs delete file
-                        res.status(500).json({
-                          success: false,
-                          Error: 'files should upload fs',
-                        });
+                        fsDelete(
+                          req,
+                          res,
+                          next,
+                          [user.profileImageKey],
+                          async (status, error) => {
+                            if (status) {
+                              res.status(403).json({
+                                success: false,
+                                Error: error.toString(),
+                              });
+                              return;
+                            } else {
+                              await user.remove();
+                              if (!hzErrorConnection) {
+                                res.status(500).json({
+                                  success: false,
+                                  Error: 'update hz on delete user',
+                                });
+                              }
+                              res.status(200).json({
+                                success: true,
+                                totalValuesLength: 0,
+                              });
+                            }
+                          }
+                        );
                       }
                     } else {
                       await user.remove();
@@ -181,11 +203,33 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                         }
                       );
                     } else {
-                      //Todo fs delete file
-                      res.status(500).json({
-                        success: false,
-                        Error: 'files should upload fs',
-                      });
+                      fsDelete(
+                        req,
+                        res,
+                        next,
+                        [agent.logoImageKey],
+                        async (status, error) => {
+                          if (status) {
+                            res.status(403).json({
+                              success: false,
+                              Error: error.toString(),
+                            });
+                            return;
+                          } else {
+                            await agent.remove();
+                            if (!hzErrorConnection) {
+                              res.status(500).json({
+                                success: false,
+                                Error: 'update hz on delete agent',
+                              });
+                            }
+                            res.status(200).json({
+                              success: true,
+                              totalValuesLength: 0,
+                            });
+                          }
+                        }
+                      );
                     }
                   } else {
                     await agent.remove();
@@ -221,7 +265,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 } else {
                   if (hotel.imageKey.length > 0) {
                     if (hotel.isVercel) {
-                      console.log(hotel.imageKey);
                       awsDelete(
                         req,
                         res,
@@ -250,11 +293,33 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                         }
                       );
                     } else {
-                      //Todo fs delete file
-                      res.status(500).json({
-                        success: false,
-                        Error: 'files should upload fs',
-                      });
+                      fsDelete(
+                        req,
+                        res,
+                        next,
+                        hotel.imageKey,
+                        async (status, error) => {
+                          if (status) {
+                            res.status(403).json({
+                              success: false,
+                              Error: error.toString(),
+                            });
+                            return;
+                          } else {
+                            await hotel.remove();
+                            if (!hzErrorConnection) {
+                              res.status(500).json({
+                                success: false,
+                                Error: 'update hz on delete hotel',
+                              });
+                            }
+                            res.status(200).json({
+                              success: true,
+                              totalValuesLength: 0,
+                            });
+                          }
+                        }
+                      );
                     }
                   } else {
                     await hotel.remove();
@@ -315,11 +380,33 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     }
                   );
                 } else {
-                  //Todo fs delete file
-                  res.status(500).json({
-                    success: false,
-                    Error: 'files should upload fs',
-                  });
+                  fsDelete(
+                    req,
+                    res,
+                    next,
+                    deleteFilesArr,
+                    async (status, error) => {
+                      if (status) {
+                        res.status(403).json({
+                          success: false,
+                          Error: error.toString(),
+                        });
+                        return;
+                      } else {
+                        await docs.remove();
+                        if (!hzErrorConnection) {
+                          res.status(500).json({
+                            success: false,
+                            Error: 'update hz on delete default',
+                          });
+                        }
+                        res.status(200).json({
+                          success: true,
+                          totalValuesLength: 0,
+                        });
+                      }
+                    }
+                  );
                 }
               } else {
                 await docs.remove();

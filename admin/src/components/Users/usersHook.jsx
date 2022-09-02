@@ -68,6 +68,7 @@ const usersHook = () => {
           download: '',
           downloadKey: '',
           finalFolder: 'download',
+          folderId: 'users'
         }),
       });
       const { status, ok } = res;

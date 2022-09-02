@@ -64,6 +64,7 @@ const citiesHook = () => {
           download: '',
           downloadKey: '',
           finalFolder: 'download',
+          folderId: 'cities',
         }),
       });
       const { status, ok } = res;

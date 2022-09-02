@@ -3,9 +3,12 @@
  */
 import aws from 'aws-sdk';
 import fs from 'fs';
+const fse = require('fs-extra');
 import { isJsonParsable } from './objectsIds';
 const path = require('path');
 import { v4 as uuidv4 } from 'uuid';
+const { NEXT_PBULIC_FOLDER_PUBLIC_UAT, NEXT_PBULIC_FOLDER_PUBLIC_LIVE } =
+  process.env;
 aws.config.update({
   region: process.env.S3_AWS_REGION,
   accessKeyId: process.env.S3_AWS_ACCESS_KEY,
@@ -13,6 +16,11 @@ aws.config.update({
 });
 const s3Bucket = process.env.S3_AWS_BUCKET;
 const s3 = new aws.S3(); // Create a new instance of S3
+var publicFolder = `${process.cwd()}/public`;
+const publicUrl =
+  process.env.NODE_ENV == 'development'
+    ? NEXT_PBULIC_FOLDER_PUBLIC_UAT
+    : NEXT_PBULIC_FOLDER_PUBLIC_LIVE;
 
 export const awsUpload = async (req, res, next) => {
   const { files } = req;
@@ -148,6 +156,190 @@ export const awsDelete = async (req, res, next, newFilesRecord, callback) => {
   }
 };
 
+export const fsUpload = async (req, res, next) => {
+  const { files } = req;
+  const { finalFolder, folderId, countryFolder, modelName } = req.body;
+  var ResponseData = [];
+  var Key;
+  var fileExtention;
+  var uniqueName;
+  var fileFolder;
+  var location;
+  var url = publicUrl;
+  switch (modelName) {
+    case 'Hotels':
+      try {
+        req.body.hotelImages = JSON.parse(req.body.hotelImages);
+        req.body.imageKey = JSON.parse(req.body.imageKey);
+        req.body.newFilesRecord = [];
+        fileFolder = `${publicFolder}/${finalFolder}/${countryFolder}/${folderId}`;
+        if (!fs.existsSync(fileFolder)) {
+          fs.mkdirSync(fileFolder, { recursive: true });
+        }
+        for (const file of req.files) {
+          fileExtention = path.extname(file.fileName);
+          uniqueName = uuidv4();
+          location = `${url}/${finalFolder}/${countryFolder}/${folderId}/${uniqueName}${fileExtention}`;
+          Key = `${fileFolder}/${uniqueName}${fileExtention}`;
+          await fse
+            .move(file.path, Key)
+            .then(async () => {
+              req.body.hotelImages.push(location);
+              req.body.imageKey.push(Key);
+              //add new image for later delete on error
+              req.body.newFilesRecord.push(Key);
+              if (file.thumbnail) {
+                req.body.hotelThumb = location;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log('fileSystem fsUpload hotel error');
+              fsDelete(req, res, next, newFilesRecord, (error, status) => {
+                console.log({ error, status });
+                console.log('fileSystem fsUpload hotel error callback');
+              });
+            });
+        }
+        req.body.hotelImages = JSON.stringify(req.body.hotelImages);
+        req.body.imageKey = JSON.stringify(req.body.imageKey);
+        next();
+      } catch (error) {
+        console.log('error on upload fs try catch should delete the files');
+        res.status(500).json({ success: false, Error: error.toString() });
+      }
+      break;
+
+    default:
+      try {
+        req.body.newFilesRecord = [];
+        fileFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+        if (!fs.existsSync(fileFolder)) {
+          fs.mkdirSync(fileFolder, { recursive: true });
+        }
+        for (const file of files) {
+          fileExtention = path.extname(file.fileName);
+          uniqueName = uuidv4();
+          location = `${url}/${finalFolder}/${folderId}/${uniqueName}${fileExtention}`;
+          Key = `${fileFolder}/${uniqueName}${fileExtention}`;
+          await fse
+            .move(file.path, Key)
+            .then(async () => {
+              //add new image for later delete on error
+              req.body[file.finalFolder] = location;
+              req.body[`${file.finalFolder}Key`] = Key;
+              req.body.newFilesRecord.push(Key);
+            })
+            .catch((err) => {
+              console.log(`upload error: ${err.toString}`);
+              console.log(newFilesRecord);
+              fsDelete(
+                req,
+                res,
+                next,
+                req.body.newFilesRecord,
+                (error, status) => {
+                  if (status) {
+                    res.status(403).json({
+                      success: false,
+                      Error: error.toString(),
+                    });
+                  } else {
+                    res.status(403).json({
+                      success: false,
+                      Error: err.toString(),
+                    });
+                    return;
+                  }
+                }
+              );
+            });
+        }
+        if (req.body.newFilesRecord.length == files.length) {
+          next();
+        }
+      } catch (err) {
+        if (req.body.newFilesRecord.length > 0) {
+          const { newFilesRecord } = req.body;
+          fsDelete(req, res, next, newFilesRecord, (status, error) => {
+            if (status) {
+              res.status(403).json({
+                success: false,
+                Error: error.toString(),
+              });
+            } else {
+              res.status(500).json({ success: false, Error: err.toString() });
+            }
+          });
+        } else {
+          res.status(500).json({ success: false, Error: err.toString() });
+        }
+      }
+      break;
+  }
+};
+
+export const fsDelete = async (req, res, next, newFilesRecord, callback) => {
+  const { modelName, hotelThumb, finalFolder, countryFolder, folderId } =
+    req.body;
+  try {
+    // callback(false, null);
+    for await (const filepath of newFilesRecord) {
+      if (fs.existsSync(filepath)) {
+        //If file exist
+        fs.unlink(filepath, function (error) {
+          if (error) {
+            callback(true, error);
+          } else {
+            //Hotel thumbnail fix
+            if (hotelThumb !== '' && hotelThumb !== undefined) {
+              var thumbnailName = hotelThumb.substring(
+                hotelThumb.lastIndexOf('/') + 1
+              );
+              if (filepath.endsWith(thumbnailName)) {
+                req.body.hotelThumb = '';
+              }
+            }
+          }
+        });
+      } else {
+        // file not exist continue
+        callback(false, null);
+      }
+    }
+
+    callback(false, null);
+
+    //Delete folder if not empty
+    var fileFolder;
+
+    switch (modelName) {
+      case 'Hotels':
+        fileFolder = `${publicFolder}/${finalFolder}/${countryFolder}/${folderId}`;
+        if (fs.existsSync(fileFolder)) {
+          var files = fs.readdirSync(fileFolder);
+          if (files.length == 0) {
+            fs.rmdirSync(fileFolder);
+          }
+        }
+        break;
+
+      default:
+        fileFolder = `${publicFolder}/${finalFolder}/${folderId}`;
+        console.log(`fileFolder: ${fileFolder} in filesystem line 307`);
+        if (fs.existsSync(fileFolder)) {
+          var files = fs.readdirSync(fileFolder);
+          if (files.length == 0) {
+            fs.rmdirSync(fileFolder);
+          }
+        }
+        break;
+    }
+  } catch (error) {
+    callback(true, error);
+  }
+};
+
 //for download
 export const awsCreateSingle = async (req, res, next) => {
   const { fileName, fileType, path } = req.files[0];
@@ -171,37 +363,6 @@ export const awsCreateSingle = async (req, res, next) => {
         next();
       }
     });
-  } catch (error) {
-    res.status(500).json({ success: false, Error: error.toString() });
-  }
-};
-export const fsCreateSingle = async (req, res, next) => {
-  try {
-    const key = req.body.finalFolder;
-    const { fileName, fileType, path: filePath } = req.files[0];
-    const publicFolder = `${process.cwd()}/public/${key}`;
-    const uniqueName = uuidv4();
-    const url = publicUrl;
-    const fileExtention = path.extname(fileName);
-    const location = `${url}/${key}/${uniqueName}${fileExtention}`;
-    const Key = `${publicFolder}/${uniqueName}${fileExtention}`;
-    // check if profileImage directory exists
-    if (!fs.existsSync(publicFolder)) {
-      fs.mkdirSync(publicFolder);
-    }
-    //Move file from /tmp to profileImage
-    fse
-      .move(filePath, Key)
-      .then(async () => {
-        req.body[key] = location;
-        req.body[`${key}Key`] = Key;
-        next();
-      })
-      .catch((err) => {
-        console.log(err);
-        fsDeleteSingle(res, next, filePath);
-        res.status(401).json({ success: false, Error: err });
-      });
   } catch (error) {
     res.status(500).json({ success: false, Error: error.toString() });
   }

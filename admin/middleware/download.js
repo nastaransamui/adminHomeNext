@@ -1,5 +1,5 @@
 import Users from '../models/Users';
-import { awsCreateSingle, fsCreateSingle } from '../helpers/fileSystem';
+import { awsCreateSingle, fsUpload } from '../helpers/fileSystem';
 import hazelCast from '../helpers/hazelCast';
 import mongoose from 'mongoose';
 import Countries from '../models/Countries';
@@ -113,7 +113,7 @@ export const downloadMiddleware = async (req, res, next) => {
               if (isVercel) {
                 await awsCreateSingle(req, res, next);
               } else {
-                await fsCreateSingle(req, res, next);
+                await fsUpload(req, res, next);
               }
             }
           );
@@ -256,7 +256,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
             if (isVercel) {
               await awsCreateSingle(req, res, next);
             } else {
-              await fsCreateSingle(req, res, next);
+              await fsUpload(req, res, next);
             }
           }
         );
@@ -401,7 +401,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                   if (isVercel) {
                     await awsCreateSingle(req, res, next);
                   } else {
-                    await fsCreateSingle(req, res, next);
+                    await fsUpload(req, res, next);
                   }
                 }
               );
@@ -517,7 +517,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                       if (isVercel) {
                         await awsCreateSingle(req, res, next);
                       } else {
-                        await fsCreateSingle(req, res, next);
+                        await fsUpload(req, res, next);
                       }
                     }
                   );
@@ -571,7 +571,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                           if (isVercel) {
                             await awsCreateSingle(req, res, next);
                           } else {
-                            await fsCreateSingle(req, res, next);
+                            await fsUpload(req, res, next);
                           }
                         }
                       );
@@ -640,7 +640,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                         if (isVercel) {
                           await awsCreateSingle(req, res, next);
                         } else {
-                          await fsCreateSingle(req, res, next);
+                          await fsUpload(req, res, next);
                         }
                       }
                     );
@@ -757,7 +757,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                       if (isVercel) {
                         await awsCreateSingle(req, res, next);
                       } else {
-                        await fsCreateSingle(req, res, next);
+                        await fsUpload(req, res, next);
                       }
                     }
                   );
@@ -811,7 +811,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                           if (isVercel) {
                             await awsCreateSingle(req, res, next);
                           } else {
-                            await fsCreateSingle(req, res, next);
+                            await fsUpload(req, res, next);
                           }
                         }
                       );
@@ -880,7 +880,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                         if (isVercel) {
                           await awsCreateSingle(req, res, next);
                         } else {
-                          await fsCreateSingle(req, res, next);
+                          await fsUpload(req, res, next);
                         }
                       }
                     );
@@ -1071,7 +1071,7 @@ export const downloadClientsMiddleware = async (req, res, next) => {
             if (isVercel) {
               await awsCreateSingle(req, res, next);
             } else {
-              await fsCreateSingle(req, res, next);
+              await fsUpload(req, res, next);
             }
           }
         );

@@ -2,7 +2,7 @@ const nextConnect = require('next-connect');
 import dbConnect from '../../../helpers/dbConnect';
 import verifyToken from '../../../helpers/verifyToken';
 import { downloadMiddleware } from '../../../middleware/download';
-import { awsDelete } from '../../../helpers/fileSystem';
+import { awsDelete, fsDelete } from '../../../helpers/fileSystem';
 
 const apiRoute = nextConnect({
   onNoMatch(req, res) {
@@ -30,7 +30,7 @@ apiRoute.post(verifyToken, downloadMiddleware, async (req, res, next) => {
         if (req?.body?.isVercel) {
           awsDelete(req, res, next, deleteArray, (status, error) => {});
         } else {
-          console.log('delete fs');
+          fsDelete(req, res, next, deleteArray, (status, error) => {});
         }
       }, 60000);
     } catch (error) {
@@ -41,7 +41,11 @@ apiRoute.post(verifyToken, downloadMiddleware, async (req, res, next) => {
           }
         });
       } else {
-        console.log('delete fs');
+        fsDelete(req, res, next, [req.body.downloadKey], (status, err) => {
+          if (status) {
+            res.status(500).json({ success: false, Error: err.toString() });
+          }
+        });
       }
     }
   }

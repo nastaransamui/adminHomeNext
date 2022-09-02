@@ -47,7 +47,7 @@ const LocationData = (props) => {
               </CardHeader>
               <CardBody>
                 <Grid container spacing={3} style={{ marginTop: 10 }}>
-                  <Grid item xs={12} sm={12} lg={4} md={6}>
+                  <Grid item xs={12} sm={12} lg={6} md={6}>
                     <Autocomplete
                       required
                       modelName='Countries'
@@ -63,7 +63,7 @@ const LocationData = (props) => {
                       setRoleNameError={setErrorRequied}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={4} md={6}>
+                  <Grid item xs={12} sm={12} lg={6} md={6}>
                     <Autocomplete
                       required
                       modelName='Countries'
@@ -79,7 +79,7 @@ const LocationData = (props) => {
                       setRoleNameError={setErrorRequied}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={4} md={6}>
+                  <Grid item xs={12} sm={12} lg={6} md={6}>
                     <Autocomplete
                       required
                       modelName='Countries'
@@ -131,8 +131,8 @@ const LocationData = (props) => {
                     item
                     xs={12}
                     sm={12}
-                    lg={12}
-                    md={12}
+                    lg={6}
+                    md={6}
                     sx={{
                       display: 'flex',
                       justifyContent: 'center',

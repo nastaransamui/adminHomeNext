@@ -90,6 +90,7 @@ const countriesHook = (componentView) => {
           download: '',
           downloadKey: '',
           finalFolder: 'download',
+          folderId: 'countries',
         }),
       });
       const { status, ok } = res;

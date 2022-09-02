@@ -68,6 +68,7 @@ const agenciesHook = () => {
           download: '',
           downloadKey: '',
           finalFolder: 'download',
+          folderId: 'clients'
         }),
       });
       const { status, ok } = res;

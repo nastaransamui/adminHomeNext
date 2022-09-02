@@ -14,7 +14,7 @@ import Roles from '../../../models/Roles';
 import Users from '../../../models/Users';
 import Videos from '../../../models/Videos';
 import { fileUploadMiddelWare } from '../../../middleware/filesUploadMiddelWare';
-import { awsDelete } from '../../../helpers/fileSystem';
+import { awsDelete, fsDelete } from '../../../helpers/fileSystem';
 import { updateObjectsId, isJsonParsable } from '../../../helpers/objectsIds';
 import verifySingleActive from '../../../helpers/verifySingleActive';
 import { hashPassword } from '../../../helpers/auth';
@@ -82,7 +82,27 @@ apiRoute.post(
                       }
                     );
                   } else {
-                    console.log('delete FS on create error Hotel');
+                    fsDelete(
+                      req,
+                      res,
+                      next,
+                      newFilesRecord,
+                      (status, error) => {
+                        if (status) {
+                          res.status(403).json({
+                            success: false,
+                            Error: error.toString(),
+                          });
+                        } else {
+                          res.status(403).json({
+                            success: false,
+                            Error: err.toString(),
+                            keyPattern: err?.keyPattern,
+                            ErrorCode: err?.code,
+                          });
+                        }
+                      }
+                    );
                   }
                 } else {
                   res.status(403).json({
@@ -161,7 +181,27 @@ apiRoute.post(
                       }
                     );
                   } else {
-                    console.log('delete FS on create error Hotel');
+                    fsDelete(
+                      req,
+                      res,
+                      next,
+                      newFilesRecord,
+                      (status, error) => {
+                        if (status) {
+                          res.status(403).json({
+                            success: false,
+                            Error: error.toString(),
+                          });
+                        } else {
+                          res.status(403).json({
+                            success: false,
+                            Error: err.toString(),
+                            keyPattern: err?.keyPattern,
+                            ErrorCode: err?.code,
+                          });
+                        }
+                      }
+                    );
                   }
                 } else {
                   res.status(403).json({
@@ -215,7 +255,16 @@ apiRoute.post(
               }
             });
           } else {
-            console.log('delete FS on create error Hotel');
+            fsDelete(req, res, next, newFilesRecord, (status, error) => {
+              if (status) {
+                res.status(403).json({
+                  success: false,
+                  Error: error.toString(),
+                });
+              } else {
+                res.status(500).json({ success: false, Error: err.toString() });
+              }
+            });
           }
         } else {
           res.status(500).json({ success: false, Error: err.toString() });
