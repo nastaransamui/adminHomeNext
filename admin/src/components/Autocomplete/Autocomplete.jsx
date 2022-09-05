@@ -80,7 +80,7 @@ const Autocomplete = (props) => {
   const classes = autoStyle();
   return (
     <MuiAutocomplete
-      id={`${modelName}_select`}
+      id={`${modelName}_${nameValue}_select`}
       disabled={disabled}
       options={stateOptions}
       loading={loadingOption}

@@ -27,11 +27,14 @@
   "createAgencyProfile": "آژانس ایجاد کنید",
   "editAgencyProfile": "آژانس ویرایش",
   "editAgent": "اطلاعات آژانس",
-  "completeAgent": "داده ها را کامل کنید",
+  "completeAgent": "برای آپلود لوگو کلیک کنید",
   "phones": "تلفن",
   "email": "ایمیل",
   "agentEditSuccess": "عامل با موفقیت ویرایش شد.",
   "agentCreateSuccess": "عامل با موفقیت ایجاد شد.",
   "required": "این فیلد الزامی است",
-  "emailRequire": "ایمیل باید معتبر باشد."
+  "emailRequire": "ایمیل باید معتبر باشد.",
+  "uploadlogo": "برای آپلود لوگو کلیک کنید",
+  "changelogo": "برای تغییر لوگو کلیک کنید",
+  "isDuplicate": "اطلاعات تکراری است"
 }

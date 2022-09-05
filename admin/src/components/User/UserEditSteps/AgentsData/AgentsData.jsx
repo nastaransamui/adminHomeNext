@@ -233,7 +233,6 @@ const AgentsData = (props) => {
     dataAgentPageNumber > 0
       ? Math.max(0, (1 + dataAgentPageNumber) * rowsPerPage - totalAgents)
       : 0;
-
   return (
     <Fragment>
       {mainData == undefined ? (

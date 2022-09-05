@@ -48,5 +48,7 @@
   "delete": "حذف",
   "uploadFile": "آپلود فایل ها",
   "edit": "ویرایش",
-  "createNew": "به ایجاد صفحه هتل جدید بروید"
+  "createNew": "به ایجاد صفحه هتل جدید بروید",
+  "hotelCreateSuccess": "هتل با موفقیت ایجاد شد.",
+  "hotelEditSuccess": "هتل با موفقیت ویرایش شد."
 }

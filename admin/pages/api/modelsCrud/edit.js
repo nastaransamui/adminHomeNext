@@ -16,11 +16,11 @@ import Videos from '../../../models/Videos';
 import { fileUploadMiddelWare } from '../../../middleware/filesUploadMiddelWare';
 import { awsDelete, fsDelete } from '../../../helpers/fileSystem';
 import {
-  updateObjectsId,
+  createObjectsId,
   isJsonParsable,
   roleInvolvedError,
   deleteObjectsId,
-  deleteAddIds,
+  updateObjectId,
   compareObj,
 } from '../../../helpers/objectsIds';
 import verifySingleActive from '../../../helpers/verifySingleActive';
@@ -71,7 +71,7 @@ apiRoute.post(
           case 'Hotels':
             findHotelById(_id).then(async (oldHotel) => {
               if (compareObj(req.body, oldHotel).length > 0) {
-                await deleteAddIds(req, oldHotel, (status, error) => {
+                await updateObjectId(req, oldHotel, (status, error) => {
                   if (status) {
                     res.status(403).json({
                       success: false,
@@ -147,10 +147,23 @@ apiRoute.post(
                       } else {
                         const { hzErrorConnection, hz } = await hazelCast();
                         if (!hzErrorConnection) {
-                          res.status(500).json({
-                            success: false,
-                            Error: 'update hz agency',
-                          });
+                          const multiMap = await hz.getMultiMap(modelName);
+                          const dataIsExist = await multiMap.containsKey(
+                            `all${modelName}`
+                          );
+                          if (dataIsExist) {
+                            const values = await multiMap.get(
+                              `all${modelName}`
+                            );
+                            for (const value of values) {
+                              const objIndex = value.findIndex(
+                                (obj) => obj._id == _id
+                              );
+                              value[objIndex] = result;
+                              await multiMap.clear(`all${modelName}`);
+                              await multiMap.put(`all${modelName}`, value);
+                            }
+                          }
                           await hz.shutdown();
                         }
                         res.status(200).json({
@@ -232,9 +245,21 @@ apiRoute.post(
                   } else {
                     const { hzErrorConnection, hz } = await hazelCast();
                     if (!hzErrorConnection) {
-                      res
-                        .status(500)
-                        .json({ success: false, Error: 'update hz agency' });
+                      const multiMap = await hz.getMultiMap(modelName);
+                      const dataIsExist = await multiMap.containsKey(
+                        `all${modelName}`
+                      );
+                      if (dataIsExist) {
+                        const values = await multiMap.get(`all${modelName}`);
+                        for (const value of values) {
+                          const objIndex = value.findIndex(
+                            (obj) => obj._id == _id
+                          );
+                          value[objIndex] = result;
+                          await multiMap.clear(`all${modelName}`);
+                          await multiMap.put(`all${modelName}`, value);
+                        }
+                      }
                       await hz.shutdown();
                     }
                     res.status(200).json({
@@ -255,33 +280,33 @@ apiRoute.post(
             }
             findUserById(_id).then(async (oldUser) => {
               // update role for user
-              if (req.body.role_id[0] !== oldUser.role_id[0]?.toString()) {
-                await Roles.updateOne(
-                  { _id: { $in: oldUser?.role_id } },
-                  { $pull: { users_id: _id } },
-                  { multi: true }
-                );
-                await Roles.updateOne(
-                  { _id: { $in: req.body.role_id } },
-                  { $push: { users_id: _id } },
-                  { multi: true }
-                );
-              }
+              // if (req.body.role_id[0] !== oldUser.role_id[0]?.toString()) {
+              //   await Roles.updateOne(
+              //     { _id: { $in: oldUser?.role_id } },
+              //     { $pull: { users_id: _id } },
+              //     { multi: true }
+              //   );
+              //   await Roles.updateOne(
+              //     { _id: { $in: req.body.role_id } },
+              //     { $push: { users_id: _id } },
+              //     { multi: true }
+              //   );
+              // }
 
-              // update agentcy delete
-              if (oldUser.agents_id.length !== req.body.agents_id.length) {
-                let agentsDeleteIds = oldUser.agents_id.filter(
-                  (x) => !req.body.agents_id.includes(x.toString())
-                );
-                await Agencies.updateMany(
-                  { _id: { $in: agentsDeleteIds } },
-                  { $set: { accountManager_id: [], accountManager: '' } },
-                  { multi: true }
-                );
-              }
+              // // update agentcy delete
+              // if (oldUser.agents_id.length !== req.body.agents_id.length) {
+              //   let agentsDeleteIds = oldUser.agents_id.filter(
+              //     (x) => !req.body.agents_id.includes(x.toString())
+              //   );
+              //   await Agencies.updateMany(
+              //     { _id: { $in: agentsDeleteIds } },
+              //     { $set: { accountManager_id: [], accountManager: '' } },
+              //     { multi: true }
+              //   );
+              // }
 
               if (compareObj(req.body, oldUser).length > 0) {
-                await deleteAddIds(req, oldUser, async (status, error) => {
+                await updateObjectId(req, oldUser, async (status, error) => {
                   if (status) {
                     res.status(403).json({
                       success: false,
@@ -366,10 +391,23 @@ apiRoute.post(
                       } else {
                         const { hzErrorConnection, hz } = await hazelCast();
                         if (!hzErrorConnection) {
-                          res.status(500).json({
-                            success: false,
-                            Error: 'update hz agency',
-                          });
+                          const multiMap = await hz.getMultiMap(modelName);
+                          const dataIsExist = await multiMap.containsKey(
+                            `all${modelName}`
+                          );
+                          if (dataIsExist) {
+                            const values = await multiMap.get(
+                              `all${modelName}`
+                            );
+                            for (const value of values) {
+                              const objIndex = value.findIndex(
+                                (obj) => obj._id == _id
+                              );
+                              value[objIndex] = result;
+                              await multiMap.clear(`all${modelName}`);
+                              await multiMap.put(`all${modelName}`, value);
+                            }
+                          }
                           await hz.shutdown();
                         }
                         res.status(200).json({
@@ -459,9 +497,21 @@ apiRoute.post(
                   } else {
                     const { hzErrorConnection, hz } = await hazelCast();
                     if (!hzErrorConnection) {
-                      res
-                        .status(500)
-                        .json({ success: false, Error: 'update hz agency' });
+                      const multiMap = await hz.getMultiMap(modelName);
+                      const dataIsExist = await multiMap.containsKey(
+                        `all${modelName}`
+                      );
+                      if (dataIsExist) {
+                        const values = await multiMap.get(`all${modelName}`);
+                        for (const value of values) {
+                          const objIndex = value.findIndex(
+                            (obj) => obj._id == _id
+                          );
+                          value[objIndex] = result;
+                          await multiMap.clear(`all${modelName}`);
+                          await multiMap.put(`all${modelName}`, value);
+                        }
+                      }
                       await hz.shutdown();
                     }
                     res.status(200).json({
@@ -532,7 +582,7 @@ apiRoute.post(
             findAgentById(_id).then(async (oldAgent, err) => {
               //Check _ids field change or not
               if (compareObj(req.body, oldAgent).length > 0) {
-                await deleteAddIds(req, oldAgent, (status, error) => {
+                await updateObjectId(req, oldAgent, (status, error) => {
                   if (status) {
                     res.status(403).json({
                       success: false,
@@ -608,10 +658,23 @@ apiRoute.post(
                       } else {
                         const { hzErrorConnection, hz } = await hazelCast();
                         if (!hzErrorConnection) {
-                          res.status(500).json({
-                            success: false,
-                            Error: 'update hz agency',
-                          });
+                          const multiMap = await hz.getMultiMap(modelName);
+                          const dataIsExist = await multiMap.containsKey(
+                            `all${modelName}`
+                          );
+                          if (dataIsExist) {
+                            const values = await multiMap.get(
+                              `all${modelName}`
+                            );
+                            for (const value of values) {
+                              const objIndex = value.findIndex(
+                                (obj) => obj._id == _id
+                              );
+                              value[objIndex] = result;
+                              await multiMap.clear(`all${modelName}`);
+                              await multiMap.put(`all${modelName}`, value);
+                            }
+                          }
                           await hz.shutdown();
                         }
                         res.status(200).json({
@@ -693,9 +756,21 @@ apiRoute.post(
                   } else {
                     const { hzErrorConnection, hz } = await hazelCast();
                     if (!hzErrorConnection) {
-                      res
-                        .status(500)
-                        .json({ success: false, Error: 'update hz agency' });
+                      const multiMap = await hz.getMultiMap(modelName);
+                      const dataIsExist = await multiMap.containsKey(
+                        `all${modelName}`
+                      );
+                      if (dataIsExist) {
+                        const values = await multiMap.get(`all${modelName}`);
+                        for (const value of values) {
+                          const objIndex = value.findIndex(
+                            (obj) => obj._id == _id
+                          );
+                          value[objIndex] = result;
+                          await multiMap.clear(`all${modelName}`);
+                          await multiMap.put(`all${modelName}`, value);
+                        }
+                      }
                       await hz.shutdown();
                     }
                     res.status(200).json({

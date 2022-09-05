@@ -153,7 +153,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   totalAgents: { $size: '$agents_id' },
                 },
               },
-              { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
+              { $unset: ['states'] },
             ]);
             res.status(200).json({
               success: true,
@@ -213,7 +213,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     totalAgents: { $size: '$agents_id' },
                   },
                 },
-                { $unset: ['states', 'hotels_id', 'users_id', 'agents_id'] },
+                { $unset: ['states'] },
               ]);
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({

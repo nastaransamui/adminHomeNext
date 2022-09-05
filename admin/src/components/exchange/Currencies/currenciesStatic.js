@@ -58,6 +58,17 @@ export const dataGridColumns = [
     searchAble: true,
   },
   {
+    field: 'totalAgents', // Db name
+    headerAlign: 'center', //
+    description: 'totalAgents', //Discription from translation
+    width: 150,
+    type: 'number',
+    filterable: false,
+    hasAvatar: [false, ''],
+    hasVideo: [false, ''],
+    searchAble: false,
+  },
+  {
     field: 'name', // Db name
     headerAlign: 'center', //
     description: 'country_name', //Discription from translation

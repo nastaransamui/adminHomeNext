@@ -257,7 +257,7 @@ const CreateUser = (props) => {
               </Grid>
             </Grid>
             <Grid container spacing={1} style={{ marginTop: 10 }}>
-              <Grid item xs={12} sm={12} md={3}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Autocomplete
                   required={false}
                   modelName='Countries'
@@ -271,7 +271,7 @@ const CreateUser = (props) => {
                   componentInUse='Users'
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={3}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Autocomplete
                   required={false}
                   modelName='Countries'
@@ -285,7 +285,7 @@ const CreateUser = (props) => {
                   componentInUse='Users'
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={3}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Autocomplete
                   required={false}
                   modelName='Countries'
@@ -299,7 +299,7 @@ const CreateUser = (props) => {
                   componentInUse='Users'
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={3}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextValidator
                   className={classes.input}
                   fullWidth

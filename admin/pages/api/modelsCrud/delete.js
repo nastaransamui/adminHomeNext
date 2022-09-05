@@ -57,9 +57,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     });
                     return;
                   } else {
-                    if (user.profileImageKey !== '') {
-                      if (user.isVercel) {
-                        deleteKeysArr.push(user.profileImageKey);
+                    if (user?.profileImageKey !== '') {
+                      if (user?.isVercel) {
+                        deleteKeysArr.push(user?.profileImageKey);
                         awsDelete(
                           req,
                           res,
@@ -75,10 +75,31 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                             } else {
                               await user.remove();
                               if (!hzErrorConnection) {
-                                res.status(500).json({
-                                  success: false,
-                                  Error: 'update hz on delete user',
-                                });
+                                const multiMap = await hz.getMultiMap(
+                                  modelName
+                                );
+                                const dataIsExist = await multiMap.containsKey(
+                                  `all${modelName}`
+                                );
+                                if (dataIsExist) {
+                                  const values = await multiMap.get(
+                                    `all${modelName}`
+                                  );
+                                  for (const value of values) {
+                                    var index = value.findIndex(
+                                      (obj) => obj._id == _id
+                                    );
+                                    if (index !== -1) {
+                                      value.splice(index, 1);
+                                    }
+                                    await multiMap.clear(`all${modelName}`);
+                                    await multiMap.put(
+                                      `all${modelName}`,
+                                      value
+                                    );
+                                  }
+                                }
+                                await hz.shutdown();
                               }
                               res.status(200).json({
                                 success: true,
@@ -103,10 +124,31 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                             } else {
                               await user.remove();
                               if (!hzErrorConnection) {
-                                res.status(500).json({
-                                  success: false,
-                                  Error: 'update hz on delete user',
-                                });
+                                const multiMap = await hz.getMultiMap(
+                                  modelName
+                                );
+                                const dataIsExist = await multiMap.containsKey(
+                                  `all${modelName}`
+                                );
+                                if (dataIsExist) {
+                                  const values = await multiMap.get(
+                                    `all${modelName}`
+                                  );
+                                  for (const value of values) {
+                                    var index = value.findIndex(
+                                      (obj) => obj._id == _id
+                                    );
+                                    if (index !== -1) {
+                                      value.splice(index, 1);
+                                    }
+                                    await multiMap.clear(`all${modelName}`);
+                                    await multiMap.put(
+                                      `all${modelName}`,
+                                      value
+                                    );
+                                  }
+                                }
+                                await hz.shutdown();
                               }
                               res.status(200).json({
                                 success: true,
@@ -119,10 +161,24 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     } else {
                       await user.remove();
                       if (!hzErrorConnection) {
-                        res.status(500).json({
-                          success: false,
-                          Error: 'update hz on delete agent',
-                        });
+                        const multiMap = await hz.getMultiMap(modelName);
+                        const dataIsExist = await multiMap.containsKey(
+                          `all${modelName}`
+                        );
+                        if (dataIsExist) {
+                          const values = await multiMap.get(`all${modelName}`);
+                          for (const value of values) {
+                            var index = value.findIndex(
+                              (obj) => obj._id == _id
+                            );
+                            if (index !== -1) {
+                              value.splice(index, 1);
+                            }
+                            await multiMap.clear(`all${modelName}`);
+                            await multiMap.put(`all${modelName}`, value);
+                          }
+                        }
+                        await hz.shutdown();
                       }
                       res.status(200).json({
                         success: true,

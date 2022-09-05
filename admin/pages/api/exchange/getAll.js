@@ -113,7 +113,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const { hzErrorConnection, hz } = await hazelCast();
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
-            const valuesList = await collection.find({});
+            const valuesList = await collection.aggregate([
+              { $match: {} },
+              {
+                $addFields: {
+                  totalAgents: { $size: '$agents_id' },
+                },
+              },
+            ]);
             res.status(200).json({
               success: true,
               totalValuesLength: valuesList.length,
@@ -155,7 +162,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               }
               await hz.shutdown();
             } else {
-              const valuesList = await collection.find({});
+              const valuesList = await collection.aggregate([
+                { $match: {} },
+                {
+                  $addFields: {
+                    totalAgents: { $size: '$agents_id' },
+                  },
+                },
+              ]);
               await multiMap.put(`all${modelName}`, valuesList);
               res.status(200).json({
                 success: true,

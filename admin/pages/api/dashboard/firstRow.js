@@ -74,7 +74,7 @@ const createDashobardArray = (valuesList) => {
           show = true;
           social = false;
           color = 'dark';
-          title_en = 'Agents: Total / Active';
+          title_en = 'Agents: Total/Active';
           title_fa = 'مجموع نمایندگان';
           firstNumber = `${a[key].totalAgents}`;
           secondNumber = `${a[key].activeAgents}`;
@@ -133,6 +133,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   } else {
     try {
       const { hzErrorConnection, hz } = await hazelCast();
+      console.log({ hzErrorConnection });
       async function dbAggregate() {
         var valuesList = await Users.aggregate([
           {
@@ -268,8 +269,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             valuesList[0].totalCountries.totalCountries = country.length;
           }
           const dashboardArray = createDashobardArray(valuesList);
-          await hz.shutdown();
           res.status(200).json({ success: true, data: dashboardArray });
+          await hz.shutdown();
         } else {
           await dbAggregate();
         }

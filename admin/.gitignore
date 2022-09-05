@@ -12,6 +12,7 @@
 /public/features
 /public/agencies
 /public/hotels
+/public/about
 
 # testing
 /coverage

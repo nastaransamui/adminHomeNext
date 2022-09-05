@@ -48,5 +48,7 @@
   "delete": "Delete",
   "uploadFile": "Upload Files",
   "edit": "Edit",
-  "createNew": "Go to create new hotel page"
+  "createNew": "Go to create new hotel page",
+  "hotelCreateSuccess": "Hotel created successfully.",
+  "hotelEditSuccess": "Hotel Edited successfully."
 }

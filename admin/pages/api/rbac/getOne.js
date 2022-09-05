@@ -119,11 +119,12 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         if (dataIsExist) {
           const values = await multiMap.get(`allRoles`);
           for (const value of values) {
+            const currentRole = value.filter((a) => a._id == _id);
             if (usersDataIsExist) {
               const users = await userMultiMap.get(`allUsers`);
               for (const user of users) {
                 const roleUsers = user.filter((a) =>
-                  value[0].users_id.includes(a._id)
+                  currentRole[0].users_id.includes(a._id)
                 );
                 const role = value.filter((a) => a._id == _id);
                 const totalUsers = roleUsers.length;

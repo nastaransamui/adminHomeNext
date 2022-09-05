@@ -15,7 +15,7 @@ import Users from '../../../models/Users';
 import Videos from '../../../models/Videos';
 import { fileUploadMiddelWare } from '../../../middleware/filesUploadMiddelWare';
 import { awsDelete, fsDelete } from '../../../helpers/fileSystem';
-import { updateObjectsId, isJsonParsable } from '../../../helpers/objectsIds';
+import { createObjectsId, isJsonParsable } from '../../../helpers/objectsIds';
 import verifySingleActive from '../../../helpers/verifySingleActive';
 import { hashPassword } from '../../../helpers/auth';
 
@@ -114,7 +114,7 @@ apiRoute.post(
                 }
               } else {
                 //Update other collection objecs ID
-                await updateObjectsId(
+                await createObjectsId(
                   req,
                   res,
                   next,
@@ -213,12 +213,12 @@ apiRoute.post(
                 }
               } else {
                 //Update other collection objecs ID
-                await updateObjectsId(
+                await createObjectsId(
                   req,
                   res,
                   next,
                   result,
-                  (status, error) => {
+                  async (status, error) => {
                     if (status) {
                       res.status(403).json({
                         success: false,
@@ -226,7 +226,19 @@ apiRoute.post(
                       });
                     } else {
                       if (!hzErrorConnection) {
-                        //Todo update switch and update
+                        const multiMap = await hz.getMultiMap(modelName);
+                        const dataIsExist = await multiMap.containsKey(
+                          `all${modelName}`
+                        );
+                        if (dataIsExist) {
+                          const values = await multiMap.get(`all${modelName}`);
+                          for (const value of values) {
+                            value.push(result);
+                            await multiMap.clear(`all${modelName}`);
+                            await multiMap.put(`all${modelName}`, value);
+                          }
+                        }
+                        await hz.shutdown();
                       }
                       res.status(200).json({
                         success: true,

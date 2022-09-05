@@ -26,11 +26,14 @@
   "createAgencyProfile": "Create agency",
   "editAgencyProfile": "Edit agency",
   "editAgent": "Agency information",
-  "completeAgent": "Complete data",
+  "completeAgent": "Click to upload logo",
   "email": "Email",
   "phones": "Phones",
   "agentEditSuccess": "Agent was successfully edited.",
   "agentCreateSuccess": "Agent was successfully created.",
   "required": "This field is required",
-  "emailRequire": "Email should be valid."
+  "emailRequire": "Email should be valid.",
+  "uploadlogo": "Click to upload logo",
+  "changelogo": "Click to change logo",
+  "isDuplicate": "Value is duplicate."
 }

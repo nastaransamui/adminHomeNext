@@ -14,5 +14,6 @@
   "country_name": "نام کشور",
   "currencyInformation": "اطلاعات ارز",
   "currencyId": "شناسه ارز",
-  "currencyEdited": "ارز با موفقیت به روز شد"
+  "currencyEdited": "ارز با موفقیت به روز شد",
+  "totalAgents": "تعداد نمایندگان"
 }

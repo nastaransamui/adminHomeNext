@@ -393,7 +393,7 @@ export const Stories = (
         titleColor: i % 2 == 0 ? 'primary' : 'secondary',
         body: (
           <>
-            <Grid container>
+            <Grid container spacing={1}>
               <Grid item md={6} lg={6}>
                 <TextValidator
                   className={classes.input}

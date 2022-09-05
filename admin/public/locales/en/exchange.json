@@ -14,5 +14,6 @@
   "country_name": "Country name",
   "currencyInformation": "Information of currency",
   "currencyId": "Currency ID",
-  "currencyEdited": "Currency was successfully updated"
+  "currencyEdited": "Currency was successfully updated",
+  "totalAgents": "Number of agents"
 }

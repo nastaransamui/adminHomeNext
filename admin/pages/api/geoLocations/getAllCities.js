@@ -77,13 +77,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               },
             },
           },
-          {
-            $unset: [
-              'states.cities.hotels_id',
-              'states.cities.users_id',
-              'states.cities.agents_id',
-            ],
-          },
           { $group: { _id: null, cities: { $push: '$states.cities' } } },
           { $project: { _id: 1, cities: '$cities' } },
         ]);
@@ -161,13 +154,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   $size: '$states.cities.agents_id',
                 },
               },
-            },
-            {
-              $unset: [
-                'states.cities.hotels_id',
-                'states.cities.users_id',
-                'states.cities.agents_id',
-              ],
             },
             { $group: { _id: null, cities: { $push: '$states.cities' } } },
             { $project: { _id: 1, cities: '$cities' } },

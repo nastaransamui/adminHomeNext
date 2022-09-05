@@ -66,12 +66,12 @@ export default function Feature(props) {
         <div className={classes.root}>
           <Container fixed>
             <Grid container justify='center' spacing={2}>
-              <Grid item lg={6} md={12} xs={12} className={classes.imageGrid}>
+              <Grid item lg={6} md={12} xs={12} className={classes.imageGrid} >
                 <div className={clsx(classes.illustration, classes.one)} />
 
                 {values.firstThumb !== '' && (
                   <>
-                    <Tooltip title={t('photoHorizen')} arrow>
+                    <Tooltip title={t('photoHorizen')} arrow followCursor={true}>
                       <span>
                         <Slider
                           sx={{ height: 210 }}
@@ -92,7 +92,7 @@ export default function Feature(props) {
                         />
                       </span>
                     </Tooltip>
-                    <Tooltip title={t('thumbDelete')} arrow>
+                    <Tooltip title={t('thumbDelete')} arrow followCursor={true}>
                       <span>
                       <IconButton
                         disableFocusRipple
@@ -107,7 +107,7 @@ export default function Feature(props) {
                       </IconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title={t('photoVertical')} arrow>
+                    <Tooltip title={t('photoVertical')} arrow followCursor={true}>
                       <span>
                       <Slider
                         sx={{ width: 210 }}
@@ -132,7 +132,7 @@ export default function Feature(props) {
                 <figure className={clsx(classes.illustration, classes.two)}>
                   {values.firstThumb == '' ? (
                     <label htmlFor='firstThumb'>
-                      <Tooltip title={t('456x304')} arrow>
+                      <Tooltip title={t('456x304')} arrow followCursor={true}>
                         <img
                           style={{
                             position: 'absolute',
@@ -183,7 +183,7 @@ export default function Feature(props) {
                 />
                 {values.secondThumb !== '' && (
                   <>
-                    <Tooltip title={t('photoHorizen')} arrow>
+                    <Tooltip title={t('photoHorizen')} arrow followCursor={true}>
                       <span>
                       <Slider
                         sx={{ height: 180 }}
@@ -204,7 +204,7 @@ export default function Feature(props) {
                       />
                       </span>
                     </Tooltip>
-                    <Tooltip title={t('thumbDelete')} arrow>
+                    <Tooltip title={t('thumbDelete')} arrow followCursor={true}>
                       <IconButton
                         disableFocusRipple
                         disableRipple
@@ -216,7 +216,7 @@ export default function Feature(props) {
                         <Delete style={{ color: updateButtonDisabled ? theme.palette.text.disabled : theme.palette.error.main }}  />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={t('photoVertical')} arrow>
+                    <Tooltip title={t('photoVertical')} arrow followCursor={true}>
                       <span>
                       <Slider
                         sx={{ width: 150 }}
@@ -241,7 +241,7 @@ export default function Feature(props) {
                 <figure className={clsx(classes.illustration, classes.three)}>
                   {values.secondThumb == '' ? (
                     <label htmlFor='secondThumb'>
-                      <Tooltip title={t('456x304')} arrow>
+                      <Tooltip title={t('456x304')} arrow followCursor={true}>
                         <img
                           style={{
                             position: 'absolute',
@@ -292,7 +292,7 @@ export default function Feature(props) {
                 />
                 {values.thirdThumb !== '' && (
                   <>
-                    <Tooltip title={t('photoHorizen')} arrow>
+                    <Tooltip title={t('photoHorizen')} arrow followCursor={true}>
                       <span>
                       <Slider
                         sx={{ height: 210 }}
@@ -313,7 +313,7 @@ export default function Feature(props) {
                       />
                       </span>
                     </Tooltip>
-                    <Tooltip title={t('thumbDelete')} arrow>
+                    <Tooltip title={t('thumbDelete')} arrow followCursor={true}>
                       <span>
                       <IconButton
                         disableFocusRipple
@@ -328,7 +328,7 @@ export default function Feature(props) {
                       </IconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title={t('photoVertical')} arrow>
+                    <Tooltip title={t('photoVertical')} arrow followCursor={true}>
                       <span>
                       <Slider
                         sx={{ width: 210 }}
@@ -353,7 +353,7 @@ export default function Feature(props) {
                 <figure className={clsx(classes.illustration, classes.four)}>
                   {values.thirdThumb == '' ? (
                     <label htmlFor='thirdThumb'>
-                      <Tooltip title={t('456x304')} arrow>
+                      <Tooltip title={t('456x304')} arrow followCursor={true}>
                         <img
                           style={{
                             position: 'absolute',
@@ -407,7 +407,7 @@ export default function Feature(props) {
                   <div className={clsx(classes.illustration, classes.fiv)} />
                 </Hidden>
               </Grid>
-              <Grid item lg={6} md={12} xs={12}>
+              <Grid item lg={6} md={12} xs={12} sx={{paddingLeft: 20}}>
                 <Grid
                   container
                   spacing={2}
