@@ -1,5 +1,5 @@
 'use strict';
-var { Client } = require('hazelcast-client');
+var { Client, LogLevel } = require('hazelcast-client');
 
 function createClientConfig() {
   const lifecycleListener = (state) => {
@@ -11,6 +11,9 @@ function createClientConfig() {
     network: {
       connectionTimeout: 6000,
       clusterMembers: ['127.0.0.1:5701'],
+    },
+    logging: {
+      level: LogLevel.INFO,
     },
     lifecycleListeners: [lifecycleListener],
     connectionStrategy: {
@@ -42,42 +45,6 @@ const hazelCast = async () => {
       return { hzErrorConnection: true, hz: null };
     }
   }
-
-  // if (!isVercel) {
-  //   try {
-  //     await Client.newHazelcastClient(createClientConfig())
-  //       .then((err, res) => {
-  //         console.log(err);
-  //         console.log(res);
-  //         return { hzErrorConnection: true, hz: null };
-  //       })
-  //       .catch((error) => {
-  //         console.log('40');
-  //         console.log(error);
-  //         return { hzErrorConnection: true, hz: null };
-  //       })
-  //       .finally((hz) => {
-  //         console.log('finall');
-  //         console.log(hz);
-  //         return { hzErrorConnection: true, hz: null };
-  //       });
-  //   } catch (error) {
-  //     console.log('sende');
-  //   }
-  // } else {
-  //   return { hzErrorConnection: true, hz: null };
-  // }
-  // try {
-  //   if (!isVercel) {
-  //     const hz = await Client.newHazelcastClient(createClientConfig());
-  //     console.log(typeof hz);
-  //     return { hzErrorConnection: true, hz: hz };
-  //   } else {
-  //     return { hzErrorConnection: false, hz: null };
-  //   }
-  // } catch (error) {
-  //   return { hzErrorConnection: true, hz: null };
-  // }
 };
 
 export default hazelCast;

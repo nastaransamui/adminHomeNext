@@ -22,8 +22,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
-      const { hzErrorConnection, hz } = await hazelCast();
       var collection = mongoose.model(modelName);
       if (hzErrorConnection) {
         const currency = await collection.findOne({ _id: currency_id });
@@ -42,8 +42,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             const currency = value.filter((a) => a._id == currency_id);
             if (currency.length > 0) {
               res.status(200).json({ success: true, data: currency[0] });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             } else {
               res.status(500).json({ success: false, Error: 'noResult' });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             }
           }
           await hz.shutdown();
@@ -57,12 +63,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           const currency = currencies.filter((a) => a._id == currency_id);
           if (currency !== null) {
             res.status(200).json({ success: true, data: currency });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           } else {
             res.status(500).json({ success: false, Error: 'noResult' });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
         }
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

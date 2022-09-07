@@ -47,9 +47,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { modelName, filter } = req.body;
-      const { hzErrorConnection, hz } = await hazelCast();
       var collection = mongoose.model(modelName);
       const searchRegex = new RegExp(escapeRegExp(filter), 'i');
       if (hzErrorConnection) {
@@ -101,14 +101,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   1
                 ),
               });
+              await hz.shutdown();
             } else {
               res.status(200).json({
                 success: true,
                 data: [],
               });
+              await hz.shutdown();
             }
           }
-          await hz.shutdown();
         } else {
           const valuesList = await collection.aggregate([
             { $match: { isAdmin: true } },
@@ -119,15 +120,21 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           ]);
           if (valuesList.length > 0) {
             res.status(200).json({ success: true, data: valuesList });
+            await hz.shutdown();
           } else {
             res.status(200).json({
               success: true,
               data: [],
             });
+            await hz.shutdown();
           }
         }
       }
+      await hz.shutdown();
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

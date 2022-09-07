@@ -55,9 +55,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { modelName, fieldValue, filterValue } = req.body;
-      const { hzErrorConnection, hz } = await hazelCast();
       const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
 
       switch (modelName) {
@@ -176,6 +176,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 res.status(200).json({ success: true, data: [] });
               }
             }
+
+            await hz.shutdown();
           }
           break;
         case 'Provinces':
@@ -249,14 +251,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },
@@ -279,8 +282,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               if (valuesList.length > 0) {
                 const provinces = valuesList[0].provinces;
                 res.status(200).json({ success: true, data: provinces });
+                await hz.shutdown();
               } else {
                 res.status(200).json({ success: true, data: [] });
+                await hz.shutdown();
               }
             }
           }
@@ -337,11 +342,13 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
               await hz.shutdown();
@@ -362,13 +369,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
+                await hz.shutdown();
               } else {
                 res.status(200).json({
                   success: true,
                   data: [],
                 });
+                await hz.shutdown();
               }
             }
+            await hz.shutdown();
           }
           break;
         case 'global_countries':
@@ -406,11 +416,18 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 1
               ),
             });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           } else {
             res.status(200).json({
               success: true,
               data: [],
             });
+
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
           break;
         case 'Users':
@@ -456,14 +473,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               var collection = mongoose.model(modelName);
               const valuesList = await collection.aggregate([
@@ -474,13 +492,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
+                await hz.shutdown();
               } else {
                 res.status(200).json({
                   success: true,
                   data: [],
                 });
+                await hz.shutdown();
               }
             }
+            await hz.shutdown();
           }
           break;
         case 'global_currencies':
@@ -507,11 +528,17 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 1
               ),
             });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           } else {
             res.status(200).json({
               success: true,
               data: [],
             });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
           break;
         case 'Currencies':
@@ -556,14 +583,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $sort: { currency_name: 1 } },
@@ -572,13 +600,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
+                await hz.shutdown();
               } else {
                 res.status(200).json({
                   success: true,
                   data: [],
                 });
+                await hz.shutdown();
               }
             }
+            await hz.shutdown();
           }
           break;
         case 'Agencies':
@@ -658,14 +689,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                         1
                       ),
                     });
+                    await hz.shutdown();
                   } else {
                     res.status(200).json({
                       success: true,
                       data: [],
                     });
+                    await hz.shutdown();
                   }
                 }
-                await hz.shutdown();
               } else {
                 //Initiate match
                 var match = {
@@ -708,13 +740,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 ]);
                 if (valuesList.length > 0) {
                   res.status(200).json({ success: true, data: valuesList });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
+              await hz.shutdown();
             }
           } else {
             if (hzErrorConnection) {
@@ -979,17 +1014,23 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     success: true,
                     data: paginate(
                       filterdData.sort(
-                        sort_by('iso2', false, (a) => a.toUpperCase())
+                        sort_by('iso2', false, (a) =>
+                          typeof a == 'boolean' || typeof a == 'number'
+                            ? a
+                            : a.toUpperCase()
+                        )
                       ),
                       50,
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
               await hz.shutdown();
@@ -999,9 +1040,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   // `${process.env.NEXT_PUBLIC_API_LINK}/hotels/list?${fieldValue}=${filterValue}`
                   `http://192.168.1.116:3000/api/hotels/list?${fieldValue}=${filterValue}`
                 )
-                .then((resp) => {
+                .then(async (resp) => {
                   const valuesList = resp.data.data;
                   res.status(200).json({ success: true, data: valuesList });
+                  await hz.shutdown();
                 });
             }
           }
@@ -1182,14 +1224,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               var match = {
                 $match: { [fieldValue]: searchRegex },
@@ -1300,12 +1343,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
+                await hz.shutdown();
               } else {
                 res.status(200).json({
                   success: true,
                   data: [],
                 });
+                await hz.shutdown();
               }
+              await hz.shutdown();
             }
           }
           break;
@@ -1351,14 +1397,15 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       1
                     ),
                   });
+                  await hz.shutdown();
                 } else {
                   res.status(200).json({
                     success: true,
                     data: [],
                   });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               var collection = mongoose.model(modelName);
               const valuesList = await collection.aggregate([
@@ -1368,17 +1415,24 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               ]);
               if (valuesList.length > 0) {
                 res.status(200).json({ success: true, data: valuesList });
+                await hz.shutdown();
               } else {
                 res.status(200).json({
                   success: true,
                   data: [],
                 });
+                await hz.shutdown();
               }
             }
+
+            await hz.shutdown();
           }
           break;
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

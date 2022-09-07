@@ -23,9 +23,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { modelName, filter } = req.body;
-      const { hzErrorConnection, hz } = await hazelCast();
       var collection = mongoose.model(modelName);
       const searchRegex = new RegExp(escapeRegExp(filter), 'i');
       if (hzErrorConnection) {
@@ -86,11 +86,17 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             });
             if (filterdData.length > 0) {
               res.status(200).json({ success: true, data: filterdData });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             } else {
               res.status(200).json({
                 success: true,
                 data: [],
               });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             }
           }
           await hz.shutdown();
@@ -123,12 +129,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           if (valuesList.length > 0) {
             const provinces = valuesList[0].provinces;
             res.status(200).json({ success: true, data: provinces });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           } else {
             res.status(200).json({ success: true, data: [] });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
         }
+        await hz.shutdown();
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

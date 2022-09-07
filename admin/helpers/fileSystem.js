@@ -326,7 +326,6 @@ export const fsDelete = async (req, res, next, newFilesRecord, callback) => {
 
       default:
         fileFolder = `${publicFolder}/${finalFolder}/${folderId}`;
-        console.log(`fileFolder: ${fileFolder} in filesystem line 307`);
         if (fs.existsSync(fileFolder)) {
           var files = fs.readdirSync(fileFolder);
           if (files.length == 0) {

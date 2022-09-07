@@ -49,9 +49,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { modelName, fieldValue, filterValue, lookupFrom, _id } = req.body;
-      const { hzErrorConnection, hz } = await hazelCast();
       const searchRegex = new RegExp(escapeRegExp(filterValue), 'i');
       var collection = mongoose.model(modelName);
       async function usersAgencyLookup() {
@@ -248,14 +248,21 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       res
                         .status(200)
                         .json({ success: false, data: user[0].agentsData });
+                      if (!hzErrorConnection) {
+                        await hz.shutdown();
+                      }
                     } else {
                       res.status(200).json({ success: true, data: [] });
+                      if (!hzErrorConnection) {
+                        await hz.shutdown();
+                      }
                     }
                   }
                 }
                 await hz.shutdown();
               } else {
                 await usersAgencyLookup();
+                await hz.shutdown();
               }
             }
             break;
@@ -296,20 +303,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       res
                         .status(200)
                         .json({ success: false, data: role[0].usersData });
+                      await hz.shutdown();
                     } else {
                       res.status(200).json({ success: true, data: [] });
+                      await hz.shutdown();
                     }
                   }
                 }
-                await hz.shutdown();
               } else {
                 await rolesUsersLookup();
+                await hz.shutdown();
               }
             }
             break;
         }
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

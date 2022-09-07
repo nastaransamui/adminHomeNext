@@ -127,6 +127,7 @@ export const downloadMiddleware = async (req, res, next) => {
 export const downloadCountryMiddleware = async (req, res, next) => {
   const isVercel = process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
   const { modelName, fileName } = req.body;
+  const { hzErrorConnection, hz } = await hazelCast();
   if (fileName !== undefined) {
     const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
     let rawdata = fs.readFileSync(fileToRead);
@@ -242,6 +243,10 @@ export const downloadCountryMiddleware = async (req, res, next) => {
           async function (err) {
             if (err) {
               res.status(403).json({ success: false, Error: err.toString() });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
+
               console.log('An error occured while writing csv Object to File.');
             }
             res.setHeader('Content-Type', 'image/jpg');
@@ -261,11 +266,13 @@ export const downloadCountryMiddleware = async (req, res, next) => {
           }
         );
       })
-      .catch((err) => {
+      .catch(async (err) => {
         res.status(403).json({ success: false, Error: err.toString() });
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
       });
   } else {
-    const { hzErrorConnection, hz } = await hazelCast();
     var collection = mongoose.model('Countries');
     switch (modelName) {
       case 'Countries':
@@ -388,6 +395,9 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                     console.log(
                       'An error occured while writing csv Object to File.'
                     );
+                    if (!hzErrorConnection) {
+                      await hz.shutdown();
+                    }
                   }
                   res.setHeader('Content-Type', 'image/jpg');
                   req.body.isVercel = isVercel;
@@ -402,15 +412,22 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                     await awsCreateSingle(req, res, next);
                   } else {
                     await fsUpload(req, res, next);
+                    await hz.shutdown();
                   }
                 }
               );
             })
-            .catch((err) => {
+            .catch(async (err) => {
               res.status(403).json({ success: false, Error: err.toString() });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             });
         } catch (error) {
           res.status(403).json({ success: false, Error: err.toString() });
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
         }
         break;
       case 'Provinces':
@@ -558,6 +575,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                             console.log(
                               'An error occured while writing csv Object to File.'
                             );
+                            await hz.shutdown();
                           }
                           res.setHeader('Content-Type', 'image/jpg');
                           req.body.isVercel = isVercel;
@@ -572,20 +590,28 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                             await awsCreateSingle(req, res, next);
                           } else {
                             await fsUpload(req, res, next);
+                            if (!hzErrorConnection) {
+                              await hz.shutdown();
+                            }
                           }
                         }
                       );
                     })
-                    .catch((err) => {
+                    .catch(async (err) => {
                       res
                         .status(403)
                         .json({ success: false, Error: err.toString() });
+                      if (!hzErrorConnection) {
+                        await hz.shutdown();
+                      }
                     });
                 } else {
                   res.status(403).json({ success: false, Error: 'noResults' });
+                  if (!hzErrorConnection) {
+                    await hz.shutdown();
+                  }
                 }
               }
-              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },
@@ -627,6 +653,9 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                           console.log(
                             'An error occured while writing csv Object to File.'
                           );
+                          if (!hzErrorConnection) {
+                            await hz.shutdown();
+                          }
                         }
                         res.setHeader('Content-Type', 'image/jpg');
                         req.body.isVercel = isVercel;
@@ -641,21 +670,33 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                           await awsCreateSingle(req, res, next);
                         } else {
                           await fsUpload(req, res, next);
+                          if (!hzErrorConnection) {
+                            await hz.shutdown();
+                          }
                         }
                       }
                     );
                   })
-                  .catch((err) => {
+                  .catch(async (err) => {
                     res
                       .status(403)
                       .json({ success: false, Error: err.toString() });
+                    if (!hzErrorConnection) {
+                      await hz.shutdown();
+                    }
                   });
               } else {
                 res.status(403).json({ success: false, Error: 'noResults' });
+                if (!hzErrorConnection) {
+                  await hz.shutdown();
+                }
               }
             }
           }
         } catch (error) {
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
           res.status(403).json({ success: false, Error: err.toString() });
         }
         break;
@@ -798,6 +839,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                             console.log(
                               'An error occured while writing csv Object to File.'
                             );
+                            await hz.shutdown();
                           }
                           res.setHeader('Content-Type', 'image/jpg');
                           req.body.isVercel = isVercel;
@@ -812,20 +854,22 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                             await awsCreateSingle(req, res, next);
                           } else {
                             await fsUpload(req, res, next);
+                            await hz.shutdown();
                           }
                         }
                       );
                     })
-                    .catch((err) => {
+                    .catch(async (err) => {
                       res
                         .status(403)
                         .json({ success: false, Error: err.toString() });
+                      await hz.shutdown();
                     });
                 } else {
                   res.status(403).json({ success: false, Error: 'noResults' });
+                  await hz.shutdown();
                 }
               }
-              await hz.shutdown();
             } else {
               const valuesList = await collection.aggregate([
                 { $project: { _id: 0 } },
@@ -867,6 +911,7 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                           console.log(
                             'An error occured while writing csv Object to File.'
                           );
+                          await hz.shutdown();
                         }
                         res.setHeader('Content-Type', 'image/jpg');
                         req.body.isVercel = isVercel;
@@ -885,17 +930,22 @@ export const downloadCountryMiddleware = async (req, res, next) => {
                       }
                     );
                   })
-                  .catch((err) => {
+                  .catch(async (err) => {
                     res
                       .status(403)
                       .json({ success: false, Error: err.toString() });
+                    await hz.shutdown();
                   });
               } else {
                 res.status(403).json({ success: false, Error: 'noResults' });
+                await hz.shutdown();
               }
             }
           }
         } catch (error) {
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
           res.status(403).json({ success: false, Error: err.toString() });
         }
         break;
@@ -905,8 +955,6 @@ export const downloadCountryMiddleware = async (req, res, next) => {
 
 export const downloadClientsMiddleware = async (req, res, next) => {
   const isVercel = process.env.NEXT_PUBLIC_SERVERLESS == 'true' ? true : false;
-  const { modelName } = req.body;
-  const { hzErrorConnection, hz } = await hazelCast();
   var collection = mongoose.model('Agencies');
   try {
     const valuesList = await collection.aggregate([

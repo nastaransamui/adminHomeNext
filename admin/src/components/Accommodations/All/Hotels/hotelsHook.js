@@ -129,6 +129,7 @@ const hotelsHook = (socket) => {
       return;
     }
     setOpenAlert(false);
+    dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
   };
 
   return {

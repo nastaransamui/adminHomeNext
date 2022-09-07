@@ -74,9 +74,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       var collection = mongoose.model(modelName);
-      const { hzErrorConnection, hz } = await hazelCast();
       collection.findById(country_id, async (err, docs) => {
         const { Error, success } = involvedError(docs);
         // if involved return from function send error to client
@@ -240,6 +240,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         }
       });
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

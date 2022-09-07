@@ -131,9 +131,8 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
-      const { hzErrorConnection, hz } = await hazelCast();
-      console.log({ hzErrorConnection });
       async function dbAggregate() {
         var valuesList = await Users.aggregate([
           {
@@ -270,12 +269,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           }
           const dashboardArray = createDashobardArray(valuesList);
           res.status(200).json({ success: true, data: dashboardArray });
-          await hz.shutdown();
         } else {
           await dbAggregate();
         }
+
+        await hz.shutdown();
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

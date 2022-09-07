@@ -64,6 +64,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const {
         valuesPerPage,
@@ -103,14 +104,19 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               valuesPageNumber
             ),
           });
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
         } catch (error) {
-          console.log(error);
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
+
           res.status(500).json({ success: false, Error: error.toString() });
         }
       } else {
         try {
           //Initiate catch HZ adn if Error continue with MONGO DB
-          const { hzErrorConnection, hz } = await hazelCast();
           var collection = mongoose.model(modelName);
           if (hzErrorConnection) {
             const valuesList = await collection.aggregate([
@@ -190,10 +196,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
             await hz.shutdown();
           }
         } catch (error) {
+          if (!hzErrorConnection) {
+            await hz.shutdown();
+          }
           res.status(500).json({ success: false, Error: error.toString() });
         }
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

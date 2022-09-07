@@ -198,7 +198,7 @@ export const dataGridColumns = [
     field: 'timezones', // Db name
     headerAlign: 'center', //
     description: 'timezones', //Discription from translation
-    width: 150,
+    width: 250,
     type: 'array',
     arrayTotal: false,
     filterable: false,
@@ -210,7 +210,7 @@ export const dataGridColumns = [
     field: 'tld', // Db name
     headerAlign: 'center', //
     description: 'tld', //Discription from translation
-    width: 150,
+    width: 100,
     type: 'string',
     filterable: true,
     hasAvatar: [false, ''],

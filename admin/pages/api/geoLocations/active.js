@@ -73,6 +73,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       var collection = mongoose.model(modelName);
       const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
@@ -84,7 +85,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       })[0];
       const existCountries = await Countries.find({ id: country_id });
       const countryIsExist = existCountries.length > 0 ? true : false;
-      const { hzErrorConnection, hz } = await hazelCast();
       switch (countryIsExist) {
         //Country was already exist update the status
         case true:
@@ -143,6 +143,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 Error: err.toString(),
                 ErrorCode: err?.code,
               });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             }
             let data = JSON.parse(rawdata);
             data.map((doc) => {
@@ -189,6 +192,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           break;
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

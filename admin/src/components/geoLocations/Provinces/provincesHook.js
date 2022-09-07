@@ -69,20 +69,23 @@ const provincesHook = () => {
       });
       const { status, ok } = res;
       if (status !== 200 && !ok) {
-        alertCall(theme, 'error', res.Error, () => {
+        const { Error } = await res.json();
+        alertCall(theme, 'error', t(`${Error}`), () => {
+          dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
           if (!checkCookies('adminAccessToken')) {
             router.push('/', undefined, { shallow: true });
           }
         });
+      } else {
+        dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
+        const { fileLink } = await res.json();
+        var link = document.createElement('a');
+        link.href = fileLink;
+        link.download = 'Provinces.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      dispatch({ type: 'ADMIN_FORM_SUBMIT', payload: false });
-      const { fileLink } = await res.json();
-      var link = document.createElement('a');
-      link.href = fileLink;
-      link.download = 'Provinces.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       alertCall(theme, 'error', error.toString(), () => {
         if (!checkCookies('adminAccessToken')) {

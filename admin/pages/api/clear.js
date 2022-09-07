@@ -40,10 +40,13 @@ apiRoute.get(async (req, res, next) => {
     await hotelMap.destroy();
 
     console.log('clear all catch');
-    await hz.shutdown();
     res.status(200).redirect('/admin/dashboard');
+    await hz.shutdown();
   } else {
     res.status(200).redirect('/admin/dashboard');
+    if (!hzErrorConnection) {
+      await hz.shutdown();
+    }
   }
 });
 

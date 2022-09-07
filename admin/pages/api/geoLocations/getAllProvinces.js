@@ -43,6 +43,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const {
         valuesPerPage,
@@ -51,7 +52,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         valuesSortBySorting,
         modelName,
       } = req.body;
-      const { hzErrorConnection, hz } = await hazelCast();
       var collection = mongoose.model(modelName);
 
       if (hzErrorConnection) {
@@ -102,9 +102,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           res.status(500).json({ success: false, Error: 'noResult' });
         }
       } else {
-        // use Catch system with Hz
         const multiMap = await hz.getMultiMap('Provinces');
-        // await multiMap.destroy();
         const dataIsExist = await multiMap.containsKey(`allProvinces`);
 
         if (dataIsExist) {
@@ -183,6 +181,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         await hz.shutdown();
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

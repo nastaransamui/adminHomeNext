@@ -203,9 +203,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               } else {
                 await role.remove();
                 if (!hzErrorConnection) {
-                  res
-                    .status(500)
-                    .json({ success: false, Error: 'Role HZ update delete' });
+                  const multiMap = await hz.getMultiMap(modelName);
+                  const dataIsExist = await multiMap.containsKey(
+                    `all${modelName}`
+                  );
+                  if (dataIsExist) {
+                    const values = await multiMap.get(`all${modelName}`);
+                    for (const value of values) {
+                      var index = value.findIndex((obj) => obj._id == _id);
+                      if (index !== -1) {
+                        value.splice(index, 1);
+                      }
+                      await multiMap.clear(`all${modelName}`);
+                      await multiMap.put(`all${modelName}`, value);
+                    }
+                  }
+                  await hz.shutdown();
                 }
                 res.status(200).json({
                   success: true,
@@ -246,10 +259,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                           } else {
                             await agent.remove();
                             if (!hzErrorConnection) {
-                              res.status(500).json({
-                                success: false,
-                                Error: 'update hz on delete agent',
-                              });
+                              const multiMap = await hz.getMultiMap(modelName);
+                              const dataIsExist = await multiMap.containsKey(
+                                `all${modelName}`
+                              );
+                              if (dataIsExist) {
+                                const values = await multiMap.get(
+                                  `all${modelName}`
+                                );
+                                for (const value of values) {
+                                  var index = value.findIndex(
+                                    (obj) => obj._id == _id
+                                  );
+                                  if (index !== -1) {
+                                    value.splice(index, 1);
+                                  }
+                                  await multiMap.clear(`all${modelName}`);
+                                  await multiMap.put(`all${modelName}`, value);
+                                }
+                              }
+                              await hz.shutdown();
                             }
                             res.status(200).json({
                               success: true,
@@ -274,10 +303,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                           } else {
                             await agent.remove();
                             if (!hzErrorConnection) {
-                              res.status(500).json({
-                                success: false,
-                                Error: 'update hz on delete agent',
-                              });
+                              const multiMap = await hz.getMultiMap(modelName);
+                              const dataIsExist = await multiMap.containsKey(
+                                `all${modelName}`
+                              );
+                              if (dataIsExist) {
+                                const values = await multiMap.get(
+                                  `all${modelName}`
+                                );
+                                for (const value of values) {
+                                  var index = value.findIndex(
+                                    (obj) => obj._id == _id
+                                  );
+                                  if (index !== -1) {
+                                    value.splice(index, 1);
+                                  }
+                                  await multiMap.clear(`all${modelName}`);
+                                  await multiMap.put(`all${modelName}`, value);
+                                }
+                              }
+                              await hz.shutdown();
                             }
                             res.status(200).json({
                               success: true,
@@ -290,10 +335,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   } else {
                     await agent.remove();
                     if (!hzErrorConnection) {
-                      res.status(500).json({
-                        success: false,
-                        Error: 'update hz on delete agent',
-                      });
+                      const multiMap = await hz.getMultiMap(modelName);
+                      const dataIsExist = await multiMap.containsKey(
+                        `all${modelName}`
+                      );
+                      if (dataIsExist) {
+                        const values = await multiMap.get(`all${modelName}`);
+                        for (const value of values) {
+                          var index = value.findIndex((obj) => obj._id == _id);
+                          if (index !== -1) {
+                            value.splice(index, 1);
+                          }
+                          await multiMap.clear(`all${modelName}`);
+                          await multiMap.put(`all${modelName}`, value);
+                        }
+                      }
+                      await hz.shutdown();
                     }
                     res.status(200).json({
                       success: true,
@@ -310,6 +367,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
           collection.findById(_id, async (err, hotel) => {
             if (err) {
               res.status(403).json({ success: false, Error: err.toString() });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             } else {
               deleteObjectsId(req, res, next, hotel, async (status, error) => {
                 if (status) {
@@ -317,6 +377,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     success: false,
                     Error: error.toString(),
                   });
+                  if (!hzErrorConnection) {
+                    await hz.shutdown();
+                  }
                   return;
                 } else {
                   if (hotel.imageKey.length > 0) {
@@ -332,19 +395,40 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                               success: false,
                               Error: error.toString(),
                             });
+                            if (!hzErrorConnection) {
+                              await hz.shutdown();
+                            }
                             return;
                           } else {
                             await hotel.remove();
                             if (!hzErrorConnection) {
-                              res.status(500).json({
-                                success: false,
-                                Error: 'update hz on delete hotel',
-                              });
+                              const multiMap = await hz.getMultiMap(modelName);
+                              const dataIsExist = await multiMap.containsKey(
+                                `all${modelName}`
+                              );
+                              if (dataIsExist) {
+                                const values = await multiMap.get(
+                                  `all${modelName}`
+                                );
+                                for (const value of values) {
+                                  var index = value.findIndex(
+                                    (obj) => obj._id == _id
+                                  );
+                                  if (index !== -1) {
+                                    value.splice(index, 1);
+                                  }
+                                  await multiMap.clear(`all${modelName}`);
+                                  await multiMap.put(`all${modelName}`, value);
+                                }
+                              }
                             }
                             res.status(200).json({
                               success: true,
                               totalValuesLength: 0,
                             });
+                            if (!hzErrorConnection) {
+                              await hz.shutdown();
+                            }
                           }
                         }
                       );
@@ -364,15 +448,33 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                           } else {
                             await hotel.remove();
                             if (!hzErrorConnection) {
-                              res.status(500).json({
-                                success: false,
-                                Error: 'update hz on delete hotel',
-                              });
+                              const multiMap = await hz.getMultiMap(modelName);
+                              const dataIsExist = await multiMap.containsKey(
+                                `all${modelName}`
+                              );
+                              if (dataIsExist) {
+                                const values = await multiMap.get(
+                                  `all${modelName}`
+                                );
+                                for (const value of values) {
+                                  var index = value.findIndex(
+                                    (obj) => obj._id == _id
+                                  );
+                                  if (index !== -1) {
+                                    value.splice(index, 1);
+                                  }
+                                  await multiMap.clear(`all${modelName}`);
+                                  await multiMap.put(`all${modelName}`, value);
+                                }
+                              }
                             }
                             res.status(200).json({
                               success: true,
                               totalValuesLength: 0,
                             });
+                            if (!hzErrorConnection) {
+                              await hz.shutdown();
+                            }
                           }
                         }
                       );
@@ -380,15 +482,30 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   } else {
                     await hotel.remove();
                     if (!hzErrorConnection) {
-                      res.status(500).json({
-                        success: false,
-                        Error: 'update hz on delete hotel',
-                      });
+                      const multiMap = await hz.getMultiMap(modelName);
+                      const dataIsExist = await multiMap.containsKey(
+                        `all${modelName}`
+                      );
+                      if (dataIsExist) {
+                        const values = await multiMap.get(`all${modelName}`);
+                        for (const value of values) {
+                          var index = value.findIndex((obj) => obj._id == _id);
+                          if (index !== -1) {
+                            value.splice(index, 1);
+                          }
+                          await multiMap.clear(`all${modelName}`);
+                          await multiMap.put(`all${modelName}`, value);
+                        }
+                      }
+                      await hz.shutdown();
                     }
                     res.status(200).json({
                       success: true,
                       totalValuesLength: 0,
                     });
+                    if (!hzErrorConnection) {
+                      await hz.shutdown();
+                    }
                   }
                 }
               });
@@ -423,10 +540,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       } else {
                         await docs.remove();
                         if (!hzErrorConnection) {
-                          res.status(500).json({
-                            success: false,
-                            Error: 'update hz on delete user',
-                          });
+                          const multiMap = await hz.getMultiMap(modelName);
+                          const dataIsExist = await multiMap.containsKey(
+                            `all${modelName}`
+                          );
+                          if (dataIsExist) {
+                            const values = await multiMap.get(
+                              `all${modelName}`
+                            );
+                            for (const value of values) {
+                              var index = value.findIndex(
+                                (obj) => obj._id == _id
+                              );
+                              if (index !== -1) {
+                                value.splice(index, 1);
+                              }
+                              await multiMap.clear(`all${modelName}`);
+                              await multiMap.put(`all${modelName}`, value);
+                            }
+                          }
+                          await hz.shutdown();
                         }
                         res.status(200).json({
                           success: true,
@@ -451,10 +584,26 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                       } else {
                         await docs.remove();
                         if (!hzErrorConnection) {
-                          res.status(500).json({
-                            success: false,
-                            Error: 'update hz on delete default',
-                          });
+                          const multiMap = await hz.getMultiMap(modelName);
+                          const dataIsExist = await multiMap.containsKey(
+                            `all${modelName}`
+                          );
+                          if (dataIsExist) {
+                            const values = await multiMap.get(
+                              `all${modelName}`
+                            );
+                            for (const value of values) {
+                              var index = value.findIndex(
+                                (obj) => obj._id == _id
+                              );
+                              if (index !== -1) {
+                                value.splice(index, 1);
+                              }
+                              await multiMap.clear(`all${modelName}`);
+                              await multiMap.put(`all${modelName}`, value);
+                            }
+                          }
+                          await hz.shutdown();
                         }
                         res.status(200).json({
                           success: true,
@@ -467,10 +616,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               } else {
                 await docs.remove();
                 if (!hzErrorConnection) {
-                  res.status(500).json({
-                    success: false,
-                    Error: 'update hz on delete agent',
-                  });
+                  const multiMap = await hz.getMultiMap(modelName);
+                  const dataIsExist = await multiMap.containsKey(
+                    `all${modelName}`
+                  );
+                  if (dataIsExist) {
+                    const values = await multiMap.get(`all${modelName}`);
+                    for (const value of values) {
+                      var index = value.findIndex((obj) => obj._id == _id);
+                      if (index !== -1) {
+                        value.splice(index, 1);
+                      }
+                      await multiMap.clear(`all${modelName}`);
+                      await multiMap.put(`all${modelName}`, value);
+                    }
+                  }
+                  await hz.shutdown();
                 }
                 res.status(200).json({
                   success: true,

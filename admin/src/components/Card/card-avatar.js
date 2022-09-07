@@ -24,7 +24,7 @@ const cardAvatarStyle = makeStyles((theme) => {
       maxHeight: '130px',
       minWidth: '130px',
       minHeight: '130px',
-      margin: '-50px auto 0',
+      margin: '-10px auto 0',
       borderRadius: '50%',
       overflow: 'hidden',
       padding: '0',

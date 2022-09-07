@@ -73,6 +73,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       var collection = mongoose.model(modelName);
       const fileToRead = `${process.cwd()}/public/locationsData/${fileName}`;
@@ -82,7 +83,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         return entry.id === country_id;
       })[0];
       const newValue = await new collection(data);
-      const { hzErrorConnection, hz } = await hazelCast();
       await newValue.save(async (err, result) => {
         if (err) {
           res.status(403).json({
@@ -107,6 +107,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
         }
       });
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

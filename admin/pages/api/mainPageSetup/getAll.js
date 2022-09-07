@@ -62,9 +62,9 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    //Initiate catch HZ adn if Error continue with MONGO DB
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
-      //Initiate catch HZ adn if Error continue with MONGO DB
-      const { hzErrorConnection, hz } = await hazelCast();
       var collection = mongoose.model(modelName);
       if (hzErrorConnection) {
         switch (modelName) {
@@ -126,8 +126,6 @@ apiRoute.post(verifyToken, async (req, res, next) => {
       } else {
         // use Catch system with Hz
         const multiMap = await hz.getMultiMap(modelName);
-        // await multiMap.destroy();
-
         const dataIsExist = await multiMap.containsKey(`all${modelName}`);
         if (dataIsExist) {
           const values = await multiMap.get(`all${modelName}`);
@@ -151,6 +149,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 valuesPageNumber
               ),
             });
+            await hz.shutdown();
           }
         } else {
           switch (modelName) {
@@ -169,6 +168,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 totalValuesLength: agentValue.length,
                 data: paginate(agentValue, valuesPerPage, valuesPageNumber),
               });
+              await hz.shutdown();
               break;
             case 'Hotels':
               const hotelValue = await collection.aggregate([
@@ -185,6 +185,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 totalValuesLength: hotelValue.length,
                 data: paginate(hotelValue, valuesPerPage, valuesPageNumber),
               });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
+
               break;
             default:
               const valuesList = await collection
@@ -198,12 +202,19 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 totalValuesLength: valuesList.length,
                 data: paginate(valuesList, valuesPerPage, valuesPageNumber),
               });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
+
               break;
           }
         }
         await hz.shutdown();
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       res.status(500).json({ success: false, Error: error.toString() });
     }
   }

@@ -502,6 +502,29 @@
                   "active": true
                 }
               ]
+            },
+            {
+              "path": "/dashboard/g-hotels/allhotels",
+              "name_en-US": "All Hotels",
+              "name_fa": "همه هتلها",
+              "crud": [
+                {
+                  "name": "read",
+                  "active": true
+                },
+                {
+                  "name": "delete",
+                  "active": true
+                },
+                {
+                  "name": "create",
+                  "active": true
+                },
+                {
+                  "name": "update",
+                  "active": true
+                }
+              ]
             }
           ]
         },

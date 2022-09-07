@@ -22,10 +22,10 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { _id, modelName } = req.body;
       const collection = mongoose.model(modelName);
-      const { hzErrorConnection, hz } = await hazelCast();
 
       if (hzErrorConnection) {
         const agentValue = await collection.aggregate([
@@ -239,8 +239,14 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                 success: true,
                 data: agent[0],
               });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             } else {
               res.status(500).json({ success: false, Error: 'Notfind' });
+              if (!hzErrorConnection) {
+                await hz.shutdown();
+              }
             }
           }
           await hz.shutdown();
@@ -444,12 +450,22 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               success: true,
               data: agentValue[0],
             });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           } else {
             res.status(500).json({ success: false, Error: 'Notfind' });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
         }
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
+
       let errorText = error.toString();
       error?.kind == 'ObjectId' ? (errorText = 'Notfind') : errorText;
       res.status(500).json({ success: false, Error: errorText });

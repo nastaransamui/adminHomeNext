@@ -163,7 +163,7 @@ export const RenderCellExpand = (params) => {
         return params?.row?.currencyCode + ' ' + params.value.toLocaleString();
       default:
         return typeof params.value !== 'undefined'
-          ? params.value.toLocaleString()
+          ? params?.value?.toLocaleString()
           : params.value;
     }
   };

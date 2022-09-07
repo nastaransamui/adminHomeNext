@@ -141,6 +141,10 @@ export async function createObjectsId(req, res, next, result, callback) {
           }
         }
         callback(false, null);
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
+
         break;
       case 'Agencies':
         await Countries.updateOne(
@@ -253,7 +257,11 @@ export async function createObjectsId(req, res, next, result, callback) {
             }
           }
         }
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
+
         break;
       case 'Hotels':
         await Countries.updateOne(
@@ -329,12 +337,24 @@ export async function createObjectsId(req, res, next, result, callback) {
           }
         }
         callback(false, null);
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
+
         break;
       default:
         callback(false, null);
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
+
         break;
     }
   } catch (error) {
+    if (!hzErrorConnection) {
+      await hz.shutdown();
+    }
+
     callback(true, error);
   }
 }
@@ -547,6 +567,9 @@ export async function deleteObjectsId(req, res, next, result, callback) {
             }
           }
         }
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
         callback(true, error);
@@ -591,8 +614,14 @@ export async function deleteObjectsId(req, res, next, result, callback) {
           );
         }
 
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(true, error);
       }
       break;
@@ -615,8 +644,14 @@ export async function deleteObjectsId(req, res, next, result, callback) {
             ],
           }
         );
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(true, error);
       }
       break;
@@ -896,8 +931,14 @@ export async function updateObjectId(req, oldValue, callback) {
             }
           }
         }
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(true, error);
       }
       break;
@@ -1137,8 +1178,14 @@ export async function updateObjectId(req, oldValue, callback) {
             }
           }
         }
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(true, error);
       }
       break;
@@ -1294,8 +1341,14 @@ export async function updateObjectId(req, oldValue, callback) {
             }
           }
         }
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(false, null);
       } catch (error) {
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
         callback(true, error);
       }
       break;

@@ -105,14 +105,17 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
-      const { hzErrorConnection, hz } = await hazelCast();
       const country = await Countries.findOne({
         iso2: iso2,
         isCountryActive: true,
       });
       if (country == null) {
         res.status(403).json({ success: false, Error: `countryNotActive` });
+        if (!hzErrorConnection) {
+          await hz.shutdown();
+        }
       } else {
         let io;
         if (!isVercel) {
@@ -443,6 +446,9 @@ async function getNullHotels(
             io.sockets.emit('hotelsImportDone', {
               done: `null hotels of  ${iso2} was added`,
             });
+            if (!hzErrorConnection) {
+              await hz.shutdown();
+            }
           }
         });
       })

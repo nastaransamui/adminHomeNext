@@ -48,11 +48,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
   if (!success) {
     res.status(500).json({ success: false, Error: dbConnected.error });
   } else {
+    const { hzErrorConnection, hz } = await hazelCast();
     try {
       const { _id } = req.body;
       const collection = mongoose.model('Roles');
       const { page, rowsPerPage, order } = req?.query;
-      const { hzErrorConnection, hz } = await hazelCast();
       if (hzErrorConnection) {
         const roleValue = await collection.aggregate([
           { $match: { _id: ObjectId(_id) } },
@@ -152,6 +152,7 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                     totalUsers: totalUsers,
                   });
                 } else {
+                  await hz.shutdown();
                   res.status(403).json({ success: false, Error: 'Notfind' });
                 }
               }
@@ -211,11 +212,11 @@ apiRoute.post(verifyToken, async (req, res, next) => {
                   totalUsers: totalUsers,
                 });
               } else {
+                await hz.shutdown();
                 res.status(403).json({ success: false, Error: 'Notfind' });
               }
             }
           }
-          await hz.shutdown();
         } else {
           const roleValue = await collection.aggregate([
             { $match: { _id: ObjectId(_id) } },
@@ -271,14 +272,16 @@ apiRoute.post(verifyToken, async (req, res, next) => {
               data: roleValue[0],
               totalUsers: totalUsers,
             });
-            await hz.shutdown();
           } else {
             res.status(403).json({ success: false, Error: 'Notfind' });
-            await hz.shutdown();
           }
         }
+        await hz.shutdown();
       }
     } catch (error) {
+      if (!hzErrorConnection) {
+        await hz.shutdown();
+      }
       let errorText = error.toString();
       error?.kind == 'ObjectId' ? (errorText = 'Notfind') : errorText;
       res.status(500).json({ success: false, Error: errorText });
